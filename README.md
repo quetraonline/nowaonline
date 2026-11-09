@@ -1,34 +1,36 @@
-# Nowa Online World — Knight Online Server Finder
+# Nowa Online World — Yayıncı Rehberi
 
-A responsive, static first version of a Knight Online server discovery page, built for Vercel.
+Nowa Online World topluluğunun yayıncılarını listeleyen, mobil uyumlu ve Supabase bağlantılı web uygulaması.
 
-## Included in this first version
+## Özellikler
+- Yayıncı adıyla arama
+- Platform filtresi: TikTok, YouTube, Twitch, Kick, Instagram ve Facebook
+- Canlı / çevrimdışı durumu filtresi
+- Yayıncı profil görseli, açıklama ve kanal bağlantısı
+- Yönetici girişi
+- Yönetici panelinden yayıncı ekleme, düzenleme, silme, sıralama ve yayında/gizli durumu
+- Supabase veritabanı ve Row Level Security ile korunan yönetici işlemleri
 
-- Responsive dark fantasy / gold visual theme
-- Server search by name and keywords
-- Filters for server type, game version, level cap, opening status, date and play style
-- Quick category chips
-- Sort by recommendation, newest date and name
-- Grid and list views
-- Favorites stored in the current browser
-- Server detail modal
-- Add-server form (browser-local preview only)
+## Yönetici erişimini etkinleştirme
+1. Supabase Auth bölümünde yönetici olarak kullanacağınız e-posta ile bir kullanıcı oluşturun.
+2. Bu kullanıcı giriş yapabildikten sonra Supabase SQL Editor'de aşağıdaki sorguyu, kendi e-posta adresinizle çalıştırın:
 
-## Important data note
+```sql
+insert into public.nowa_admins (user_id)
+select id from auth.users where email = 'YONETICI_EPOSTA_ADRESI'
+on conflict (user_id) do nothing;
+```
 
-The visible records are clearly marked **ÖRNEK** and are placeholder/demo data. They are not verified live server listings. The add-server form currently stores entries in the visitor's browser using localStorage; it does not submit to a shared database.
+3. Site üzerindeki **Yönetici Paneli** düğmesinden aynı e-posta ve şifreyle giriş yapın.
 
-## Next production steps
+Yeni kullanıcı kaydı site üzerinden açık değildir. Yönetici yetkisi yalnızca `nowa_admins` tablosuna eklenen hesaplara verilir.
 
-1. Choose and connect a shared database (for example Supabase).
-2. Add a server submission workflow and moderation/admin approval.
-3. Replace placeholder records with verified server data.
-4. Add official server website / Discord links, opening countdowns, banner uploads and report/update controls.
-5. Configure spam protection and validation before public submissions.
+## Veri güvenliği
+- Ziyaretçiler yalnızca yayınlanmış yayıncıları görebilir.
+- Yayıncı ekleme, düzenleme ve silme işlemleri yönetici yetkisi ve RLS politikalarıyla sınırlandırılmıştır.
+- Tarayıcıda yalnızca Supabase publishable key bulunur; service-role/secret key kullanılmaz.
 
-## Deploy
-
-The GitHub repository is connected to the Vercel project. Commits pushed to `main` trigger Vercel deployment automatically.
-
+## Proje
 - GitHub: https://github.com/quetraonline/nowaonline
-- Vercel project: https://vercel.com/quetraonline/nowaonline
+- Vercel: https://vercel.com/quetraonline/nowaonline
+- Site: https://nowaonline.vercel.app
