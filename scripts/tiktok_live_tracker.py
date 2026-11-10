@@ -22,7 +22,8 @@ def api(method, path, **kwargs):
         method, f"{SUPABASE_URL}/rest/v1/{path}",
         headers=request_headers, timeout=25, **kwargs
     )
-    response.raise_for_status()
+    if not response.ok:
+        raise requests.HTTPError(f"{response.status_code} {response.reason}: {response.text[:1200]}", response=response)
     if response.text:
         return response.json()
     return None
