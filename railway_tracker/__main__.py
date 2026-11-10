@@ -168,14 +168,16 @@ class TikTokManager:
             if username and (p["id"],"TikTok") in sessions:
                 wanted[p["id"]]=(username,p,sessions[(p["id"],"TikTok")])
         for publisher_id in list(self.clients):
-            if publisher_id not in wanted:
+            previous = self.sessions.get(publisher_id)
+            current = wanted.get(publisher_id)
+            session_changed = current and previous and previous.get("id") != current[2].get("id")
+            if publisher_id not in wanted or session_changed:
                 client,task=self.clients.pop(publisher_id)
                 if client.connected: await client.disconnect()
                 task.cancel()
+                if session_changed:
+                    self.last_metrics.pop(publisher_id, None)
         for publisher_id,(username,p,session) in wanted.items():
-            previous = self.sessions.get(publisher_id)
-            if previous and previous.get("id") != session.get("id"):
-                self.last_metrics.pop(publisher_id, None)
             self.sessions[publisher_id]=session
             if publisher_id not in self.clients:
                 client=TikTokLiveClient(unique_id=username)
