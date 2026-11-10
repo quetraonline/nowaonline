@@ -92,11 +92,14 @@ class Store:
         await self.post("nowa_stream_events", payload, minimal=True)
 
     async def health(self, status="healthy", error=None, details=None):
-        await self.post("nowa_tracker_health", {
+        payload={
             "tracker_name":"railway-live-tracker","status":status,
             "last_heartbeat_at":utcnow(),"last_success_at":utcnow() if status=="healthy" else None,
             "last_error":str(error)[:1000] if error else None,"details":details or {},"updated_at":utcnow()
-        }, minimal=True)
+        }
+        r=await self.client.post("nowa_tracker_health?on_conflict=tracker_name",json=payload,
+            headers={"Prefer":"resolution=merge-duplicates,return=minimal"})
+        r.raise_for_status()
 
     async def close(self):
         await self.client.aclose()
