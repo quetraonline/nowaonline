@@ -78,6 +78,7 @@ async function loadPublishers(){const {data,error}=await db.from("nowa_publisher
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" sa "+m+" dk"):(m+" dk")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
+ window.nowaCurrentPublisher=p;
  const selectedStatsTab=silentRefresh?$("modalBody").querySelector("[data-stats-tab].active")?.dataset.statsTab:null;
  if(!silentRefresh){clearInterval(window.nowaTwitchRefreshTimer);$("modalTitle").textContent=p.name+" · Yayın istatistikleri";$("modalBody").innerHTML='<p class="notice">Yayın istatistikleri yükleniyor...</p>';$("modal").classList.add("open");}
  const twitchUrl=(p.platform_links||{}).Twitch||((p.platform||"").toLowerCase()==="twitch"?p.channel_url:null);
@@ -135,6 +136,24 @@ function renderSocialAdminList(){const box=$("socialAdminList");if(!box)return;b
 function socialLinkForm(item=null){$("modalTitle").textContent=item?"Sosyal medya hesabını düzenle":"Sosyal medya hesabı ekle";$("modalBody").innerHTML='<form id="socialLinkForm"><div class="formfield"><label>Platform</label><select name="platform" required>'+PLATFORMS.map(x=>'<option value="'+x+'" '+(item?.platform===x?"selected":"")+'>'+x+'</option>').join("")+'</select></div><div class="formfield"><label>Profil / kanal bağlantısı *</label><input name="url" type="url" required placeholder="https://..." value="'+esc(item?.url||"")+'"></div><div class="formfield"><label>Liste sırası</label><input name="sort_order" type="number" value="'+(item?.sort_order??0)+'"></div><div class="checks"><label><input name="is_published" type="checkbox" '+(item?.is_published!==false?"checked":"")+'> Ana sayfada göster</label></div><div class="actions"><button class="btn" type="button" id="backSocial">Geri</button><button class="btn goldbtn" type="submit">Kaydet</button></div></form>';$("backSocial").onclick=socialAdminView;$("socialLinkForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const payload={platform:f.get("platform"),url:String(f.get("url")||"").trim(),sort_order:Number(f.get("sort_order")||0),is_published:f.get("is_published")==="on",updated_at:new Date().toISOString()};let req=item?db.from("nowa_social_links").update(payload).eq("id",item.id):db.from("nowa_social_links").insert(payload);const {error}=await req;if(error){toast("Kaydedilemedi: "+error.message);return}toast("Sosyal medya hesabı kaydedildi.");await socialAdminView();await loadSocialLinks()}}
 
 async function loadVisitorCount(){const output=$("visitorCount");try{let visitorId=localStorage.getItem("nowa_online_visitor_id");if(!visitorId){visitorId=crypto.randomUUID();localStorage.setItem("nowa_online_visitor_id",visitorId)}const {data,error}=await db.rpc("register_nowa_site_visit",{p_visitor_id:visitorId});if(error)throw error;output.textContent=Number(data||0).toLocaleString("tr-TR")}catch(error){console.warn("Ziyaretçi sayacı yüklenemedi:",error);output.textContent="—"}}
+async function pollTwitchLiveStatus(){
+ try{
+  const response=await fetch(SUPABASE_URL+"/functions/v1/twitch-eventsub/live",{headers:{apikey:SUPABASE_KEY}});
+  const result=await response.json();
+  if(!response.ok)throw new Error(result.error||("HTTP "+response.status));
+  if(window.nowaCurrentPublisher&&$("modal").classList.contains("open")){
+   const current=window.nowaCurrentPublisher;
+   if((current.platform_links||{}).Twitch||((current.platform||"").toLowerCase()==="twitch"&&current.channel_url)){
+    await openPublisherDetails(current,true,true);
+   }
+  }
+  console.debug("Twitch canlılık kontrolü:",result);
+ }catch(error){console.warn("Twitch canlılık kontrolü başarısız:",error)}
+}
+clearInterval(window.nowaTwitchGlobalPoll);
+pollTwitchLiveStatus();
+window.nowaTwitchGlobalPoll=setInterval(pollTwitchLiveStatus,60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollTwitchLiveStatus()});
 loadPublishers();
 loadSocialLinks();
 loadVisitorCount();
