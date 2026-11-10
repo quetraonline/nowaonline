@@ -1,0 +1,1 @@
+"""Quetra Online World live statistics worker."""
