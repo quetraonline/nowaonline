@@ -29,11 +29,25 @@ def api(method, path, **kwargs):
 
 def tiktok_username(publisher):
     links = publisher.get("platform_links") or {}
-    url = links.get("TikTok") or ""
-    if not url and (publisher.get("platform") or "").lower() == "tiktok":
-        url = publisher.get("channel_url") or ""
-    match = re.search(r"(?:tiktok\.com/@|^@?)([A-Za-z0-9._]+)", url.strip(), re.I)
-    return match.group(1).lstrip("@") if match else None
+    value = links.get("TikTok") or ""
+    if not value and (publisher.get("platform") or "").lower() == "tiktok":
+        value = publisher.get("channel_url") or ""
+
+    value = str(value).strip()
+    if not value:
+        return None
+
+    # Full TikTok profile URL: extract only the path after /@.
+    match = re.search(r"(?:https?://)?(?:www\.)?tiktok\.com/@([^/?#]+)", value, re.I)
+    if match:
+        return match.group(1).strip()
+
+    # A bare @username or username is also accepted.
+    if value.startswith("@"):
+        value = value[1:]
+    if re.fullmatch(r"[A-Za-z0-9._]+", value):
+        return value
+    return None
 
 async def check_live(username):
     client = TikTokLiveClient(unique_id=username)
