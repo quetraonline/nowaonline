@@ -94,9 +94,11 @@ class Store:
     async def health(self, status="healthy", error=None, details=None):
         payload={
             "tracker_name":"railway-live-tracker","status":status,
-            "last_heartbeat_at":utcnow(),"last_success_at":utcnow() if status=="healthy" else None,
+            "last_heartbeat_at":utcnow(),
             "last_error":str(error)[:1000] if error else None,"details":details or {},"updated_at":utcnow()
         }
+        if status == "healthy":
+            payload["last_success_at"] = utcnow()
         r=await self.client.post("nowa_tracker_health?on_conflict=tracker_name",json=payload,
             headers={"Prefer":"resolution=merge-duplicates,return=minimal"})
         r.raise_for_status()
@@ -171,6 +173,9 @@ class TikTokManager:
                 if client.connected: await client.disconnect()
                 task.cancel()
         for publisher_id,(username,p,session) in wanted.items():
+            previous = self.sessions.get(publisher_id)
+            if previous and previous.get("id") != session.get("id"):
+                self.last_metrics.pop(publisher_id, None)
             self.sessions[publisher_id]=session
             if publisher_id not in self.clients:
                 client=TikTokLiveClient(unique_id=username)
@@ -201,6 +206,8 @@ class TikTokManager:
         @client.on(CommentEvent)
         async def comments(event):
             user=getattr(getattr(event,"user",None),"unique_id",None)
+            values=self.last_metrics.setdefault(publisher_id,{})
+            values["comment_count"]=int(values.get("comment_count",0))+1
             await self.store.event(session,"comment",actor_name=user,event_text=str(getattr(event,"comment",""))[:1000])
 
         @client.on(GiftEvent)
@@ -210,6 +217,9 @@ class TikTokManager:
             if getattr(event,"streaking",False) and getattr(gift,"type",None)==1: return
             quantity=int(getattr(event,"repeat_count",1) or 1)
             diamonds=int(getattr(gift,"diamond_count",0) or 0)*quantity
+            values=self.last_metrics.setdefault(publisher_id,{})
+            values["gift_count"]=int(values.get("gift_count",0))+quantity
+            values["gift_value"]=int(values.get("gift_value",0))+diamonds
             await self.store.event(session,"gift",actor_name=getattr(getattr(event,"user",None),"unique_id",None),
                 event_text=str(getattr(gift,"name","Gift")),quantity=quantity,value=diamonds,
                 payload={"diamond_count":getattr(gift,"diamond_count",None)})
@@ -229,7 +239,6 @@ class TikTokManager:
             session=sessions.get((publisher_id,"TikTok"))
             if session and values:
                 await self.store.metric(session,values.copy())
-        self.last_metrics.clear()
 
     async def close(self):
         for client,task in self.clients.values():
