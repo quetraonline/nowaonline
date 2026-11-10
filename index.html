@@ -77,8 +77,9 @@ function render(){const q=$("search").value.trim().toLocaleLowerCase("tr"),pl=$(
 async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render()}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" sa "+m+" dk"):(m+" dk")}
-async function openPublisherDetails(p){
- $("modalTitle").textContent=p.name+" · Yayın istatistikleri";$("modalBody").innerHTML='<p class="notice">Yayın istatistikleri yükleniyor...</p>';$("modal").classList.add("open");
+async function openPublisherDetails(p,silentRefresh=false){
+ const selectedStatsTab=silentRefresh?$("modalBody").querySelector("[data-stats-tab].active")?.dataset.statsTab:null;
+ if(!silentRefresh){clearInterval(window.nowaTwitchRefreshTimer);$("modalTitle").textContent=p.name+" · Yayın istatistikleri";$("modalBody").innerHTML='<p class="notice">Yayın istatistikleri yükleniyor...</p>';$("modal").classList.add("open");}
  const twitchUrl=(p.platform_links||{}).Twitch||((p.platform||"").toLowerCase()==="twitch"?p.channel_url:null);
  const tiktokUrl=(p.platform_links||{}).TikTok||null;
  let twitchHtml='<section><h3 style="margin:18px 0 8px">Twitch istatistikleri</h3><p class="notice">Bu yayıncının Twitch hesabı kayıtlı değil.</p></section>';
@@ -109,6 +110,8 @@ async function openPublisherDetails(p){
  const statsPanelsHtml=availableStats.map((item,index)=>'<div class="stats-panel" data-stats-panel="'+item.key+'" '+(index===0?'':'hidden')+'>'+item.html+'</div>').join("");
  $("modalBody").innerHTML='<div class="person" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:10px;min-width:0"><div class="avatar">'+avatar(p)+'</div><div><b>'+esc(p.name)+'</b><div class="muted">'+esc(p.server||"Ares")+'</div></div></div><div class="platform-tags card-platforms">'+platformsOf(p).map(x=>{const u=p.platform_links?.[x];return u?'<a class="platform-tag '+x.toLowerCase()+'" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer" title="'+esc(x)+'" aria-label="'+esc(x)+' bağlantısını aç">'+platformIcon(x)+'</a>':'<span class="platform-tag '+x.toLowerCase()+'" title="'+esc(x)+'" aria-label="'+esc(x)+'">'+platformIcon(x)+'</span>'}).join("")+'</div></div>'+(availableStats.length>1?'<div class="stats-tabs" role="tablist" aria-label="Yayın istatistikleri">'+statsTabsHtml+'</div>':"")+(availableStats.length?statsPanelsHtml:'<p class="notice">Bu yayıncının bağlı bir Twitch veya TikTok hesabı bulunmuyor.</p>');
  $("modalBody").querySelectorAll("[data-stats-tab]").forEach(tab=>tab.addEventListener("click",()=>{$("modalBody").querySelectorAll("[data-stats-tab]").forEach(x=>{const active=x===tab;x.classList.toggle("active",active);x.setAttribute("aria-selected",String(active))});$("modalBody").querySelectorAll("[data-stats-panel]").forEach(panel=>{panel.hidden=panel.dataset.statsPanel!==tab.dataset.statsTab})}));
+ if(silentRefresh&&selectedStatsTab){const selected=$("modalBody").querySelector('[data-stats-tab="'+selectedStatsTab+'"]');if(selected)selected.click()}
+ if(!silentRefresh&&twitchUrl){window.nowaTwitchRefreshTimer=setInterval(()=>{if(!$("modal").classList.contains("open")){clearInterval(window.nowaTwitchRefreshTimer);return}openPublisherDetails(p,true).catch(error=>console.warn("Twitch canlı durumu yenilenemedi:",error))},20000)}
 }
 
 async function checkAdmin(user){if(!user){isAdmin=false;return false}const {data,error}=await db.from("nowa_admins").select("user_id").eq("user_id",user.id).maybeSingle();isAdmin=!!data&&!error;return isAdmin}
