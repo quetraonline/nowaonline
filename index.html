@@ -149,7 +149,8 @@ async function pollTwitchLiveStatus(){
     await openPublisherDetails(current,true,true);
    }
   }
-  await loadTwitchLivePublisherIds();\n  console.debug("Twitch canlılık kontrolü:",result);
+  await loadTwitchLivePublisherIds();
+  console.debug("Twitch canlılık kontrolü:",result);
  }catch(error){console.warn("Twitch canlılık kontrolü başarısız:",error)}
 }
 clearInterval(window.nowaTwitchGlobalPoll);
