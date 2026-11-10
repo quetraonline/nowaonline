@@ -84,6 +84,7 @@ async function openPublisherDetails(p,silentRefresh=false){
  const tiktokUrl=(p.platform_links||{}).TikTok||null;
  let twitchHtml='<section><h3 style="margin:18px 0 8px">Twitch istatistikleri</h3><p class="notice">Bu yayıncının Twitch hesabı kayıtlı değil.</p></section>';
  if(twitchUrl){
+  try{await fetch(SUPABASE_URL+"/functions/v1/twitch-eventsub/status?publisher_id="+encodeURIComponent(p.id),{headers:{apikey:SUPABASE_KEY}})}catch(refreshError){console.warn("Twitch canlı durumu sorgulanamadı:",refreshError)}
   const {data,error}=await db.from("nowa_stream_sessions").select("id,stream_title,started_at,ended_at,duration_seconds,thumbnail_url,video_url").eq("publisher_id",p.id).eq("platform","Twitch").order("started_at",{ascending:false}).limit(100);
   if(error){twitchHtml='<section><h3 style="margin:18px 0 8px">Twitch istatistikleri</h3><p class="notice">Yayın geçmişi yüklenemedi: '+esc(error.message)+'</p></section>'}
   else{
