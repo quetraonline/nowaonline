@@ -67,7 +67,9 @@ async def main():
         "GET",
         "nowa_publishers?select=id,name,platform,channel_url,platform_links&is_published=eq.true"
     ) or []
-    semaphore = asyncio.Semaphore(5)
+    # TikTok often returns empty/non-JSON responses to parallel checks.
+    # Serialize requests and space them to reduce temporary rate limits.
+    semaphore = asyncio.Semaphore(1)
     counts = {"checked": 0, "live": 0, "started": 0, "ended": 0, "failed": 0}
 
     async def process(p):
@@ -76,6 +78,7 @@ async def main():
             return
         async with semaphore:
             try:
+                await asyncio.sleep(2)
                 live = await check_live(username)
                 counts["checked"] += 1
                 now = datetime.now(timezone.utc)
