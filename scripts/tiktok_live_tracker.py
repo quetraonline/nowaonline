@@ -17,9 +17,10 @@ HEADERS = {
 TIMEOUT = 22
 
 def api(method, path, **kwargs):
+    request_headers = {**HEADERS, **kwargs.pop("headers", {})}
     response = requests.request(
         method, f"{SUPABASE_URL}/rest/v1/{path}",
-        headers=HEADERS, timeout=25, **kwargs
+        headers=request_headers, timeout=25, **kwargs
     )
     response.raise_for_status()
     if response.text:
