@@ -1,7 +1,6 @@
 import asyncio
 import os
 import re
-import time
 from datetime import datetime, timezone
 from urllib.parse import quote
 
@@ -32,7 +31,7 @@ def tiktok_username(publisher):
     url = links.get("TikTok") or ""
     if not url and (publisher.get("platform") or "").lower() == "tiktok":
         url = publisher.get("channel_url") or ""
-    match = re.search(r"(?:tiktok\\.com/@|^@?)([A-Za-z0-9._]+)", url.strip(), re.I)
+    match = re.search(r"(?:tiktok\.com/@|^@?)([A-Za-z0-9._]+)", url.strip(), re.I)
     return match.group(1).lstrip("@") if match else None
 
 async def check_live(username):
