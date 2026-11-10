@@ -73,7 +73,7 @@ async function loadPublishers(){const {data,error}=await db.from("nowa_publisher
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" sa "+m+" dk"):(m+" dk")}
 async function openPublisherDetails(p){
  $("modalTitle").textContent=p.name+" · Yayın istatistikleri";$("modalBody").innerHTML='<p class="notice">Twitch yayın geçmişi yükleniyor...</p>';$("modal").classList.add("open");
- const {data,error}=await db.from("nowa_stream_sessions").select("id,stream_title,started_at,ended_at,duration_seconds").eq("publisher_id",p.id).order("started_at",{ascending:false}).limit(30);
+ const {data,error}=await db.from("nowa_stream_sessions").select("id,stream_title,started_at,ended_at,duration_seconds").eq("publisher_id",p.id).order("started_at",{ascending:false}).limit(100);
  if(error){$("modalBody").innerHTML='<p class="notice">Yayın geçmişi yüklenemedi: '+esc(error.message)+'</p>';return}
  const rows=data||[],now=Date.now(),monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);const monthRows=rows.filter(x=>new Date(x.started_at)>=monthStart);
  const secondsFor=x=>Number(x.duration_seconds)||(x.ended_at?Math.max(0,(new Date(x.ended_at)-new Date(x.started_at))/1000):Math.max(0,(now-new Date(x.started_at))/1000));
