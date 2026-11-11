@@ -86,10 +86,22 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  if(!silentRefresh){clearInterval(window.nowaTwitchRefreshTimer);$("modalTitle").textContent=p.name+" · Yayın istatistikleri";$("modalBody").innerHTML='<p class="notice">Yayın istatistikleri yükleniyor...</p>';$("modal").classList.add("open");}
  const twitchUrl=(p.platform_links||{}).Twitch||((p.platform||"").toLowerCase()==="twitch"?p.channel_url:null);
  const tiktokUrl=(p.platform_links||{}).TikTok||null;
+ const youtubeUrl=(p.platform_links||{}).YouTube||null;
  const count=v=>v===null||v===undefined||v===""?"—":Number(v).toLocaleString("tr-TR");
  const hasTikTok=!!tiktokUrl||p.tiktok_followers!=null||p.tiktok_likes!=null||p.tiktok_video_count!=null;
   const tiktokHtml='<section><h3 style="margin:22px 0 8px">TikTok istatistikleri</h3>'+(hasTikTok?'<div class="stream-stats"><div class="stream-stat"><b>'+count(p.tiktok_followers)+'</b><span>Takipçi</span></div><div class="stream-stat"><b>'+count(p.tiktok_likes)+'</b><span>Toplam beğeni</span></div><div class="stream-stat"><b>'+count(p.tiktok_video_count)+'</b><span>Video sayısı</span></div><div class="stream-stat"><b>'+count(p.tiktok_following)+'</b><span>Takip edilen</span></div><div class="stream-stat"><b>'+count(p.tiktok_avg_views)+'</b><span>Ort. video izlenmesi</span></div></div>'+(p.tiktok_stats_updated_at?'<p class="notice" style="margin-top:-8px">Son güncelleme: '+new Date(p.tiktok_stats_updated_at).toLocaleString("tr-TR")+'</p>':""):'<p class="notice">TikTok profil istatistikleri henüz girilmedi.</p>')+(tiktokUrl?'<div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(tiktokUrl)+'" target="_blank" rel="noopener noreferrer">TikTok profiline git</a></div>':'')+'</section>';
- const availableStats=[...(tiktokUrl||hasTikTok?[{key:"tiktok",label:"TikTok profil istatistikleri",html:tiktokHtml}]:[]),];
+ let youtubeHtml="";
+ if(youtubeUrl){
+  try{
+   const response=await fetch("/api/youtube-stats?url="+encodeURIComponent(youtubeUrl));
+   const result=await response.json();
+   if(!response.ok)throw new Error(result.error||"YouTube verileri alınamadı.");
+   youtubeHtml='<section><h3 style="margin:22px 0 8px">YouTube kanal istatistikleri</h3><div class="stream-stats"><div class="stream-stat"><b>'+count(result.subscribers)+'</b><span>Abone</span></div><div class="stream-stat"><b>'+count(result.views)+'</b><span>Toplam görüntülenme</span></div><div class="stream-stat"><b>'+count(result.videos)+'</b><span>Video sayısı</span></div></div>'+(result.hiddenSubscriberCount?'<p class="notice">Bu kanal abone sayısını gizliyor.</p>':'')+'<p class="notice">Kanal: '+esc(result.title)+' · Veriler YouTube üzerinden alınır.</p><div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(youtubeUrl)+'" target="_blank" rel="noopener noreferrer">YouTube kanalına git</a></div></section>';
+  }catch(error){
+   youtubeHtml='<section><h3 style="margin:22px 0 8px">YouTube kanal istatistikleri</h3><p class="notice">İstatistikler şu anda alınamadı: '+esc(error.message)+'</p><div class="actions"><a class="btn goldbtn" href="'+esc(youtubeUrl)+'" target="_blank" rel="noopener noreferrer">YouTube kanalına git</a></div></section>';
+  }
+ }
+ const availableStats=[...(youtubeUrl?[{key:"youtube",label:"YouTube kanal istatistikleri",html:youtubeHtml}]:[]),...(tiktokUrl||hasTikTok?[{key:"tiktok",label:"TikTok profil istatistikleri",html:tiktokHtml}]:[])];
  const activeStats=availableStats[0]?.key;
  const statsTabsHtml=availableStats.map((item,index)=>'<button type="button" class="stats-tab '+(index===0?'active':'')+'" role="tab" aria-selected="'+(index===0?'true':'false')+'" data-stats-tab="'+item.key+'">'+item.label+'</button>').join("");
  const statsPanelsHtml=availableStats.map((item,index)=>'<div class="stats-panel" data-stats-panel="'+item.key+'" '+(index===0?'':'hidden')+'>'+item.html+'</div>').join("");
