@@ -93,19 +93,29 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  if(tiktokUrl){
   try{
    const nowMs=Date.now(),cutoffMs=nowMs-30*24*60*60*1000;
-   const {data:monthlySessions,error}=await db.from("nowa_stream_sessions").select("started_at,ended_at").eq("publisher_id",p.id).eq("platform","TikTok").gte("started_at",new Date(cutoffMs).toISOString()).order("started_at",{ascending:false}).limit(5000);
+   const {data:allSessions,error}=await db.from("nowa_stream_sessions").select("started_at,ended_at,duration_seconds").eq("publisher_id",p.id).eq("platform","TikTok").order("started_at",{ascending:false}).limit(5000);
    if(error)throw error;
-   let monthSeconds=0,monthCount=0,liveCount=0;
-   for(const session of monthlySessions||[]){
-    const startMs=Math.max(new Date(session.started_at).getTime(),cutoffMs);
-    const endMs=Math.min(session.ended_at?new Date(session.ended_at).getTime():nowMs,nowMs);
-    if(Number.isFinite(startMs)&&Number.isFinite(endMs)&&endMs>startMs){monthSeconds+=Math.floor((endMs-startMs)/1000);monthCount++}
-    if(!session.ended_at)liveCount++;
+   const sessions=allSessions||[];
+   let monthSeconds=0;
+   for(const session of sessions){
+    const rawStart=new Date(session.started_at).getTime();
+    const rawEnd=session.ended_at?new Date(session.ended_at).getTime():nowMs;
+    const startMs=Math.max(rawStart,cutoffMs),endMs=Math.min(rawEnd,nowMs);
+    if(Number.isFinite(startMs)&&Number.isFinite(endMs)&&endMs>startMs)monthSeconds+=Math.floor((endMs-startMs)/1000);
    }
-   tiktokMonthlyHtml='<h3 style="margin:22px 0 8px">Son 30 gün canlı yayın performansı</h3><div class="stream-stats"><div class="stream-stat"><b>'+formatDuration(monthSeconds)+'</b><span>Toplam yayın süresi</span></div><div class="stream-stat"><b>'+count(monthCount)+'</b><span>Yayın sayısı</span></div><div class="stream-stat"><b>'+count(liveCount)+'</b><span>Şu anda canlı</span></div></div><p class="notice" style="margin-top:8px">Süreler takip sistemimizin kaydettiği yayın başlangıç ve bitiş zamanlarından hesaplanır. Kayıtlar 10 Kasım 2026 itibarıyla tutulmaya başladığı için daha eski yayınlar bu toplama dahil değildir.</p>';
+   const latest=sessions[0]||null;
+   let latestDate="Henüz yayın yok",latestDuration="—";
+   if(latest){
+    const startMs=new Date(latest.started_at).getTime();
+    const endMs=latest.ended_at?new Date(latest.ended_at).getTime():nowMs;
+    latestDate=Number.isFinite(startMs)?new Date(startMs).toLocaleString("tr-TR"):"Tarih bilgisi yok";
+    latestDuration=Number.isFinite(startMs)&&Number.isFinite(endMs)&&endMs>=startMs?formatDuration(Math.floor((endMs-startMs)/1000)):"—";
+    if(!latest.ended_at)latestDuration+=" · Canlı";
+   }
+   tiktokMonthlyHtml='<h3 style="margin:22px 0 8px">TikTok yayın performansı</h3><div class="stream-stats"><div class="stream-stat"><b style="font-size:14px">'+esc(latestDate)+'</b><span>Son yayın tarihi</span></div><div class="stream-stat"><b>'+latestDuration+'</b><span>Son yayın süresi</span></div><div class="stream-stat"><b>'+formatDuration(monthSeconds)+'</b><span>Son 30 gün toplam yayın süresi</span></div><div class="stream-stat"><b>'+count(sessions.length)+'</b><span>Toplam yayın sayısı</span></div></div><p class="notice" style="margin-top:8px">Yayın sayısı ve süreler takip sistemimizin kaydettiği oturumlara dayanır. Kayıtlar 10 Kasım 2026 itibarıyla tutulmaya başladığı için daha eski yayınlar dahil değildir.</p>';
   }catch(error){
-   console.warn("TikTok aylık yayın süresi alınamadı:",error);
-   tiktokMonthlyHtml='<p class="notice">Aylık yayın süresi şu anda alınamadı.</p>';
+   console.warn("TikTok yayın performansı alınamadı:",error);
+   tiktokMonthlyHtml='<p class="notice">TikTok yayın performansı şu anda alınamadı.</p>';
   }
  }
   const tiktokHtml='<section><h3 style="margin:22px 0 8px">TikTok istatistikleri</h3>'+(hasTikTok?'<div class="stream-stats"><div class="stream-stat"><b>'+count(p.tiktok_followers)+'</b><span>Takipçi</span></div><div class="stream-stat"><b>'+count(p.tiktok_likes)+'</b><span>Toplam beğeni</span></div><div class="stream-stat"><b>'+count(p.tiktok_video_count)+'</b><span>Video sayısı</span></div><div class="stream-stat"><b>'+count(p.tiktok_following)+'</b><span>Takip edilen</span></div></div>'+(p.tiktok_stats_updated_at?'<p class="notice" style="margin-top:-8px">Son güncelleme: '+new Date(p.tiktok_stats_updated_at).toLocaleString("tr-TR")+'</p>':""):'<p class="notice">TikTok profil istatistikleri henüz girilmedi.</p>')+tiktokMonthlyHtml+(tiktokUrl?'<div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(tiktokUrl)+'" target="_blank" rel="noopener noreferrer">TikTok profiline git</a></div>':'')+'</section>';
