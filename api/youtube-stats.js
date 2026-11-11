@@ -14,17 +14,17 @@ export default async function handler(req, res) {
 
     let parsed;
     try { parsed = new URL(rawUrl); } catch { return res.status(400).json({ error: "Geçersiz YouTube bağlantısı." }); }
-    if (!/(^|\\.)youtube\\.com$/i.test(parsed.hostname) && !/^youtu\\.be$/i.test(parsed.hostname)) {
+    if (!/(^|\.)youtube\.com$/i.test(parsed.hostname) && !/^youtu\.be$/i.test(parsed.hostname)) {
       return res.status(400).json({ error: "Yalnızca YouTube kanal bağlantıları desteklenir." });
     }
 
-    const path = parsed.pathname.replace(/\\/+$/, "");
+    const path = parsed.pathname.replace(/\/+$/, "");
     const params = new URLSearchParams({ part: "snippet,statistics,contentDetails", key: apiKey });
-    if (/^\\/channel\\/UC[\\w-]+$/i.test(path)) {
+    if (/^\/channel\/UC[\w-]+$/i.test(path)) {
       params.set("id", path.split("/")[2]);
-    } else if (/^\\/@[\\w.-]+$/.test(path)) {
+    } else if (/^\/@[\w.-]+$/.test(path)) {
       params.set("forHandle", path.slice(2));
-    } else if (/^\\/user\\/[\\w.-]+$/.test(path)) {
+    } else if (/^\/user\/[\w.-]+$/.test(path)) {
       params.set("forUsername", path.split("/")[2]);
     } else {
       const slug = path.split("/").filter(Boolean).pop();
@@ -59,9 +59,7 @@ export default async function handler(req, res) {
       const playlistData = await playlistResponse.json();
       if (!playlistResponse.ok) throw new Error(playlistData.error?.message || "Kanal videoları alınamadı.");
 
-      const videoIds = (playlistData.items || [])
-        .map(item => item.contentDetails?.videoId)
-        .filter(Boolean);
+      const videoIds = (playlistData.items || []).map(item => item.contentDetails?.videoId).filter(Boolean);
       if (videoIds.length) {
         const videosParams = new URLSearchParams({
           part: "snippet,contentDetails,liveStreamingDetails",
@@ -85,10 +83,10 @@ export default async function handler(req, res) {
             isLive: Boolean(live),
             actualStartTime: live?.actualStartTime || live?.scheduledStartTime || ""
           };
-        }).sort((a,b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+        }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
-        latestVideos = normalized.filter(video => !video.isLive).slice(0,2);
-        latestStreams = normalized.filter(video => video.isLive && video.actualStartTime).slice(0,2);
+        latestVideos = normalized.filter(video => !video.isLive).slice(0, 2);
+        latestStreams = normalized.filter(video => video.isLive && video.actualStartTime).slice(0, 2);
       }
     }
 
