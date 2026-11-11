@@ -89,7 +89,26 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  const youtubeUrl=(p.platform_links||{}).YouTube||null;
  const count=v=>v===null||v===undefined||v===""?"—":Number(v).toLocaleString("tr-TR");
  const hasTikTok=!!tiktokUrl||p.tiktok_followers!=null||p.tiktok_likes!=null||p.tiktok_video_count!=null;
-  const tiktokHtml='<section><h3 style="margin:22px 0 8px">TikTok istatistikleri</h3>'+(hasTikTok?'<div class="stream-stats"><div class="stream-stat"><b>'+count(p.tiktok_followers)+'</b><span>Takipçi</span></div><div class="stream-stat"><b>'+count(p.tiktok_likes)+'</b><span>Toplam beğeni</span></div><div class="stream-stat"><b>'+count(p.tiktok_video_count)+'</b><span>Video sayısı</span></div><div class="stream-stat"><b>'+count(p.tiktok_following)+'</b><span>Takip edilen</span></div></div>'+(p.tiktok_stats_updated_at?'<p class="notice" style="margin-top:-8px">Son güncelleme: '+new Date(p.tiktok_stats_updated_at).toLocaleString("tr-TR")+'</p>':""):'<p class="notice">TikTok profil istatistikleri henüz girilmedi.</p>')+(tiktokUrl?'<div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(tiktokUrl)+'" target="_blank" rel="noopener noreferrer">TikTok profiline git</a></div>':'')+'</section>';
+ let tiktokMonthlyHtml="";
+ if(tiktokUrl){
+  try{
+   const nowMs=Date.now(),cutoffMs=nowMs-30*24*60*60*1000;
+   const {data:monthlySessions,error}=await db.from("nowa_stream_sessions").select("started_at,ended_at").eq("publisher_id",p.id).eq("platform","TikTok").gte("started_at",new Date(cutoffMs).toISOString()).order("started_at",{ascending:false}).limit(5000);
+   if(error)throw error;
+   let monthSeconds=0,monthCount=0,liveCount=0;
+   for(const session of monthlySessions||[]){
+    const startMs=Math.max(new Date(session.started_at).getTime(),cutoffMs);
+    const endMs=Math.min(session.ended_at?new Date(session.ended_at).getTime():nowMs,nowMs);
+    if(Number.isFinite(startMs)&&Number.isFinite(endMs)&&endMs>startMs){monthSeconds+=Math.floor((endMs-startMs)/1000);monthCount++}
+    if(!session.ended_at)liveCount++;
+   }
+   tiktokMonthlyHtml='<h3 style="margin:22px 0 8px">Son 30 gün canlı yayın performansı</h3><div class="stream-stats"><div class="stream-stat"><b>'+formatDuration(monthSeconds)+'</b><span>Toplam yayın süresi</span></div><div class="stream-stat"><b>'+count(monthCount)+'</b><span>Yayın sayısı</span></div><div class="stream-stat"><b>'+count(liveCount)+'</b><span>Şu anda canlı</span></div></div><p class="notice" style="margin-top:8px">Süreler takip sistemimizin kaydettiği yayın başlangıç ve bitiş zamanlarından hesaplanır.</p>';
+  }catch(error){
+   console.warn("TikTok aylık yayın süresi alınamadı:",error);
+   tiktokMonthlyHtml='<p class="notice">Aylık yayın süresi şu anda alınamadı.</p>';
+  }
+ }
+  const tiktokHtml='<section><h3 style="margin:22px 0 8px">TikTok istatistikleri</h3>'+(hasTikTok?'<div class="stream-stats"><div class="stream-stat"><b>'+count(p.tiktok_followers)+'</b><span>Takipçi</span></div><div class="stream-stat"><b>'+count(p.tiktok_likes)+'</b><span>Toplam beğeni</span></div><div class="stream-stat"><b>'+count(p.tiktok_video_count)+'</b><span>Video sayısı</span></div><div class="stream-stat"><b>'+count(p.tiktok_following)+'</b><span>Takip edilen</span></div></div>'+(p.tiktok_stats_updated_at?'<p class="notice" style="margin-top:-8px">Son güncelleme: '+new Date(p.tiktok_stats_updated_at).toLocaleString("tr-TR")+'</p>':""):'<p class="notice">TikTok profil istatistikleri henüz girilmedi.</p>')+(tiktokUrl?'<div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(tiktokUrl)+'" target="_blank" rel="noopener noreferrer">TikTok profiline git</a></div>':'')+'+tiktokMonthlyHtml+'</section>';
  let twitchHtml="";
  if(twitchUrl){
   try{
