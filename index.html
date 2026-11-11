@@ -90,6 +90,21 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  const count=v=>v===null||v===undefined||v===""?"—":Number(v).toLocaleString("tr-TR");
  const hasTikTok=!!tiktokUrl||p.tiktok_followers!=null||p.tiktok_likes!=null||p.tiktok_video_count!=null;
   const tiktokHtml='<section><h3 style="margin:22px 0 8px">TikTok istatistikleri</h3>'+(hasTikTok?'<div class="stream-stats"><div class="stream-stat"><b>'+count(p.tiktok_followers)+'</b><span>Takipçi</span></div><div class="stream-stat"><b>'+count(p.tiktok_likes)+'</b><span>Toplam beğeni</span></div><div class="stream-stat"><b>'+count(p.tiktok_video_count)+'</b><span>Video sayısı</span></div><div class="stream-stat"><b>'+count(p.tiktok_following)+'</b><span>Takip edilen</span></div><div class="stream-stat"><b>'+count(p.tiktok_avg_views)+'</b><span>Ort. video izlenmesi</span></div></div>'+(p.tiktok_stats_updated_at?'<p class="notice" style="margin-top:-8px">Son güncelleme: '+new Date(p.tiktok_stats_updated_at).toLocaleString("tr-TR")+'</p>':""):'<p class="notice">TikTok profil istatistikleri henüz girilmedi.</p>')+(tiktokUrl?'<div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(tiktokUrl)+'" target="_blank" rel="noopener noreferrer">TikTok profiline git</a></div>':'')+'</section>';
+ let twitchHtml="";
+ if(twitchUrl){
+  try{
+   const {data: sessions,error}=await db.from("nowa_stream_sessions").select("started_at,ended_at,duration_seconds,stream_title,thumbnail_url,video_url").eq("publisher_id",p.id).eq("platform","Twitch").order("started_at",{ascending:false}).limit(50);
+   if(error)throw error;
+   const rows=sessions||[];
+   const live=rows.filter(x=>!x.ended_at);
+   const totalSeconds=rows.reduce((sum,x)=>sum+(Number(x.duration_seconds)||0),0);
+   const recent=rows.slice(0,2);
+   const recentHtml=recent.length?'<div style="display:grid;gap:12px;margin-top:12px">'+recent.map(item=>'<a href="'+esc(item.video_url||twitchUrl)+'" target="_blank" rel="noopener noreferrer" style="display:flex;gap:12px;align-items:flex-start;padding:10px;border:1px solid var(--line,rgba(255,255,255,.12));border-radius:12px;text-decoration:none;color:inherit;background:rgba(255,255,255,.025)">'+(item.thumbnail_url?'<img src="'+esc(item.thumbnail_url)+'" alt="" loading="lazy" style="width:116px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex-shrink:0">':'')+'<span style="min-width:0;display:block"><b style="display:block;line-height:1.35">'+esc(item.stream_title||"Twitch yayını")+'</b><small style="display:block;opacity:.72;margin-top:7px">'+(item.started_at?new Date(item.started_at).toLocaleString("tr-TR"):"Tarih bilgisi yok")+'</small>'+(item.ended_at?'':'<small style="display:block;color:#e7b85c;margin-top:5px">Şu anda canlı</small>')+'</span></a>').join("")+'</div>':'<p class="notice">Henüz kayıtlı Twitch yayını bulunmuyor.</p>';
+   twitchHtml='<section><h3 style="margin:22px 0 8px">Twitch yayın istatistikleri</h3><div class="stream-stats"><div class="stream-stat"><b>'+count(rows.length)+'</b><span>Kayıtlı yayın</span></div><div class="stream-stat"><b>'+count(Math.floor(totalSeconds/3600))+' sa</b><span>Toplam yayın süresi</span></div><div class="stream-stat"><b>'+count(live.length)+'</b><span>Canlı yayın</span></div></div><h3 style="margin:24px 0 8px">Son 2 Twitch yayını</h3>'+recentHtml+'<div class="actions" style="margin-top:12px"><a class="btn goldbtn" href="'+esc(twitchUrl)+'" target="_blank" rel="noopener noreferrer">Twitch kanalına git</a></div></section>';
+  }catch(error){
+   twitchHtml='<section><h3 style="margin:22px 0 8px">Twitch yayın istatistikleri</h3><p class="notice">Twitch istatistikleri şu anda alınamadı: '+esc(error.message||"Bilinmeyen hata")+'</p><div class="actions"><a class="btn goldbtn" href="'+esc(twitchUrl)+'" target="_blank" rel="noopener noreferrer">Twitch kanalına git</a></div></section>';
+  }
+ }
  let youtubeHtml="";
  if(youtubeUrl){
   try{
@@ -102,7 +117,7 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
    youtubeHtml='<section><h3 style="margin:22px 0 8px">YouTube kanal istatistikleri</h3><p class="notice">İstatistikler şu anda alınamadı: '+esc(error.message)+'</p><div class="actions"><a class="btn goldbtn" href="'+esc(youtubeUrl)+'" target="_blank" rel="noopener noreferrer">YouTube kanalına git</a></div></section>';
   }
  }
- const availableStats=[...(youtubeUrl?[{key:"youtube",label:"YouTube kanal istatistikleri",html:youtubeHtml}]:[]),...(tiktokUrl||hasTikTok?[{key:"tiktok",label:"TikTok profil istatistikleri",html:tiktokHtml}]:[])];
+ const availableStats=[...(tiktokUrl||hasTikTok?[{key:"tiktok",label:"TikTok",html:tiktokHtml}]:[]),...(twitchUrl?[{key:"twitch",label:"Twitch",html:twitchHtml}]:[]),...(youtubeUrl?[{key:"youtube",label:"YouTube",html:youtubeHtml}]:[])];
  const activeStats=availableStats[0]?.key;
  const statsTabsHtml=availableStats.map((item,index)=>'<button type="button" class="stats-tab '+(index===0?'active':'')+'" role="tab" aria-selected="'+(index===0?'true':'false')+'" data-stats-tab="'+item.key+'">'+item.label+'</button>').join("");
  const statsPanelsHtml=availableStats.map((item,index)=>'<div class="stats-panel" data-stats-panel="'+item.key+'" '+(index===0?'':'hidden')+'>'+item.html+'</div>').join("");
