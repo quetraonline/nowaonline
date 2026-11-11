@@ -102,7 +102,7 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
     if(Number.isFinite(startMs)&&Number.isFinite(endMs)&&endMs>startMs){monthSeconds+=Math.floor((endMs-startMs)/1000);monthCount++}
     if(!session.ended_at)liveCount++;
    }
-   tiktokMonthlyHtml='<h3 style="margin:22px 0 8px">Son 30 gün canlı yayın performansı</h3><div class="stream-stats"><div class="stream-stat"><b>'+formatDuration(monthSeconds)+'</b><span>Toplam yayın süresi</span></div><div class="stream-stat"><b>'+count(monthCount)+'</b><span>Yayın sayısı</span></div><div class="stream-stat"><b>'+count(liveCount)+'</b><span>Şu anda canlı</span></div></div><p class="notice" style="margin-top:8px">Süreler takip sistemimizin kaydettiği yayın başlangıç ve bitiş zamanlarından hesaplanır.</p>';
+   tiktokMonthlyHtml='<h3 style="margin:22px 0 8px">Son 30 gün canlı yayın performansı</h3><div class="stream-stats"><div class="stream-stat"><b>'+formatDuration(monthSeconds)+'</b><span>Toplam yayın süresi</span></div><div class="stream-stat"><b>'+count(monthCount)+'</b><span>Yayın sayısı</span></div><div class="stream-stat"><b>'+count(liveCount)+'</b><span>Şu anda canlı</span></div></div><p class="notice" style="margin-top:8px">Süreler takip sistemimizin kaydettiği yayın başlangıç ve bitiş zamanlarından hesaplanır. Kayıtlar 10 Kasım 2026 itibarıyla tutulmaya başladığı için daha eski yayınlar bu toplama dahil değildir.</p>';
   }catch(error){
    console.warn("TikTok aylık yayın süresi alınamadı:",error);
    tiktokMonthlyHtml='<p class="notice">Aylık yayın süresi şu anda alınamadı.</p>';
