@@ -41,7 +41,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 <div class="hero-socials" id="heroSocials" aria-label="Sosyal medya hesaplarımız"></div>
 
 </section>
-<section class="announcement" id="announcementSection" aria-live="polite" hidden><h2 id="announcementTitle"></h2><div class="announcement-body" id="announcementBody"></div></section>
+<section class="announcement" id="announcementSection" aria-live="polite" hidden><div class="announcement-body" id="announcementBody"></div></section>
 <section>
 <div class="toolbar"><div><h2>Yayıncılarımız</h2><p>Nowa Online World - Resmi onaylı yayıncı listesi</p></div>
 <div class="filters"><input class="field search" id="search" placeholder="Yayıncı ara..."><select class="field" id="platform"><option value="">Tüm platformlar</option><option>TikTok</option><option>YouTube</option><option>Twitch</option><option>Kick</option><option>Instagram</option><option>Facebook</option><option>Discord</option></select></div>
@@ -161,7 +161,6 @@ async function loadAnnouncement(){
  const {data,error}=await db.from("nowa_announcements").select("title,body,updated_at").eq("id",1).eq("is_visible",true).maybeSingle();
  if(error){console.warn("Duyuru yüklenemedi:",error);section.hidden=true;return}
  if(!data||!String(data.body||"").trim()){section.hidden=true;return}
- $("announcementTitle").textContent=data.title||"Duyuru";
  $("announcementBody").textContent=data.body;
  section.hidden=false;
 }
