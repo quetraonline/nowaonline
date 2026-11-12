@@ -3,6 +3,10 @@
     {
       "source": "/iletisim",
       "destination": "/iletisim.html"
+    },
+    {
+      "source": "/rehber",
+      "destination": "/rehber.html"
     }
   ]
 }
