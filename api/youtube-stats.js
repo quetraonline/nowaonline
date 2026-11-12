@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=300");
+  res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method not allowed" });
@@ -112,7 +112,8 @@ export default async function handler(req, res) {
             publishedAt: video.snippet?.publishedAt || "",
             thumbnail,
             url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
-            isLive: Boolean(live),
+            // Bu liste uploads arşivinden gelir; geçmiş yayınlar canlı etiketi almamalı.
+            isLive: false,
             actualStartTime: live?.actualStartTime || live?.scheduledStartTime || ""
           };
         }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
