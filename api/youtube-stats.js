@@ -47,6 +47,7 @@ export default async function handler(req, res) {
 
     let latestVideos = [];
     let latestStreams = [];
+    let playlistLiveStreams = [];
 
     // Aktif canlı yayınları ayrı ara ve videos.list ile gerçekten hâlâ canlı olduklarını doğrula.
     let currentLiveStreams = [];
@@ -137,6 +138,9 @@ export default async function handler(req, res) {
           };
         }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
+        // Yüklemeler listesindeki aktif canlı yayınları da yedek kaynak olarak sakla.
+        // eventType=live araması bazı durumlarda aktif yayını döndürmeyebilir.
+        playlistLiveStreams = normalized.filter(video => video.isLive && !video.actualEndTime);
         latestVideos = normalized.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 2);
         latestStreams = normalized.filter(video => video.isArchivedStream).slice(0, 2);
       }
@@ -145,7 +149,7 @@ export default async function handler(req, res) {
     // Devam eden yayını listenin başına al; kalan yeri en yeni tamamlanmış canlı yayınlarla doldur.
     const archivedStreams = latestStreams;
     const seenStreamIds = new Set();
-    latestStreams = [...currentLiveStreams, ...archivedStreams]
+    latestStreams = [...currentLiveStreams, ...playlistLiveStreams, ...archivedStreams]
       .filter(stream => {
         if (!stream?.id || seenStreamIds.has(stream.id)) return false;
         seenStreamIds.add(stream.id);
