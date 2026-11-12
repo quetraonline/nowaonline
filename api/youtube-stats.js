@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate=86400");
+  res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=300");
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method not allowed" });
@@ -47,6 +47,38 @@ export default async function handler(req, res) {
 
     let latestVideos = [];
     let latestStreams = [];
+
+    // Aktif canlı yayınları uploads oynatma listesinden bağımsız olarak ara.
+    let currentLiveStreams = [];
+    try {
+      const liveSearchParams = new URLSearchParams({
+        part: "snippet",
+        channelId: channel.id,
+        type: "video",
+        eventType: "live",
+        maxResults: "5",
+        key: apiKey
+      });
+      const liveSearchResponse = await fetch("https://www.googleapis.com/youtube/v3/search?" + liveSearchParams);
+      const liveSearchData = await liveSearchResponse.json();
+      if (liveSearchResponse.ok) {
+        currentLiveStreams = (liveSearchData.items || [])
+          .filter(item => item.id?.videoId)
+          .map(item => ({
+            id: item.id.videoId,
+            title: item.snippet?.title || "Canlı yayın",
+            publishedAt: item.snippet?.publishedAt || "",
+            thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || "",
+            url: "https://www.youtube.com/watch?v=" + encodeURIComponent(item.id.videoId),
+            isLive: true,
+            actualStartTime: ""
+          }));
+      } else {
+        console.warn("YouTube canlı yayın araması başarısız:", liveSearchData.error?.message);
+      }
+    } catch (liveSearchError) {
+      console.warn("YouTube canlı yayın araması yapılamadı:", liveSearchError);
+    }
     const uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
     if (uploadsPlaylistId) {
       const playlistParams = new URLSearchParams({
@@ -89,6 +121,8 @@ export default async function handler(req, res) {
         latestStreams = normalized.filter(video => video.isLive && video.actualStartTime).slice(0, 2);
       }
     }
+
+    if (currentLiveStreams.length) latestStreams = currentLiveStreams;
 
     const stats = channel.statistics || {};
     return res.status(200).json({
