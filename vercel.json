@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/iletisim",
-      "destination": "/contact.html"
+      "destination": "/iletisim.html"
     }
   ]
 }
