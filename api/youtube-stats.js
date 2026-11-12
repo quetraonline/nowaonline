@@ -122,7 +122,16 @@ export default async function handler(req, res) {
       }
     }
 
-    if (currentLiveStreams.length) latestStreams = currentLiveStreams;
+    // Aktif yayınları listenin başına al; kalan yeri en yeni arşivlenmiş canlı yayınlarla tamamla.
+    const archivedStreams = latestStreams;
+    const seenStreamIds = new Set();
+    latestStreams = [...currentLiveStreams, ...archivedStreams]
+      .filter(stream => {
+        if (!stream?.id || seenStreamIds.has(stream.id)) return false;
+        seenStreamIds.add(stream.id);
+        return true;
+      })
+      .slice(0, 2);
 
     const stats = channel.statistics || {};
     return res.status(200).json({
