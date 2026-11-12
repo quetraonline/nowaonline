@@ -113,7 +113,7 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  const youtubeUrl=(p.platform_links||{}).YouTube||null;
  const count=v=>v===null||v===undefined||v===""?"—":Number(v).toLocaleString("tr-TR");
  const hasTikTok=!!tiktokUrl||p.tiktok_followers!=null||p.tiktok_likes!=null||p.tiktok_video_count!=null;
-  let tiktokHistoryHtml='<p class="notice">Henüz kayıtlı TikTok canlı yayını bulunmuyor. Yayınlar takip sistemimiz tarafından algılandıkça burada listelenecek.</p>';
+  let tiktokHistoryHtml='<p class="notice">Henüz kayıtlı TikTok canlı yayını bulunmuyor.</p>';
   try{
    const {data: sessions,error}=await db.from("nowa_stream_sessions").select("started_at,ended_at,duration_seconds,stream_title").eq("publisher_id",p.id).eq("platform","TikTok").order("started_at",{ascending:false}).limit(50);
    if(error)throw error;
