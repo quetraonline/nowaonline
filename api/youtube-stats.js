@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     let latestVideos = [];
     let latestStreams = [];
 
-    // Aktif canlı yayınları uploads oynatma listesinden bağımsız olarak ara.
+    // Aktif canlı yayınları ayrı ara ve videos.list ile gerçekten hâlâ canlı olduklarını doğrula.
     let currentLiveStreams = [];
     try {
       const liveSearchParams = new URLSearchParams({
@@ -61,23 +61,40 @@ export default async function handler(req, res) {
       });
       const liveSearchResponse = await fetch("https://www.googleapis.com/youtube/v3/search?" + liveSearchParams);
       const liveSearchData = await liveSearchResponse.json();
-      if (liveSearchResponse.ok) {
-        currentLiveStreams = (liveSearchData.items || [])
-          .filter(item => item.id?.videoId)
-          .map(item => ({
-            id: item.id.videoId,
-            title: item.snippet?.title || "Canlı yayın",
-            publishedAt: item.snippet?.publishedAt || "",
-            thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || "",
-            url: "https://www.youtube.com/watch?v=" + encodeURIComponent(item.id.videoId),
-            isLive: true,
-            actualStartTime: ""
-          }));
-      } else {
+      if (!liveSearchResponse.ok) {
         console.warn("YouTube canlı yayın araması başarısız:", liveSearchData.error?.message);
+      } else {
+        const liveIds = (liveSearchData.items || []).map(item => item.id?.videoId).filter(Boolean);
+        if (liveIds.length) {
+          const verifyParams = new URLSearchParams({
+            part: "snippet,liveStreamingDetails",
+            id: liveIds.join(","),
+            key: apiKey
+          });
+          const verifyResponse = await fetch("https://www.googleapis.com/youtube/v3/videos?" + verifyParams);
+          const verifyData = await verifyResponse.json();
+          if (!verifyResponse.ok) {
+            console.warn("YouTube canlı yayın doğrulaması başarısız:", verifyData.error?.message);
+          } else {
+            currentLiveStreams = (verifyData.items || [])
+              .filter(video => video.snippet?.liveBroadcastContent === "live" && video.liveStreamingDetails?.actualEndTime == null)
+              .map(video => {
+                const thumbs = video.snippet?.thumbnails || {};
+                return {
+                  id: video.id,
+                  title: video.snippet?.title || "Canlı yayın",
+                  publishedAt: video.liveStreamingDetails?.actualStartTime || video.snippet?.publishedAt || "",
+                  thumbnail: thumbs.maxres?.url || thumbs.high?.url || thumbs.medium?.url || thumbs.default?.url || "",
+                  url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
+                  isLive: true,
+                  actualStartTime: video.liveStreamingDetails?.actualStartTime || ""
+                };
+              });
+          }
+        }
       }
     } catch (liveSearchError) {
-      console.warn("YouTube canlı yayın araması yapılamadı:", liveSearchError);
+      console.warn("YouTube canlı yayın doğrulaması yapılamadı:", liveSearchError);
     }
     const uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
     if (uploadsPlaylistId) {
