@@ -99,51 +99,70 @@ export default async function handler(req, res) {
     }
     const uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
     if (uploadsPlaylistId) {
-      const playlistParams = new URLSearchParams({
-        part: "contentDetails",
-        playlistId: uploadsPlaylistId,
-        maxResults: "50",
-        key: apiKey
-      });
-      const playlistResponse = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?" + playlistParams);
-      const playlistData = await playlistResponse.json();
-      if (!playlistResponse.ok) throw new Error(playlistData.error?.message || "Kanal videoları alınamadı.");
+      // İlk 50 video içinde arşivlenmiş yayın yoksa daha eski yüklemelere ilerle.
+      // En fazla 3 sayfa (150 video) kontrol edilir; gereksiz API kotası tüketilmez.
+      let pageToken = "";
+      let scannedPages = 0;
+      const normalizedVideos = [];
+      const archivedFound = [];
 
-      const videoIds = (playlistData.items || []).map(item => item.contentDetails?.videoId).filter(Boolean);
-      if (videoIds.length) {
-        const videosParams = new URLSearchParams({
-          part: "snippet,contentDetails,liveStreamingDetails",
-          id: videoIds.join(","),
+      while (scannedPages < 3 && (scannedPages === 0 || pageToken)) {
+        const playlistParams = new URLSearchParams({
+          part: "contentDetails",
+          playlistId: uploadsPlaylistId,
+          maxResults: "50",
           key: apiKey
         });
-        const videosResponse = await fetch("https://www.googleapis.com/youtube/v3/videos?" + videosParams);
-        const videosData = await videosResponse.json();
-        if (!videosResponse.ok) throw new Error(videosData.error?.message || "Video ayrıntıları alınamadı.");
+        if (pageToken) playlistParams.set("pageToken", pageToken);
 
-        const normalized = (videosData.items || []).map(video => {
-          const thumbs = video.snippet?.thumbnails || {};
-          const thumbnail = thumbs.maxres?.url || thumbs.standard?.url || thumbs.high?.url || thumbs.medium?.url || thumbs.default?.url || "";
-          const live = video.liveStreamingDetails || null;
-          return {
-            id: video.id,
-            title: video.snippet?.title || "Başlıksız içerik",
-            publishedAt: video.snippet?.publishedAt || "",
-            thumbnail,
-            url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
-            // Geçmiş canlı yayınları normal videolardan ayır.
-            isLive: video.snippet?.liveBroadcastContent === "live" && !live?.actualEndTime,
-            isArchivedStream: Boolean(live?.actualStartTime && live?.actualEndTime),
-            actualStartTime: live?.actualStartTime || live?.scheduledStartTime || "",
-            actualEndTime: live?.actualEndTime || ""
-          };
-        }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+        const playlistResponse = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?" + playlistParams);
+        const playlistData = await playlistResponse.json();
+        if (!playlistResponse.ok) throw new Error(playlistData.error?.message || "Kanal videoları alınamadı.");
 
-        // Yüklemeler listesindeki aktif canlı yayınları da yedek kaynak olarak sakla.
-        // eventType=live araması bazı durumlarda aktif yayını döndürmeyebilir.
-        playlistLiveStreams = normalized.filter(video => video.isLive && !video.actualEndTime);
-        latestVideos = normalized.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 2);
-        latestStreams = normalized.filter(video => video.isArchivedStream).slice(0, 2);
+        const videoIds = (playlistData.items || []).map(item => item.contentDetails?.videoId).filter(Boolean);
+        if (videoIds.length) {
+          const videosParams = new URLSearchParams({
+            part: "snippet,contentDetails,liveStreamingDetails",
+            id: videoIds.join(","),
+            key: apiKey
+          });
+          const videosResponse = await fetch("https://www.googleapis.com/youtube/v3/videos?" + videosParams);
+          const videosData = await videosResponse.json();
+          if (!videosResponse.ok) throw new Error(videosData.error?.message || "Video ayrıntıları alınamadı.");
+
+          const normalized = (videosData.items || []).map(video => {
+            const thumbs = video.snippet?.thumbnails || {};
+            const thumbnail = thumbs.maxres?.url || thumbs.standard?.url || thumbs.high?.url || thumbs.medium?.url || thumbs.default?.url || "";
+            const live = video.liveStreamingDetails || null;
+            return {
+              id: video.id,
+              title: video.snippet?.title || "Başlıksız içerik",
+              publishedAt: live?.actualStartTime || video.snippet?.publishedAt || "",
+              thumbnail,
+              url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
+              isLive: video.snippet?.liveBroadcastContent === "live" && !live?.actualEndTime,
+              isArchivedStream: Boolean(live?.actualStartTime && live?.actualEndTime),
+              actualStartTime: live?.actualStartTime || live?.scheduledStartTime || "",
+              actualEndTime: live?.actualEndTime || ""
+            };
+          }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+
+          normalizedVideos.push(...normalized);
+          archivedFound.push(...normalized.filter(video => video.isArchivedStream));
+        }
+
+        scannedPages++;
+        pageToken = playlistData.nextPageToken || "";
+        if (archivedFound.length >= 2) break;
       }
+
+      // Normal video listesi her zaman en yeni yüklemelerden oluşur.
+      normalizedVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+      playlistLiveStreams = normalizedVideos.filter(video => video.isLive && !video.actualEndTime);
+      latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 2);
+      latestStreams = archivedFound
+        .sort((a, b) => new Date(b.actualStartTime || b.publishedAt) - new Date(a.actualStartTime || a.publishedAt))
+        .slice(0, 2);
     }
 
     // Devam eden yayını listenin başına al; kalan yeri en yeni tamamlanmış canlı yayınlarla doldur.
