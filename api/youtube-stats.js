@@ -129,18 +129,20 @@ export default async function handler(req, res) {
             publishedAt: video.snippet?.publishedAt || "",
             thumbnail,
             url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
-            // Bu liste uploads arşivinden gelir; geçmiş yayınlar canlı etiketi almamalı.
-            isLive: false,
-            actualStartTime: live?.actualStartTime || live?.scheduledStartTime || ""
+            // Geçmiş canlı yayınları normal videolardan ayır.
+            isLive: video.snippet?.liveBroadcastContent === "live" && !live?.actualEndTime,
+            isArchivedStream: Boolean(live?.actualStartTime && live?.actualEndTime),
+            actualStartTime: live?.actualStartTime || live?.scheduledStartTime || "",
+            actualEndTime: live?.actualEndTime || ""
           };
         }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
-        latestVideos = normalized.filter(video => !video.isLive).slice(0, 2);
-        latestStreams = normalized.filter(video => video.isLive && video.actualStartTime).slice(0, 2);
+        latestVideos = normalized.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 2);
+        latestStreams = normalized.filter(video => video.isArchivedStream).slice(0, 2);
       }
     }
 
-    // Aktif yayınları listenin başına al; kalan yeri en yeni arşivlenmiş canlı yayınlarla tamamla.
+    // Devam eden yayını listenin başına al; kalan yeri en yeni tamamlanmış canlı yayınlarla doldur.
     const archivedStreams = latestStreams;
     const seenStreamIds = new Set();
     latestStreams = [...currentLiveStreams, ...archivedStreams]
