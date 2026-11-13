@@ -103,7 +103,7 @@ let livePublisherPlatforms=new Map();
 async function loadLivePublisherPlatforms(){const {data,error}=await db.from("nowa_stream_sessions").select("publisher_id,platform").is("ended_at",null);if(error){console.warn("Canlı platform durumları alınamadı:",error);return}const next=new Map();for(const row of data||[]){const key=String(row.platform||"").toLowerCase();if(key!=="twitch"&&key!=="tiktok"&&key!=="youtube"&&key!=="kick")continue;if(!next.has(row.publisher_id))next.set(row.publisher_id,new Set());next.get(row.publisher_id).add(key==="twitch"?"Twitch":key==="youtube"?"YouTube":key==="kick"?"Kick":"TikTok")}livePublisherPlatforms=next;render()}
 async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();await loadLivePublisherPlatforms()}
 
-function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" sa "+m+" dk"):(m+" dk")}
+function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
  if(silentRefresh&&$("modal").dataset.view!=="publisher-details")return;
  if(!silentRefresh)$("modal").dataset.view="publisher-details";
