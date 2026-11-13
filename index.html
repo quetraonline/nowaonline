@@ -68,32 +68,19 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
  #modalBody .stats-tab{font-size:11px}
 }
 
-/* Mobil menü: marka alanını belirgin bir menü düğmesi yap ve açılır paneli masaüstüyle aynı netlikte göster */
+
+/* Tüm sayfalarda mobil üst alan masaüstü başlık tasarımını korur */
 @media(max-width:600px){
-  .brand-menu{
-    padding:6px 9px;
-    border:1px solid #394657;
-    border-radius:12px;
-    background:#141b25;
-    box-shadow:0 3px 12px #0005;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .brand-menu:active{background:#202a36;border-color:#a77c40}
-  .menu-dropdown{
-    left:0;
-    right:auto;
-    top:calc(100% + 8px);
-    width:190px;
-    padding:7px;
-    background:#141b25;
-    border:1px solid #394657;
-    border-radius:12px;
-    box-shadow:0 16px 40px #000b;
-    backdrop-filter:none;
-    -webkit-backdrop-filter:none;
-  }
-  .menu-dropdown a{color:#e9edf3;padding:11px 12px}
-  .menu-dropdown a:active{background:#252f3c;color:var(--gold)}
+  .nav{height:76px;gap:10px}
+  .brand-menu{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;text-align:left}
+  .brand-menu:active{background:transparent}
+  .brand-menu:focus-visible{outline:2px solid var(--gold);outline-offset:5px;border-radius:5px}
+  .mark{width:43px;height:43px}
+  .brand strong{font-size:14px}
+  .brand small{font-size:9px}
+  .nav-right{gap:9px;flex:0 0 auto}
+  .nav-right .btn{padding:10px 15px;font-size:12px}
+  .menu-dropdown{left:0;right:auto}
 }
 </style>
 </head>
