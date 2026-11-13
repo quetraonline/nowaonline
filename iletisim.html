@@ -21,7 +21,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 <body><div class="topline"></div>
 <header><div class="wrap nav">
 <div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt=""></span><span><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span></button><nav class="menu-dropdown" aria-label="Ana menü"><a href="/">Ana Sayfa</a><a href="/rehber">Yayıncı Rehberi</a><a href="/iletisim" aria-current="page">İletişim</a></nav></div>
-<div class="nav-right"></div>
+<div class="nav-right"><button class="btn" id="adminOpen" type="button">Giriş Yap</button></div>
 </div></header>
 <main class="wrap">
 <a class="back-home" href="/">← Ana Sayfaya Dön</a>
@@ -57,4 +57,24 @@ async function loadVisitorCount(){
 }
 loadVisitorCount();
 document.getElementById("contactForm").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget;const button=f.querySelector('button[type="submit"]');const status=document.getElementById("formStatus");button.disabled=true;button.textContent="Gönderiliyor...";status.textContent="Mesajınız gönderiliyor...";status.style.color="#e8b95c";try{const response=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:f.name.value,email:f.email.value,subject:f.subject.value,message:f.message.value,website:f.website.value})});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.message||"Mesaj gönderilemedi.");status.textContent="Mesajınız başarıyla gönderildi. Teşekkür ederiz.";status.style.color="#72d6a0";f.reset()}catch(error){status.textContent=error.message||"Bir hata oluştu. Lütfen tekrar deneyin.";status.style.color="#ff8585"}finally{button.disabled=false;button.textContent="Mesajı gönder"}});
-</script><button class="back-to-top" id="backToTop" type="button" aria-label="Yukarı çık" title="Yukarı çık"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script>const backToTop=document.getElementById("backToTop");window.addEventListener("scroll",()=>backToTop.classList.toggle("visible",window.scrollY>260),{passive:true});backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));</script></body></html>
+</script><button class="back-to-top" id="backToTop" type="button" aria-label="Yukarı çık" title="Yukarı çık"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script>const backToTop=document.getElementById("backToTop");window.addEventListener("scroll",()=>backToTop.classList.toggle("visible",window.scrollY>260),{passive:true});backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
+<script>
+const SUBPAGE_SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
+const SUBPAGE_SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
+const subpageDb=window.supabase.createClient(SUBPAGE_SUPABASE_URL,SUBPAGE_SUPABASE_KEY);
+const adminButton=document.getElementById("adminOpen");
+if(adminButton){
+ adminButton.textContent="Giriş Yap";
+ adminButton.addEventListener("click",()=>{window.location.href="/?openAdmin=1"});
+ const refreshAdminButton=async(session)=>{
+  let admin=false;
+  if(session?.user){
+   const {data,error}=await subpageDb.from("nowa_admins").select("user_id").eq("user_id",session.user.id).maybeSingle();
+   admin=!!data&&!error;
+  }
+  adminButton.textContent=admin?"Yönetici Paneli":"Giriş Yap";
+ };
+ subpageDb.auth.getSession().then(({data})=>refreshAdminButton(data.session));
+ subpageDb.auth.onAuthStateChange((_event,session)=>refreshAdminButton(session));
+}
+</script></body></html>
