@@ -140,11 +140,16 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  const kickUrl=(p.platform_links||{}).Kick||null;
  const count=v=>v===null||v===undefined||v===""?"—":Number(v).toLocaleString("tr-TR");
  const hasTikTok=!!tiktokUrl||p.tiktok_followers!=null||p.tiktok_likes!=null||p.tiktok_video_count!=null;
+ const sessionSelect="id,started_at,ended_at,duration_seconds,stream_title,thumbnail_url,video_url,viewer_count";
+ const [tiktokSessionResult,kickSessionResult,twitchSessionResult]=await Promise.all([
+  tiktokUrl||hasTikTok?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","TikTok").order("started_at",{ascending:false}).limit(50):Promise.resolve({data:[],error:null}),
+  kickUrl?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","Kick").order("started_at",{ascending:false}).limit(50):Promise.resolve({data:[],error:null}),
+  twitchUrl?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","Twitch").order("started_at",{ascending:false}).limit(50):Promise.resolve({data:[],error:null})
+ ]);
   let tiktokHistoryHtml='';
   try{
-   const {data: sessions,error}=await db.from("nowa_stream_sessions").select("started_at,ended_at,duration_seconds,stream_title,thumbnail_url,viewer_count").eq("publisher_id",p.id).eq("platform","TikTok").order("started_at",{ascending:false}).limit(50);
-   if(error)throw error;
-   const rawRows=sessions||[];
+   if(tiktokSessionResult.error)throw tiktokSessionResult.error;
+   const rawRows=tiktokSessionResult.data||[];
    const seenTikTokSessions=new Set();
    const rows=rawRows.filter(item=>{
      const started=item.started_at?new Date(item.started_at).getTime():0;
@@ -162,14 +167,8 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  let kickHtml="";
  if(kickUrl){
   try{
-   const {data:sessions,error}=await db.from("nowa_stream_sessions").select("id,started_at,ended_at,duration_seconds,stream_title,thumbnail_url,video_url,viewer_count").eq("publisher_id",p.id).eq("platform","Kick").order("started_at",{ascending:false}).limit(50);
-   if(error)throw error;
-   const rows=sessions||[];
-   const {data:kickSamples,error:kickSamplesError}=rows.length?await db.from("nowa_stream_viewer_samples").select("viewer_count").in("stream_session_id",rows.map(x=>x.id)): {data:[],error:null};
-   if(kickSamplesError)throw kickSamplesError;
-   const sampleValues=(kickSamples||[]).map(x=>Number(x.viewer_count)).filter(Number.isFinite);
-   const averageViewers=sampleValues.length?Math.round(sampleValues.reduce((a,b)=>a+b,0)/sampleValues.length):null;
-   const peakViewers=sampleValues.length?Math.max(...sampleValues):null;
+   if(kickSessionResult.error)throw kickSessionResult.error;
+   const rows=kickSessionResult.data||[];
    const liveKick=rows.find(x=>!x.ended_at);
    const totalSeconds=rows.reduce((sum,x)=>{const stored=Number(x.duration_seconds);if(Number.isFinite(stored)&&stored>0)return sum+stored;const start=new Date(x.started_at||0).getTime();const end=x.ended_at?new Date(x.ended_at).getTime():Date.now();return sum+(Number.isFinite(start)&&start>0&&Number.isFinite(end)?Math.max(0,Math.floor((end-start)/1000)):0)},0);
    const recent=rows.slice(0,5);
@@ -180,15 +179,8 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  let twitchHtml="";
  if(twitchUrl){
   try{
-   const {data: sessions,error}=await db.from("nowa_stream_sessions").select("id,started_at,ended_at,duration_seconds,stream_title,thumbnail_url,video_url,viewer_count").eq("publisher_id",p.id).eq("platform","Twitch").order("started_at",{ascending:false}).limit(50);
-   if(error)throw error;
-   const rows=sessions||[];
-   const live=rows.filter(x=>!x.ended_at);
-   const {data:twitchSamples,error:twitchSamplesError}=rows.length?await db.from("nowa_stream_viewer_samples").select("viewer_count").in("stream_session_id",rows.map(x=>x.id)): {data:[],error:null};
-   if(twitchSamplesError)throw twitchSamplesError;
-   const twitchSampleValues=(twitchSamples||[]).map(x=>Number(x.viewer_count)).filter(Number.isFinite);
-   const twitchAverage=twitchSampleValues.length?Math.round(twitchSampleValues.reduce((a,b)=>a+b,0)/twitchSampleValues.length):null;
-   const twitchPeak=twitchSampleValues.length?Math.max(...twitchSampleValues):null;
+   if(twitchSessionResult.error)throw twitchSessionResult.error;
+   const rows=twitchSessionResult.data||[];
    const totalSeconds=rows.reduce((sum,x)=>sum+(Number(x.duration_seconds)||0),0);
    const recent=rows.slice(0,5);
    const twitchThumb=url=>url?String(url).replace(/%\{width\}/g,"640").replace(/%\{height\}/g,"360").replace(/\{width\}/g,"640").replace(/\{height\}/g,"360"):"";
