@@ -158,7 +158,7 @@ export default async function handler(req, res) {
       // Normal video listesi her zaman en yeni yüklemelerden oluşur.
       normalizedVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
       playlistLiveStreams = normalizedVideos.filter(video => video.isLive && !video.actualEndTime);
-      latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 2);
+      latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 3);
       const streamCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
       latestStreams = archivedFound
         .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= streamCutoff)
