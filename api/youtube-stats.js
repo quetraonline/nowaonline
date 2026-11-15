@@ -153,16 +153,17 @@ export default async function handler(req, res) {
 
         scannedPages++;
         pageToken = playlistData.nextPageToken || "";
-        if (archivedFound.length >= 2) break;
       }
 
       // Normal video listesi her zaman en yeni yüklemelerden oluşur.
       normalizedVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
       playlistLiveStreams = normalizedVideos.filter(video => video.isLive && !video.actualEndTime);
       latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 2);
+      const streamCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
       latestStreams = archivedFound
+        .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= streamCutoff)
         .sort((a, b) => new Date(b.actualStartTime || b.publishedAt) - new Date(a.actualStartTime || a.publishedAt))
-        .slice(0, 2);
+        .slice(0, 150);
     }
 
     // Devam eden yayını listenin başına al; kalan yeri en yeni tamamlanmış canlı yayınlarla doldur.
@@ -174,7 +175,8 @@ export default async function handler(req, res) {
         seenStreamIds.add(stream.id);
         return true;
       })
-      .slice(0, 2);
+      .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= Date.now() - 30 * 24 * 60 * 60 * 1000)
+      .slice(0, 150);
 
     const stats = channel.statistics || {};
     return res.status(200).json({
