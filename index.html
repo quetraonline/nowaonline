@@ -276,9 +276,10 @@ function socialLinkForm(item=null){$("modal").dataset.view="social-form";window.
 async function loadVisitorCount(){const output=$("visitorCount");try{let visitorId=localStorage.getItem("nowa_online_visitor_id");if(!visitorId){visitorId=crypto.randomUUID();localStorage.setItem("nowa_online_visitor_id",visitorId)}const {data,error}=await db.rpc("register_nowa_site_visit",{p_visitor_id:visitorId});if(error)throw error;output.textContent=Number(data||0).toLocaleString("tr-TR")}catch(error){console.warn("Ziyaretçi sayacı yüklenemedi:",error);output.textContent="—"}}
 async function pollTwitchLiveStatus(){
  try{
-  const response=await fetch(SUPABASE_URL+"/functions/v1/twitch-eventsub/live",{headers:{apikey:SUPABASE_KEY}});
+  const response=await fetch(SUPABASE_URL+"/functions/v1/twitch-eventsub/live",{headers:{apikey:SUPABASE_KEY},cache:"no-store"});
   const result=await response.json();
   if(!response.ok)throw new Error(result.error||("HTTP "+response.status));
+  await loadLivePublisherPlatforms();
   if(window.nowaCurrentPublisher&&$("modal").classList.contains("open")){
    const current=window.nowaCurrentPublisher;
    if((current.platform_links||{}).Twitch||((current.platform||"").toLowerCase()==="twitch"&&current.channel_url)){
