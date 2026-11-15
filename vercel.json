@@ -8,5 +8,17 @@
       "source": "/rehber",
       "destination": "/rehber.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/iletisim.html",
+      "destination": "/iletisim",
+      "permanent": true
+    },
+    {
+      "source": "/rehber.html",
+      "destination": "/rehber",
+      "permanent": true
+    }
   ]
 }
