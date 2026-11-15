@@ -43,10 +43,6 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 </div></main>
 <footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div class="visitor-counter"><span class="visitor-icon" aria-hidden="true">👥</span><span>Bu siteyi <strong id="visitorCount">...</strong> kişi ziyaret etti</span></div><div>© <span id="year"></span> Nowa Online World</div></div></footer>
 <script>
-const menu=document.getElementById("siteMenu"),trigger=document.getElementById("menuTrigger");
-trigger.addEventListener("click",()=>{const open=menu.classList.toggle("open");trigger.setAttribute("aria-expanded",String(open))});
-document.addEventListener("click",e=>{if(!menu.contains(e.target)){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});
 document.getElementById("year").textContent=new Date().getFullYear();
 async function loadVisitorCount(){
  const output=document.getElementById("visitorCount");
