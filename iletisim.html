@@ -24,7 +24,13 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 header{position:sticky;top:0;z-index:10}
 .site-flag-gif{position:absolute;top:63px;left:calc(max(16px, (100% - 1160px)/2) + 21.5px);transform:translateX(-50%);z-index:15;width:92px;height:165px;object-fit:contain;object-position:top center;display:block;pointer-events:none;-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
 @media(max-width:600px){.site-flag-gif{width:76px;height:138px;top:63px;left:37.5px}}
+
+/* Bayrak ayarı veritabanından gelene kadar görünmez; kayıtlı tercih ilk boyamada uygulanır */
+.site-flag-gif{visibility:hidden}
+.flag-setting-ready .site-flag-gif{visibility:visible}
+.flag-setting-hidden .site-flag-gif{display:none!important;visibility:hidden!important}
 </style>
+<script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden")}catch(e){}})();</script>
 </head>
 <body><div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
@@ -66,6 +72,8 @@ document.getElementById("contactForm").addEventListener("submit",async e=>{e.pre
 const SUBPAGE_SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
 const SUBPAGE_SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
 const subpageDb=window.supabase.createClient(SUBPAGE_SUPABASE_URL,SUBPAGE_SUPABASE_KEY);
+function applySubpageFlagVisibility(visible){const flag=document.querySelector(".site-flag-gif");document.documentElement.classList.add("flag-setting-ready");document.documentElement.classList.toggle("flag-setting-hidden",!visible);if(flag){flag.style.display=visible?"block":"none";flag.style.visibility=visible?"visible":"hidden"}}
+(async()=>{try{const {data,error}=await subpageDb.from("nowa_site_settings").select("flag_visible").eq("id",true).maybeSingle();if(error)throw error;const visible=data?.flag_visible!==false;try{localStorage.setItem("nowa_flag_visible",String(visible))}catch{}applySubpageFlagVisibility(visible)}catch(error){console.warn("Bayrak görünürlük ayarı yüklenemedi:",error);let cached=null;try{cached=localStorage.getItem("nowa_flag_visible")}catch{}applySubpageFlagVisibility(cached==="true")}})();
 const adminButton=document.getElementById("adminOpen");
 const siteMenu=document.getElementById("siteMenu"),menuTrigger=document.getElementById("menuTrigger");
 if(siteMenu&&menuTrigger){
