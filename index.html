@@ -173,7 +173,7 @@ async function loadLatestYoutubeFeed(){
  const sources=publishers
   .filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase()))
   .map(p=>({name:p.name,url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
-  .filter(x=>x.url&&/^https?:\\/\\/(www\\.)?(youtube\\.com|youtu\\.be)\\//i.test(x.url));
+  .filter(x=>x.url&&/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(x.url));
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
