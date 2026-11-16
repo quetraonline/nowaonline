@@ -20,10 +20,5 @@
       "destination": "/rehber",
       "permanent": true
     }
-  ],
-  "functions": {
-    "api/tiktok-webhook.js": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
