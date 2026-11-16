@@ -567,6 +567,14 @@ if(tiktokConnectionStatus){
 </script>
 
 <script>
+/* YouTube ve Instagram yatay kaydırmayı ortak ve dinamik yönet */
+document.addEventListener('wheel',function(e){
+ if(window.innerWidth<701) return;
+ const track=e.target.closest('#latestYoutubeTrack,#latestInstagramTrack');
+ if(!track || track.scrollWidth<=track.clientWidth) return;
+ const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+ if(delta){track.scrollLeft+=delta;e.preventDefault();}
+},{passive:false,capture:true});
 /* Masaüstü okları her tıklamada bir kart ilerletir */
 document.addEventListener('click',function(e){
  const button=e.target.closest('.latest-carousel-arrow');
