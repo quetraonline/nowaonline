@@ -102,7 +102,7 @@ export default async function handler(req, res) {
     const reportSave = await fetch(SUPABASE_URL + "/rest/v1/nowa_tiktok_scan_reports?on_conflict=run_id", {
       method: "POST",
       headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
-      body: JSON.stringify({ run_id: runData.data && runData.data.id, status: runData.data && runData.data.status || "RUNNING", profile_count: handles.length, report: { profiles: handles.map(handle => ({ handle, videosFound: 0, publishersUpdated: 0, status: "Bekleniyor" })) } })
+      body: JSON.stringify({ run_id: runData.data && runData.data.id, status: (runData.data && runData.data.status === "READY") ? "RUNNING" : (runData.data && runData.data.status || "RUNNING"), profile_count: handles.length, report: { profiles: handles.map(handle => ({ handle, videosFound: 0, publishersUpdated: 0, status: "Bekleniyor" })) } })
     });
     if (!reportSave.ok) console.error("TikTok scan report init failed:", await reportSave.text());
     return res.status(202).json({
