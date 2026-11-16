@@ -120,7 +120,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-instagram-track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .latest-instagram-track::-webkit-scrollbar{display:none}
 .latest-instagram-card{display:block;flex:0 0 76%;max-width:280px;min-width:0;overflow:hidden;border:1px solid #49334a;border-radius:12px;background:#141b25;color:#f5f6f8;text-decoration:none;scroll-snap-align:start}
-.latest-instagram-thumb{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#090d13}
+.latest-instagram-thumb{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#090d13;-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
 .latest-instagram-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#aeb8c5;background:linear-gradient(145deg,#202a37,#10151d);font-size:28px}.latest-instagram-placeholder small{font-size:11px;font-weight:700;letter-spacing:.02em}
 .latest-instagram-copy{display:block;padding:9px 10px 11px}
 .latest-instagram-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:800;line-height:1.4}
@@ -287,9 +287,9 @@ async function loadLatestInstagramPosts(){
         ? '<span class="latest-instagram-profile"><img src="'+safe(profileUrl)+'" alt="@nowaonlineworld profil fotoğrafı" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;latest-instagram-profile-fallback&quot;>N</span>\'"></span>'
         : '<span class="latest-instagram-profile"><span class="latest-instagram-profile-fallback">N</span></span>';
       const imageHtml=image
-        ? '<img class="latest-instagram-thumb" src="'+safe(image)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">'
+        ? '<img class="latest-instagram-thumb" src="'+safe(image)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy" draggable="false" oncontextmenu="return false" referrerpolicy="no-referrer">'
         : (isVideo&&media
-          ? '<video class="latest-instagram-thumb latest-instagram-reel-preview" src="'+safe(media)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" aria-label="Nowa Online World Instagram Reels önizlemesi" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture></video>'
+          ? '<video class="latest-instagram-thumb latest-instagram-reel-preview" src="'+safe(media)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" aria-label="Nowa Online World Instagram Reels önizlemesi" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture draggable="false" oncontextmenu="return false"></video>'
           : placeholder);
       const contentType=isVideo
         ? '<span class="latest-instagram-stat">'+reelsIcon+'Reels</span>'
