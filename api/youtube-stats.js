@@ -132,7 +132,7 @@ export default async function handler(req, res) {
         const videoIds = (playlistData.items || []).map(item => item.contentDetails?.videoId).filter(Boolean);
         if (videoIds.length) {
           const videosParams = new URLSearchParams({
-            part: "snippet,contentDetails,liveStreamingDetails",
+            part: "snippet,contentDetails,liveStreamingDetails,statistics",
             id: videoIds.join(","),
             key: apiKey
           });
@@ -155,7 +155,8 @@ export default async function handler(req, res) {
               isUpcoming: video.snippet?.liveBroadcastContent === "upcoming",
               isArchivedStream: Boolean(live?.actualStartTime && live?.actualEndTime),
               actualStartTime: live?.actualStartTime || live?.scheduledStartTime || "",
-              actualEndTime: live?.actualEndTime || ""
+              actualEndTime: live?.actualEndTime || "",
+              viewCount: Number(video.statistics?.viewCount || 0)
             };
           }).sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
