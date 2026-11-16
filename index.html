@@ -177,7 +177,7 @@ async function loadLatestYoutubeFeed(){
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
- const cacheKey="nowa_latest_youtube_vod_v2:"+unique.map(x=>x.url).sort().join("|");
+ const cacheKey="nowa_latest_youtube_vod_v3:"+unique.map(x=>x.url).sort().join("|");
  const renderVideos=videos=>{
   track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
    (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
@@ -198,7 +198,7 @@ async function loadLatestYoutubeFeed(){
   while(cursor<unique.length){
    const source=unique[cursor++];
    try{
-    const response=await fetch("/api/youtube-stats?vodfeed=1&url="+encodeURIComponent(source.url));
+    const response=await fetch("/api/youtube-stats?vodfeed=1&v=3&url="+encodeURIComponent(source.url));
     const result=await response.json();
     if(!response.ok)throw new Error(result.error||"YouTube VOD kayıtları alınamadı.");
     for(const vod of result.latestStreams||[]){
