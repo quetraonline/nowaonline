@@ -79,6 +79,24 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 @media(max-width:700px){
   .cardtop>.platform-tags{row-gap:2px;}
 }
+
+
+/* Mobil YouTube keşif şeridi */
+.latest-youtube-section{display:none;margin:22px 0 26px}
+.latest-youtube-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.latest-youtube-heading h3{margin:0;font-size:14px;font-weight:900;letter-spacing:.35px;color:#f4f6fa}
+.latest-youtube-heading span{font-size:11px;color:#aeb8c5;white-space:nowrap}
+.latest-youtube-track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.latest-youtube-track::-webkit-scrollbar{display:none}
+.latest-youtube-card{display:block;flex:0 0 76%;max-width:280px;min-width:0;overflow:hidden;border:1px solid #303b4b;border-radius:12px;background:#141b25;color:#f5f6f8;text-decoration:none;scroll-snap-align:start}
+.latest-youtube-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#090d13}
+.latest-youtube-copy{display:block;padding:9px 10px 11px}
+.latest-youtube-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;font-size:13px;font-weight:800;line-height:1.4}
+.latest-youtube-meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;color:#aeb8c5;font-size:10px;line-height:1.3}
+.latest-youtube-channel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.latest-youtube-loading{padding:18px 14px;color:#aeb8c5;font-size:12px;border:1px dashed #303b4b;border-radius:10px;width:100%}
+@media(max-width:700px){.latest-youtube-section{display:block}.latest-youtube-card{flex-basis:76%}}
+@media(min-width:701px){.latest-youtube-section{display:none!important}}
 </style>
 </head>
 <body>
@@ -112,6 +130,15 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 <div class="server-section"><div class="server-heading"><h3>ARES<span id="aresLiveCount" style="font-size:11px;font-weight:400;letter-spacing:normal;color:#aeb8c5;white-space:nowrap">- 0 canlı yayın</span></h3><span id="aresCount">0 yayıncı</span></div><div class="cards" id="aresCards"><div class="empty"><strong>Yayıncılar yükleniyor...</strong></div></div></div>
 <div class="server-section"><div class="server-heading"><h3>ATLAS<span id="atlasLiveCount" style="font-size:11px;font-weight:400;letter-spacing:normal;color:#aeb8c5;white-space:nowrap">- 0 canlı yayın</span></h3><span id="atlasCount">0 yayıncı</span></div><div class="cards" id="atlasCards"><div class="empty"><strong>Yayıncılar yükleniyor...</strong></div></div></div>
 </div>
+<section class="latest-youtube-section" id="latestYoutubeSection" hidden>
+  <div class="latest-youtube-heading">
+    <h3>EN YENİ YOUTUBE VİDEOLARI</h3>
+    <span>Son 15 video</span>
+  </div>
+  <div class="latest-youtube-track" id="latestYoutubeTrack" aria-label="En yeni YouTube videoları">
+    <div class="latest-youtube-loading">YouTube videoları yükleniyor...</div>
+  </div>
+</section>
 </section>
 </main>
 <footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div class="visitor-counter"><span class="visitor-icon" aria-hidden="true">👥</span><span>Bu siteyi <strong id="visitorCount">...</strong> kişi ziyaret etti</span></div><div>© <span id="year"></span> Nowa Online World</div></div></footer>
@@ -138,7 +165,45 @@ function publisherCards(arr){return arr.length?arr.map(p=>{const isLive=(livePub
 function render(){const q=$("search").value.trim().toLocaleLowerCase("tr"),pl=$("platform").value,liveOnly=$("liveOnlyFilter").checked;const arr=publishers.filter(p=>p.name.toLocaleLowerCase("tr").includes(q)&&(!pl||platformsOf(p).includes(pl))&&(!liveOnly||(livePublisherPlatforms.get(p.id)?.size||0)>0));const ares=arr.filter(p=>(p.server||"Ares").toLowerCase()==="ares"),atlas=arr.filter(p=>(p.server||"Ares").toLowerCase()==="atlas");const featured=publishers.filter(p=>p.homepage_featured);$("featuredSection").hidden=!featured.length;$("featuredCards").innerHTML=publisherCards(featured);$("publisherCount").textContent=arr.filter(p=>p.card_theme!=="youtube").length;$("creatorCount").textContent=arr.filter(p=>p.card_theme==="youtube").length;$("livePublisherCount").innerHTML="<b><span class=\"live-count\">"+arr.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0).length+"</span> yayıncı</b> şu anda canlı yayında";const allAres=publishers.filter(p=>(p.server||"Ares").toLowerCase()==="ares"),allAtlas=publishers.filter(p=>(p.server||"Ares").toLowerCase()==="atlas");const aresLiveCount=allAres.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0).length,atlasLiveCount=allAtlas.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0).length;$("aresLiveCount").textContent=" - "+aresLiveCount+" canlı yayın";$("atlasLiveCount").textContent=" - "+atlasLiveCount+" canlı yayın";$("aresLiveCount").hidden=aresLiveCount===0;$("atlasLiveCount").hidden=atlasLiveCount===0;$("aresCount").textContent=ares.length+" yayıncı";$("atlasCount").textContent=atlas.length+" yayıncı";$("aresCards").innerHTML=liveOnly&&pl&&!ares.length?'<div class="empty"><strong>'+esc(pl)+' platformunda şu anda canlı yayında olan yayıncı yok.</strong></div>':!liveOnly&&!ares.length&&pl?'<div class="empty"><strong>Bu serverda '+esc(pl)+' kullanan yayıncı yok.</strong></div>':liveOnly&&!ares.length?'<div class="empty"><strong>Şu anda Ares serverında Canlı Yayın yapan bir yayıncı yok.</strong></div>':publisherCards(ares);$("atlasCards").innerHTML=liveOnly&&pl&&!atlas.length?'<div class="empty"><strong>'+esc(pl)+' platformunda şu anda canlı yayında olan yayıncı yok.</strong></div>':!liveOnly&&!atlas.length&&pl?'<div class="empty"><strong>Bu serverda '+esc(pl)+' kullanan yayıncı yok.</strong></div>':liveOnly&&!atlas.length?'<div class="empty"><strong>Şu anda Atlas serverında Canlı Yayın yapan bir yayıncı yok.</strong></div>':publisherCards(atlas)}
 let livePublisherPlatforms=new Map();
 async function loadLivePublisherPlatforms(){const {data,error}=await db.from("nowa_stream_sessions").select("publisher_id,platform").is("ended_at",null);if(error){console.warn("Canlı platform durumları alınamadı:",error);return}const next=new Map();for(const row of data||[]){const key=String(row.platform||"").toLowerCase();if(key!=="twitch"&&key!=="tiktok"&&key!=="youtube"&&key!=="kick")continue;if(!next.has(row.publisher_id))next.set(row.publisher_id,new Set());next.get(row.publisher_id).add(key==="twitch"?"Twitch":key==="youtube"?"YouTube":key==="kick"?"Kick":"TikTok")}livePublisherPlatforms=next;render()}
-async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();await loadLivePublisherPlatforms()}
+
+async function loadLatestYoutubeFeed(){
+ const section=$("latestYoutubeSection"),track=$("latestYoutubeTrack");
+ if(!section||!track)return;
+ if(!window.matchMedia("(max-width:700px)").matches){section.hidden=true;return}
+ const sources=publishers
+  .filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase()))
+  .map(p=>({name:p.name,url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
+  .filter(x=>x.url&&/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(x.url));
+ const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
+ if(!unique.length){section.hidden=true;return}
+ section.hidden=false;
+ track.innerHTML='<div class="latest-youtube-loading">YouTube videoları yükleniyor...</div>';
+ const collected=[];let cursor=0;
+ const worker=async()=>{
+  while(cursor<unique.length){
+   const source=unique[cursor++];
+   try{
+    const response=await fetch("/api/youtube-stats?feed=1&url="+encodeURIComponent(source.url));
+    const result=await response.json();
+    if(!response.ok)throw new Error(result.error||"YouTube verileri alınamadı.");
+    for(const video of result.latestVideos||[])collected.push({...video,channelName:source.name});
+   }catch(error){console.warn("YouTube video akışı alınamadı:",source.name,error)}
+  }
+ };
+ await Promise.all(Array.from({length:Math.min(3,unique.length)},worker));
+ const seen=new Set();
+ const videos=collected.sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).filter(v=>{
+  if(!v.id||seen.has(v.id))return false;seen.add(v.id);return true;
+ }).slice(0,15);
+ if(!videos.length){track.innerHTML='<div class="latest-youtube-loading">Henüz gösterilebilecek YouTube videosu bulunamadı.</div>';return}
+ track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
+  (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
+  '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube videosu")+'</span>'+
+  '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+esc(video.channelName)+'</span><span>'+ (video.publishedAt?new Date(video.publishedAt).toLocaleDateString("tr-TR"):"") +'</span></span></span></a>'
+ ).join("");
+}
+
+async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();await loadLivePublisherPlatforms();loadLatestYoutubeFeed()}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
