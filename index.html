@@ -177,13 +177,27 @@ async function loadLatestYoutubeFeed(){
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
- track.innerHTML='<div class="latest-youtube-loading">YouTube VOD kayıtları yükleniyor...</div>';
+ const cacheKey="nowa_latest_youtube_vod_v2:"+unique.map(x=>x.url).sort().join("|");
+ const renderVideos=videos=>{
+  track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
+   (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
+   '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
+   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span></span></a>'
+  ).join("");
+ };
+ let cached=null;
+ try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch{}
+ if(cached?.videos?.length){
+  renderVideos(cached.videos);
+  if(Date.now()-Number(cached.savedAt||0)<5*60*1000)return;
+ }else{
+  track.innerHTML='<div class="latest-youtube-loading">YouTube videoları arka planda yükleniyor...</div>';
+ }
  const collected=[];let cursor=0;
  const worker=async()=>{
   while(cursor<unique.length){
    const source=unique[cursor++];
    try{
-    // Her yayıncının kanalındaki arşivlenmiş VOD kayıtlarını al; tüm kanalları tek listede birleştir.
     const response=await fetch("/api/youtube-stats?vodfeed=1&url="+encodeURIComponent(source.url));
     const result=await response.json();
     if(!response.ok)throw new Error(result.error||"YouTube VOD kayıtları alınamadı.");
@@ -199,15 +213,15 @@ async function loadLatestYoutubeFeed(){
  const videos=collected.sort((a,b)=>new Date(b.sortDate||0)-new Date(a.sortDate||0)).filter(v=>{
   if(!v.id||seen.has(v.id))return false;seen.add(v.id);return true;
  }).slice(0,15);
- if(!videos.length){track.innerHTML='<div class="latest-youtube-loading">Henüz gösterilebilecek arşivlenmiş YouTube VOD kaydı bulunamadı.</div>';return}
- track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
-  (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
-  '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
-  '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span></span></a>'
- ).join("");
+ if(!videos.length){
+  if(!cached?.videos?.length)track.innerHTML='<div class="latest-youtube-loading">Henüz gösterilebilecek arşivlenmiş YouTube VOD kaydı bulunamadı.</div>';
+  return;
+ }
+ try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),videos}))}catch{}
+ renderVideos(videos);
 }
 
-async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();await loadLivePublisherPlatforms();loadLatestYoutubeFeed()}
+async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();if(window.matchMedia("(max-width:700px)").matches){setTimeout(()=>loadLatestYoutubeFeed(),1200)}}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
