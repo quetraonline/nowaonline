@@ -73,7 +73,13 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 
 @media(max-width:600px){.nav-right{gap:6px}.menu-trigger{min-width:75px;padding:9px 10px;font-size:11px}.nav-right>#adminOpen{padding:9px 10px;font-size:10px}}
 
-.live-filter-mobile{display:none}@media(max-width:600px){.live-filter-desktop{display:none}.live-filter-mobile{display:inline}}@media(max-width:600px){header .wrap{width:min(1160px,calc(100% - 32px))}.nav{height:66px}.brand{flex:0 0 auto;min-width:max-content;gap:12px}.mark{width:43px;height:43px;flex:0 0 43px}.brand strong{font-size:14px}.brand small{font-size:9px}.nav-right{flex:0 0 auto}}@media(max-width:600px){.summary #livePublisherCount{display:block;margin:5px 0 0!important}}.toolbar h2.toolbar-title{display:flex;align-items:center;gap:9px}.toolbar-title-icon{width:34px;height:34px;flex:0 0 34px;display:block;object-fit:contain;filter:drop-shadow(0 0 5px #e8c77f35);-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;user-drag:none;pointer-events:none}@media(max-width:600px){.toolbar-title-icon{width:34px;height:34px;flex-basis:34px}}</style>
+.live-filter-mobile{display:none}@media(max-width:600px){.live-filter-desktop{display:none}.live-filter-mobile{display:inline}}@media(max-width:600px){header .wrap{width:min(1160px,calc(100% - 32px))}.nav{height:66px}.brand{flex:0 0 auto;min-width:max-content;gap:12px}.mark{width:43px;height:43px;flex:0 0 43px}.brand strong{font-size:14px}.brand small{font-size:9px}.nav-right{flex:0 0 auto}}@media(max-width:600px){.summary #livePublisherCount{display:block;margin:5px 0 0!important}}.toolbar h2.toolbar-title{display:flex;align-items:center;gap:9px}.toolbar-title-icon{width:34px;height:34px;flex:0 0 34px;display:block;object-fit:contain;filter:drop-shadow(0 0 5px #e8c77f35);-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;user-drag:none;pointer-events:none}@media(max-width:600px){.toolbar-title-icon{width:34px;height:34px;flex-basis:34px}}
+
+/* Mobilde yalnızca birden fazla satıra taşan platform ikonlarının dikey boşluğunu azalt */
+@media(max-width:700px){
+  .cardtop>.platform-tags{row-gap:2px;}
+}
+</style>
 </head>
 <body>
 <div class="topline"></div>
