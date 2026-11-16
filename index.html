@@ -126,6 +126,11 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-instagram-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;color:#aeb8c5;font-size:10px}
 .latest-instagram-open{color:#e8b95c;font-weight:800}
 @media(min-width:701px){.latest-instagram-section{margin:0 0 36px}.latest-instagram-heading{margin-bottom:16px}.latest-instagram-heading h3{font-size:17px}.latest-instagram-heading>span{font-size:13px}.latest-instagram-track{gap:16px;padding-bottom:12px}.latest-instagram-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-instagram-copy{padding:11px 12px 13px}.latest-instagram-title{font-size:14px}}
+.latest-instagram-track,.latest-youtube-track{cursor:grab;scrollbar-width:thin;scrollbar-color:#66758a #202936}
+.latest-instagram-track.is-dragging,.latest-youtube-track.is-dragging{cursor:grabbing;scroll-snap-type:none;user-select:none}
+.latest-instagram-track::-webkit-scrollbar,.latest-youtube-track::-webkit-scrollbar{display:block;height:7px}
+.latest-instagram-track::-webkit-scrollbar-thumb,.latest-youtube-track::-webkit-scrollbar-thumb{background:#66758a;border-radius:8px}
+.latest-instagram-track::-webkit-scrollbar-track,.latest-youtube-track::-webkit-scrollbar-track{background:#202936;border-radius:8px}
 </style>
 </head>
 <body>
@@ -208,7 +213,7 @@ async function loadLatestInstagramPosts(){
       const image=post.thumbnail_url||post.media_url||"";
       const isVideo=/reel|video|clip/i.test(String(post.media_type||""));
       const videoSrc=post.media_url||image;
-      const poster=post.thumbnail_url&&post.thumbnail_url!==videoSrc?post.thumbnail_url:"";
+      const poster=(post.shortcode&&isVideo?"https://www.instagram.com/reel/"+encodeURIComponent(post.shortcode)+"/media/?size=l":(post.thumbnail_url&&post.thumbnail_url!==videoSrc?post.thumbnail_url:""));
       const title=(post.caption||"Nowa Online World Instagram paylaşımı").replace(/\s+/g," ").trim().slice(0,90);
       const date=post.published_at?new Date(post.published_at).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}):"";
       return '<a class="latest-instagram-card" href="'+safe(post.permalink)+'" target="_blank" rel="noopener noreferrer">'+
@@ -508,5 +513,39 @@ if(tiktokConnectionStatus){
  toast(messages[tiktokConnectionStatus]||"TikTok bağlantı işlemi tamamlandı.");
  const cleanUrl=new URL(location.href);cleanUrl.searchParams.delete("tiktok_connection");history.replaceState({},document.title,cleanUrl.pathname+cleanUrl.hash);
 }
+</script>
+<script>
+/* Masaüstünde yatay şeritleri fare tekerleği ve sürükleme ile kaydır */
+(function(){
+  function enableHorizontalTracks(){
+    document.querySelectorAll('.latest-instagram-track,.latest-youtube-track').forEach(function(track){
+      if(track.dataset.mouseScrollReady==='1') return;
+      track.dataset.mouseScrollReady='1';
+      track.addEventListener('wheel',function(e){
+        if(track.scrollWidth<=track.clientWidth) return;
+        var delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+        if(delta){track.scrollLeft+=delta;e.preventDefault();}
+      },{passive:false});
+      var down=false,startX=0,startLeft=0;
+      track.addEventListener('mousedown',function(e){
+        if(e.button!==0) return;
+        down=true;startX=e.pageX;startLeft=track.scrollLeft;track.classList.add('is-dragging');
+      });
+      window.addEventListener('mousemove',function(e){
+        if(!down) return;
+        track.scrollLeft=startLeft-(e.pageX-startX);
+      });
+      window.addEventListener('mouseup',function(){
+        if(!down) return;down=false;track.classList.remove('is-dragging');
+      });
+      track.addEventListener('mouseleave',function(){
+        if(!down) return;down=false;track.classList.remove('is-dragging');
+      });
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',enableHorizontalTracks);
+  else enableHorizontalTracks();
+  setTimeout(enableHorizontalTracks,1200);
+})();
 </script>
 </body></html>
