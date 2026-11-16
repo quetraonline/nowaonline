@@ -288,7 +288,7 @@ async function loadLatestInstagramPosts(){
       const imageHtml=image
         ? '<img class="latest-instagram-thumb" src="'+safe(image)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">'
         : (isVideo&&media
-          ? '<video class="latest-instagram-thumb latest-instagram-reel-preview" src="'+safe(media)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" aria-label="Nowa Online World Instagram Reels önizlemesi" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>'
+          ? '<video class="latest-instagram-thumb latest-instagram-reel-preview" src="'+safe(media)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" aria-label="Nowa Online World Instagram Reels önizlemesi" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture></video>'
           : placeholder);
       const stats=(date?'<span class="latest-instagram-stat">'+clockIcon+safe(date)+'</span>':'')+
         (Number.isFinite(likes)?'<span class="latest-instagram-stat">'+heartIcon+likes.toLocaleString("tr-TR")+'</span>':'');
