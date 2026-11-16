@@ -85,6 +85,11 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-section{display:none;margin:22px 0 26px}
 .latest-youtube-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
 .latest-youtube-heading h3{margin:0;font-size:14px;font-weight:900;letter-spacing:.35px;color:#f4f6fa}
+.latest-youtube-heading h3{display:flex;align-items:center;gap:8px}
+.latest-youtube-logo{width:19px;height:19px;flex:0 0 19px}
+.latest-youtube-channel{display:flex;align-items:center;gap:6px;min-width:0}
+.latest-youtube-avatar{width:20px;height:20px;flex:0 0 20px;border-radius:50%;object-fit:cover;border:1px solid #b99550;background:#090d13}
+.latest-youtube-views{display:block;margin-top:5px;color:#c4ccd7;font-size:10px;font-weight:700}
 .latest-youtube-heading span{font-size:11px;color:#aeb8c5;white-space:nowrap}
 .latest-youtube-track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .latest-youtube-track::-webkit-scrollbar{display:none}
@@ -132,7 +137,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 </div>
 <section class="latest-youtube-section" id="latestYoutubeSection" hidden>
   <div class="latest-youtube-heading">
-    <h3>EN YENİ YOUTUBE VİDEOLARI</h3>
+    <h3><svg class="latest-youtube-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ff0033" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg><span>EN YENİ YOUTUBE VİDEOLARI</span></h3>
     <span>Son 15 video</span>
   </div>
   <div class="latest-youtube-track" id="latestYoutubeTrack" aria-label="En yeni YouTube videoları">
@@ -172,17 +177,18 @@ async function loadLatestYoutubeFeed(){
  if(!window.matchMedia("(max-width:700px)").matches){section.hidden=true;return}
  const sources=publishers
   .filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase()))
-  .map(p=>({name:p.name,url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
+  .map(p=>({name:p.name,avatar:p.avatar||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
   .filter(x=>x.url&&/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(x.url));
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
- const cacheKey="nowa_latest_youtube_vod_v3:"+unique.map(x=>x.url).sort().join("|");
+ const cacheKey="nowa_latest_youtube_vod_v4:"+unique.map(x=>x.url).sort().join("|");
  const renderVideos=videos=>{
   track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
    (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
    '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
-   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span></span></a>'
+   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(video.channelAvatar?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar)+'" alt="" loading="lazy">':'')+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span>'+
+   '<span class="latest-youtube-views">'+(Number.isFinite(Number(video.viewCount))?Number(video.viewCount).toLocaleString("tr-TR")+" görüntülenme":"")+'</span></span></a>'
   ).join("");
  };
  let cached=null;
