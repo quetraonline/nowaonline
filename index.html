@@ -274,7 +274,7 @@ async function loadLatestTikTokFeed(){
  for(const publisher of publishers){
   const rows=Array.isArray(publisher.tiktok_recent_videos)?publisher.tiktok_recent_videos:[];
   for(const video of rows){
-   if(!video||!video.url||!/^https?:\\/\\/(www\\.)?tiktok\\.com\\//i.test(video.url))continue;
+   if(!video||!video.url||!/^https?:\/\/(www\.)?tiktok\.com\//i.test(video.url))continue;
    allVideos.push({...video,channelName:publisher.name,channelAvatar:publisher.avatar_url||"",publisherId:publisher.id});
   }
  }
@@ -296,7 +296,7 @@ async function loadLatestTikTokFeed(){
  const compact=value=>new Intl.NumberFormat("tr-TR",{notation:"compact",maximumFractionDigits:1}).format(Number(value)||0);
  track.innerHTML=unique.map(video=>{
   const avatar=video.channelAvatar?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar)+'" alt="" loading="lazy" draggable="false">':'<span class="latest-youtube-avatar"></span>';
-  const thumb=video.thumbnail&&/^https?:\\/\\//i.test(video.thumbnail)?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<div class="latest-youtube-thumb"></div>';
+  const thumb=video.thumbnail&&/^https?:\/\//i.test(video.thumbnail)?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<div class="latest-youtube-thumb"></div>';
   const details='<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'+compact(video.viewCount)+' görüntülenme</span><span class="latest-youtube-detail">♥ '+compact(video.likeCount)+'</span><span class="latest-youtube-detail">'+esc(relativeDate(video.publishedAt))+'</span>';
   return '<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+thumb+'<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"TikTok videosu")+'</span><span class="latest-youtube-meta"><span class="latest-youtube-channel">'+avatar+'<span class="latest-youtube-channel-info"><span class="latest-youtube-channel-name">'+esc(video.channelName)+'</span><span class="latest-youtube-details">'+details+'</span></span></span></span></span></a>';
  }).join("");
