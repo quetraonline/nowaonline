@@ -206,10 +206,13 @@ async function loadLatestInstagramPosts(){
     const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     track.innerHTML=data.map(post=>{
       const image=post.thumbnail_url||post.media_url||"";
+      const isVideo=/reel|video|clip/i.test(String(post.media_type||""));
+      const videoSrc=post.media_url||image;
+      const poster=post.thumbnail_url&&post.thumbnail_url!==videoSrc?post.thumbnail_url:"";
       const title=(post.caption||"Nowa Online World Instagram paylaşımı").replace(/\s+/g," ").trim().slice(0,90);
       const date=post.published_at?new Date(post.published_at).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}):"";
       return '<a class="latest-instagram-card" href="'+safe(post.permalink)+'" target="_blank" rel="noopener noreferrer">'+
-        (image?'<img class="latest-instagram-thumb" src="'+safe(image)+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy">':'<span class="latest-instagram-thumb" aria-hidden="true"></span>')+
+        (isVideo&&videoSrc?'<video class="latest-instagram-thumb" src="'+safe(videoSrc)+'"'+(poster?' poster="'+safe(poster)+'"':"")+' muted autoplay loop playsinline preload="metadata" aria-label="Nowa Online World Instagram Reels önizlemesi"></video>':image?'<img class="latest-instagram-thumb" src="'+safe(image)+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy">':'<span class="latest-instagram-thumb" aria-hidden="true"></span>')+
         '<span class="latest-instagram-copy"><span class="latest-instagram-title">'+safe(title)+'</span>'+
         '<span class="latest-instagram-meta"><span>@nowaonlineworld'+(date?' · '+safe(date):'')+'</span><span class="latest-instagram-open">Instagram\'da aç ↗</span></span></span></a>';
     }).join("");
