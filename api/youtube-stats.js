@@ -9,6 +9,9 @@ export default async function handler(req, res) {
     const apiKey = process.env.YOUTUBE_API_KEY;
     if (!apiKey) return res.status(500).json({ error: "YouTube API anahtarı sunucuda tanımlı değil." });
 
+    const isVodFeedRequest = String(req.query.vodfeed || "") === "1";
+    if (isVodFeedRequest) res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+
     const rawUrl = String(req.query.url || "").trim();
     if (!rawUrl) return res.status(400).json({ error: "YouTube kanal bağlantısı gerekli." });
 
@@ -49,53 +52,58 @@ export default async function handler(req, res) {
     let latestStreams = [];
     let playlistLiveStreams = [];
 
-    // Aktif canlı yayınları ayrı ara ve videos.list ile gerçekten hâlâ canlı olduklarını doğrula.
+    // VOD galerisi için canlı yayın aramasını atla; ana sayfa akışını hızlandırır.
     let currentLiveStreams = [];
-    try {
-      const liveSearchParams = new URLSearchParams({
-        part: "snippet",
-        channelId: channel.id,
-        type: "video",
-        eventType: "live",
-        maxResults: "5",
-        key: apiKey
-      });
-      const liveSearchResponse = await fetch("https://www.googleapis.com/youtube/v3/search?" + liveSearchParams);
-      const liveSearchData = await liveSearchResponse.json();
-      if (!liveSearchResponse.ok) {
-        console.warn("YouTube canlı yayın araması başarısız:", liveSearchData.error?.message);
-      } else {
-        const liveIds = (liveSearchData.items || []).map(item => item.id?.videoId).filter(Boolean);
-        if (liveIds.length) {
-          const verifyParams = new URLSearchParams({
-            part: "snippet,liveStreamingDetails",
-            id: liveIds.join(","),
-            key: apiKey
-          });
-          const verifyResponse = await fetch("https://www.googleapis.com/youtube/v3/videos?" + verifyParams);
-          const verifyData = await verifyResponse.json();
-          if (!verifyResponse.ok) {
-            console.warn("YouTube canlı yayın doğrulaması başarısız:", verifyData.error?.message);
-          } else {
-            currentLiveStreams = (verifyData.items || [])
-              .filter(video => video.snippet?.liveBroadcastContent === "live" && video.liveStreamingDetails?.actualEndTime == null)
-              .map(video => {
-                const thumbs = video.snippet?.thumbnails || {};
-                return {
-                  id: video.id,
-                  title: video.snippet?.title || "Canlı yayın",
-                  publishedAt: video.liveStreamingDetails?.actualStartTime || video.snippet?.publishedAt || "",
-                  thumbnail: thumbs.maxres?.url || thumbs.high?.url || thumbs.medium?.url || thumbs.default?.url || "",
-                  url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
-                  isLive: true,
-                  actualStartTime: video.liveStreamingDetails?.actualStartTime || ""
-                };
-              });
+    if (String(req.query.vodfeed || "") !== "1") {
+      // Aktif canlı yayınları ayrı ara ve videos.list ile gerçekten hâlâ canlı olduklarını doğrula.
+      let currentLiveStreams = [];
+      try {
+        const liveSearchParams = new URLSearchParams({
+          part: "snippet",
+          channelId: channel.id,
+          type: "video",
+          eventType: "live",
+          maxResults: "5",
+          key: apiKey
+        });
+        const liveSearchResponse = await fetch("https://www.googleapis.com/youtube/v3/search?" + liveSearchParams);
+        const liveSearchData = await liveSearchResponse.json();
+        if (!liveSearchResponse.ok) {
+          console.warn("YouTube canlı yayın araması başarısız:", liveSearchData.error?.message);
+        } else {
+          const liveIds = (liveSearchData.items || []).map(item => item.id?.videoId).filter(Boolean);
+          if (liveIds.length) {
+            const verifyParams = new URLSearchParams({
+              part: "snippet,liveStreamingDetails",
+              id: liveIds.join(","),
+              key: apiKey
+            });
+            const verifyResponse = await fetch("https://www.googleapis.com/youtube/v3/videos?" + verifyParams);
+            const verifyData = await verifyResponse.json();
+            if (!verifyResponse.ok) {
+              console.warn("YouTube canlı yayın doğrulaması başarısız:", verifyData.error?.message);
+            } else {
+              currentLiveStreams = (verifyData.items || [])
+                .filter(video => video.snippet?.liveBroadcastContent === "live" && video.liveStreamingDetails?.actualEndTime == null)
+                .map(video => {
+                  const thumbs = video.snippet?.thumbnails || {};
+                  return {
+                    id: video.id,
+                    title: video.snippet?.title || "Canlı yayın",
+                    publishedAt: video.liveStreamingDetails?.actualStartTime || video.snippet?.publishedAt || "",
+                    thumbnail: thumbs.maxres?.url || thumbs.high?.url || thumbs.medium?.url || thumbs.default?.url || "",
+                    url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
+                    isLive: true,
+                    actualStartTime: video.liveStreamingDetails?.actualStartTime || ""
+                  };
+                });
+            }
           }
         }
+      } catch (liveSearchError) {
+        console.warn("YouTube canlı yayın doğrulaması yapılamadı:", liveSearchError);
       }
-    } catch (liveSearchError) {
-      console.warn("YouTube canlı yayın doğrulaması yapılamadı:", liveSearchError);
+  
     }
     const uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
     if (uploadsPlaylistId) {
@@ -105,7 +113,7 @@ export default async function handler(req, res) {
       let scannedPages = 0;
       const isVodFeed = String(req.query.vodfeed || "") === "1";
       // VOD akışında 15 arşiv kaydı bulunana kadar daha fazla sayfa tara.
-      const maxScanPages = isVodFeed ? 10 : (String(req.query.feed || "") === "1" ? 1 : 3);
+      const maxScanPages = isVodFeed ? 3 : (String(req.query.feed || "") === "1" ? 1 : 3);
       const normalizedVideos = [];
       const archivedFound = [];
 
