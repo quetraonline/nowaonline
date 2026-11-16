@@ -103,6 +103,7 @@ export default async function handler(req, res) {
       // En fazla 3 sayfa (150 video) kontrol edilir; gereksiz API kotası tüketilmez.
       let pageToken = "";
       let scannedPages = 0;
+      const isVodFeed = String(req.query.vodfeed || "") === "1";
       const maxScanPages = String(req.query.feed || "") === "1" ? 1 : 3;
       const normalizedVideos = [];
       const archivedFound = [];
@@ -160,7 +161,7 @@ export default async function handler(req, res) {
       normalizedVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
       playlistLiveStreams = normalizedVideos.filter(video => video.isLive && !video.actualEndTime);
       latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, String(req.query.feed || "") === "1" ? 15 : 3);
-      const streamCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const streamCutoff = isVodFeed ? 0 : Date.now() - 30 * 24 * 60 * 60 * 1000;
       latestStreams = archivedFound
         .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= streamCutoff)
         .sort((a, b) => new Date(b.actualStartTime || b.publishedAt) - new Date(a.actualStartTime || a.publishedAt))
