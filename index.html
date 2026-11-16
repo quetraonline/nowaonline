@@ -205,7 +205,7 @@ async function loadLatestInstagramPosts(){
     if(!Array.isArray(data)||!data.length)return;
     const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     track.innerHTML=data.map(post=>{
-      const image=post.media_url||post.thumbnail_url||"";
+      const image=post.thumbnail_url||post.media_url||"";
       const title=(post.caption||"Nowa Online World Instagram paylaşımı").replace(/\s+/g," ").trim().slice(0,90);
       const date=post.published_at?new Date(post.published_at).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}):"";
       return '<a class="latest-instagram-card" href="'+safe(post.permalink)+'" target="_blank" rel="noopener noreferrer">'+
@@ -236,7 +236,6 @@ async function loadLivePublisherPlatforms(){const {data,error}=await db.from("no
 async function loadLatestYoutubeFeed(){
  const section=$("latestYoutubeSection"),track=$("latestYoutubeTrack");
  if(!section||!track)return;
- if(!window.matchMedia("(max-width:700px)").matches){section.hidden=true;return}
  const sources=publishers
   .filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase()))
   .map(p=>({id:p.id,name:p.name,avatar:p.avatar_url||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
@@ -312,7 +311,7 @@ async function loadLatestYoutubeFeed(){
  renderVideos(videos);
 }
 
-async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();if(window.matchMedia("(max-width:700px)").matches){setTimeout(()=>loadLatestYoutubeFeed(),1200)}}
+async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();setTimeout(()=>loadLatestYoutubeFeed(),1200)}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
