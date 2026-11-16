@@ -81,14 +81,6 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 }
 
 
-/* YouTube / Twitch yayın kayıtları sekmeleri */
-.latest-media-tabs{display:flex;align-items:center;gap:8px;margin:0 0 12px}
-.latest-media-tab{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:7px 14px;border:1px solid #354153;border-radius:9px;background:#18212d;color:#aeb8c5;font-family:inherit;font-size:12px;font-weight:800;line-height:1.2;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
-.latest-media-tab svg{width:16px;height:16px;flex:0 0 16px}
-.latest-media-tab[data-latest-media-tab="youtube"].is-active{color:#fff;border-color:#ff4545;background:rgba(255,0,51,.14);box-shadow:inset 0 0 0 1px rgba(255,0,51,.12)}
-.latest-media-tab[data-latest-media-tab="twitch"].is-active{color:#fff;border-color:#a970ff;background:rgba(145,70,255,.16);box-shadow:inset 0 0 0 1px rgba(145,70,255,.12)}
-.latest-media-panel[hidden],.latest-media-tab[hidden]{display:none!important}
-@media(min-width:701px){.latest-media-tabs{gap:10px;margin-bottom:14px}.latest-media-tab{min-height:38px;padding:8px 17px;font-size:13px}.latest-media-tab svg{width:18px;height:18px;flex-basis:18px}}
 /* Mobil YouTube keşif şeridi */
 .latest-youtube-section{display:block;margin:0 0 26px}
 .latest-youtube-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;padding:0 0 8px;border-bottom:1px solid #c9a24a}
@@ -192,37 +184,16 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 <div class="server-section"><div class="server-heading"><h3>ATLAS<span id="atlasLiveCount" style="font-size:11px;font-weight:400;letter-spacing:normal;color:#aeb8c5;white-space:nowrap">- 0 canlı yayın</span></h3><span id="atlasCount">0 yayıncı</span></div><div class="cards" id="atlasCards"><div class="empty"><strong>Yayıncılar yükleniyor...</strong></div></div></div>
 </div>
 <section class="latest-youtube-section" id="latestYoutubeSection" hidden>
-  <div class="latest-media-tabs" role="tablist" aria-label="Yayın kayıtları platform seçimi">
-    <button class="latest-media-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="latestYoutubePanel" data-latest-media-tab="youtube">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
-      YouTube
-    </button>
-    <button class="latest-media-tab" type="button" role="tab" aria-selected="false" aria-controls="latestTwitchPanel" data-latest-media-tab="twitch">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 2 1.5 6v15h5v3h3.5l3-3h4l6-6V2H4Zm16 12-3.5 3.5h-5L9 20v-2.5H5V4h15v10ZM9 7h2v6H9V7Zm5 0h2v6h-2V7Z"/></svg>
-      Twitch
-    </button>
-  </div>
   <div class="latest-youtube-heading">
-    <h3>
-      <svg class="latest-youtube-logo" id="latestYoutubeHeadingIcon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ff0033" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
-      <svg class="latest-youtube-logo" id="latestTwitchHeadingIcon" viewBox="0 0 24 24" aria-hidden="true" hidden><path fill="#a970ff" d="M4 2 1.5 6v15h5v3h3.5l3-3h4l6-6V2H4Zm16 12-3.5 3.5h-5L9 20v-2.5H5V4h15v10ZM9 7h2v6H9V7Zm5 0h2v6h-2V7Z"/></svg>
-      <span id="latestMediaHeadingText">EN YENİ YOUTUBE VİDEOLARI</span>
-    </h3>
-    <span id="latestMediaCount">Son 15 video</span>
+    <h3><svg class="latest-youtube-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ff0033" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg><span>EN YENİ YOUTUBE VİDEOLARI</span></h3>
+    <span>Son 15 video</span>
   </div>
-  <div class="latest-carousel-wrap latest-media-panel" id="latestYoutubePanel" role="tabpanel">
+  <div class="latest-carousel-wrap">
     <button class="latest-carousel-arrow prev" type="button" aria-label="Önceki YouTube videosu" data-carousel-target="latestYoutubeTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
     <div class="latest-youtube-track" id="latestYoutubeTrack" aria-label="En yeni YouTube videoları">
       <div class="latest-youtube-loading">YouTube videoları yükleniyor...</div>
     </div>
     <button class="latest-carousel-arrow next" type="button" aria-label="Sonraki YouTube videosu" data-carousel-target="latestYoutubeTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
-  </div>
-  <div class="latest-carousel-wrap latest-media-panel" id="latestTwitchPanel" role="tabpanel" hidden>
-    <button class="latest-carousel-arrow prev" type="button" aria-label="Önceki Twitch yayını" data-carousel-target="latestTwitchTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
-    <div class="latest-youtube-track" id="latestTwitchTrack" aria-label="En yeni Twitch yayın kayıtları">
-      <div class="latest-youtube-loading">Twitch yayın kayıtları yükleniyor...</div>
-    </div>
-    <button class="latest-carousel-arrow next" type="button" aria-label="Sonraki Twitch yayını" data-carousel-target="latestTwitchTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
   </div>
 </section>
 
@@ -401,14 +372,8 @@ async function loadLatestYoutubeFeed(){
   .map(p=>({id:p.id,name:p.name,avatar:p.avatar_url||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
   .filter(x=>x.url&&/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(x.url));
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
- if(!unique.length){
-  latestYoutubeAvailable=false;
-  track.innerHTML='<div class="latest-youtube-loading">YouTube kanal kaydı bulunamadı.</div>';
-  updateLatestMediaVisibility();
-  return;
- }
- latestYoutubeAvailable=true;
- updateLatestMediaVisibility();
+ if(!unique.length){section.hidden=true;return}
+ section.hidden=false;
  const cacheKey="nowa_latest_youtube_vod_v7:"+unique.map(x=>x.url).sort().join("|");
  const channelAvatarByName=new Map(unique.map(source=>[source.name,source.avatar]));
   const channelPublisherIdByName=new Map(unique.map(source=>[source.name,source.id]));
@@ -444,8 +409,6 @@ async function loadLatestYoutubeFeed(){
  let cached=null;
  try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch{}
  if(cached?.videos?.length){
-  latestYoutubeAvailable=true;
-  updateLatestMediaVisibility();
   renderVideos(cached.videos);
   if(Date.now()-Number(cached.savedAt||0)<15*60*1000)return;
  }else{
@@ -472,122 +435,14 @@ async function loadLatestYoutubeFeed(){
   if(!v.id||seen.has(v.id))return false;seen.add(v.id);return true;
  }).slice(0,15);
  if(!videos.length){
-  latestYoutubeAvailable=!!cached?.videos?.length;
   if(!cached?.videos?.length)track.innerHTML='<div class="latest-youtube-loading">Henüz gösterilebilecek arşivlenmiş YouTube VOD kaydı bulunamadı.</div>';
-  updateLatestMediaVisibility();
   return;
  }
- latestYoutubeAvailable=true;
  try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),videos}))}catch{}
  renderVideos(videos);
- updateLatestMediaVisibility();
 }
 
-let latestYoutubeAvailable=false,latestTwitchAvailable=false;
-let latestMediaSelected="youtube";
-function updateLatestMediaVisibility(){
- const section=$("latestYoutubeSection");
- if(section)section.hidden=!(latestYoutubeAvailable||latestTwitchAvailable);
-}
-function selectLatestMedia(platform){
- latestMediaSelected=platform==="twitch"?"twitch":"youtube";
- const youtube=latestMediaSelected==="youtube";
- document.querySelectorAll("[data-latest-media-tab]").forEach(button=>{
-  const active=button.dataset.latestMediaTab===latestMediaSelected;
-  button.classList.toggle("is-active",active);
-  button.setAttribute("aria-selected",String(active));
- });
- $("latestYoutubePanel").hidden=!youtube;
- $("latestTwitchPanel").hidden=youtube;
- $("latestYoutubeHeadingIcon").hidden=!youtube;
- $("latestTwitchHeadingIcon").hidden=youtube;
- $("latestMediaHeadingText").textContent=youtube?"EN YENİ YOUTUBE VİDEOLARI":"EN YENİ TWITCH YAYINLARI";
- $("latestMediaCount").textContent=youtube?"Son 15 video":"Son 15 yayın";
- if(!youtube)loadLatestTwitchFeed();
-}
-document.querySelectorAll("[data-latest-media-tab]").forEach(button=>{
- button.addEventListener("click",()=>selectLatestMedia(button.dataset.latestMediaTab));
-});
-
-async function loadLatestTwitchFeed(){
- const track=$("latestTwitchTrack");
- if(!track)return;
- const cacheKey="nowa_latest_twitch_vod_v1";
- let cached=null;
- try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch{}
- const renderVods=videos=>{
-  const publisherById=new Map(publishers.map(p=>[String(p.id),p]));
-  const relativeDate=value=>{
-   if(!value)return "";
-   const seconds=Math.max(0,Math.floor((Date.now()-new Date(value).getTime())/1000));
-   if(!Number.isFinite(seconds))return "";
-   if(seconds<60)return "şimdi";
-   if(seconds<3600)return Math.floor(seconds/60)+" dk. önce";
-   if(seconds<86400)return Math.floor(seconds/3600)+" sa. önce";
-   if(seconds<604800)return Math.floor(seconds/86400)+" gün önce";
-   if(seconds<2592000)return Math.floor(seconds/604800)+" hf. önce";
-   if(seconds<31536000)return Math.floor(seconds/2592000)+" ay önce";
-   return Math.floor(seconds/31536000)+" yıl önce";
-  };
-  const compactDuration=seconds=>{
-   const total=Math.max(0,Math.floor(Number(seconds)||0));
-   const hours=Math.floor(total/3600),minutes=Math.floor((total%3600)/60);
-   return hours?hours+" sa. "+minutes+" dk.":minutes+" dk.";
-  };
-  track.innerHTML=videos.map(video=>{
-   const publisher=publisherById.get(String(video.publisher_id));
-   if(!publisher)return "";
-   let videoUrl="",thumbUrl="";
-   try{const u=new URL(video.video_url||"");if(u.protocol==="https:"&&/(^|\.)twitch\.tv$/i.test(u.hostname))videoUrl=u.href}catch{}
-   try{const u=new URL(video.thumbnail_url||"");if(u.protocol==="https:"&&u.hostname==="static-cdn.jtvnw.net")thumbUrl=u.href}catch{}
-   if(!videoUrl)return "";
-   const viewers=Number(video.viewer_count||0);
-   const viewerLabel=Number.isFinite(viewers)&&viewers>0?new Intl.NumberFormat("tr-TR",{notation:"compact",maximumFractionDigits:1}).format(viewers)+" izleyici":"";
-   const durationLabel=video.duration_seconds?compactDuration(video.duration_seconds):"";
-   const dateLabel=relativeDate(video.started_at);
-   const avatar=publisher.avatar_url||"";
-   return '<a class="latest-youtube-card" href="'+esc(videoUrl)+'" target="_blank" rel="noopener noreferrer">'+
-    (thumbUrl?'<img class="latest-youtube-thumb" src="'+esc(thumbUrl)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<div class="latest-youtube-thumb"></div>')+
-    '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.stream_title||"Twitch yayın kaydı")+'</span>'+
-    '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(avatar?'<img class="latest-youtube-avatar" src="'+esc(avatar)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<span class="latest-youtube-avatar"></span>')+
-    '<span class="latest-youtube-channel-info"><span class="latest-youtube-channel-name">'+esc(publisher.name)+'</span><span class="latest-youtube-details">'+
-    (viewerLabel?'<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'+esc(viewerLabel)+'</span>':'')+
-    '<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'+esc(dateLabel)+'</span>'+
-    (durationLabel?'<span class="latest-youtube-detail">'+esc(durationLabel)+'</span>':'')+
-    '</span></span></span></span></a>';
-  }).join("");
- };
- if(cached?.videos?.length){
-  renderVods(cached.videos);
-  latestTwitchAvailable=track.querySelectorAll(".latest-youtube-card").length>0;
-  updateLatestMediaVisibility();
-  if(Date.now()-Number(cached.savedAt||0)<5*60*1000)return;
- }else{
-  track.innerHTML='<div class="latest-youtube-loading">Twitch yayın kayıtları yükleniyor...</div>';
- }
- try{
-  const {data,error}=await db.from("nowa_stream_sessions")
-   .select("id,publisher_id,stream_title,started_at,ended_at,duration_seconds,twitch_video_id,thumbnail_url,video_url,viewer_count")
-   .eq("platform","Twitch").not("ended_at","is",null)
-   .not("twitch_video_id","is",null).not("video_url","is",null)
-   .not("thumbnail_url","is",null).order("started_at",{ascending:false}).limit(60);
-  if(error)throw error;
-  const allowedPublishers=new Set(publishers.filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase())).map(p=>String(p.id)));
-  const videos=(data||[]).filter(v=>allowedPublishers.has(String(v.publisher_id))).slice(0,15);
-  renderVods(videos);
-  latestTwitchAvailable=track.querySelectorAll(".latest-youtube-card").length>0;
-  if(latestTwitchAvailable){try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),videos}))}catch{}}
-  else track.innerHTML='<div class="latest-youtube-loading">Henüz gösterilebilecek tamamlanmış Twitch VOD kaydı bulunamadı.</div>';
-  updateLatestMediaVisibility();
- }catch(error){
-  console.warn("Twitch VOD akışı yüklenemedi:",error);
-  if(!cached?.videos?.length)track.innerHTML='<div class="latest-youtube-loading">Twitch yayın kayıtları şu anda alınamadı.</div>';
-  latestTwitchAvailable=!!cached?.videos?.length;
-  updateLatestMediaVisibility();
- }
-}
-
-async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();setTimeout(()=>{loadLatestYoutubeFeed();loadLatestTwitchFeed()},1200)}
+async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();setTimeout(()=>loadLatestYoutubeFeed(),1200)}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
