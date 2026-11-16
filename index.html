@@ -217,10 +217,10 @@ async function loadLatestInstagramPosts(){
 }
 
 let publishers=[],adminPublishers=[],socialLinks=[],isAdmin=false,editingId=null;
-loadLatestInstagramPosts();
 const PLATFORMS=["TikTok","YouTube","Twitch","Kick","Instagram","Facebook","Discord","X","Telegram","Threads","WhatsApp"];
 const platformsOf=p=>Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:[]);
 const $=id=>document.getElementById(id);
+loadLatestInstagramPosts();
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(s){$("toast").textContent=s;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2600)}
 function closeModal(){$("modal").dataset.view="";window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;$("modal").classList.remove("open")}
