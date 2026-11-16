@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     const claim = Array.isArray(claimRows) ? claimRows[0] : claimRows;
     if (!claim || !claim.allowed) return res.status(429).json({ ok: false, message: "TikTok sync cooldown is active", nextAllowedAt: claim && claim.next_allowed_at || null });
     const webhook = [{
-      eventTypes: ["ACTOR.RUN.SUCCEEDED"],
+      eventTypes: ["ACTOR.RUN.SUCCEEDED", "ACTOR.RUN.FAILED", "ACTOR.RUN.TIMED_OUT", "ACTOR.RUN.ABORTED"],
       requestUrl: "https://nowaonline.vercel.app/api/tiktok-webhook",
       headersTemplate: JSON.stringify({ "x-apify-webhook-secret": webhookSecret }),
       payloadTemplate: '{"eventData":{{eventData}},"resource":{{resource}}}'
