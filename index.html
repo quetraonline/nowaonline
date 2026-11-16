@@ -84,8 +84,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 /* Mobil YouTube keşif şeridi */
 .latest-youtube-section{display:block;margin:0 0 26px}
 .latest-youtube-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
-.latest-youtube-heading h3{margin:0;font-size:14px;font-weight:900;letter-spacing:.35px;color:#f4f6fa}
-.latest-youtube-heading h3{display:flex;align-items:center;gap:8px}
+.latest-youtube-heading h3,.latest-instagram-heading h3{display:flex;align-items:center;gap:8px;margin:0;font-family:inherit;font-size:14px;font-weight:900;letter-spacing:.35px;line-height:1.25;color:#f4f6fa}
 .latest-youtube-logo{width:19px;height:19px;flex:0 0 19px}
 .latest-youtube-channel{display:flex;align-items:center;gap:6px;min-width:0}
 .latest-youtube-avatar{width:20px;height:20px;flex:0 0 20px;border-radius:50%;object-fit:cover;border:1px solid #b99550;background:#090d13}
@@ -109,12 +108,12 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-views{display:none}
 .latest-youtube-loading{padding:18px 14px;color:#aeb8c5;font-size:12px;border:1px dashed #303b4b;border-radius:10px;width:100%}
 @media(max-width:700px){.latest-youtube-section{display:block}.latest-youtube-card{flex-basis:76%}}
-\n@media(min-width:701px){.latest-youtube-section{display:block;margin:0 0 36px}.latest-youtube-heading{margin-bottom:16px}.latest-youtube-heading h3{font-size:17px}.latest-youtube-heading>span{font-size:13px}.latest-youtube-track{gap:16px;padding-bottom:12px}.latest-youtube-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-youtube-copy{padding:11px 12px 13px}.latest-youtube-title{font-size:14px;min-height:40px}.latest-youtube-channel-name{font-size:13px}.latest-youtube-details{font-size:11px}}
+\n@media(min-width:701px){.latest-youtube-section{display:block;margin:0 0 36px}.latest-youtube-heading{margin-bottom:16px}.latest-youtube-heading h3,.latest-instagram-heading h3{font-size:17px;line-height:1.25}.latest-youtube-heading>span{font-size:13px}.latest-youtube-track{gap:16px;padding-bottom:12px}.latest-youtube-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-youtube-copy{padding:11px 12px 13px}.latest-youtube-title{font-size:14px;min-height:40px}.latest-youtube-channel-name{font-size:13px}.latest-youtube-details{font-size:11px}}
 
 /* YouTube ile aynı yatay kart düzeninde Instagram şeridi */
 .latest-instagram-section{display:block;margin:0 0 26px}
 .latest-instagram-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
-.latest-instagram-heading h3{display:flex;align-items:center;gap:8px;margin:0;color:#f4f6fa;font-size:14px;font-weight:900;letter-spacing:.35px}
+
 .latest-instagram-heading svg{width:19px;height:19px;flex:0 0 19px;color:#ff0033}
 .latest-instagram-heading>span{font-size:11px;font-family:inherit;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:#aeb8c5;white-space:nowrap}
 .latest-instagram-track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -133,7 +132,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-instagram-stat{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .latest-instagram-stat svg{width:14px;height:14px;flex:0 0 14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media(min-width:701px){.latest-instagram-meta{gap:11px}.latest-instagram-profile{width:42px;height:42px;flex-basis:42px}.latest-instagram-account{font-size:12px}.latest-instagram-stats{font-size:10px}}
-@media(min-width:701px){.latest-instagram-section{margin:0 0 36px}.latest-instagram-heading{margin-bottom:16px}.latest-instagram-heading h3{font-size:17px}.latest-instagram-heading>span{font-size:13px;font-family:inherit;font-weight:inherit;line-height:inherit;letter-spacing:inherit}.latest-instagram-track{gap:16px;padding-bottom:12px}.latest-instagram-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-instagram-copy{padding:11px 12px 13px}.latest-instagram-title{font-size:14px}}
+@media(min-width:701px){.latest-instagram-section{margin:0 0 36px}.latest-instagram-heading{margin-bottom:16px}.latest-instagram-heading>span{font-size:13px;font-family:inherit;font-weight:inherit;line-height:inherit;letter-spacing:inherit}.latest-instagram-track{gap:16px;padding-bottom:12px}.latest-instagram-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-instagram-copy{padding:11px 12px 13px}.latest-instagram-title{font-size:14px}}
 .latest-instagram-track,.latest-youtube-track{cursor:grab;scrollbar-width:none;-ms-overflow-style:none}
 .latest-instagram-track::-webkit-scrollbar,.latest-youtube-track::-webkit-scrollbar{display:none;width:0;height:0}
 .latest-instagram-track.is-dragging,.latest-youtube-track.is-dragging{cursor:grabbing;scroll-snap-type:none;user-select:none}
