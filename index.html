@@ -109,7 +109,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-views{display:none}
 .latest-youtube-loading{padding:18px 14px;color:#aeb8c5;font-size:12px;border:1px dashed #303b4b;border-radius:10px;width:100%}
 @media(max-width:700px){.latest-youtube-section{display:block}.latest-youtube-card{flex-basis:76%}}
-@media(min-width:701px){.latest-youtube-section{display:block;margin:0 0 36px}.latest-youtube-heading{margin-bottom:16px}.latest-youtube-heading h3{font-size:17px}.latest-youtube-heading>span{font-size:13px}.latest-youtube-track{gap:16px;padding-bottom:12px}.latest-youtube-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-youtube-copy{padding:11px 12px 13px}.latest-youtube-title{font-size:14px;min-height:40px}.latest-youtube-channel-name{font-size:13px}.latest-youtube-details{font-size:11px}}
+.latest-tiktok-section{display:block;margin:0 0 26px}\n@media(min-width:701px){.latest-youtube-section{display:block;margin:0 0 36px}.latest-youtube-heading{margin-bottom:16px}.latest-youtube-heading h3{font-size:17px}.latest-youtube-heading>span{font-size:13px}.latest-youtube-track{gap:16px;padding-bottom:12px}.latest-youtube-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-youtube-copy{padding:11px 12px 13px}.latest-youtube-title{font-size:14px;min-height:40px}.latest-youtube-channel-name{font-size:13px}.latest-youtube-details{font-size:11px}}
 </style>
 </head>
 <body>
@@ -150,6 +150,15 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
   </div>
   <div class="latest-youtube-track" id="latestYoutubeTrack" aria-label="En yeni YouTube videoları">
     <div class="latest-youtube-loading">YouTube videoları yükleniyor...</div>
+  </div>
+</section>
+<section class="latest-youtube-section latest-tiktok-section" id="latestTikTokSection" hidden>
+  <div class="latest-youtube-heading">
+    <h3><svg class="latest-youtube-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#25f4ee" d="M19.6 4.2c-1.2-.8-2-2-2.3-3.5h-4.2v15.1a2.8 2.8 0 1 1-2.8-2.8c.3 0 .6 0 .9.1V8.8a7 7 0 1 0 6.1 7V8.1a9.2 9.2 0 0 0 5.1 1.5V5.4c-1 0-2-.4-2.8-1.2Z"/></svg><span>EN YENİ TİKTOK VİDEOLARI</span></h3>
+    <span>Son 15 video</span>
+  </div>
+  <div class="latest-youtube-track" id="latestTikTokTrack" aria-label="En yeni TikTok videoları">
+    <div class="latest-youtube-loading">TikTok videoları yükleniyor...</div>
   </div>
 </section>
 </section>
@@ -258,7 +267,42 @@ async function loadLatestYoutubeFeed(){
  renderVideos(videos);
 }
 
-async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();if(window.matchMedia("(max-width:700px)").matches){setTimeout(()=>loadLatestYoutubeFeed(),1200)}}
+async function loadLatestTikTokFeed(){
+ const section=$("latestTikTokSection"),track=$("latestTikTokTrack");
+ if(!section||!track)return;
+ const allVideos=[];
+ for(const publisher of publishers){
+  const rows=Array.isArray(publisher.tiktok_recent_videos)?publisher.tiktok_recent_videos:[];
+  for(const video of rows){
+   if(!video||!video.url||!/^https?:\\/\\/(www\\.)?tiktok\\.com\\//i.test(video.url))continue;
+   allVideos.push({...video,channelName:publisher.name,channelAvatar:publisher.avatar_url||"",publisherId:publisher.id});
+  }
+ }
+ const unique=[...new Map(allVideos.sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).map(v=>[v.id||v.url,v])).values()].slice(0,15);
+ if(!unique.length){section.hidden=true;return}
+ section.hidden=false;
+ const relativeDate=value=>{
+  if(!value)return "";
+  const seconds=Math.max(0,Math.floor((Date.now()-new Date(value).getTime())/1000));
+  if(!Number.isFinite(seconds))return "";
+  if(seconds<60)return "şimdi";
+  if(seconds<3600)return Math.floor(seconds/60)+" dk. önce";
+  if(seconds<86400)return Math.floor(seconds/3600)+" sa. önce";
+  if(seconds<604800)return Math.floor(seconds/86400)+" gün önce";
+  if(seconds<2592000)return Math.floor(seconds/604800)+" hf. önce";
+  if(seconds<31536000)return Math.floor(seconds/2592000)+" ay önce";
+  return Math.floor(seconds/31536000)+" yıl önce";
+ };
+ const compact=value=>new Intl.NumberFormat("tr-TR",{notation:"compact",maximumFractionDigits:1}).format(Number(value)||0);
+ track.innerHTML=unique.map(video=>{
+  const avatar=video.channelAvatar?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar)+'" alt="" loading="lazy" draggable="false">':'<span class="latest-youtube-avatar"></span>';
+  const thumb=video.thumbnail&&/^https?:\\/\\//i.test(video.thumbnail)?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<div class="latest-youtube-thumb"></div>';
+  const details='<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'+compact(video.viewCount)+' görüntülenme</span><span class="latest-youtube-detail">♥ '+compact(video.likeCount)+'</span><span class="latest-youtube-detail">'+esc(relativeDate(video.publishedAt))+'</span>';
+  return '<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+thumb+'<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"TikTok videosu")+'</span><span class="latest-youtube-meta"><span class="latest-youtube-channel">'+avatar+'<span class="latest-youtube-channel-info"><span class="latest-youtube-channel-name">'+esc(video.channelName)+'</span><span class="latest-youtube-details">'+details+'</span></span></span></span></span></a>';
+ }).join("");
+}
+
+async function loadPublishers(){const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(error){$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();loadLatestTikTokFeed();if(window.matchMedia("(max-width:700px)").matches){setTimeout(()=>loadLatestYoutubeFeed(),1200)}}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
