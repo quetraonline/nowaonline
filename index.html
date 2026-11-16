@@ -111,17 +111,21 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 @media(max-width:700px){.latest-youtube-section{display:block}.latest-youtube-card{flex-basis:76%}}
 \n@media(min-width:701px){.latest-youtube-section{display:block;margin:0 0 36px}.latest-youtube-heading{margin-bottom:16px}.latest-youtube-heading h3{font-size:17px}.latest-youtube-heading>span{font-size:13px}.latest-youtube-track{gap:16px;padding-bottom:12px}.latest-youtube-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-youtube-copy{padding:11px 12px 13px}.latest-youtube-title{font-size:14px;min-height:40px}.latest-youtube-channel-name{font-size:13px}.latest-youtube-details{font-size:11px}}
 
-/* Instagram gönderi test alanı */
-.latest-instagram-section{margin:0 0 36px;padding:18px;border:1px solid #8b3b69;border-radius:16px;background:linear-gradient(145deg,#241522,#111720 72%)}
-.latest-instagram-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
-.latest-instagram-heading h3{display:flex;align-items:center;gap:8px;margin:0;color:#f4f6fa;font-size:15px;font-weight:900;letter-spacing:.35px}
-.latest-instagram-heading svg{width:20px;height:20px;flex:0 0 20px;color:#e58ab8}
-.latest-instagram-heading span{color:#aeb8c5;font-size:11px}
-.latest-instagram-embed{width:min(100%,540px);min-height:520px;margin:0 auto;overflow:hidden;border:1px solid #49334a;border-radius:12px;background:#fff}
-.latest-instagram-embed iframe{display:block;width:100%;height:620px;border:0;background:#fff}
-.latest-instagram-fallback{display:block;margin:10px auto 0;text-align:center;color:#e8b95c;font-size:12px;font-weight:800}
-@media(max-width:600px){.latest-instagram-section{padding:12px}.latest-instagram-embed{min-height:500px}.latest-instagram-embed iframe{height:600px}}
-
+/* YouTube ile aynı yatay kart düzeninde Instagram şeridi */
+.latest-instagram-section{display:block;margin:0 0 26px}
+.latest-instagram-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.latest-instagram-heading h3{display:flex;align-items:center;gap:8px;margin:0;color:#f4f6fa;font-size:14px;font-weight:900;letter-spacing:.35px}
+.latest-instagram-heading svg{width:19px;height:19px;flex:0 0 19px;color:#e58ab8}
+.latest-instagram-heading>span{font-size:11px;color:#aeb8c5;white-space:nowrap}
+.latest-instagram-track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.latest-instagram-track::-webkit-scrollbar{display:none}
+.latest-instagram-card{display:block;flex:0 0 76%;max-width:280px;min-width:0;overflow:hidden;border:1px solid #49334a;border-radius:12px;background:#141b25;color:#f5f6f8;text-decoration:none;scroll-snap-align:start}
+.latest-instagram-thumb{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#090d13}
+.latest-instagram-copy{display:block;padding:9px 10px 11px}
+.latest-instagram-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:800;line-height:1.4}
+.latest-instagram-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;color:#aeb8c5;font-size:10px}
+.latest-instagram-open{color:#e8b95c;font-weight:800}
+@media(min-width:701px){.latest-instagram-section{margin:0 0 36px}.latest-instagram-heading{margin-bottom:16px}.latest-instagram-heading h3{font-size:17px}.latest-instagram-heading>span{font-size:13px}.latest-instagram-track{gap:16px;padding-bottom:12px}.latest-instagram-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-instagram-copy{padding:11px 12px 13px}.latest-instagram-title{font-size:14px}}
 </style>
 </head>
 <body>
@@ -170,10 +174,15 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
     <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1" fill="currentColor" stroke="none"/></svg><span>INSTAGRAM SON PAYLAŞIMLARI</span></h3>
     <span>@nowaonlineworld</span>
   </div>
-  <div class="latest-instagram-embed">
-    <iframe src="https://www.instagram.com/p/Dfa2TZ-isI1/embed/" title="Nowa Online World Instagram gönderisi" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <div class="latest-instagram-track" id="latestInstagramTrack" aria-label="Nowa Online World Instagram gönderileri">
+    <a class="latest-instagram-card" href="https://www.instagram.com/p/Dfa2TZ-isI1/" target="_blank" rel="noopener noreferrer">
+      <img class="latest-instagram-thumb" src="https://www.instagram.com/p/Dfa2TZ-isI1/media/?size=l" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">
+      <span class="latest-instagram-copy">
+        <span class="latest-instagram-title">Nowa Online World – Instagram paylaşımı</span>
+        <span class="latest-instagram-meta"><span>@nowaonlineworld</span><span class="latest-instagram-open">Instagram'da aç ↗</span></span>
+      </span>
+    </a>
   </div>
-  <a class="latest-instagram-fallback" href="https://www.instagram.com/p/Dfa2TZ-isI1/" target="_blank" rel="noopener noreferrer">Gönderiyi Instagram'da aç</a>
 </section>
 
 </section>
