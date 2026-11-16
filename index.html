@@ -291,7 +291,7 @@ async function loadLatestInstagramPosts(){
           ? '<video class="latest-instagram-thumb latest-instagram-reel-preview" src="'+safe(media)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" aria-label="Nowa Online World Instagram Reels önizlemesi" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture></video>'
           : placeholder);
       const stats=(date?'<span class="latest-instagram-stat">'+clockIcon+safe(date)+'</span>':'')+
-        (Number.isFinite(likes)?'<span class="latest-instagram-stat">'+heartIcon+likes.toLocaleString("tr-TR")+'</span>':'');
+        '<span class="latest-instagram-stat" title="'+(Number.isFinite(likes)?"Beğeni sayısı":"Instagram beğeni sayısını paylaşmıyor")+'">'+heartIcon+(Number.isFinite(likes)?likes.toLocaleString("tr-TR"):"Gizli")+'</span>';
       return '<a class="latest-instagram-card" href="'+safe(permalink)+'" target="_blank" rel="noopener noreferrer">'+
         imageHtml+
         '<span class="latest-instagram-copy"><span class="latest-instagram-title">'+safe(title)+'</span>'+
