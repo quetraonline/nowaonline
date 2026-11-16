@@ -278,7 +278,7 @@ async function loadLatestInstagramPosts(){
         imageHtml+
         '<span class="latest-instagram-copy"><span class="latest-instagram-title">'+safe(title)+'</span>'+
         '<span class="latest-instagram-meta">'+profile+
-        '<span class="latest-instagram-meta-info"><a class="latest-instagram-account" href="https://www.instagram.com/nowaonlineworld/" target="_blank" rel="noopener noreferrer">@nowaonlineworld</a>'+
+        '<span class="latest-instagram-meta-info"><span class="latest-instagram-account">@nowaonlineworld</span>'+
         '<span class="latest-instagram-stats">'+stats+'</span></span></span></span></a>';
     }).join("");
     track.querySelectorAll("img.latest-instagram-thumb").forEach(img=>{
