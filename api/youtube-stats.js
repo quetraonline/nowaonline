@@ -103,10 +103,11 @@ export default async function handler(req, res) {
       // En fazla 3 sayfa (150 video) kontrol edilir; gereksiz API kotası tüketilmez.
       let pageToken = "";
       let scannedPages = 0;
+      const maxScanPages = String(req.query.feed || "") === "1" ? 1 : 3;
       const normalizedVideos = [];
       const archivedFound = [];
 
-      while (scannedPages < 3 && (scannedPages === 0 || pageToken)) {
+      while (scannedPages < maxScanPages && (scannedPages === 0 || pageToken)) {
         const playlistParams = new URLSearchParams({
           part: "contentDetails",
           playlistId: uploadsPlaylistId,
@@ -158,7 +159,7 @@ export default async function handler(req, res) {
       // Normal video listesi her zaman en yeni yüklemelerden oluşur.
       normalizedVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
       playlistLiveStreams = normalizedVideos.filter(video => video.isLive && !video.actualEndTime);
-      latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, 3);
+      latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, String(req.query.feed || "") === "1" ? 15 : 3);
       const streamCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
       latestStreams = archivedFound
         .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= streamCutoff)
