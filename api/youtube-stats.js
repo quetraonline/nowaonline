@@ -104,7 +104,8 @@ export default async function handler(req, res) {
       let pageToken = "";
       let scannedPages = 0;
       const isVodFeed = String(req.query.vodfeed || "") === "1";
-      const maxScanPages = String(req.query.feed || "") === "1" ? 1 : 3;
+      // VOD akışında 15 arşiv kaydı bulunana kadar daha fazla sayfa tara.
+      const maxScanPages = isVodFeed ? 10 : (String(req.query.feed || "") === "1" ? 1 : 3);
       const normalizedVideos = [];
       const archivedFound = [];
 
@@ -155,6 +156,7 @@ export default async function handler(req, res) {
 
         scannedPages++;
         pageToken = playlistData.nextPageToken || "";
+        if (isVodFeed && archivedFound.length >= 15) break;
       }
 
       // Normal video listesi her zaman en yeni yüklemelerden oluşur.
@@ -163,22 +165,29 @@ export default async function handler(req, res) {
       latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, String(req.query.feed || "") === "1" ? 15 : 3);
       const streamCutoff = isVodFeed ? 0 : Date.now() - 30 * 24 * 60 * 60 * 1000;
       latestStreams = archivedFound
-        .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= streamCutoff)
-        .sort((a, b) => new Date(b.actualStartTime || b.publishedAt) - new Date(a.actualStartTime || a.publishedAt))
-        .slice(0, 150);
+        .filter(stream => new Date((isVodFeed ? stream.publishedAt : (stream.actualStartTime || stream.publishedAt))).getTime() >= streamCutoff)
+        .sort((a, b) => new Date(b.publishedAt || b.actualStartTime) - new Date(a.publishedAt || a.actualStartTime))
+        .slice(0, isVodFeed ? 15 : 150);
     }
 
     // Devam eden yayını listenin başına al; kalan yeri en yeni tamamlanmış canlı yayınlarla doldur.
     const archivedStreams = latestStreams;
-    const seenStreamIds = new Set();
-    latestStreams = [...currentLiveStreams, ...playlistLiveStreams, ...archivedStreams]
-      .filter(stream => {
-        if (!stream?.id || seenStreamIds.has(stream.id)) return false;
-        seenStreamIds.add(stream.id);
-        return true;
-      })
-      .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= Date.now() - 30 * 24 * 60 * 60 * 1000)
-      .slice(0, 150);
+    if (String(req.query.vodfeed || "") === "1") {
+      // Mobil ana sayfa akışı: yalnızca tamamlanmış VOD kayıtları, yüklenme tarihine göre.
+      latestStreams = archivedStreams
+        .sort((a, b) => new Date(b.publishedAt || b.actualStartTime) - new Date(a.publishedAt || a.actualStartTime))
+        .slice(0, 15);
+    } else {
+      const seenStreamIds = new Set();
+      latestStreams = [...currentLiveStreams, ...playlistLiveStreams, ...archivedStreams]
+        .filter(stream => {
+          if (!stream?.id || seenStreamIds.has(stream.id)) return false;
+          seenStreamIds.add(stream.id);
+          return true;
+        })
+        .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= Date.now() - 30 * 24 * 60 * 60 * 1000)
+        .slice(0, 150);
+    }
 
     const stats = channel.statistics || {};
     return res.status(200).json({
