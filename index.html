@@ -98,10 +98,11 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-copy{display:block;padding:9px 10px 11px}
 .latest-youtube-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;font-size:13px;font-weight:800;line-height:1.4}
 .latest-youtube-meta{display:flex;align-items:center;gap:10px;margin-top:9px;color:#aeb8c5;font-size:12px;line-height:1.3;min-width:0}
-.latest-youtube-channel{display:flex;align-items:center;gap:9px;min-width:0;color:#e5e9ef;font-size:13px;font-weight:700}
-.latest-youtube-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:50%;object-fit:cover;border:1px solid #a87c3d;background:#090d13}
-.latest-youtube-channel-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.latest-youtube-details{display:flex;align-items:center;gap:10px;margin-top:5px;color:#aeb8c5;font-size:11px;line-height:1.3}
+.latest-youtube-channel{display:flex;align-items:center;gap:10px;min-width:0;color:#e5e9ef;font-size:13px;font-weight:700}
+.latest-youtube-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover;border:1px solid #a87c3d;background:#090d13}
+.latest-youtube-channel-info{display:flex;flex-direction:column;gap:5px;min-width:0}
+.latest-youtube-channel-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e5e9ef;font-size:13px;font-weight:800}
+.latest-youtube-details{display:flex;align-items:center;gap:10px;color:#aeb8c5;font-size:10px;line-height:1.3;flex-wrap:wrap}
 .latest-youtube-detail{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .latest-youtube-detail svg{width:13px;height:13px;display:block;flex:0 0 13px;opacity:.9}
 .latest-youtube-views{display:none}
@@ -188,7 +189,7 @@ async function loadLatestYoutubeFeed(){
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
- const cacheKey="nowa_latest_youtube_vod_v6:"+unique.map(x=>x.url).sort().join("|");
+ const cacheKey="nowa_latest_youtube_vod_v7:"+unique.map(x=>x.url).sort().join("|");
  const channelAvatarByName=new Map(unique.map(source=>[source.name,source.avatar]));
  const relativeYoutubeDate=value=>{
   if(!value)return "";
@@ -211,9 +212,9 @@ async function loadLatestYoutubeFeed(){
     (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
     '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
     '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(avatarUrl?'<img class="latest-youtube-avatar" src="'+esc(avatarUrl)+'" alt="" loading="lazy">':'<span class="latest-youtube-avatar"></span>')+
-    '<span class="latest-youtube-channel-name">'+esc(video.channelName)+'</span></span></span>'+
-    '<span class="latest-youtube-details"><span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>'+viewsLabel+'</span>'+
-    '<span class="latest-youtube-detail">'+esc(relativeYoutubeDate(video.sortDate))+'</span></span></span></a>';
+    '<span class="latest-youtube-channel-info"><span class="latest-youtube-channel-name">'+esc(video.channelName)+'</span>'+
+    '<span class="latest-youtube-details"><span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'+viewsLabel+' görüntülenme</span>'+
+    '<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'+esc(relativeYoutubeDate(video.sortDate))+'</span></span></span></span></span></a>';
   }).join("");
  };
  let cached=null;
