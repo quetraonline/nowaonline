@@ -189,7 +189,7 @@ async function loadLatestYoutubeFeed(){
  try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch{}
  if(cached?.videos?.length){
   renderVideos(cached.videos);
-  if(Date.now()-Number(cached.savedAt||0)<5*60*1000)return;
+  if(Date.now()-Number(cached.savedAt||0)<15*60*1000)return;
  }else{
   track.innerHTML='<div class="latest-youtube-loading">YouTube videoları arka planda yükleniyor...</div>';
  }
@@ -202,13 +202,13 @@ async function loadLatestYoutubeFeed(){
     const result=await response.json();
     if(!response.ok)throw new Error(result.error||"YouTube VOD kayıtları alınamadı.");
     for(const vod of result.latestStreams||[]){
-     if(!vod.isArchivedStream||!vod.id)continue;
+     if(!vod.id||vod.isLive||vod.isUpcoming)continue;
      collected.push({...vod,channelName:source.name,sortDate:vod.publishedAt||vod.actualStartTime||""});
     }
    }catch(error){console.warn("YouTube VOD akışı alınamadı:",source.name,error)}
   }
  };
- await Promise.all(Array.from({length:Math.min(3,unique.length)},worker));
+ await Promise.all(Array.from({length:Math.min(6,unique.length)},worker));
  const seen=new Set();
  const videos=collected.sort((a,b)=>new Date(b.sortDate||0)-new Date(a.sortDate||0)).filter(v=>{
   if(!v.id||seen.has(v.id))return false;seen.add(v.id);return true;
