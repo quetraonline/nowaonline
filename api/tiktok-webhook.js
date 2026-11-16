@@ -38,6 +38,14 @@ export default async function handler(req, res) {
     const runResponse = await fetch("https://api.apify.com/v2/actor-runs/" + encodeURIComponent(runId) + "?token=" + encodeURIComponent(token));
     const runJson = await runResponse.json();
     if (!runResponse.ok) throw new Error("Could not read Apify run: " + runResponse.status);
+    const runStatus = runJson.data && runJson.data.status || "UNKNOWN";
+    if (runStatus !== "SUCCEEDED") {
+      await fetch(supabaseUrl + "/rest/v1/nowa_tiktok_scan_reports?run_id=eq." + encodeURIComponent(runId), {
+        method: "PATCH", headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ status: runStatus, error: "Apify taraması " + runStatus + " durumuyla sona erdi.", finished_at: new Date().toISOString() })
+      });
+      return res.status(200).json({ ok: true, runId, status: runStatus });
+    }
     const datasetId = runJson.data && runJson.data.defaultDatasetId;
     if (!datasetId) throw new Error("Apify run has no dataset");
     const dataResponse = await fetch("https://api.apify.com/v2/datasets/" + encodeURIComponent(datasetId) + "/items?clean=true&format=json&limit=1000&token=" + encodeURIComponent(token));
@@ -97,7 +105,24 @@ export default async function handler(req, res) {
         updated++;
       }));
     }
-    return res.status(200).json({ ok: true, runId, datasetItems: items.length, publishersUpdated: updated });
+    const reportResponse = await fetch(supabaseUrl + "/rest/v1/nowa_tiktok_scan_reports?select=report,profile_count&run_id=eq." + encodeURIComponent(runId) + "&limit=1", {
+      headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey }
+    });
+    const reportRows = reportResponse.ok ? await reportResponse.json() : [];
+    const prior = reportRows[0] && reportRows[0].report || {};
+    const profiles = (prior.profiles || []).map(profile => {
+      const matching = items.filter(item => normalizeHandle(item) === profile.handle);
+      const publisherMatches = byHandle.get(profile.handle) || [];
+      return { handle: profile.handle, videosFound: matching.length, publishersUpdated: publisherMatches.filter(p => grouped.has(p.id)).length, status: matching.length ? "Tamamlandı" : "Video bulunamadı" };
+    });
+    const failedProfiles = profiles.filter(profile => profile.videosFound === 0).map(profile => ({ handle: profile.handle, reason: "Bu profilden video alınamadı veya eşleşen video bulunamadı." }));
+    const report = { profiles, failedProfiles, totalVideosFound: items.length, publishersUpdated: updated };
+    const saveReport = await fetch(supabaseUrl + "/rest/v1/nowa_tiktok_scan_reports?run_id=eq." + encodeURIComponent(runId), {
+      method: "PATCH", headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey, "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ status: "SUCCEEDED", dataset_items: items.length, publishers_updated: updated, report, error: null, finished_at: new Date().toISOString() })
+    });
+    if (!saveReport.ok) console.error("Could not save TikTok scan report:", await saveReport.text());
+    return res.status(200).json({ ok: true, runId, datasetItems: items.length, publishersUpdated: updated, report });
   } catch (error) {
     console.error("TikTok webhook processing failed:", error);
     return res.status(500).json({ error: error.message || "Webhook processing failed" });
