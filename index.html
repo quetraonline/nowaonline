@@ -189,7 +189,7 @@ async function loadLatestYoutubeFeed(){
     if(!response.ok)throw new Error(result.error||"YouTube VOD kayıtları alınamadı.");
     for(const vod of result.latestStreams||[]){
      if(!vod.isArchivedStream||!vod.id)continue;
-     collected.push({...vod,channelName:source.name,sortDate:vod.actualStartTime||vod.publishedAt||""});
+     collected.push({...vod,channelName:source.name,sortDate:vod.publishedAt||vod.actualStartTime||""});
     }
    }catch(error){console.warn("YouTube VOD akışı alınamadı:",source.name,error)}
   }
