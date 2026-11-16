@@ -237,7 +237,7 @@ async function loadLatestInstagramPosts(){
     if(!Array.isArray(data)||!data.length)return;
     const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     const placeholder='<div class="latest-instagram-thumb latest-instagram-placeholder" aria-label="Görsel önizlemesi yüklenemedi"><span aria-hidden="true">📷</span><small>Önizleme yüklenemedi</small></div>';
-    const calendarIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+    const clockIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
     const heartIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.8 4.8 0 0 1 12 6.2a4.8 4.8 0 0 1 8.8 2.6Z"/></svg>';
     track.innerHTML=data.map(post=>{
       const shortcode=String(post.shortcode||"").trim();
@@ -288,7 +288,7 @@ async function loadLatestInstagramPosts(){
       const imageHtml=image
         ? '<img class="latest-instagram-thumb" src="'+safe(image)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">'
         : placeholder;
-      const stats=(date?'<span class="latest-instagram-stat">'+calendarIcon+safe(date)+'</span>':'')+
+      const stats=(date?'<span class="latest-instagram-stat">'+clockIcon+safe(date)+'</span>':'')+
         (Number.isFinite(likes)?'<span class="latest-instagram-stat">'+heartIcon+likes.toLocaleString("tr-TR")+'</span>':'');
       return '<a class="latest-instagram-card" href="'+safe(permalink)+'" target="_blank" rel="noopener noreferrer">'+
         imageHtml+
