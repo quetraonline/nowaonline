@@ -121,6 +121,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-instagram-track::-webkit-scrollbar{display:none}
 .latest-instagram-card{display:block;flex:0 0 76%;max-width:280px;min-width:0;overflow:hidden;border:1px solid #49334a;border-radius:12px;background:#141b25;color:#f5f6f8;text-decoration:none;scroll-snap-align:start}
 .latest-instagram-thumb{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#090d13}
+.latest-instagram-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#aeb8c5;background:linear-gradient(145deg,#202a37,#10151d);font-size:28px}.latest-instagram-placeholder small{font-size:11px;font-weight:700;letter-spacing:.02em}
 .latest-instagram-copy{display:block;padding:9px 10px 11px}
 .latest-instagram-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:800;line-height:1.4}
 .latest-instagram-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;color:#aeb8c5;font-size:10px}
@@ -224,22 +225,60 @@ async function loadLatestInstagramPosts(){
   const track=$("latestInstagramTrack");
   if(!track||!db)return;
   try{
-    const {data,error}=await db.from("nowa_instagram_posts").select("id,shortcode,permalink,media_url,thumbnail_url,caption,published_at").order("published_at",{ascending:false,nullsFirst:false}).limit(5);
+    const {data,error}=await db.from("nowa_instagram_posts").select("id,shortcode,permalink,media_url,thumbnail_url,media_type,caption,published_at").order("published_at",{ascending:false,nullsFirst:false}).limit(5);
     if(error)throw error;
     if(!Array.isArray(data)||!data.length)return;
     const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const placeholder='<div class="latest-instagram-thumb latest-instagram-placeholder" aria-label="Görsel önizlemesi yüklenemedi"><span aria-hidden="true">📷</span><small>Önizleme yüklenemedi</small></div>';
     track.innerHTML=data.map(post=>{
-      const image=post.thumbnail_url||post.media_url||"";
-      const isVideo=/reel|video|clip/i.test(String(post.media_type||""));
-      const videoSrc=post.media_url||image;
-      const poster=(post.shortcode&&isVideo?"https://www.instagram.com/reel/"+encodeURIComponent(post.shortcode)+"/media/?size=l":(post.thumbnail_url&&post.thumbnail_url!==videoSrc?post.thumbnail_url:""));
+      const shortcode=String(post.shortcode||"").trim();
+      const permalink=String(post.permalink||"");
+      const mediaType=String(post.media_type||"").toLowerCase();
+      const isVideo=/video|reel/i.test(mediaType)||/\/reel\//i.test(permalink);
+      const instagramFallbacks=shortcode?[
+        "https://www.instagram.com/reel/"+encodeURIComponent(shortcode)+"/media/?size=l",
+        "https://www.instagram.com/p/"+encodeURIComponent(shortcode)+"/media/?size=l"
+      ]:[];
+      const thumbnail=String(post.thumbnail_url||"");
+      const media=String(post.media_url||"");
+      const image=isVideo
+        ? (thumbnail&&thumbnail!==media?thumbnail:(instagramFallbacks.shift()||""))
+        : (thumbnail||media||instagramFallbacks.shift()||"");
+      const fallbacks=[];
+      if(isVideo){
+        if(thumbnail&&thumbnail!==media&&thumbnail!==image)fallbacks.push(thumbnail);
+      }else{
+        if(media&&media!==image)fallbacks.push(media);
+        if(thumbnail&&thumbnail!==image&&thumbnail!==media)fallbacks.push(thumbnail);
+      }
+      fallbacks.push(...instagramFallbacks);
       const title=(post.caption||"Nowa Online World Instagram paylaşımı").replace(/\s+/g," ").trim().slice(0,90);
       const date=post.published_at?new Date(post.published_at).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}):"";
-      return '<a class="latest-instagram-card" href="'+safe(post.permalink)+'" target="_blank" rel="noopener noreferrer">'+
-        (isVideo&&videoSrc?'<video class="latest-instagram-thumb" src="'+safe(videoSrc)+'"'+(poster?' poster="'+safe(poster)+'"':"")+' muted autoplay loop playsinline preload="metadata" aria-label="Nowa Online World Instagram Reels önizlemesi"></video>':image?'<img class="latest-instagram-thumb" src="'+safe(image)+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy">':'<span class="latest-instagram-thumb" aria-hidden="true"></span>')+
+      const imageHtml=image
+        ? '<img class="latest-instagram-thumb" src="'+safe(image)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">'
+        : placeholder;
+      return '<a class="latest-instagram-card" href="'+safe(permalink)+'" target="_blank" rel="noopener noreferrer">'+
+        imageHtml+
         '<span class="latest-instagram-copy"><span class="latest-instagram-title">'+safe(title)+'</span>'+
         '<span class="latest-instagram-meta"><span>@nowaonlineworld'+(date?' · '+safe(date):'')+'</span><span class="latest-instagram-open">Instagram\'da aç ↗</span></span></span></a>';
     }).join("");
+    track.querySelectorAll("img.latest-instagram-thumb").forEach(img=>{
+      img.addEventListener("error",()=>{
+        let fallbacks=[];
+        try{fallbacks=JSON.parse(img.dataset.fallbacks||"[]")}catch(_){}
+        const next=fallbacks.shift();
+        if(next){
+          img.dataset.fallbacks=JSON.stringify(fallbacks);
+          img.src=next;
+          return;
+        }
+        const empty=document.createElement("div");
+        empty.className="latest-instagram-thumb latest-instagram-placeholder";
+        empty.setAttribute("aria-label","Görsel önizlemesi yüklenemedi");
+        empty.innerHTML='<span aria-hidden="true">📷</span><small>Önizleme yüklenemedi</small>';
+        img.replaceWith(empty);
+      });
+    });
   }catch(error){console.warn("Instagram paylaşımları yüklenemedi:",error);}
 }
 
