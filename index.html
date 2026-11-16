@@ -177,17 +177,18 @@ async function loadLatestYoutubeFeed(){
  if(!window.matchMedia("(max-width:700px)").matches){section.hidden=true;return}
  const sources=publishers
   .filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase()))
-  .map(p=>({name:p.name,avatar:p.avatar||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
+  .map(p=>({name:p.name,avatar:p.avatar_url||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
   .filter(x=>x.url&&/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(x.url));
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
- const cacheKey="nowa_latest_youtube_vod_v4:"+unique.map(x=>x.url).sort().join("|");
+ const cacheKey="nowa_latest_youtube_vod_v5:"+unique.map(x=>x.url).sort().join("|");
+ const channelAvatarByName=new Map(unique.map(source=>[source.name,source.avatar]));
  const renderVideos=videos=>{
   track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
    (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
    '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
-   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(video.channelAvatar?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar)+'" alt="" loading="lazy">':'')+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span>'+
+   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(video.channelAvatar||channelAvatarByName.get(video.channelName)?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar||channelAvatarByName.get(video.channelName))+'" alt="" loading="lazy">':'')+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span>'+
    '<span class="latest-youtube-views">'+(Number.isFinite(Number(video.viewCount))?Number(video.viewCount).toLocaleString("tr-TR")+" görüntülenme":"")+'</span></span></a>'
   ).join("");
  };
@@ -197,7 +198,7 @@ async function loadLatestYoutubeFeed(){
   renderVideos(cached.videos);
   if(Date.now()-Number(cached.savedAt||0)<15*60*1000)return;
  }else{
-  track.innerHTML='<div class="latest-youtube-loading">YouTube videoları arka planda yükleniyor...</div>';
+  track.innerHTML='<div class="latest-youtube-loading">Videolar yükleniyor..</div>';
  }
  const collected=[];let cursor=0;
  const worker=async()=>{
