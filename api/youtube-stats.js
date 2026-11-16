@@ -56,7 +56,6 @@ export default async function handler(req, res) {
     let currentLiveStreams = [];
     if (String(req.query.vodfeed || "") !== "1") {
       // Aktif canlı yayınları ayrı ara ve videos.list ile gerçekten hâlâ canlı olduklarını doğrula.
-      let currentLiveStreams = [];
       try {
         const liveSearchParams = new URLSearchParams({
           part: "snippet",
