@@ -99,6 +99,8 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;font-size:13px;font-weight:800;line-height:1.4}
 .latest-youtube-meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;color:#aeb8c5;font-size:10px;line-height:1.3}
 .latest-youtube-channel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.latest-youtube-date{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex:0 0 auto}
+.latest-youtube-date svg{width:12px;height:12px;display:block;opacity:.9}
 .latest-youtube-loading{padding:18px 14px;color:#aeb8c5;font-size:12px;border:1px dashed #303b4b;border-radius:10px;width:100%}
 @media(max-width:700px){.latest-youtube-section{display:block}.latest-youtube-card{flex-basis:76%}}
 @media(min-width:701px){.latest-youtube-section{display:none!important}}
@@ -188,7 +190,7 @@ async function loadLatestYoutubeFeed(){
   track.innerHTML=videos.map(video=>'<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
    (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy">':'<div class="latest-youtube-thumb"></div>')+
    '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
-   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(video.channelAvatar||channelAvatarByName.get(video.channelName)?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar||channelAvatarByName.get(video.channelName))+'" alt="" loading="lazy">':'')+esc(video.channelName)+'</span><span>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span>'+
+   '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(video.channelAvatar||channelAvatarByName.get(video.channelName)?'<img class="latest-youtube-avatar" src="'+esc(video.channelAvatar||channelAvatarByName.get(video.channelName))+'" alt="" loading="lazy">':'')+esc(video.channelName)+'</span><span class="latest-youtube-date"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 3v4M17 3v4M3 10h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'+ (video.sortDate?new Date(video.sortDate).toLocaleDateString("tr-TR"):"") +'</span></span>'+
    '<span class="latest-youtube-views">'+(Number.isFinite(Number(video.viewCount))?Number(video.viewCount).toLocaleString("tr-TR")+" görüntülenme":"")+'</span></span></a>'
   ).join("");
  };
