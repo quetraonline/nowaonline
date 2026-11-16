@@ -140,7 +140,8 @@ export default async function handler(req, res) {
             return {
               id: video.id,
               title: video.snippet?.title || "Başlıksız içerik",
-              publishedAt: live?.actualStartTime || video.snippet?.publishedAt || "",
+              // YouTube yüklenme tarihi; canlı yayının başlama tarihi actualStartTime alanında ayrı tutulur.
+              publishedAt: video.snippet?.publishedAt || live?.actualStartTime || "",
               thumbnail,
               url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
               isLive: video.snippet?.liveBroadcastContent === "live" && !live?.actualEndTime,
@@ -166,7 +167,7 @@ export default async function handler(req, res) {
       const streamCutoff = isVodFeed ? 0 : Date.now() - 30 * 24 * 60 * 60 * 1000;
       latestStreams = archivedFound
         .filter(stream => new Date((isVodFeed ? stream.publishedAt : (stream.actualStartTime || stream.publishedAt))).getTime() >= streamCutoff)
-        .sort((a, b) => new Date(b.publishedAt || b.actualStartTime) - new Date(a.publishedAt || a.actualStartTime))
+        .sort((a, b) => new Date(isVodFeed ? (b.publishedAt || b.actualStartTime) : (b.actualStartTime || b.publishedAt)) - new Date(isVodFeed ? (a.publishedAt || a.actualStartTime) : (a.actualStartTime || a.publishedAt)))
         .slice(0, isVodFeed ? 15 : 150);
     }
 
