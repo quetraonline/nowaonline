@@ -184,7 +184,7 @@ async function loadLatestYoutubeFeed(){
    const source=unique[cursor++];
    try{
     // Her yayıncının kanalındaki arşivlenmiş VOD kayıtlarını al; tüm kanalları tek listede birleştir.
-    const response=await fetch("/api/youtube-stats?url="+encodeURIComponent(source.url));
+    const response=await fetch("/api/youtube-stats?vodfeed=1&url="+encodeURIComponent(source.url));
     const result=await response.json();
     if(!response.ok)throw new Error(result.error||"YouTube VOD kayıtları alınamadı.");
     for(const vod of result.latestStreams||[]){
