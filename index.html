@@ -100,7 +100,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;font-size:13px;font-weight:800;line-height:1.4}
 .latest-youtube-meta{display:flex;align-items:center;gap:10px;margin-top:9px;color:#aeb8c5;font-size:12px;line-height:1.3;min-width:0}
 .latest-youtube-channel{display:flex;align-items:center;gap:10px;min-width:0;color:#e5e9ef;font-size:13px;font-weight:700}
-.latest-youtube-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover;border:1px solid #a87c3d;background:#090d13}; -webkit-user-drag:none;user-select:none;-webkit-user-select:none
+.latest-youtube-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover;border:1px solid #a87c3d;background:#090d13}.latest-youtube-avatar.is-live{border:2px solid #ff3030;box-shadow:0 0 0 2px rgba(255,48,48,.22),0 0 12px rgba(255,48,48,.62)}; -webkit-user-drag:none;user-select:none;-webkit-user-select:none
 .latest-youtube-channel-info{display:flex;flex-direction:column;gap:0;min-width:0}.latest-youtube-details{margin-top:4px!important}
 .latest-youtube-channel-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e5e9ef;font-size:13px;font-weight:800}
 .latest-youtube-details{display:flex;align-items:center;gap:10px;color:#aeb8c5;font-size:10px;line-height:1.3;flex-wrap:wrap}
@@ -185,13 +185,14 @@ async function loadLatestYoutubeFeed(){
  if(!window.matchMedia("(max-width:700px)").matches){section.hidden=true;return}
  const sources=publishers
   .filter(p=>["ares","atlas"].includes(String(p.server||"Ares").toLowerCase()))
-  .map(p=>({name:p.name,avatar:p.avatar_url||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
+  .map(p=>({id:p.id,name:p.name,avatar:p.avatar_url||"",url:(p.platform_links||{}).YouTube||((String(p.platform||"").toLowerCase()==="youtube")?p.channel_url:"")}))
   .filter(x=>x.url&&/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(x.url));
  const unique=[...new Map(sources.map(x=>[x.url,x])).values()];
  if(!unique.length){section.hidden=true;return}
  section.hidden=false;
  const cacheKey="nowa_latest_youtube_vod_v7:"+unique.map(x=>x.url).sort().join("|");
  const channelAvatarByName=new Map(unique.map(source=>[source.name,source.avatar]));
+  const channelPublisherIdByName=new Map(unique.map(source=>[source.name,source.id]));
  const relativeYoutubeDate=value=>{
   if(!value)return "";
   const seconds=Math.max(0,Math.floor((Date.now()-new Date(value).getTime())/1000));
@@ -207,12 +208,15 @@ async function loadLatestYoutubeFeed(){
  const renderVideos=videos=>{
   track.innerHTML=videos.map(video=>{
    const avatarUrl=video.channelAvatar||channelAvatarByName.get(video.channelName)||"";
+   const publisherId=channelPublisherIdByName.get(video.channelName);
+   const isPublisherLive=!!publisherId&&(livePublisherPlatforms.get(publisherId)?.size||0)>0;
+   const avatarLiveClass=isPublisherLive?" is-live":"";
    const views=Number(video.viewCount||0);
    const viewsLabel=Number.isFinite(views)?new Intl.NumberFormat("tr-TR",{notation:"compact",maximumFractionDigits:1}).format(views):"";
    return '<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
     (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<div class="latest-youtube-thumb"></div>')+
     '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
-    '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(avatarUrl?'<img class="latest-youtube-avatar" src="'+esc(avatarUrl)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<span class="latest-youtube-avatar" oncontextmenu="return false"></span>')+
+    '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(avatarUrl?'<img class="latest-youtube-avatar'+avatarLiveClass+'" src="'+esc(avatarUrl)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<span class="latest-youtube-avatar'+avatarLiveClass+'" oncontextmenu="return false"></span>')+
     '<span class="latest-youtube-channel-info"><span class="latest-youtube-channel-name">'+esc(video.channelName)+'</span>'+
     '<span class="latest-youtube-details"><span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'+viewsLabel+' görüntülenme</span>'+
     '<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'+esc(relativeYoutubeDate(video.sortDate))+'</span></span></span></span></span></a>';
