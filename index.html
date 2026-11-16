@@ -150,10 +150,19 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 }
 @keyframes latestArrowGlow{0%,100%{box-shadow:0 0 0 3px rgba(232,185,92,.15),0 0 13px rgba(232,185,92,.4),0 5px 16px rgba(0,0,0,.65)}50%{box-shadow:0 0 0 6px rgba(232,185,92,.25),0 0 25px rgba(232,185,92,.72),0 5px 18px rgba(0,0,0,.7)}}
 @media(prefers-reduced-motion:reduce){.latest-carousel-arrow{animation:none}}
+
+/* Üst çizgiden sarkan, kaydırmada ekranda kalan Türk bayrağı */
+.nowa-flag-hanger{position:fixed;top:2px;left:50%;z-index:30;width:clamp(70px,7.5vw,104px);pointer-events:none;transform:translateX(-50%);transform-origin:top center}
+.nowa-flag-hanger img{display:block;width:100%;height:auto;filter:drop-shadow(0 5px 5px rgba(0,0,0,.48));transform-origin:50% 0;animation:nowaFlagWave 2.7s ease-in-out infinite}
+@keyframes nowaFlagWave{0%,100%{transform:rotate(-2.5deg) skewY(-1.5deg)}50%{transform:rotate(2.5deg) skewY(1.5deg)}}
+@media(max-width:600px){.nowa-flag-hanger{width:76px}}
+@media(prefers-reduced-motion:reduce){.nowa-flag-hanger img{animation:none}}
+
 </style>
 </head>
 <body>
 <div class="topline"></div>
+<div class="nowa-flag-hanger" aria-hidden="true"><img src="/nowa-turk-bayragi.gif" alt=""></div>
 <header><div class="wrap nav">
 <div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span></button><nav class="menu-dropdown" aria-label="Ana menü"><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><a href="/rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22m4-15h8m-8 4h8"/></svg><span>Yayıncı Rehberi</span></a><a href="/iletisim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>İletişim</span></a></nav></div>
 <div class="nav-right"><button class="btn" id="adminOpen" type="button" aria-label="Giriş Yap" title="Giriş Yap"><svg class="admin-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg></button></div>
