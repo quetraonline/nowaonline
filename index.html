@@ -124,15 +124,14 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-instagram-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#aeb8c5;background:linear-gradient(145deg,#202a37,#10151d);font-size:28px}.latest-instagram-placeholder small{font-size:11px;font-weight:700;letter-spacing:.02em}
 .latest-instagram-copy{display:block;padding:9px 10px 11px}
 .latest-instagram-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:800;line-height:1.4}
-.latest-instagram-meta{display:flex;align-items:center;gap:10px;margin-top:9px;min-width:0;color:#aeb8c5;font-size:10px}
-.latest-instagram-profile{display:block;flex:0 0 38px;width:38px;height:38px;padding:2px;border-radius:50%;background:linear-gradient(145deg,#ffe39a,#c58a35 48%,#6d4319);box-shadow:0 0 0 1px rgba(255,218,145,.4),0 2px 8px rgba(0,0,0,.45)}
-.latest-instagram-profile img,.latest-instagram-profile-fallback{display:flex;width:100%;height:100%;align-items:center;justify-content:center;object-fit:cover;border:2px solid #151b24;border-radius:50%;background:linear-gradient(145deg,#202a37,#10151d);color:#f2c66d;font-size:15px;font-weight:900}
-.latest-instagram-meta-info{display:flex;flex:1;flex-direction:column;justify-content:center;gap:5px;min-width:0}
-.latest-instagram-account{display:block;overflow:hidden;color:#f4f6fa;font-size:11px;font-weight:800;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
-.latest-instagram-account:hover{color:#f0c66f}
+.latest-instagram-meta{display:flex;align-items:center;gap:12px;margin-top:9px;min-width:0;color:#aeb8c5;font-size:10px}
+.latest-instagram-profile{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;border-radius:50%;border:1px solid #a87c3d;background:linear-gradient(145deg,#49341c,#202a36);color:#f3ca79;font-size:20px;font-weight:950;overflow:hidden;box-shadow:0 0 0 2px rgba(168,124,61,.18)}
+.latest-instagram-profile img,.latest-instagram-profile-fallback{display:grid;width:100%;height:100%;place-items:center;object-fit:cover;border-radius:50%;background:linear-gradient(145deg,#49341c,#202a36);color:#f3ca79;font-size:20px;font-weight:950}
+.latest-instagram-meta-info{display:flex;flex:1;flex-direction:column;justify-content:center;gap:6px;min-width:0}
+.latest-instagram-account{display:block;overflow:hidden;color:#f4f6fa;font-size:12px;font-weight:800;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}
 .latest-instagram-stats{display:flex;align-items:center;flex-wrap:wrap;gap:10px;color:#aeb8c5;font-size:10px;line-height:1.2}
 .latest-instagram-stat{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.latest-instagram-stat svg{width:13px;height:13px;flex:0 0 13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.latest-instagram-stat svg{width:14px;height:14px;flex:0 0 14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media(min-width:701px){.latest-instagram-meta{gap:11px}.latest-instagram-profile{width:42px;height:42px;flex-basis:42px}.latest-instagram-account{font-size:12px}.latest-instagram-stats{font-size:10px}}
 @media(min-width:701px){.latest-instagram-section{margin:0 0 36px}.latest-instagram-heading{margin-bottom:16px}.latest-instagram-heading h3{font-size:17px}.latest-instagram-heading>span{font-size:13px}.latest-instagram-track{gap:16px;padding-bottom:12px}.latest-instagram-card{flex:0 0 240px;max-width:240px;border-radius:14px}.latest-instagram-copy{padding:11px 12px 13px}.latest-instagram-title{font-size:14px}}
 .latest-instagram-track,.latest-youtube-track{cursor:grab;scrollbar-width:none;-ms-overflow-style:none}
@@ -263,9 +262,26 @@ async function loadLatestInstagramPosts(){
       }
       fallbacks.push(...instagramFallbacks);
       const title=(post.caption||"Nowa Online World Instagram paylaşımı").replace(/\s+/g," ").trim().slice(0,90);
-      const date=post.published_at?new Date(post.published_at).toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric"}):"";
+      const relativeTime=value=>{
+        if(!value)return "";
+        const seconds=Math.max(0,Math.floor((Date.now()-new Date(value).getTime())/1000));
+        if(!Number.isFinite(seconds))return "";
+        if(seconds<60)return "Şimdi";
+        const minutes=Math.floor(seconds/60);
+        if(minutes<60)return minutes+" dk. önce";
+        const hours=Math.floor(minutes/60);
+        if(hours<24)return hours+" sa. önce";
+        const days=Math.floor(hours/24);
+        if(days<7)return days+" gün önce";
+        const weeks=Math.floor(days/7);
+        if(weeks<5)return weeks+" hf. önce";
+        const months=Math.floor(days/30);
+        if(months<12)return months+" ay önce";
+        return Math.floor(days/365)+" yıl önce";
+      };
+      const date=relativeTime(post.published_at);
       const profileUrl=String(post.profile_pic_url||"");
-      const likes=Number(post.like_count);
+      const likes=post.like_count===null||post.like_count===undefined?NaN:Number(post.like_count);
       const profile=profileUrl
         ? '<span class="latest-instagram-profile"><img src="'+safe(profileUrl)+'" alt="@nowaonlineworld profil fotoğrafı" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;latest-instagram-profile-fallback&quot;>N</span>\'"></span>'
         : '<span class="latest-instagram-profile"><span class="latest-instagram-profile-fallback">N</span></span>';
