@@ -232,7 +232,7 @@ async function loadLatestInstagramPosts(){
   const track=$("latestInstagramTrack");
   if(!track||!db)return;
   try{
-    const {data,error}=await db.from("nowa_instagram_posts").select("id,shortcode,permalink,media_url,thumbnail_url,media_type,caption,published_at,profile_pic_url,like_count").order("published_at",{ascending:false,nullsFirst:false}).limit(5);
+    const {data,error}=await db.from("nowa_instagram_posts").select("id,shortcode,permalink,media_url,thumbnail_url,media_type,caption,published_at,profile_pic_url,like_count").order("published_at",{ascending:false,nullsFirst:false}).limit(10);
     if(error)throw error;
     if(!Array.isArray(data)||!data.length)return;
     const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
