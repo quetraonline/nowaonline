@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     if (!apiKey) return res.status(500).json({ error: "YouTube API anahtarı sunucuda tanımlı değil." });
 
     const isVodFeedRequest = String(req.query.vodfeed || "") === "1";
-    if (isVodFeedRequest) res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    if (isVodFeedRequest) res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=1800");
 
     const rawUrl = String(req.query.url || "").trim();
     if (!rawUrl) return res.status(400).json({ error: "YouTube kanal bağlantısı gerekli." });
@@ -152,6 +152,7 @@ export default async function handler(req, res) {
               thumbnail,
               url: "https://www.youtube.com/watch?v=" + encodeURIComponent(video.id),
               isLive: video.snippet?.liveBroadcastContent === "live" && !live?.actualEndTime,
+              isUpcoming: video.snippet?.liveBroadcastContent === "upcoming",
               isArchivedStream: Boolean(live?.actualStartTime && live?.actualEndTime),
               actualStartTime: live?.actualStartTime || live?.scheduledStartTime || "",
               actualEndTime: live?.actualEndTime || ""
@@ -172,10 +173,15 @@ export default async function handler(req, res) {
       playlistLiveStreams = normalizedVideos.filter(video => video.isLive && !video.actualEndTime);
       latestVideos = normalizedVideos.filter(video => !video.isLive && !video.isArchivedStream).slice(0, String(req.query.feed || "") === "1" ? 15 : 3);
       const streamCutoff = isVodFeed ? 0 : Date.now() - 30 * 24 * 60 * 60 * 1000;
-      latestStreams = archivedFound
-        .filter(stream => new Date((isVodFeed ? stream.publishedAt : (stream.actualStartTime || stream.publishedAt))).getTime() >= streamCutoff)
-        .sort((a, b) => new Date(isVodFeed ? (b.publishedAt || b.actualStartTime) : (b.actualStartTime || b.publishedAt)) - new Date(isVodFeed ? (a.publishedAt || a.actualStartTime) : (a.actualStartTime || a.publishedAt)))
-        .slice(0, isVodFeed ? 15 : 150);
+      latestStreams = isVodFeed
+        ? normalizedVideos
+            .filter(video => !video.isLive && !video.isUpcoming)
+            .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
+            .slice(0, 15)
+        : archivedFound
+            .filter(stream => new Date(stream.actualStartTime || stream.publishedAt).getTime() >= streamCutoff)
+            .sort((a, b) => new Date(b.actualStartTime || b.publishedAt) - new Date(a.actualStartTime || a.publishedAt))
+            .slice(0, 150);
     }
 
     // Devam eden yayını listenin başına al; kalan yeri en yeni tamamlanmış canlı yayınlarla doldur.
