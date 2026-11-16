@@ -20,5 +20,16 @@
       "destination": "/rehber",
       "permanent": true
     }
-  ]
+  ],
+  "crons": [
+    {
+      "path": "/api/tiktok-sync",
+      "schedule": "0 4 * * *"
+    }
+  ],
+  "functions": {
+    "api/tiktok-webhook.js": {
+      "maxDuration": 60
+    }
+  }
 }
