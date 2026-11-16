@@ -567,6 +567,38 @@ if(tiktokConnectionStatus){
 </script>
 
 <script>
+/* YouTube şeridi için doğrudan ve bağımsız fare kontrolü */
+(function(){
+ function bindYoutubeTrack(){
+  const track=document.getElementById('latestYoutubeTrack');
+  if(!track || track.dataset.youtubePointerReady==='1') return;
+  track.dataset.youtubePointerReady='1';
+  track.addEventListener('wheel',function(e){
+   if(window.innerWidth<701) return;
+   const amount=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;
+   if(!amount || track.scrollWidth<=track.clientWidth) return;
+   track.scrollLeft+=amount;
+   e.preventDefault();
+  },{passive:false,capture:true});
+  let pressed=false,originX=0,originScroll=0;
+  track.addEventListener('pointerdown',function(e){
+   if(window.innerWidth<701 || e.button!==0 || e.target.closest('a,button')) return;
+   pressed=true;originX=e.clientX;originScroll=track.scrollLeft;
+   track.setPointerCapture(e.pointerId);
+   track.classList.add('is-dragging');
+  });
+  track.addEventListener('pointermove',function(e){
+   if(!pressed) return;
+   track.scrollLeft=originScroll-(e.clientX-originX);
+  });
+  function release(){pressed=false;track.classList.remove('is-dragging')}
+  track.addEventListener('pointerup',release);
+  track.addEventListener('pointercancel',release);
+ }
+ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindYoutubeTrack);
+ else bindYoutubeTrack();
+ setTimeout(bindYoutubeTrack,1500);
+})();
 /* YouTube ve Instagram yatay kaydırmayı ortak ve dinamik yönet */
 document.addEventListener('wheel',function(e){
  if(window.innerWidth<701) return;
