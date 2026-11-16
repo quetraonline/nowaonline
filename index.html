@@ -178,7 +178,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
     <a class="latest-instagram-card" href="https://www.instagram.com/p/Dfa2TZ-isI1/" target="_blank" rel="noopener noreferrer">
       <img class="latest-instagram-thumb" src="https://www.instagram.com/p/Dfa2TZ-isI1/media/?size=l" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">
       <span class="latest-instagram-copy">
-        <span class="latest-instagram-title">Nowa Online World – Instagram paylaşımı</span>
+        <span class="latest-instagram-title">Instagram paylaşımları güncelleniyor...</span>
         <span class="latest-instagram-meta"><span>@nowaonlineworld</span><span class="latest-instagram-open">Instagram'da aç ↗</span></span>
       </span>
     </a>
@@ -196,7 +196,28 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
 const SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+async function loadLatestInstagramPosts(){
+  const track=$("latestInstagramTrack");
+  if(!track||!db)return;
+  try{
+    const {data,error}=await db.from("nowa_instagram_posts").select("id,shortcode,permalink,media_url,thumbnail_url,caption,published_at").order("published_at",{ascending:false,nullsFirst:false}).limit(5);
+    if(error)throw error;
+    if(!Array.isArray(data)||!data.length)return;
+    const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    track.innerHTML=data.map(post=>{
+      const image=post.media_url||post.thumbnail_url||"";
+      const title=(post.caption||"Nowa Online World Instagram paylaşımı").replace(/\s+/g," ").trim().slice(0,90);
+      const date=post.published_at?new Date(post.published_at).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}):"";
+      return '<a class="latest-instagram-card" href="'+safe(post.permalink)+'" target="_blank" rel="noopener noreferrer">'+
+        (image?'<img class="latest-instagram-thumb" src="'+safe(image)+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy">':'<span class="latest-instagram-thumb" aria-hidden="true"></span>')+
+        '<span class="latest-instagram-copy"><span class="latest-instagram-title">'+safe(title)+'</span>'+
+        '<span class="latest-instagram-meta"><span>@nowaonlineworld'+(date?' · '+safe(date):'')+'</span><span class="latest-instagram-open">Instagram\'da aç ↗</span></span></span></a>';
+    }).join("");
+  }catch(error){console.warn("Instagram paylaşımları yüklenemedi:",error);}
+}
+
 let publishers=[],adminPublishers=[],socialLinks=[],isAdmin=false,editingId=null;
+loadLatestInstagramPosts();
 const PLATFORMS=["TikTok","YouTube","Twitch","Kick","Instagram","Facebook","Discord","X","Telegram","Threads","WhatsApp"];
 const platformsOf=p=>Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:[]);
 const $=id=>document.getElementById(id);
