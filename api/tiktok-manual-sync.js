@@ -27,7 +27,10 @@ async function getGuard(serviceKey) {
   const rows = await response.json();
   const lastStartedAt = rows[0] && rows[0].last_started_at || null;
   const nextAllowedAt = lastStartedAt ? new Date(new Date(lastStartedAt).getTime() + 30 * 60 * 1000).toISOString() : null;
-  return { lastStartedAt, nextAllowedAt, cooldownMinutes: 30 };
+  const reportResponse = await fetch(SUPABASE_URL + "/rest/v1/nowa_tiktok_scan_reports?select=run_id,status,profile_count,dataset_items,publishers_updated,report,error,started_at,finished_at&order=started_at.desc&limit=1", { headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey } });
+  if (!reportResponse.ok) throw new Error("TikTok tarama raporu okunamadı.");
+  const reports = await reportResponse.json();
+  return { lastStartedAt, nextAllowedAt, cooldownMinutes: 30, latestReport: reports[0] || null };
 }
 
 export default async function handler(req, res) {
@@ -96,6 +99,12 @@ export default async function handler(req, res) {
     });
     const runData = await runResponse.json();
     if (!runResponse.ok) throw new Error("Apify taraması başlatılamadı: " + (runData.error && runData.error.message || runResponse.status));
+    const reportSave = await fetch(SUPABASE_URL + "/rest/v1/nowa_tiktok_scan_reports?on_conflict=run_id", {
+      method: "POST",
+      headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ run_id: runData.data && runData.data.id, status: runData.data && runData.data.status || "RUNNING", profile_count: handles.length, report: { profiles: handles.map(handle => ({ handle, videosFound: 0, publishersUpdated: 0, status: "Bekleniyor" })) } })
+    });
+    if (!reportSave.ok) console.error("TikTok scan report init failed:", await reportSave.text());
     return res.status(202).json({
       ok: true,
       status: runData.data && runData.data.status,
