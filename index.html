@@ -251,7 +251,7 @@ async function loadLatestInstagramPosts(){
       const thumbnail=String(post.thumbnail_url||"");
       const media=String(post.media_url||"");
       const image=isVideo
-        ? (thumbnail&&thumbnail!==media?thumbnail:(instagramFallbacks.shift()||""))
+        ? (thumbnail&&thumbnail!==media?thumbnail:"")
         : (thumbnail||media||instagramFallbacks.shift()||"");
       const fallbacks=[];
       if(isVideo){
@@ -287,7 +287,9 @@ async function loadLatestInstagramPosts(){
         : '<span class="latest-instagram-profile"><span class="latest-instagram-profile-fallback">N</span></span>';
       const imageHtml=image
         ? '<img class="latest-instagram-thumb" src="'+safe(image)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" alt="Nowa Online World Instagram paylaşımı" loading="lazy" referrerpolicy="no-referrer">'
-        : placeholder;
+        : (isVideo&&media
+          ? '<video class="latest-instagram-thumb latest-instagram-reel-preview" src="'+safe(media)+'" data-fallbacks="'+safe(JSON.stringify(fallbacks))+'" aria-label="Nowa Online World Instagram Reels önizlemesi" muted autoplay loop playsinline webkit-playsinline preload="auto"></video>'
+          : placeholder);
       const stats=(date?'<span class="latest-instagram-stat">'+clockIcon+safe(date)+'</span>':'')+
         (Number.isFinite(likes)?'<span class="latest-instagram-stat">'+heartIcon+likes.toLocaleString("tr-TR")+'</span>':'');
       return '<a class="latest-instagram-card" href="'+safe(permalink)+'" target="_blank" rel="noopener noreferrer">'+
@@ -297,7 +299,7 @@ async function loadLatestInstagramPosts(){
         '<span class="latest-instagram-meta-info"><span class="latest-instagram-account">@nowaonlineworld</span>'+
         '<span class="latest-instagram-stats">'+stats+'</span></span></span></span></a>';
     }).join("");
-    track.querySelectorAll("img.latest-instagram-thumb").forEach(img=>{
+    const installImageFallback=img=>{
       img.addEventListener("error",()=>{
         let fallbacks=[];
         try{fallbacks=JSON.parse(img.dataset.fallbacks||"[]")}catch(_){}
@@ -312,8 +314,34 @@ async function loadLatestInstagramPosts(){
         empty.setAttribute("aria-label","Görsel önizlemesi yüklenemedi");
         empty.innerHTML='<span aria-hidden="true">📷</span><small>Önizleme yüklenemedi</small>';
         img.replaceWith(empty);
-      });
+      },{once:true});
+    };
+    track.querySelectorAll("img.latest-instagram-thumb").forEach(installImageFallback);
+    track.querySelectorAll("video.latest-instagram-reel-preview").forEach(video=>{
+      video.addEventListener("error",()=>{
+        let fallbacks=[];
+        try{fallbacks=JSON.parse(video.dataset.fallbacks||"[]")}catch(_){}
+        const next=fallbacks.shift();
+        if(next){
+          const img=document.createElement("img");
+          img.className="latest-instagram-thumb";
+          img.alt="Nowa Online World Instagram paylaşımı";
+          img.loading="lazy";
+          img.referrerPolicy="no-referrer";
+          img.dataset.fallbacks=JSON.stringify(fallbacks);
+          img.src=next;
+          video.replaceWith(img);
+          installImageFallback(img);
+          return;
+        }
+        const empty=document.createElement("div");
+        empty.className="latest-instagram-thumb latest-instagram-placeholder";
+        empty.setAttribute("aria-label","Görsel önizlemesi yüklenemedi");
+        empty.innerHTML='<span aria-hidden="true">📷</span><small>Önizleme yüklenemedi</small>';
+        video.replaceWith(empty);
+      },{once:true});
     });
+
   }catch(error){console.warn("Instagram paylaşımları yüklenemedi:",error);}
 }
 
