@@ -532,99 +532,39 @@ if(tiktokConnectionStatus){
 }
 </script>
 <script>
-/* Masaüstünde yatay şeritleri fare tekerleği ve sürükleme ile kaydır */
+/* YouTube ve Instagram yatay şeritleri: tek, merkezi masaüstü tekerlek kontrolü */
 (function(){
-  function enableHorizontalTracks(){
-    document.querySelectorAll('.latest-instagram-track,.latest-youtube-track').forEach(function(track){
-      if(track.dataset.mouseScrollReady==='1') return;
-      track.dataset.mouseScrollReady='1';
-      track.addEventListener('wheel',function(e){
-        if(track.scrollWidth<=track.clientWidth) return;
-        var delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
-        if(delta){track.scrollLeft+=delta;e.preventDefault();}
-      },{passive:false});
-      var down=false,startX=0,startLeft=0;
-      track.addEventListener('mousedown',function(e){
-        if(e.button!==0) return;
-        down=true;startX=e.pageX;startLeft=track.scrollLeft;track.classList.add('is-dragging');
-      });
-      window.addEventListener('mousemove',function(e){
-        if(!down) return;
-        track.scrollLeft=startLeft-(e.pageX-startX);
-      });
-      window.addEventListener('mouseup',function(){
-        if(!down) return;down=false;track.classList.remove('is-dragging');
-      });
-      track.addEventListener('mouseleave',function(){
-        if(!down) return;down=false;track.classList.remove('is-dragging');
-      });
-    });
+ document.addEventListener('wheel',function(e){
+  if(window.innerWidth<701 || e.ctrlKey) return;
+  const track=e.target && e.target.closest ? e.target.closest('#latestYoutubeTrack,#latestInstagramTrack') : null;
+  if(!track) return;
+  const max=track.scrollWidth-track.clientWidth;
+  if(max<=2) return;
+  const delta=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;
+  if(!delta) return;
+  const before=track.scrollLeft;
+  track.scrollLeft=Math.max(0,Math.min(max,before+delta));
+  if(track.scrollLeft!==before){
+   if(e.cancelable)e.preventDefault();
+   e.stopPropagation();
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',enableHorizontalTracks);
-  else enableHorizontalTracks();
-  setTimeout(enableHorizontalTracks,1200);
-})();
-</script>
+ },{capture:true,passive:false});
 
-<script>
-/* YouTube şeridi için doğrudan ve bağımsız fare kontrolü */
-(function(){
- function bindYoutubeTrack(){
-  const track=document.getElementById('latestYoutubeTrack');
-  if(!track || track.dataset.youtubePointerReady==='1') return;
-  track.dataset.youtubePointerReady='1';
-  track.addEventListener('wheel',function(e){
-   if(window.innerWidth<701) return;
-   const amount=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;
-   if(!amount || track.scrollWidth<=track.clientWidth) return;
-   track.scrollLeft+=amount;
-   e.preventDefault();
-  },{passive:false,capture:true});
-  let pressed=false,originX=0,originScroll=0;
-  track.addEventListener('pointerdown',function(e){
-   if(window.innerWidth<701 || e.button!==0 || e.target.closest('a,button')) return;
-   pressed=true;originX=e.clientX;originScroll=track.scrollLeft;
-   track.setPointerCapture(e.pointerId);
-   track.classList.add('is-dragging');
-  });
-  track.addEventListener('pointermove',function(e){
-   if(!pressed) return;
-   track.scrollLeft=originScroll-(e.clientX-originX);
-  });
-  function release(){pressed=false;track.classList.remove('is-dragging')}
-  track.addEventListener('pointerup',release);
-  track.addEventListener('pointercancel',release);
- }
- if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindYoutubeTrack);
- else bindYoutubeTrack();
- setTimeout(bindYoutubeTrack,1500);
+ /* Kart okları her tıklamada bir kart ilerletir */
+ document.addEventListener('click',function(e){
+  const button=e.target.closest('.latest-carousel-arrow');
+  if(!button || window.innerWidth<701) return;
+  const track=document.getElementById(button.dataset.carouselTarget);
+  if(!track) return;
+  const card=track.querySelector('.latest-youtube-card,.latest-instagram-card');
+  if(!card) return;
+  const style=getComputedStyle(track);
+  const gap=parseFloat(style.columnGap||style.gap)||0;
+  const step=card.getBoundingClientRect().width+gap;
+  const max=Math.max(0,track.scrollWidth-track.clientWidth);
+  const next=button.classList.contains('next')?Math.min(max,track.scrollLeft+step):Math.max(0,track.scrollLeft-step);
+  track.scrollTo({left:next,behavior:'smooth'});
+ });
 })();
-/* YouTube ve Instagram yatay kaydırmayı ortak ve dinamik yönet */
-document.addEventListener('wheel',function(e){
- if(window.innerWidth<701) return;
- const underPointer=document.elementFromPoint(e.clientX,e.clientY);
- const track=underPointer&&underPointer.closest('#latestYoutubeTrack,#latestInstagramTrack');
- if(!track) return;
- const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
- if(!delta) return;
- const max=Math.max(0,track.scrollWidth-track.clientWidth);
- if(max<=0) return;
- track.scrollLeft=Math.max(0,Math.min(max,track.scrollLeft+delta));
- e.preventDefault();
-},{passive:false,capture:true});
-/* Masaüstü okları her tıklamada bir kart ilerletir */
-document.addEventListener('click',function(e){
- const button=e.target.closest('.latest-carousel-arrow');
- if(!button || window.innerWidth<701) return;
- const track=document.getElementById(button.dataset.carouselTarget);
- if(!track) return;
- const card=track.querySelector('.latest-youtube-card,.latest-instagram-card');
- if(!card) return;
- const gap=parseFloat(getComputedStyle(track).columnGap||getComputedStyle(track).gap)||0;
- const step=card.getBoundingClientRect().width+gap;
- const max=Math.max(0,track.scrollWidth-track.clientWidth);
- const next=button.classList.contains('next')?Math.min(max,track.scrollLeft+step):Math.max(0,track.scrollLeft-step);
- track.scrollTo({left:next,behavior:'smooth'});
-});
 </script>
 </body></html>
