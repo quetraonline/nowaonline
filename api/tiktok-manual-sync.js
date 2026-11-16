@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     }
 
     const webhooks = [{
-      eventTypes: ["ACTOR.RUN.SUCCEEDED"],
+      eventTypes: ["ACTOR.RUN.SUCCEEDED", "ACTOR.RUN.FAILED", "ACTOR.RUN.TIMED_OUT", "ACTOR.RUN.ABORTED"],
       requestUrl: "https://nowaonline.vercel.app/api/tiktok-webhook",
       headersTemplate: JSON.stringify({ "x-apify-webhook-secret": webhookSecret }),
       payloadTemplate: '{"eventData":{{eventData}},"resource":{{resource}}}'
