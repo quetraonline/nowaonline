@@ -23,9 +23,18 @@ export default async function handler(req, res) {
     const accounts = publishers.map(p => ({ id: p.id, name: p.name, handle: getHandle(p) })).filter(p => p.handle);
     const uniqueHandles = [...new Set(accounts.map(p => p.handle))];
     if (!uniqueHandles.length) return res.status(200).json({ ok: true, message: "No TikTok profiles found", publishers: 0 });
+    const claimResponse = await fetch(supabaseUrl + "/rest/v1/rpc/claim_nowa_tiktok_sync", {
+      method: "POST",
+      headers: { apikey: serviceKey, Authorization: "Bearer " + serviceKey, "Content-Type": "application/json" },
+      body: "{}"
+    });
+    if (!claimResponse.ok) throw new Error("TikTok sync lock could not be acquired");
+    const claimRows = await claimResponse.json();
+    const claim = Array.isArray(claimRows) ? claimRows[0] : claimRows;
+    if (!claim || !claim.allowed) return res.status(429).json({ ok: false, message: "TikTok sync cooldown is active", nextAllowedAt: claim && claim.next_allowed_at || null });
     const webhook = [{
       eventTypes: ["ACTOR.RUN.SUCCEEDED"],
-      requestUrl: "https://" + (process.env.VERCEL_PROJECT_PRODUCTION_URL || "nowaonlineworld.com") + "/api/tiktok-webhook",
+      requestUrl: "https://nowaonline.vercel.app/api/tiktok-webhook",
       headersTemplate: JSON.stringify({ "x-apify-webhook-secret": webhookSecret }),
       payloadTemplate: '{"eventData":{{eventData}},"resource":{{resource}}}'
     }];
