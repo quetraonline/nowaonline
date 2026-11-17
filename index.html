@@ -36,7 +36,7 @@ header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blu
 .live-channel-card .live-status{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:max-content!important;min-height:22px!important;margin-top:4px!important;padding:2px 6px 2px 10px!important;border:1px solid #ff6478!important;border-radius:5px!important;background:rgba(215,25,53,.22)!important;color:#fff!important;opacity:1!important;text-shadow:0 1px 3px rgba(0,0,0,.65)!important;box-shadow:0 0 10px rgba(255,35,65,.25)!important;font-size:9px!important;font-weight:800!important;line-height:1!important;letter-spacing:.25px!important;box-sizing:border-box!important;vertical-align:middle!important}
 .live-channel-card .live-indicator{width:4px;height:4px;flex:0 0 4px;background:#fff!important;opacity:1!important;animation:liveWave 1.8s ease-out infinite!important}
 .live-channel-card .live-platform-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;flex:0 0 14px;color:#fff;visibility:visible;opacity:1}
-.live-channel-card .live-platform-icon svg{width:100%;height:100%;fill:currentColor}.live-channel-card .live-stats-frame{display:block!important;width:132px!important;height:34px!important;min-height:34px!important;margin-top:5px!important;padding:0!important;border:1px solid #ff6478!important;border-radius:7px!important;background:rgba(215,25,53,.16)!important;box-shadow:0 0 10px rgba(255,35,65,.22)!important;cursor:pointer!important}.live-channel-card .live-stats-frame:hover{background:rgba(215,25,53,.28)!important;box-shadow:0 0 14px rgba(255,35,65,.38)!important}.live-channel-card.live-channel-avatar-only{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;width:80px!important;min-width:80px!important;max-width:80px!important;min-height:100px!important;padding:7px 0 5px!important;background:transparent!important;border:0!important;box-shadow:none!important;cursor:pointer!important}.live-channel-card.live-channel-avatar-only .avatar{width:58px!important;height:58px!important;flex:0 0 58px!important}.live-channel-viewers{display:block!important;width:100%!important;max-width:100px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:center!important;color:#aeb6c4!important;font-size:9px!important;font-weight:700!important;line-height:12px!important;letter-spacing:0!important;margin-top:-3px!important}.live-channel-name{display:block!important;width:100%!important;max-width:80px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:center!important;color:#e8c56f!important;font-size:10px!important;font-weight:800!important;line-height:13px!important;letter-spacing:.1px!important}.live-channel-card.live-channel-avatar-only+.live-channel-card.live-channel-avatar-only{border-left:0!important;padding-left:0!important}.live-channel-card.live-channel-avatar-only+.live-channel-card.live-channel-avatar-only:before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,transparent,#c9a24a 18%,#e8c56f 50%,#c9a24a 82%,transparent);box-shadow:0 0 5px rgba(201,162,74,.25);pointer-events:none}
+.live-channel-card .live-platform-icon svg{width:100%;height:100%;fill:currentColor}.live-channel-card .live-stats-frame{display:block!important;width:132px!important;height:34px!important;min-height:34px!important;margin-top:5px!important;padding:0!important;border:1px solid #ff6478!important;border-radius:7px!important;background:rgba(215,25,53,.16)!important;box-shadow:0 0 10px rgba(255,35,65,.22)!important;cursor:pointer!important}.live-channel-card .live-stats-frame:hover{background:rgba(215,25,53,.28)!important;box-shadow:0 0 14px rgba(255,35,65,.38)!important}.live-channel-card.live-channel-avatar-only{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;width:80px!important;min-width:80px!important;max-width:80px!important;min-height:100px!important;padding:7px 0 5px!important;background:transparent!important;border:0!important;box-shadow:none!important;cursor:pointer!important}.live-channel-card.live-channel-avatar-only .avatar{width:58px!important;height:58px!important;flex:0 0 58px!important}.live-channel-name{display:block!important;width:100%!important;max-width:80px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:center!important;color:#e8c56f!important;font-size:10px!important;font-weight:800!important;line-height:13px!important;letter-spacing:.1px!important}.live-channel-card.live-channel-avatar-only+.live-channel-card.live-channel-avatar-only{border-left:0!important;padding-left:0!important}.live-channel-card.live-channel-avatar-only+.live-channel-card.live-channel-avatar-only:before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,transparent,#c9a24a 18%,#e8c56f 50%,#c9a24a 82%,transparent);box-shadow:0 0 5px rgba(201,162,74,.25);pointer-events:none}
 .live-channels-section .latest-carousel-arrow.prev{left:2px}
 .live-channels-section .latest-carousel-arrow.next{right:2px}
 .live-channels-section .latest-carousel-arrow{top:42%;width:36px;height:36px}
@@ -441,10 +441,7 @@ function renderLiveChannels(){
  track.innerHTML=live.map(p=>{
   const platforms=Array.from(livePublisherPlatforms.get(p.id)||[]).sort((a,b)=>["TikTok","Twitch","YouTube","Kick"].indexOf(a)-["TikTok","Twitch","YouTube","Kick"].indexOf(b));
   const status='<button type="button" class="live-status live-stats-frame" data-live-stats-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' yayın istatistiklerini aç" title="Yayın istatistiklerini aç"></button>';
-  const counts=livePublisherViewerCounts.get(p.id)||new Map();
-  const viewerLabels=platforms.filter(platform=>counts.has(platform.toLowerCase())&&Number.isFinite(counts.get(platform.toLowerCase()))).map(platform=>platform+' '+Math.max(0,counts.get(platform.toLowerCase())).toLocaleString("tr-TR"));
-  const viewersHtml=viewerLabels.length?'<span class="live-channel-viewers" title="'+esc(viewerLabels.join(" · "))+'">' + (viewerLabels.length===1?'👁 '+viewerLabels[0].replace(/^[^ ]+ /,"") + ' izleyici':'👁 '+viewerLabels.join(" · ")) + '</span>':"";
-  return '<div class="live-channel-card live-channel-avatar-only" data-live-stats-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="'+esc(p.name)+' yayın istatistiklerini aç"><div class="avatar live-avatar">'+avatar(p)+'</div><span class="live-channel-name" title="'+esc(p.name)+'">'+esc(p.name)+'</span>'+viewersHtml+'</div>';
+  return '<div class="live-channel-card live-channel-avatar-only" data-live-stats-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="'+esc(p.name)+' yayın istatistiklerini aç"><div class="avatar live-avatar">'+avatar(p)+'</div><span class="live-channel-name" title="'+esc(p.name)+'">'+esc(p.name)+'</span></div>';
  }).join("");
  requestAnimationFrame(updateLiveChannelsArrows);
 }
@@ -474,7 +471,6 @@ document.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key==
 function render(){renderLiveChannels();const q=$("search").value.trim().toLocaleLowerCase("tr"),pl=$("platform").value,liveOnly=$("liveOnlyFilter").checked;const arr=publishers.filter(p=>p.name.toLocaleLowerCase("tr").includes(q)&&(!pl||platformsOf(p).includes(pl))&&(!liveOnly||(livePublisherPlatforms.get(p.id)?.size||0)>0));const ares=arr.filter(p=>(p.server||"Ares").toLowerCase()==="ares"),atlas=arr.filter(p=>(p.server||"Ares").toLowerCase()==="atlas");const featured=publishers.filter(p=>p.homepage_featured);$("featuredSection").hidden=!featured.length;$("featuredCards").innerHTML=publisherCards(featured);$("publisherCount").textContent=arr.filter(p=>p.card_theme!=="youtube").length;$("creatorCount").textContent=arr.filter(p=>p.card_theme==="youtube").length;$("livePublisherCount").innerHTML="<b><span class=\"live-count\">"+arr.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0).length+"</span> yayıncı</b> şu anda canlı yayında";const allAres=publishers.filter(p=>(p.server||"Ares").toLowerCase()==="ares"),allAtlas=publishers.filter(p=>(p.server||"Ares").toLowerCase()==="atlas");const aresLiveCount=allAres.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0).length,atlasLiveCount=allAtlas.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0).length;$("aresLiveCount").textContent=" - "+aresLiveCount+" canlı yayın";$("atlasLiveCount").textContent=" - "+atlasLiveCount+" canlı yayın";$("aresLiveCount").hidden=aresLiveCount===0;$("atlasLiveCount").hidden=atlasLiveCount===0;$("aresCount").textContent=ares.length+" yayıncı";$("atlasCount").textContent=atlas.length+" yayıncı";$("aresCards").innerHTML=liveOnly&&pl&&!ares.length?'<div class="empty"><strong>'+esc(pl)+' platformunda şu anda canlı yayında olan yayıncı yok.</strong></div>':!liveOnly&&!ares.length&&pl?'<div class="empty"><strong>Bu serverda '+esc(pl)+' kullanan yayıncı yok.</strong></div>':liveOnly&&!ares.length?'<div class="empty"><strong>Şu anda Ares serverında Canlı Yayın yapan bir yayıncı yok.</strong></div>':publisherCards(ares);$("atlasCards").innerHTML=liveOnly&&pl&&!atlas.length?'<div class="empty"><strong>'+esc(pl)+' platformunda şu anda canlı yayında olan yayıncı yok.</strong></div>':!liveOnly&&!atlas.length&&pl?'<div class="empty"><strong>Bu serverda '+esc(pl)+' kullanan yayıncı yok.</strong></div>':liveOnly&&!atlas.length?'<div class="empty"><strong>Şu anda Atlas serverında Canlı Yayın yapan bir yayıncı yok.</strong></div>':publisherCards(atlas)}
 let livePublisherPlatforms=new Map();
 let livePublisherTitles=new Map();
-let livePublisherViewerCounts=new Map();
 let liveChannelsVisible=true;
 function applyLiveChannelsVisibility(visible){liveChannelsVisible=visible!==false;renderLiveChannels()}
 async function loadLiveChannelsVisibility(){try{const {data,error}=await db.from("nowa_site_settings").select("live_channels_visible").eq("id",true).maybeSingle();if(error)throw error;const visible=data?.live_channels_visible!==false;try{localStorage.setItem("nowa_live_channels_visible",String(visible))}catch{}applyLiveChannelsVisibility(visible);return visible}catch(error){console.warn("Canlı yayıncı kutusu görünürlük ayarı yüklenemedi:",error);let cached=null;try{cached=localStorage.getItem("nowa_live_channels_visible")}catch{}const visible=cached!=="false";applyLiveChannelsVisibility(visible);return visible}}
@@ -482,47 +478,7 @@ let youtubeSectionVisible=true,instagramSectionVisible=true;
 function applyYoutubeSectionVisibility(visible){youtubeSectionVisible=visible!==false;const section=$("latestYoutubeSection");if(section)section.hidden=!youtubeSectionVisible||section.dataset.hasContent==="false"}
 function applyInstagramSectionVisibility(visible){instagramSectionVisible=visible!==false;const section=$("latestInstagramSection");if(section)section.hidden=!instagramSectionVisible}
 async function loadContentSectionVisibility(){try{const {data,error}=await db.from("nowa_site_settings").select("youtube_section_visible,instagram_section_visible").eq("id",true).maybeSingle();if(error)throw error;const youtube=data?.youtube_section_visible!==false,instagram=data?.instagram_section_visible!==false;try{localStorage.setItem("nowa_youtube_section_visible",String(youtube));localStorage.setItem("nowa_instagram_section_visible",String(instagram))}catch{}applyYoutubeSectionVisibility(youtube);applyInstagramSectionVisibility(instagram);return {youtube,instagram}}catch(error){console.warn("YouTube/Instagram bölüm görünürlük ayarları yüklenemedi:",error);let youtube=true,instagram=true;try{youtube=localStorage.getItem("nowa_youtube_section_visible")!=="false";instagram=localStorage.getItem("nowa_instagram_section_visible")!=="false"}catch{}applyYoutubeSectionVisibility(youtube);applyInstagramSectionVisibility(instagram);return {youtube,instagram}}}
-async function loadLivePublisherPlatforms(){
- const {data,error}=await db.from("nowa_stream_sessions").select("id,publisher_id,platform,stream_title,started_at,viewer_count").is("ended_at",null);
- if(error){console.warn("Canlı platform durumları alınamadı:",error);return}
- const next=new Map(),titles=new Map(),viewerCounts=new Map(),sessionById=new Map();
- for(const row of data||[]){
-  const key=String(row.platform||"").toLowerCase();
-  if(!["twitch","tiktok","youtube","kick"].includes(key))continue;
-  sessionById.set(row.id,row);
-  if(!next.has(row.publisher_id))next.set(row.publisher_id,new Set());
-  next.get(row.publisher_id).add(key==="twitch"?"Twitch":key==="youtube"?"YouTube":key==="kick"?"Kick":"TikTok");
-  const title=String(row.stream_title||"").trim();
-  if(title&&!titles.has(row.publisher_id))titles.set(row.publisher_id,title);
-  if(row.viewer_count!==null&&row.viewer_count!==undefined&&row.viewer_count!==""){
-   if(!viewerCounts.has(row.publisher_id))viewerCounts.set(row.publisher_id,new Map());
-   viewerCounts.get(row.publisher_id).set(key,Number(row.viewer_count));
-  }
- }
- const sessionIds=Array.from(sessionById.keys());
- if(sessionIds.length){
-  const {data:samples,error:sampleError}=await db.from("nowa_stream_viewer_samples")
-   .select("stream_session_id,platform,viewer_count,sampled_at")
-   .in("stream_session_id",sessionIds)
-   .order("sampled_at",{ascending:false})
-   .limit(Math.max(100,sessionIds.length*20));
-  if(sampleError){console.warn("Canlı izleyici örnekleri alınamadı:",sampleError)}
-  else{
-   const seen=new Set();
-   for(const sample of samples||[]){
-    if(seen.has(sample.stream_session_id))continue;
-    seen.add(sample.stream_session_id);
-    const session=sessionById.get(sample.stream_session_id);
-    if(!session)continue;
-    const key=String(sample.platform||session.platform||"").toLowerCase();
-    if(!["twitch","tiktok","youtube","kick"].includes(key))continue;
-    if(!viewerCounts.has(session.publisher_id))viewerCounts.set(session.publisher_id,new Map());
-    viewerCounts.get(session.publisher_id).set(key,Number(sample.viewer_count));
-   }
-  }
- }
- livePublisherPlatforms=next;livePublisherTitles=titles;livePublisherViewerCounts=viewerCounts;render();
-}
+async function loadLivePublisherPlatforms(){const {data,error}=await db.from("nowa_stream_sessions").select("publisher_id,platform,stream_title,started_at").is("ended_at",null);if(error){console.warn("Canlı platform durumları alınamadı:",error);return}const next=new Map(),titles=new Map();for(const row of data||[]){const key=String(row.platform||"").toLowerCase();if(key!=="twitch"&&key!=="tiktok"&&key!=="youtube"&&key!=="kick")continue;if(!next.has(row.publisher_id))next.set(row.publisher_id,new Set());next.get(row.publisher_id).add(key==="twitch"?"Twitch":key==="youtube"?"YouTube":key==="kick"?"Kick":"TikTok");const title=String(row.stream_title||"").trim();if(title&&!titles.has(row.publisher_id))titles.set(row.publisher_id,title)}livePublisherPlatforms=next;livePublisherTitles=titles;render()}
 
 async function loadLatestYoutubeFeed(){
  const section=$("latestYoutubeSection"),track=$("latestYoutubeTrack");
@@ -809,8 +765,6 @@ async function pollTwitchLiveStatus(){
 clearInterval(window.nowaTwitchGlobalPoll);
 pollTwitchLiveStatus();
 window.nowaTwitchGlobalPoll=setInterval(pollTwitchLiveStatus,60000);
-clearInterval(window.nowaLiveViewerPoll);
-window.nowaLiveViewerPoll=setInterval(loadLivePublisherPlatforms,15000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollTwitchLiveStatus()});
 /* Profil fotoğraflarında sağ tık/uzun basma menüsünü ve sürüklemeyi engelle */
 document.addEventListener("contextmenu",event=>{
