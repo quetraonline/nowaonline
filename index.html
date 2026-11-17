@@ -162,6 +162,13 @@ header{position:sticky;top:0;z-index:10;position:sticky}
 .site-flag-gif{visibility:hidden}
 .flag-setting-ready .site-flag-gif{visibility:visible}
 .flag-setting-hidden .site-flag-gif{display:none!important;visibility:hidden!important}
+
+/* Bayrak arka planda kalır; üst menü ve açılır menü her ekranda üstte görünür */
+header{isolation:isolate}
+.site-flag-gif{z-index:0!important}
+header .nav{position:relative;z-index:2}
+header .menu{position:relative;z-index:3}
+header .menu-dropdown{z-index:40}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden")}catch(e){}})();</script>
 </head>
