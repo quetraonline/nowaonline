@@ -24,9 +24,11 @@ header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blu
 .live-channels-carousel-wrap{position:relative;min-width:0;width:100%;max-width:100%}
 .live-channels-track{display:flex;align-items:stretch;gap:9px;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;padding:3px 2px 9px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x}
 .live-channels-track::-webkit-scrollbar{display:none}
-.live-channel-card.card{display:flex;align-items:center;flex:0 0 270px;width:270px;height:64px;min-height:64px;padding:8px 11px;border:1px solid #303b4b;border-radius:9px;background:linear-gradient(145deg,#19212c,#10151d);color:#f4f6fa;text-align:left;cursor:pointer;scroll-snap-align:start;overflow:hidden}
-.live-channel-card.card:hover{background:linear-gradient(145deg,#202a37,#121923);border-color:#a77c40}
-.live-channel-card .cardtop{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0}
+
+.live-channel-card{display:flex;align-items:center;flex:0 0 250px;width:250px;min-width:0;min-height:64px;padding:8px 15px 8px 8px;border:0;border-radius:0;background:transparent;color:#f4f6fa;text-align:left;cursor:pointer;scroll-snap-align:start;overflow:hidden}
+.live-channel-card+.live-channel-card{border-left:1px solid #c9a24a;padding-left:16px}
+.live-channel-card:hover{background:rgba(201,162,74,.06)}
+.live-channel-card .cardtop{display:flex;align-items:center;justify-content:flex-start;gap:8px;width:100%;min-width:0}
 .live-channel-card .person{display:flex;align-items:center;gap:12px;min-width:0}
 .live-channel-card .avatar{width:46px;height:46px;flex:0 0 46px;border-radius:50%;overflow:hidden}
 .live-channel-card .person-info{min-width:0}
@@ -35,9 +37,6 @@ header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blu
 .live-channel-card .live-indicator{width:4px;height:4px;flex:0 0 4px;background:#fff!important;opacity:1!important;animation:liveWave 1.8s ease-out infinite!important}
 .live-channel-card .live-platform-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;flex:0 0 14px;color:#fff;visibility:visible;opacity:1}
 .live-channel-card .live-platform-icon svg{width:100%;height:100%;fill:currentColor}
-.live-channel-card .platform-tags{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin:0;max-width:40%;flex-wrap:nowrap}
-.live-channel-card .platform-tag{width:27px;height:27px;flex:0 0 27px;border-radius:7px}
-.live-channel-card .platform-tag svg{width:16px;height:16px}
 .live-channels-section .latest-carousel-arrow.prev{left:2px}
 .live-channels-section .latest-carousel-arrow.next{right:2px}
 .live-channels-section .latest-carousel-arrow{top:42%;width:36px;height:36px}
@@ -430,8 +429,7 @@ function renderLiveChannels(){
  track.innerHTML=live.map(p=>{
   const platforms=Array.from(livePublisherPlatforms.get(p.id)||[]).sort((a,b)=>["TikTok","Twitch","YouTube","Kick"].indexOf(a)-["TikTok","Twitch","YouTube","Kick"].indexOf(b));
   const status='<div class="live-status"><span class="live-indicator" aria-hidden="true"></span><span>CANLI</span>'+platforms.map(platform=>'<span class="live-platform-icon '+platform.toLowerCase()+'" title="'+esc(platform)+'" aria-label="'+esc(platform)+'">'+platformIcon(platform)+'</span>').join("")+'</div>';
-  const links=platformsOf(p).map(x=>{const u=p.platform_links?.[x];return u?'<a class="platform-tag '+x.toLowerCase()+'" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer" title="'+esc(x)+'" aria-label="'+esc(x)+' bağlantısını aç">'+platformIcon(x)+'</a>':'<span class="platform-tag '+x.toLowerCase()+'" title="'+esc(x)+'" aria-label="'+esc(x)+'">'+platformIcon(x)+'</span>'}).join("");
-  return '<article class="card live-channel-card '+(p.card_theme==="youtube"?"youtube-theme":"")+'" data-live-publisher-id="'+esc(p.id)+'" tabindex="0" role="button" aria-label="'+esc(p.name)+' yayıncı kutusuna git"><div class="cardtop"><div class="person"><div class="avatar live-avatar">'+avatar(p)+'</div><div class="person-info"><div class="name">'+esc(p.name)+'</div>'+status+'</div></div><div class="platform-tags card-platforms">'+links+'</div></div></article>';
+  return '<button type="button" class="live-channel-card" data-live-publisher-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' yayıncı kutusuna git"><div class="cardtop"><div class="person"><div class="avatar live-avatar">'+avatar(p)+'</div><div class="person-info"><div class="name">'+esc(p.name)+'</div>'+status+'</div></div></div></button>';
  }).join("");
 }
 document.addEventListener("click",event=>{
