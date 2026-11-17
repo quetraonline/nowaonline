@@ -482,7 +482,47 @@ let youtubeSectionVisible=true,instagramSectionVisible=true;
 function applyYoutubeSectionVisibility(visible){youtubeSectionVisible=visible!==false;const section=$("latestYoutubeSection");if(section)section.hidden=!youtubeSectionVisible||section.dataset.hasContent==="false"}
 function applyInstagramSectionVisibility(visible){instagramSectionVisible=visible!==false;const section=$("latestInstagramSection");if(section)section.hidden=!instagramSectionVisible}
 async function loadContentSectionVisibility(){try{const {data,error}=await db.from("nowa_site_settings").select("youtube_section_visible,instagram_section_visible").eq("id",true).maybeSingle();if(error)throw error;const youtube=data?.youtube_section_visible!==false,instagram=data?.instagram_section_visible!==false;try{localStorage.setItem("nowa_youtube_section_visible",String(youtube));localStorage.setItem("nowa_instagram_section_visible",String(instagram))}catch{}applyYoutubeSectionVisibility(youtube);applyInstagramSectionVisibility(instagram);return {youtube,instagram}}catch(error){console.warn("YouTube/Instagram bölüm görünürlük ayarları yüklenemedi:",error);let youtube=true,instagram=true;try{youtube=localStorage.getItem("nowa_youtube_section_visible")!=="false";instagram=localStorage.getItem("nowa_instagram_section_visible")!=="false"}catch{}applyYoutubeSectionVisibility(youtube);applyInstagramSectionVisibility(instagram);return {youtube,instagram}}}
-async function loadLivePublisherPlatforms(){const {data,error}=await db.from("nowa_stream_sessions").select("publisher_id,platform,stream_title,started_at,viewer_count").is("ended_at",null);if(error){console.warn("Canlı platform durumları alınamadı:",error);return}const next=new Map(),titles=new Map(),viewerCounts=new Map();for(const row of data||[]){const key=String(row.platform||"").toLowerCase();if(key!=="twitch"&&key!=="tiktok"&&key!=="youtube"&&key!=="kick")continue;if(!next.has(row.publisher_id))next.set(row.publisher_id,new Set());next.get(row.publisher_id).add(key==="twitch"?"Twitch":key==="youtube"?"YouTube":key==="kick"?"Kick":"TikTok");const title=String(row.stream_title||"").trim();if(title&&!titles.has(row.publisher_id))titles.set(row.publisher_id,title);if(row.viewer_count!==null&&row.viewer_count!==undefined&&row.viewer_count!==""){if(!viewerCounts.has(row.publisher_id))viewerCounts.set(row.publisher_id,new Map());viewerCounts.get(row.publisher_id).set(key,Number(row.viewer_count))}}livePublisherPlatforms=next;livePublisherTitles=titles;livePublisherViewerCounts=viewerCounts;render()}
+async function loadLivePublisherPlatforms(){
+ const {data,error}=await db.from("nowa_stream_sessions").select("id,publisher_id,platform,stream_title,started_at,viewer_count").is("ended_at",null);
+ if(error){console.warn("Canlı platform durumları alınamadı:",error);return}
+ const next=new Map(),titles=new Map(),viewerCounts=new Map(),sessionById=new Map();
+ for(const row of data||[]){
+  const key=String(row.platform||"").toLowerCase();
+  if(!["twitch","tiktok","youtube","kick"].includes(key))continue;
+  sessionById.set(row.id,row);
+  if(!next.has(row.publisher_id))next.set(row.publisher_id,new Set());
+  next.get(row.publisher_id).add(key==="twitch"?"Twitch":key==="youtube"?"YouTube":key==="kick"?"Kick":"TikTok");
+  const title=String(row.stream_title||"").trim();
+  if(title&&!titles.has(row.publisher_id))titles.set(row.publisher_id,title);
+  if(row.viewer_count!==null&&row.viewer_count!==undefined&&row.viewer_count!==""){
+   if(!viewerCounts.has(row.publisher_id))viewerCounts.set(row.publisher_id,new Map());
+   viewerCounts.get(row.publisher_id).set(key,Number(row.viewer_count));
+  }
+ }
+ const sessionIds=Array.from(sessionById.keys());
+ if(sessionIds.length){
+  const {data:samples,error:sampleError}=await db.from("nowa_stream_viewer_samples")
+   .select("stream_session_id,platform,viewer_count,sampled_at")
+   .in("stream_session_id",sessionIds)
+   .order("sampled_at",{ascending:false})
+   .limit(Math.max(100,sessionIds.length*20));
+  if(sampleError){console.warn("Canlı izleyici örnekleri alınamadı:",sampleError)}
+  else{
+   const seen=new Set();
+   for(const sample of samples||[]){
+    if(seen.has(sample.stream_session_id))continue;
+    seen.add(sample.stream_session_id);
+    const session=sessionById.get(sample.stream_session_id);
+    if(!session)continue;
+    const key=String(sample.platform||session.platform||"").toLowerCase();
+    if(!["twitch","tiktok","youtube","kick"].includes(key))continue;
+    if(!viewerCounts.has(session.publisher_id))viewerCounts.set(session.publisher_id,new Map());
+    viewerCounts.get(session.publisher_id).set(key,Number(sample.viewer_count));
+   }
+  }
+ }
+ livePublisherPlatforms=next;livePublisherTitles=titles;livePublisherViewerCounts=viewerCounts;render();
+}
 
 async function loadLatestYoutubeFeed(){
  const section=$("latestYoutubeSection"),track=$("latestYoutubeTrack");
