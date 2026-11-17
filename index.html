@@ -209,6 +209,7 @@ header .menu-dropdown{z-index:40}
 @media(min-width:701px){
   #liveChannelsTrack{padding-left:58px!important;padding-right:58px!important;box-sizing:border-box!important}
 }
+@media(min-width:701px){.live-channels-section .latest-carousel-arrow:disabled{opacity:.28!important;filter:saturate(.35)!important;cursor:default!important;pointer-events:none!important;animation:none!important;box-shadow:0 0 0 2px rgba(232,185,92,.08),0 0 8px rgba(232,185,92,.18)!important}}
 
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden")}catch(e){}})();</script>
@@ -441,7 +442,27 @@ function renderLiveChannels(){
   const status='<button type="button" class="live-status live-stats-frame" data-live-stats-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' yayın istatistiklerini aç" title="Yayın istatistiklerini aç"></button>';
   return '<div class="live-channel-card live-channel-avatar-only" data-live-stats-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="'+esc(p.name)+' yayın istatistiklerini aç"><div class="avatar live-avatar">'+avatar(p)+'</div><span class="live-channel-name" title="'+esc(p.name)+'">'+esc(p.name)+'</span></div>';
  }).join("");
+ requestAnimationFrame(updateLiveChannelsArrows);
 }
+function updateLiveChannelsArrows(){
+ const track=$("liveChannelsTrack");if(!track)return;
+ const section=track.closest(".live-channels-section");if(!section)return;
+ const prev=section.querySelector(".latest-carousel-arrow.prev"),next=section.querySelector(".latest-carousel-arrow.next");
+ if(!prev||!next)return;
+ if(window.innerWidth<701){prev.style.display="";next.style.display="";prev.disabled=false;next.disabled=false;return;}
+ const max=Math.max(0,track.scrollWidth-track.clientWidth);
+ const hasOverflow=max>2;
+ prev.style.display=next.style.display=hasOverflow?"flex":"none";
+ prev.disabled=!hasOverflow||track.scrollLeft<=2;
+ next.disabled=!hasOverflow||track.scrollLeft>=max-2;
+ prev.setAttribute("aria-disabled",String(prev.disabled));next.setAttribute("aria-disabled",String(next.disabled));
+}
+(function(){
+ const track=$("liveChannelsTrack");if(!track)return;
+ track.addEventListener("scroll",updateLiveChannelsArrows,{passive:true});
+ window.addEventListener("resize",updateLiveChannelsArrows);
+ if("ResizeObserver" in window){const observer=new ResizeObserver(updateLiveChannelsArrows);observer.observe(track);}
+})();
 function openLivePublisherStats(frame){const publisher=publishers.find(p=>String(p.id)===String(frame?.dataset.liveStatsId));if(publisher)openPublisherDetails(publisher)}
 document.addEventListener("click",event=>{const frame=event.target.closest("[data-live-stats-id]");if(frame)openLivePublisherStats(frame)});
 document.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&event.target.matches(".live-channel-avatar-only[data-live-stats-id]")){event.preventDefault();openLivePublisherStats(event.target)}});
