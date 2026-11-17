@@ -207,7 +207,8 @@ header .menu-dropdown{z-index:40}
 
 /* Masaüstünde canlı yayıncı okları için iki yanda boş şerit ayır; profiller okların altında kalmasın */
 @media(min-width:701px){
-  #liveChannelsTrack{padding-left:58px!important;padding-right:58px!important;box-sizing:border-box!important}
+  .live-channels-section.live-channels-overflow #liveChannelsTrack{padding-left:58px!important;padding-right:58px!important;box-sizing:border-box!important}
+  .live-channels-section:not(.live-channels-overflow) #liveChannelsTrack{padding-left:0!important;padding-right:0!important;box-sizing:border-box!important}
 }
 @media(min-width:701px){.live-channels-section .latest-carousel-arrow:disabled{opacity:.28!important;filter:saturate(.35)!important;cursor:default!important;pointer-events:none!important;animation:none!important;box-shadow:0 0 0 2px rgba(232,185,92,.08),0 0 8px rgba(232,185,92,.18)!important}}
 
@@ -452,6 +453,7 @@ function updateLiveChannelsArrows(){
  if(window.innerWidth<701){prev.style.display="";next.style.display="";prev.disabled=false;next.disabled=false;return;}
  const max=Math.max(0,track.scrollWidth-track.clientWidth);
  const hasOverflow=max>2;
+ section.classList.toggle("live-channels-overflow",hasOverflow);
  prev.style.display=next.style.display=hasOverflow?"flex":"none";
  prev.disabled=!hasOverflow||track.scrollLeft<=2;
  next.disabled=!hasOverflow||track.scrollLeft>=max-2;
