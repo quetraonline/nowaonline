@@ -202,6 +202,17 @@ header .menu{position:relative;z-index:3}
 header .menu-dropdown{z-index:40}
 
 
+
+/* Mobilde canlı yayıncı sırasını başlıktaki yatay altın çizginin sol başlangıcına hizala */
+@media(max-width:700px){
+  #liveChannelsTrack{padding-left:0!important}
+  #liveChannelsTrack > .live-channel-card.live-channel-avatar-only:first-child{
+    justify-content:flex-start!important;
+    padding-left:0!important;
+    padding-right:19px!important;
+  }
+}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden")}catch(e){}})();</script>
 </head>
