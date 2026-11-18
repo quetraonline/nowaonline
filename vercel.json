@@ -7,6 +7,10 @@
     {
       "source": "/rehber",
       "destination": "/rehber.html"
+    },
+    {
+      "source": "/forum",
+      "destination": "/forum.html"
     }
   ],
   "redirects": [
@@ -18,6 +22,11 @@
     {
       "source": "/rehber.html",
       "destination": "/rehber",
+      "permanent": true
+    },
+    {
+      "source": "/forum.html",
+      "destination": "/forum",
       "permanent": true
     }
   ]
