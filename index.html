@@ -581,11 +581,12 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  const hasTikTok=!!tiktokUrl||p.tiktok_followers!=null||p.tiktok_likes!=null||p.tiktok_video_count!=null;
  const sessionSelect="id,started_at,ended_at,duration_seconds,stream_title,thumbnail_url,video_url,viewer_count,like_count";
  const twitchMonthStart=new Date(Date.now()-30*24*60*60*1000).toISOString();
+ const youtubeStatsPromise=youtubeUrl?fetch("/api/youtube-stats?url="+encodeURIComponent(youtubeUrl)).then(async response=>({response,result:await response.json()})):Promise.resolve(null);
  const renderHistoryPages=(items,key)=>{if(!items.length)return "";return '<div data-history-list="'+key+'" style="display:grid;gap:10px;margin-top:12px">'+items.map((html,index)=>'<div data-history-page="'+Math.floor(index/3)+'" style="'+(index>=3?'display:none;':'')+'">'+html+'</div>').join("")+(items.length>3?'<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px">'+Array.from({length:Math.ceil(items.length/3)},(_,page)=>'<button type="button" onclick="(function(b){var root=b.closest(\'[data-history-list]\');if(!root)return;root.querySelectorAll(\'[data-history-page]\').forEach(function(card){card.style.display=Number(card.getAttribute(\'data-history-page\'))==='+page+'?\'block\':\'none\'});root.querySelectorAll(\'button\').forEach(function(button){button.style.opacity=button===b?\'1\':\'.55\';button.style.borderColor=button===b?\'#e7b85c\':\'var(--line,rgba(255,255,255,.2))\'})})(this)" style="min-width:32px;padding:6px 9px;font-size:12px;line-height:1.2;border:1px solid '+(page===0?'#e7b85c':'var(--line,rgba(255,255,255,.2))')+';border-radius:7px;background:rgba(255,255,255,.04);color:inherit;opacity:'+(page===0?'1':'.55')+';cursor:pointer">'+(page+1)+'</button>').join("")+'</div>':'')+'</div>'};
  const [tiktokSessionResult,kickSessionResult,twitchSessionResult]=await Promise.all([
-  tiktokUrl||hasTikTok?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","TikTok").gte("started_at",twitchMonthStart).order("started_at",{ascending:false}).limit(1000):Promise.resolve({data:[],error:null}),
-  kickUrl?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","Kick").gte("started_at",twitchMonthStart).order("started_at",{ascending:false}).limit(1000):Promise.resolve({data:[],error:null}),
-  twitchUrl?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","Twitch").gte("started_at",twitchMonthStart).order("started_at",{ascending:false}).limit(1000):Promise.resolve({data:[],error:null})
+  tiktokUrl||hasTikTok?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","TikTok").gte("started_at",twitchMonthStart).order("started_at",{ascending:false}).limit(100):Promise.resolve({data:[],error:null}),
+  kickUrl?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","Kick").gte("started_at",twitchMonthStart).order("started_at",{ascending:false}).limit(100):Promise.resolve({data:[],error:null}),
+  twitchUrl?db.from("nowa_stream_sessions").select(sessionSelect).eq("publisher_id",p.id).eq("platform","Twitch").gte("started_at",twitchMonthStart).order("started_at",{ascending:false}).limit(100):Promise.resolve({data:[],error:null})
  ]);
   let tiktokHistoryHtml='';
   try{
@@ -635,8 +636,9 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
  let youtubeHtml="";
  if(youtubeUrl){
   try{
-   const response=await fetch("/api/youtube-stats?url="+encodeURIComponent(youtubeUrl));
-   const result=await response.json();
+   const youtubePayload=await youtubeStatsPromise;
+   const response=youtubePayload.response;
+   const result=youtubePayload.result;
    if(!response.ok)throw new Error(result.error||"YouTube verileri alınamadı.");
    const renderYoutubeItems=(items,emptyText,pageKey,showDuration=false)=>{
     if(!items||!items.length)return '<p class="notice">'+emptyText+'</p>';
