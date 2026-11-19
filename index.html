@@ -249,6 +249,29 @@ html, body, body * {
 input, textarea, [contenteditable="true"], [contenteditable=""] {
   cursor: text !important;
 }
+
+/* Geçici etkinlik takvimi — YouTube bölümünün hemen üstünde */
+.featured-event-schedule{margin:22px 0 24px;padding:16px;border:1px solid #51432d;border-radius:12px;background:linear-gradient(180deg,#171a20,#101318);box-shadow:0 8px 24px #0005}
+.featured-event-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.featured-event-heading h3{margin:0;color:#f0c66f;font-size:15px;font-weight:900;letter-spacing:.06em}
+.featured-event-heading span{color:#aeb8c5;font-size:11px}
+.featured-event-scroll{overflow-x:auto;border:1px solid #353535;border-radius:7px;scrollbar-width:thin}
+.featured-event-table{width:100%;min-width:690px;border-collapse:collapse;table-layout:fixed;color:#f5f5f5;font-size:13px;font-weight:750;text-align:center}
+.featured-event-table th,.featured-event-table td{border:1px solid #080808;padding:11px 10px;background:#303030;line-height:1.35}
+.featured-event-table th{background:#202020;color:#e9bd67;font-size:11px;letter-spacing:.04em}
+.featured-event-table tbody tr:nth-child(even) td{background:#292929}
+.featured-event-table .event-date{width:82px;color:#ffe16a}
+.featured-event-table .event-day{width:82px}
+.featured-event-table .event-time{width:78px;white-space:nowrap}
+.featured-event-table .event-server{width:116px}
+.featured-event-table .event-description{text-align:left;padding-left:16px}
+@media(max-width:600px){
+ .featured-event-schedule{margin:16px 0 20px;padding:11px}
+ .featured-event-heading h3{font-size:13px}
+ .featured-event-heading span{font-size:10px}
+ .featured-event-table{font-size:12px}
+ .featured-event-table th,.featured-event-table td{padding:10px 8px}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_ataturk_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -283,6 +306,26 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
 <div class="server-section"><div class="server-heading"><h3>ARES<span id="aresLiveCount" style="font-size:11px;font-weight:400;letter-spacing:normal;color:#aeb8c5;white-space:nowrap">- 0 canlı yayın</span></h3><span id="aresCount">0 yayıncı</span></div><div class="cards" id="aresCards"><div class="empty"><strong>Yayıncılar yükleniyor...</strong></div></div></div>
 <div class="server-section"><div class="server-heading"><h3>ATLAS<span id="atlasLiveCount" style="font-size:11px;font-weight:400;letter-spacing:normal;color:#aeb8c5;white-space:nowrap">- 0 canlı yayın</span></h3><span id="atlasCount">0 yayıncı</span></div><div class="cards" id="atlasCards"><div class="empty"><strong>Yayıncılar yükleniyor...</strong></div></div></div>
 </div>
+
+<section class="featured-event-schedule" id="featuredEventSchedule" aria-labelledby="featuredEventTitle">
+  <div class="featured-event-heading">
+    <h3 id="featuredEventTitle">ETKİNLİK TAKVİMİ</h3>
+    <span>20 Kasım Cuma</span>
+  </div>
+  <div class="featured-event-scroll">
+    <table class="featured-event-table">
+      <thead>
+        <tr><th class="event-date">Tarih</th><th class="event-day">Gün</th><th class="event-time">Saat</th><th class="event-server">Server</th><th>Etkinlik</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="event-date">20<br>Kasım</td><td class="event-day">Cuma</td><td class="event-time">20:00</td><td class="event-server">Ares &amp;<br>Atlas</td><td class="event-description">Ödül Avcısı Etkinliği (20:00 Başlangıç Pazar 23:59 Bitiş)</td></tr>
+        <tr><td class="event-date">20<br>Kasım</td><td class="event-day">Cuma</td><td class="event-time">20:00</td><td class="event-server">Ares &amp;<br>Atlas</td><td class="event-description">%20 WP + %20 Drop Event (20:00 Başlangıç 01:00 Bitiş)</td></tr>
+        <tr><td class="event-date">20<br>Kasım</td><td class="event-day">Cuma</td><td class="event-time">23:00</td><td class="event-server">Ares &amp;<br>Atlas</td><td class="event-description">1x Mega Boss Stone (Chaos Zone Bowl Bölgesine Atılır)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
 <section class="latest-youtube-section" id="latestYoutubeSection" hidden>
   <div class="latest-youtube-heading">
     <h3><svg class="latest-youtube-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ff0033" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg><span>EN YENİ YOUTUBE VİDEOLARI</span></h3>
