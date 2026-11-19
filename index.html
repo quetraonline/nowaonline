@@ -124,7 +124,7 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .latest-youtube-track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .latest-youtube-track::-webkit-scrollbar{display:none}
 .latest-youtube-card{display:block;flex:0 0 76%;max-width:280px;min-width:0;overflow:hidden;border:1px solid #303b4b;border-radius:12px;background:#141b25;color:#f5f6f8;text-decoration:none;scroll-snap-align:start}
-.latest-youtube-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#090d13}
+.latest-youtube-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#090d13}.latest-youtube-media{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden}.latest-youtube-media .latest-youtube-thumb{height:100%}.latest-youtube-new-badge{position:absolute;top:9px;left:9px;z-index:2;padding:5px 9px;border-radius:5px;background:#e32636;color:#fff;font-size:11px;font-weight:900;line-height:1;letter-spacing:.4px;box-shadow:0 2px 8px rgba(0,0,0,.45);pointer-events:none}
 .latest-youtube-thumb,.latest-youtube-avatar{-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
 .latest-youtube-copy{display:block;padding:9px 10px 11px}
 .latest-youtube-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px;font-size:13px;font-weight:800;line-height:1.4}
@@ -514,13 +514,14 @@ async function loadLatestYoutubeFeed(){
    const views=Number(video.viewCount||0);
    const viewsLabel=Number.isFinite(views)?new Intl.NumberFormat("tr-TR",{notation:"compact",maximumFractionDigits:1}).format(views):"";
    return '<a class="latest-youtube-card" href="'+esc(video.url)+'" target="_blank" rel="noopener noreferrer">'+
-    (video.thumbnail?'<img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">':'<div class="latest-youtube-thumb"></div>')+
+    (video.thumbnail?'<span class="latest-youtube-media"><img class="latest-youtube-thumb" src="'+esc(video.thumbnail)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false">'+(video.publishedAt&&Number.isFinite(new Date(video.publishedAt).getTime())&&(Date.now()-new Date(video.publishedAt).getTime())>=0&&(Date.now()-new Date(video.publishedAt).getTime())<6*60*60*1000?'<span class="latest-youtube-new-badge" data-new-until="'+(new Date(video.publishedAt).getTime()+6*60*60*1000)+'">YENİ</span>':'')+'</span>':'<div class="latest-youtube-thumb"></div>')+
     '<span class="latest-youtube-copy"><span class="latest-youtube-title">'+esc(video.title||"YouTube VOD kaydı")+'</span>'+
     '<span class="latest-youtube-meta"><span class="latest-youtube-channel">'+(avatarUrl?'<span class="latest-youtube-avatar-wrap'+avatarLiveClass+'"><img class="latest-youtube-avatar" src="'+esc(avatarUrl)+'" alt="" loading="lazy" draggable="false" oncontextmenu="return false"></span>':'<span class="latest-youtube-avatar-wrap'+avatarLiveClass+'" oncontextmenu="return false"></span>')+
     '<span class="latest-youtube-channel-info"><span class="latest-youtube-channel-name">'+esc(video.channelName)+'</span>'+
     '<span class="latest-youtube-details"><span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'+viewsLabel+' görüntülenme</span>'+
     '<span class="latest-youtube-detail"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'+esc(relativeYoutubeDate(video.sortDate))+'</span></span></span></span></span></a>';
   }).join("");
+  track.querySelectorAll(".latest-youtube-new-badge").forEach(badge=>{const remaining=Number(badge.dataset.newUntil)-Date.now();if(remaining<=0)badge.remove();else setTimeout(()=>badge.remove(),remaining);});
  };
  let cached=null;
  try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch{}
