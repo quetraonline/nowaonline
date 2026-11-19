@@ -149,9 +149,11 @@ function applySubpageFlagVisibility(visible){const flag=document.querySelector("
 const adminButton=document.getElementById("adminOpen");
 const siteMenu=document.getElementById("siteMenu"),menuTrigger=document.getElementById("menuTrigger");
 if(siteMenu&&menuTrigger){
+ const closeSiteMenu=()=>{siteMenu.classList.remove("open");menuTrigger.setAttribute("aria-expanded","false");};
  menuTrigger.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();const open=!siteMenu.classList.contains("open");siteMenu.classList.toggle("open",open);menuTrigger.setAttribute("aria-expanded",String(open));});
- document.addEventListener("click",event=>{if(!siteMenu.contains(event.target)){siteMenu.classList.remove("open");menuTrigger.setAttribute("aria-expanded","false");}});
- document.addEventListener("keydown",event=>{if(event.key==="Escape"){siteMenu.classList.remove("open");menuTrigger.setAttribute("aria-expanded","false");}});
+ document.addEventListener("click",event=>{if(!siteMenu.contains(event.target))closeSiteMenu();});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")closeSiteMenu();});
+ window.addEventListener("scroll",()=>{if(siteMenu.classList.contains("open"))closeSiteMenu();},{passive:true});
 }
 if(adminButton){
  adminButton.addEventListener("click",()=>{window.location.href="/?openAdmin=1"});
