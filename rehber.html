@@ -62,6 +62,14 @@ header{isolation:isolate}
 header .nav{position:relative;z-index:2}
 header .menu{position:relative;z-index:3}
 header .menu-dropdown{z-index:40}
+
+/* Ardream World özel imleci — tüm bağımsız sayfalar */
+html, body, body * {
+  cursor: url("/img/ko-cursor.png") 1 2, auto !important;
+}
+input, textarea, [contenteditable="true"], [contenteditable=""] {
+  cursor: text !important;
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden")}catch(e){}})();</script>
 </head>
