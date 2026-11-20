@@ -140,7 +140,7 @@ if(adminButton){
  <a href="/?focusSearch=1" class="nav-placeholder" data-no-active="true" aria-label="Yayıncı ara"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></a>
  <a href="/rehber" class="nav-placeholder plus" aria-label="Rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
  <a href="/iletisim" class="nav-placeholder" aria-label="İletişim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 7 9-7"/></svg></a>
- <a href="#geri" class="nav-placeholder" data-no-active="true" aria-label="Önceki sayfaya dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></a>
+ <a href="#geri" class="nav-placeholder" data-no-active="true" aria-label="Önceki sayfaya dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>Geri</span></a>
 </nav>
 <script>
 (()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const backLink=nav.querySelector('a[href="#geri"]');if(backLink)backLink.addEventListener("click",event=>{event.preventDefault();if(window.history.length>1)window.history.back();else window.location.assign("/");});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
