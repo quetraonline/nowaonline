@@ -47,11 +47,43 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
 .updated{display:inline-block;color:#d6dce5;border:1px solid #303b4b;border-radius:8px;padding:6px 10px;font-size:12px;margin:0 0 10px}
 .policy-content{padding:clamp(20px,4vw,36px);border:1px solid #303b4b;border-radius:16px;background:linear-gradient(145deg,#19212c,#10151d);box-shadow:0 18px 45px #0003}\n.policy-content section+section{margin-top:22px}\n.policy-content h2{margin:0 0 10px;font-size:19px;color:#f2d18d}\n.policy-content p{margin:8px 0;color:var(--muted);line-height:1.75}\n.policy-content ul{margin:8px 0;padding-left:21px;color:#c5ced9;line-height:1.9}\n.policy-content li{padding-left:4px}\n.policy-content a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}\n.policy-content .note{color:var(--muted);font-size:13px}\n@media(max-width:650px){main{padding:18px 0 55px}.policy-content{padding:19px}.page-title-with-icon{gap:8px}.page-title-with-icon svg{width:23px;height:23px;flex-basis:23px}.guide-hero .lead{font-size:14px}}
 
+
+/* Ana sayfa üst menü ve alt bilgi ile birebir ortak görünüm */
+:root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7}
+body{background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{width:min(1160px,calc(100% - 32px));margin:auto}
+header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff12;isolation:isolate}
+.nav{height:68px;position:relative;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-weight:900;letter-spacing:.08em}
+.mark{width:43px;height:43px;display:grid;place-items:center;overflow:hidden;border:1px solid #d8a84c;border-radius:12px;background:linear-gradient(145deg,#382919,#12151b);flex:0 0 43px}
+.mark img{display:block;width:100%;height:100%;object-fit:contain;padding:3px}
+.brand strong{font-size:14px;display:block;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em}
+.brand-menu{border:0;background:transparent;color:inherit;padding:0;cursor:pointer;text-align:left;width:auto}
+.brand-menu:focus-visible{outline:2px solid var(--gold);outline-offset:5px;border-radius:5px}
+.menu{position:relative;z-index:3}.menu-trigger{min-width:100px;display:flex;align-items:center;justify-content:center;gap:9px}
+.menu-dropdown{position:absolute;left:0;right:auto;top:calc(100% + 10px);width:190px;padding:7px;background:#141b25;border:1px solid #394657;border-radius:12px;box-shadow:0 16px 40px #0009;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.18s;z-index:40}
+.menu.open .menu-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.menu-dropdown a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;color:#e9edf3;font-size:13px;font-weight:750;text-decoration:none}
+.menu-dropdown a svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:var(--gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.menu-dropdown a:hover{background:#252f3c;color:var(--gold)}
+.site-flag-gif{position:absolute;top:63px;left:calc(max(16px,(100% - 1160px)/2) + 21.5px);transform:translateX(-50%);z-index:0;width:76px;height:138px;object-fit:contain;object-position:top center;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
+.site-ataturk-flag-gif{display:block;flex:0 0 auto;width:76px;height:44px;margin-left:0;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));border-radius:2px}
+header .nav{position:relative;z-index:2}
+footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-size:11px}
+.foot{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.footer-brand{display:flex;align-items:center;gap:11px}.footer-brand .mark{width:38px;height:38px;flex:0 0 38px}
+.foot b{color:#e7c16e;letter-spacing:.12em}
+.visitor-counter{display:flex;align-items:center;justify-content:center;gap:7px;color:#aeb8c5;font-size:11px;text-align:center}
+.visitor-counter strong{color:var(--gold);font-size:15px;font-variant-numeric:tabular-nums}.visitor-counter .visitor-icon{font-size:15px}
+@media(max-width:650px){.wrap{width:min(100% - 26px,1160px)}.nav{height:66px}.brand{gap:12px;min-width:max-content}.mark{width:38px;height:38px;flex-basis:38px}.brand strong{font-size:11px}.brand small{font-size:8px}.site-ataturk-flag-gif{width:76px;height:44px}.site-flag-gif{width:76px;height:138px;left:37.5px}.foot{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer-brand>div{text-align:left}}
+
 </style>
 </head>
 <body>
 <div class="topline"></div>
-<header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav"><a class="brand" href="/" aria-label="Nowa Online World ana sayfa"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></a></div></header>
+<header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
+<div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span class="brand-copy"><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></button><nav class="menu-dropdown" aria-label="Ana menü"><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><a href="/rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22m4-15h8m-8 4h8"/></svg><span>Yayıncı Rehberi</span></a><a href="/iletisim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>İletişim</span></a><button class="admin-menu-entry" id="adminOpen" type="button" aria-label="Giriş Yap" title="Giriş Yap"><svg class="admin-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg><span id="adminOpenLabel">Giriş Yap</span></button></nav></div>
+</div></header>
 <main class="wrap">
 <a class="back-home" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfaya Dön</span></a>
 <div class="guide-hero">
@@ -115,7 +147,28 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
 <section class="policy-note"><p class="note">Bu metin, web sitesinin mevcut işleyişini açıklamak amacıyla hazırlanmıştır. Hukuki danışmanlık yerine geçmez. Hizmetin veri işleme süreçlerinde değişiklik olduğunda bu metin de güncellenmelidir.</p></section>
 </div>
 </main>
-<footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div>© 2025 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div style="margin-top:5px"><a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:underline;text-underline-offset:3px;font-size:12px">Gizlilik Politikası</a></div></div></div></footer>
+<footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div class="visitor-counter"><span class="visitor-icon" aria-hidden="true">👥</span><span>Bu siteyi <strong id="visitorCount">...</strong> kişi ziyaret etti</span></div><div>© 2025 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div style="margin-top:5px"><a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:underline;text-underline-offset:3px;font-size:12px">Gizlilik Politikası</a></div></div></div></footer>
 
+<script>
+const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
+const SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
+async function loadVisitorCount(){
+ const output=document.getElementById("visitorCount");
+ if(!output)return;
+ try{
+  let visitorId=localStorage.getItem("nowa_online_visitor_id");
+  if(!visitorId){visitorId=crypto.randomUUID();localStorage.setItem("nowa_online_visitor_id",visitorId)}
+  const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/register_nowa_site_visit",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({p_visitor_id:visitorId})});
+  if(!response.ok)throw new Error("Sayaç isteği başarısız: HTTP "+response.status);
+  const data=await response.json();
+  output.textContent=Number(data||0).toLocaleString("tr-TR");
+ }catch(error){
+  console.warn("Ziyaretçi sayacı yüklenemedi:",error);
+  output.textContent="—";
+ }
+}
+(()=>{const menu=document.getElementById("siteMenu"),trigger=document.getElementById("menuTrigger");if(!menu||!trigger)return;trigger.addEventListener("click",()=>{const open=menu.classList.toggle("open");trigger.setAttribute("aria-expanded",String(open))});document.addEventListener("click",e=>{if(!menu.contains(e.target)){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});document.addEventListener("keydown",e=>{if(e.key==="Escape"){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}})})();
+loadVisitorCount();
+</script>
 </body>
 </html>
