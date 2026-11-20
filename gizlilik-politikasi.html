@@ -31,24 +31,52 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 .footer-brand b{color:#e7c16e;letter-spacing:.12em}
 @media(max-width:650px){.foot{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer-brand>div{text-align:left}.brand strong{font-size:11px}.brand small{font-size:8px}.mark{width:38px;height:38px;flex-basis:38px}.site-ataturk-flag-gif{width:52px;height:30px}.policy-title svg{width:28px;height:28px;flex-basis:28px}}
 
+
+/* Yayıncı Rehberi sayfasıyla ortak içerik tasarımı */
+main{padding:18px 0 76px}
+.back-home{display:inline-flex;align-items:center;gap:7px;margin:0 0 8px;padding:8px 12px;border:1px solid #b8873b66;border-radius:8px;background:linear-gradient(110deg,#2b2114,#151b24);color:#e8b95c;font-size:12px;font-weight:800;transition:.2s}
+.back-home svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.back-home:hover{border-color:var(--gold);background:#302416;transform:translateX(-2px)}
+.guide-hero{width:100%;margin:0 0 20px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.guide-hero .lead{width:100%;max-width:none;margin:16px 0 22px;font-size:16px;line-height:1.8}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid #b8873b66;background:#b8873b14;color:#e7bf72;border-radius:99px;font-size:10px;font-weight:900;letter-spacing:.18em}
+.eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 9px var(--gold)}
+h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line-height:1.1}
+.page-title-with-icon{display:flex;align-items:center;gap:10px}
+.page-title-with-icon svg{width:26px;height:26px;flex:0 0 26px;fill:none;stroke:var(--gold);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.updated{display:inline-block;color:#d6dce5;border:1px solid #303b4b;border-radius:8px;padding:6px 10px;font-size:12px;margin:0 0 10px}
+.guide-toc{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 28px}
+.guide-toc a{padding:8px 11px;border:1px solid #303b4b;border-radius:8px;color:#bac4d1;font-size:11px;font-weight:800}
+.guide-toc a:hover{border-color:var(--gold);color:var(--gold)}
+.guide-panel{scroll-margin-top:100px;margin:0 0 20px;padding:25px;border:1px solid #303b4b;border-radius:16px;background:linear-gradient(145deg,#19212c,#10151d);box-shadow:0 18px 45px #0003}
+.guide-panel h2{margin:0 0 12px;font-size:20px;color:#f2d18d}
+.guide-panel p{margin:8px 0;color:var(--muted);line-height:1.75}
+.guide-panel ul{margin:8px 0;padding-left:21px;color:#c5ced9;line-height:1.9}
+.guide-panel li{padding-left:4px}
+.guide-panel a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.guide-panel .note{color:var(--muted);font-size:13px}
+.section-kicker{margin-bottom:8px;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.18em}
+@media(max-width:650px){main{padding:18px 0 55px}.guide-panel{padding:19px}.page-title-with-icon{gap:8px}.page-title-with-icon svg{width:23px;height:23px;flex-basis:23px}.guide-hero .lead{font-size:14px}}
+
 </style>
 </head>
 <body>
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav"><a class="brand" href="/" aria-label="Nowa Online World ana sayfa"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></a></div></header>
-<main class="wrap content">
-<div class="eyebrow">Yasal Bilgilendirme</div>
-<h1 class="policy-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Gizlilik Politikası</h1>
-<p class="intro">Nowa Online World web sitesini kullanırken hangi bilgilerin işlendiğini, bu bilgilerin hangi amaçlarla kullanıldığını ve tercihlerinizle ilgili bize nasıl ulaşabileceğinizi açıklarız.</p>
+<main class="wrap">
+<a class="back-home" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfaya Dön</span></a>
+<div class="guide-hero">
+<div class="eyebrow">YASAL BİLGİLENDİRME</div>
+<h1 class="page-title-with-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg><span>Gizlilik Politikası</span></h1>
+<p class="lead">Nowa Online World web sitesini kullanırken hangi bilgilerin işlendiğini, bu bilgilerin hangi amaçlarla kullanıldığını ve tercihlerinizle ilgili bize nasıl ulaşabileceğinizi açıklarız.</p>
 <div class="updated">Son güncelleme: 20 Kasım 2026</div>
-<article class="policy">
-<section>
-<h2>1. Veri sorumlusu ve iletişim</h2>
+</div>
+<nav class="guide-toc" aria-label="Gizlilik politikası bölümleri"></nav>
+<section class="guide-panel" id="privacy-1"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>1. Veri sorumlusu ve iletişim</h2>
 <p>Nowa Online World yayıncı rehberi hizmetiyle ilgili gizlilik talepleri ve kişisel veriler hakkındaki sorular için <a href="mailto:iletisim@nowaonlineworld.tv">iletisim@nowaonlineworld.tv</a> adresinden bizimle iletişime geçebilirsiniz.</p>
 <p>Bu politika, <a href="https://nowaonlineworld.tv/">nowaonlineworld.tv</a> alan adındaki Nowa Online World web sitesini kapsar.</p>
 </section>
-<section>
-<h2>2. İşlenen bilgiler</h2>
+<section class="guide-panel" id="privacy-2"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>2. İşlenen bilgiler</h2>
 <ul>
 <li><strong>Ziyaretçi sayacı:</strong> Tekil ziyaretleri ayırt etmek ve toplam ziyaretçi sayısını hesaplamak için tarayıcınızda rastgele oluşturulan bir ziyaretçi kimliği (UUID) yerel depolamada tutulur. Bu kimlik ziyaret sayacı hizmetine iletilir; sayaç kaydında kimlik ve ilk görülme zamanı saklanır.</li>
 <li><strong>İletişim formu:</strong> Formu gönderdiğinizde adınız, e-posta adresiniz, konu ve mesaj içeriğiniz talebinizi yanıtlamak amacıyla alınır.</li>
@@ -57,18 +85,15 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 </ul>
 <p>Web sitesi, ziyaretçi sayacı için reklam profili oluşturmak amacıyla ad, telefon veya hassas kişisel veri istemez.</p>
 </section>
-<section>
-<h2>3. YouTube API Hizmetleri</h2>
+<section class="guide-panel" id="privacy-3"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>3. YouTube API Hizmetleri</h2>
 <p>Nowa Online World, YouTube Data API Hizmetleri'ni kullanarak rehberde listelenen kanalların herkese açık kanal bilgilerini, istatistiklerini, video ayrıntılarını ve herkese açık yayınlarla ilgili bilgileri alabilir ve web sitesinde gösterebilir.</p>
 <p>YouTube API aracılığıyla alınan bilgiler yalnızca yayıncıları keşfetme, kanal bilgilerini görüntüleme ve ilgili herkese açık içeriklere bağlantı verme işlevleri için kullanılır. Bu bilgiler satılmaz veya reklam hedeflemesi amacıyla kullanılmaz. YouTube API verileri, YouTube API Hizmetleri şartlarına ve geçerli politikalara uygun şekilde işlenir. Geçici olarak saklanan herkese açık API verileri, ilgili politika uyarınca en geç 30 takvim günü içinde yenilenir veya silinir. Kullanıcılar, kendileriyle ilişkili kanal bilgilerinin Nowa Online World'deki kopyasının silinmesini <a href="mailto:iletisim@nowaonlineworld.tv">e-posta yoluyla</a> talep edebilir; bu işlem YouTube'daki asıl verileri silmez.</p>
 <p>YouTube API özelliklerini kullanarak <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Hizmet Şartları</a>'na tabi olursunuz. Ayrıca <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Gizlilik Politikası</a> ve <a href="https://developers.google.com/youtube/terms/developer-policies" target="_blank" rel="noopener noreferrer">YouTube API Hizmetleri Geliştirici Politikaları</a> geçerlidir.</p>
 </section>
-<section>
-<h2>4. Diğer yayın platformları</h2>
+<section class="guide-panel" id="privacy-4"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>4. Diğer yayın platformları</h2>
 <p>Yayıncıların herkese açık profillerine ve kanallarına bağlantı vermek, ayrıca kamuya açık yayın/kanal bilgilerini göstermek için Twitch, TikTok, Kick ve Instagram gibi platformlarla bağlantı kurulabilir. Bu platformlara tıkladığınızda ilgili platformun kendi gizlilik ve kullanım şartları geçerlidir. Bu platformların kendi veri işleme faaliyetleri Nowa Online World'ün kontrolünde değildir.</p>
 </section>
-<section>
-<h2>5. Bilgilerin kullanım amaçları</h2>
+<section class="guide-panel" id="privacy-5"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>5. Bilgilerin kullanım amaçları</h2>
 <ul>
 <li>Yayıncı rehberini ve kanal istatistiklerini sunmak.</li>
 <li>Site ziyaretçi sayısını hesaplamak ve temel hizmet güvenilirliğini sağlamak.</li>
@@ -77,34 +102,28 @@ footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-siz
 <li>Hizmetin performansını, güvenliğini ve işleyişini korumak.</li>
 </ul>
 </section>
-<section>
-<h2>6. Hizmet sağlayıcılar ve veri aktarımı</h2>
+<section class="guide-panel" id="privacy-6"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>6. Hizmet sağlayıcılar ve veri aktarımı</h2>
 <p>Web sitesinin barındırılması ve çalıştırılması için Vercel; veritabanı ve yönetici kimlik doğrulaması için Supabase; iletişim e-postalarının iletilmesi için Resend; YouTube kanal ve video bilgileri için Google/YouTube API hizmetleri kullanılabilir. Bu sağlayıcılar, hizmetin sunulması için gerekli bilgileri kendi hizmet altyapılarında işleyebilir.</p>
 <p>Bu sağlayıcıların altyapıları farklı ülkelerde bulunabileceğinden, hizmetin kullanımı sırasında bilgiler Türkiye dışındaki sunuculara aktarılabilir veya bu sunucularda işlenebilir. İlgili sağlayıcıların gizlilik ve güvenlik uygulamaları kendi politikalarına tabidir.</p>
 </section>
-<section>
-<h2>7. Saklama ve güvenlik</h2>
+<section class="guide-panel" id="privacy-7"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>7. Saklama ve güvenlik</h2>
 <p>Bilgiler, belirtilen amaçlar için gerekli olduğu süre boyunca veya ilgili mevzuatın gerektirdiği sürelerle sınırlı olarak tutulur. İletişim mesajları talebin yanıtlanması ve gerekli takip işlemleri için saklanabilir. Ziyaretçi kimliğini tarayıcınızın yerel depolamasını temizleyerek silebilirsiniz; bu işlem daha önce oluşturulmuş sunucu tarafındaki sayaç kaydını kendiliğinden silmeyebilir.</p>
 <p>Bilgilerin yetkisiz erişime, kayba veya değişikliğe karşı korunması için makul teknik ve idari önlemler uygulanır. İnternet üzerinden hiçbir aktarım veya elektronik saklama yöntemi mutlak güvenlik garantisi vermez.</p>
 </section>
-<section>
-<h2>8. Çerezler ve yerel depolama</h2>
+<section class="guide-panel" id="privacy-8"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>8. Çerezler ve yerel depolama</h2>
 <p>Site, ziyaretçi sayacında aynı tarayıcıyı tekrar tanımak ve bazı görünüm tercihlerini hatırlamak için tarayıcının yerel depolama (localStorage) özelliğini kullanabilir. Bu mekanizma ziyaretçi kimliği ve site görünüm ayarları gibi teknik değerleri saklar. Tarayıcı ayarlarınızdan yerel depolama verilerini silebilirsiniz. Barındırma veya üçüncü taraf platformlar kendi teknik çerezlerini kullanabilir.</p>
 </section>
-<section>
-<h2>9. Haklarınız ve talepleriniz</h2>
+<section class="guide-panel" id="privacy-9"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>9. Haklarınız ve talepleriniz</h2>
 <p>Uygulanabilir kişisel verilerin korunması mevzuatı kapsamındaki bilgi alma, erişim, düzeltme, silme veya işlenmesine itiraz etme taleplerinizi <a href="mailto:iletisim@nowaonlineworld.tv">iletisim@nowaonlineworld.tv</a> adresine iletebilirsiniz. Talebinizi değerlendirebilmemiz için hangi bilgi veya işlemle ilgili başvuru yaptığınızı açıklamanız yeterlidir; gerekli durumlarda kimlik doğrulaması isteyebiliriz.</p>
 </section>
-<section>
-<h2>10. Çocukların gizliliği</h2>
+<section class="guide-panel" id="privacy-10"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>10. Çocukların gizliliği</h2>
 <p>Web sitesi genel bir yayıncı rehberidir ve çocuklardan bilerek kişisel bilgi toplamayı amaçlamaz. Bir çocuğa ait kişisel bilginin uygun olmayan şekilde işlendiğini düşünüyorsanız bizimle iletişime geçebilirsiniz.</p>
 </section>
-<section>
-<h2>11. Politika değişiklikleri</h2>
+<section class="guide-panel" id="privacy-11"><div class="section-kicker">GİZLİLİK VE VERİ KORUMA</div><h2>11. Politika değişiklikleri</h2>
 <p>Hizmetlerimiz veya yasal gereklilikler değiştiğinde bu politika güncellenebilir. Güncel sürüm bu sayfada yayımlanır ve en üstte son güncelleme tarihi belirtilir.</p>
 </section>
-<p class="note">Bu metin, web sitesinin mevcut işleyişini açıklamak amacıyla hazırlanmıştır. Hukuki danışmanlık yerine geçmez. Hizmetin veri işleme süreçlerinde değişiklik olduğunda bu metin de güncellenmelidir.</p>
-</article>
+
+<section class="guide-panel"><p class="note">Bu metin, web sitesinin mevcut işleyişini açıklamak amacıyla hazırlanmıştır. Hukuki danışmanlık yerine geçmez. Hizmetin veri işleme süreçlerinde değişiklik olduğunda bu metin de güncellenmelidir.</p></section>
 </main>
 <footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div>© 2025 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div style="margin-top:5px"><a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:underline;text-underline-offset:3px;font-size:12px">Gizlilik Politikası</a></div></div></div></footer>
 
