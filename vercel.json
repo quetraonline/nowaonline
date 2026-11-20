@@ -7,6 +7,10 @@
     {
       "source": "/rehber",
       "destination": "/rehber.html"
+    },
+    {
+      "source": "/gizlilik-politikasi",
+      "destination": "/gizlilik-politikasi.html"
     }
   ],
   "redirects": [
@@ -18,6 +22,11 @@
     {
       "source": "/rehber.html",
       "destination": "/rehber",
+      "permanent": true
+    },
+    {
+      "source": "/gizlilik-politikasi.html",
+      "destination": "/gizlilik-politikasi",
       "permanent": true
     }
   ],
