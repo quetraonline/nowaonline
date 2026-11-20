@@ -11,6 +11,10 @@
     {
       "source": "/gizlilik-politikasi",
       "destination": "/gizlilik-politikasi.html"
+    },
+    {
+      "source": "/kullanim-sartlari",
+      "destination": "/kullanim-sartlari.html"
     }
   ],
   "redirects": [
@@ -27,6 +31,11 @@
     {
       "source": "/gizlilik-politikasi.html",
       "destination": "/gizlilik-politikasi",
+      "permanent": true
+    },
+    {
+      "source": "/kullanim-sartlari.html",
+      "destination": "/kullanim-sartlari",
       "permanent": true
     }
   ],
