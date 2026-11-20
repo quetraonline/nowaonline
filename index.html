@@ -641,11 +641,14 @@ async function loadLogoFlagVisibility(){try{const {data,error}=await db.from("no
 function renderPublisherRecoveryList(items){
  const cards=items.map(p=>{
   const name=esc(p.name||"Yayıncı");
-  const photo=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="'+name+'" onerror="this.remove()">':esc(String(p.name||"NW").trim().slice(0,2).toUpperCase());
+  const photo=avatar(p);
   const links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
-  const platformList=Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:Object.keys(links).filter(k=>links[k]));
-  const tags=platformList.map(x=>'<span class="platform-tag">'+esc(x)+'</span>').join("");
-  return '<article class="card"><div class="cardtop"><div class="person"><div class="avatar">'+photo+'</div><div class="person-info"><div class="name">'+name+'</div></div></div><div class="platform-tags card-platforms">'+tags+'</div></div></article>';
+  const platformList=platformsOf(p);
+  const tags=platformList.map(platform=>{
+   const url=links[platform];
+   return url?'<a class="platform-tag '+String(platform).toLowerCase()+'" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" title="'+esc(platform)+'" aria-label="'+esc(platform)+' hesabını aç">'+platformIcon(platform)+'</a>':'<span class="platform-tag '+String(platform).toLowerCase()+'" title="'+esc(platform)+'" aria-label="'+esc(platform)+'">'+platformIcon(platform)+'</span>';
+  }).join("");
+  return '<article class="card '+(p.card_theme==="youtube"?"youtube-theme":"")+'" data-publisher-id="'+esc(p.id)+'" tabindex="0" role="button" aria-label="'+name+' detaylarını görüntüle"><div class="cardtop"><div class="person"><div class="avatar">'+photo+'</div><div class="person-info"><div class="name">'+name+'</div></div></div><div class="platform-tags card-platforms">'+tags+'</div></div></article>';
  }).join("");
  return cards||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
 }
@@ -1005,41 +1008,37 @@ if(tiktokConnectionStatus){
 </script>
 
 <script>
-/* NOWA_DIRECT_PUBLISHER_RECOVERY: ana uygulama listeyi oluşturamazsa REST üzerinden bağımsız yükle */
+/* NOWA_DIRECT_PUBLISHER_RECOVERY: sadece ilk yükleme başarısız olursa tam platform logolarıyla bağımsız listele */
 (function(){
- const endpoint="https://hfmosadynxpwkscvpard.supabase.co/rest/v1/nowa_publishers?select=id,name,avatar_url,platform,platforms,platform_links,server,is_published&is_published=eq.true&order=sort_order.asc,name.asc";
+ const endpoint="https://hfmosadynxpwkscvpard.supabase.co/rest/v1/nowa_publishers?select=id,name,avatar_url,platform,platforms,platform_links,server,is_published,card_theme&is_published=eq.true&order=sort_order.asc,name.asc";
  const publicKey="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
  const escHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ const icon=name=>{
+  const paths={TikTok:'<path d="M15 3c.4 2.3 1.7 3.7 4 4v3.1a8 8 0 0 1-4-1.2v6.2a5.5 5.5 0 1 1-5.5-5.5c.4 0 .8 0 1.2.1v3.2a2.4 2.4 0 1 0 1.4 2.2V3z"/>',YouTube:'<path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.8 15.5v-7l6 3.5z"/>',Twitch:'<path d="M4 2h18v13l-5 5h-4l-3 3H7v-3H3V5zm2 2v14h4v3l3-3h4l3-3V4zm5 3h2v6h-2zm5 0h2v6h-2z"/>',Kick:'<path d="M4 3h6v6l5-6h7l-7 9 7 9h-7l-5-6v6H4z"/>'};
+  if(name==="Instagram")return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="6" r="1.2"/></svg>';
+  return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">'+(paths[name]||'<circle cx="12" cy="12" r="8"/>')+'</svg>';
+ };
  function card(p){
-  const name=escHtml(p.name||"Yayıncı");
-  const photo=p.avatar_url?'<img src="'+escHtml(p.avatar_url)+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\'">':escHtml(String(p.name||"NW").trim().slice(0,2).toUpperCase());
-  const links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
+  const name=escHtml(p.name||"Yayıncı"),links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
+  const avatar=p.avatar_url?'<img src="'+escHtml(p.avatar_url)+'" alt="'+name+'" loading="lazy" onerror="this.remove()">':escHtml(String(p.name||"NW").trim().slice(0,2).toUpperCase());
   const platforms=Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:Object.keys(links).filter(k=>links[k]));
-  const tags=platforms.map(platform=>'<span class="platform-tag">'+escHtml(platform)+'</span>').join("");
-  return '<article class="card" data-publisher-id="'+escHtml(p.id)+'"><div class="cardtop"><div class="person"><div class="avatar">'+photo+'</div><div class="person-info"><div class="name">'+name+'</div></div></div><div class="platform-tags card-platforms">'+tags+'</div></div></article>';
+  const tags=platforms.map(platform=>{const iconHtml=icon(platform),url=links[platform],cls='platform-tag '+String(platform).toLowerCase();return url?'<a class="'+cls+'" href="'+escHtml(url)+'" target="_blank" rel="noopener noreferrer" title="'+escHtml(platform)+'">'+iconHtml+'</a>':'<span class="'+cls+'" title="'+escHtml(platform)+'">'+iconHtml+'</span>'}).join("");
+  return '<article class="card '+(p.card_theme==="youtube"?"youtube-theme":"")+'" data-publisher-id="'+escHtml(p.id)+'" tabindex="0" role="button" aria-label="'+name+' detaylarını görüntüle"><div class="cardtop"><div class="person"><div class="avatar">'+avatar+'</div><div class="person-info"><div class="name">'+name+'</div></div></div><div class="platform-tags card-platforms">'+tags+'</div></div></article>';
  }
  async function recover(){
   const aresBox=document.getElementById("aresCards"),atlasBox=document.getElementById("atlasCards");
-  if(!aresBox||!atlasBox)return;
-  if(aresBox.querySelector("article")||atlasBox.querySelector("article"))return;
+  if(!aresBox||!atlasBox||aresBox.querySelector("article")||atlasBox.querySelector("article"))return;
   try{
    const response=await fetch(endpoint,{headers:{apikey:publicKey,Authorization:"Bearer "+publicKey,Accept:"application/json"},cache:"no-store"});
    if(!response.ok)throw new Error("HTTP "+response.status);
-   const rows=await response.json();
-   if(!Array.isArray(rows))throw new Error("Beklenmeyen yayıncı verisi");
-   const ares=rows.filter(p=>String(p.server||"Ares").toLowerCase()==="ares");
-   const atlas=rows.filter(p=>String(p.server||"Ares").toLowerCase()==="atlas");
+   const rows=await response.json();if(!Array.isArray(rows))throw new Error("Beklenmeyen yayıncı verisi");
+   const ares=rows.filter(p=>String(p.server||"Ares").toLowerCase()==="ares"),atlas=rows.filter(p=>String(p.server||"Ares").toLowerCase()==="atlas");
    aresBox.innerHTML=ares.map(card).join("")||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
    atlasBox.innerHTML=atlas.map(card).join("")||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
-   const aresCount=document.getElementById("aresCount"),atlasCount=document.getElementById("atlasCount");
-   const publisherCount=document.getElementById("publisherCount");
-   if(aresCount)aresCount.textContent=ares.length+" yayıncı";
-   if(atlasCount)atlasCount.textContent=atlas.length+" yayıncı";
-   if(publisherCount)publisherCount.textContent=rows.filter(p=>p.card_theme!=="youtube").length;
-   console.warn("Ana uygulama listeyi oluşturamadı; bağımsız yayıncı yüklemesi tamamlandı.",{total:rows.length,ares:ares.length,atlas:atlas.length});
-  }catch(error){
-   console.error("Bağımsız yayıncı yüklemesi başarısız:",error);
-  }
+   const ac=document.getElementById("aresCount"),tc=document.getElementById("atlasCount"),pc=document.getElementById("publisherCount");
+   if(ac)ac.textContent=ares.length+" yayıncı";if(tc)tc.textContent=atlas.length+" yayıncı";if(pc)pc.textContent=rows.filter(p=>p.card_theme!=="youtube").length;
+   console.warn("Bağımsız yayıncı listesi yüklendi.",{total:rows.length,ares:ares.length,atlas:atlas.length});
+  }catch(error){console.error("Bağımsız yayıncı yüklemesi başarısız:",error)}
  }
  window.setTimeout(recover,4500);
 })();
