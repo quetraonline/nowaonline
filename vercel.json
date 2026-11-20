@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/guncellemeler",
+      "destination": "/guncellemeler.html"
+    },
+    {
+      "source": "/guncellemeler/:slug",
+      "destination": "/guncellemeler.html"
+    },
+    {
       "source": "/iletisim",
       "destination": "/iletisim.html"
     },
