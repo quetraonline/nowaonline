@@ -63,6 +63,7 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
  .mobile-bottom-nav .nav-placeholder.active{opacity:1;color:#e8b95c}
  .mobile-bottom-nav .nav-placeholder.active svg{fill:none!important;stroke:#e8b95c}
  .mobile-bottom-nav .nav-placeholder.plus{position:relative;flex:0 0 58px;width:58px;height:58px;margin-top:-20px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;overflow:visible;background:none;border:0;border-radius:0;box-shadow:none;opacity:1!important}.mobile-bottom-nav .nav-placeholder.plus svg{box-sizing:border-box;width:42px;height:42px;padding:8px;flex:0 0 42px;border-radius:50%;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;box-shadow:0 4px 16px rgba(0,0,0,.35);stroke-width:2.5}.mobile-bottom-nav .nav-placeholder.plus .plus-label{display:block;white-space:nowrap;font-size:9px;font-weight:800;line-height:1;color:#f4f5f6}
+ .mobile-bottom-nav .nav-placeholder.plus.active .plus-label{color:#e8b95c}
 }
 @media(min-width:769px){.mobile-bottom-nav{display:none!important}}
 
@@ -138,7 +139,7 @@ if(adminButton){
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
  <a href="/" aria-label="Ana Sayfa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span class="home-label">Ana Sayfa</span></a>
  <a href="/?focusSearch=1" class="nav-placeholder" data-no-active="true" aria-label="Ara"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span class="home-label">Ara</span></a>
- <a href="/rehber" class="nav-placeholder plus" aria-label="Yayıncı Ol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="home-label plus-label">Yayıncı Ol</span></a>
+ <a href="/rehber" class="nav-placeholder plus" aria-label="Yayıncı Ol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="home-label plus-label">YAYINCI OL</span></a>
  <a href="/iletisim" class="nav-placeholder" aria-label="İletişim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 7 9-7"/></svg><span class="home-label">İletişim</span></a>
  <a href="#geri" class="nav-placeholder mobile-back-link" data-no-active="true" aria-label="Önceki sayfaya dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span class="home-label">Geri</span></a>
 </nav>
