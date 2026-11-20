@@ -70,7 +70,9 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
 }
 @media(min-width:769px){.mobile-bottom-nav{display:none!important}}
 
-@media(max-width:700px){.nav-right{display:none}}</style>
+@media(max-width:700px){.nav-right{display:none}}
+@media screen and (max-width: 768px){header .nav .nav-right{display:none!important;visibility:hidden!important;pointer-events:none!important}}
+</style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
 <body><div class="topline"></div>
