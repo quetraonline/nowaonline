@@ -130,8 +130,9 @@ if(adminButton){
   const icon=adminButton.querySelector("svg");
   if(icon)icon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/>';const mobileAdminLink=document.querySelector("#mobileBottomNav a[href=\"/?openAdmin=1\"]");if(mobileAdminLink){mobileAdminLink.classList.toggle("admin-logged-in",admin);mobileAdminLink.setAttribute("aria-label",admin?"Yönetici Paneli":"Yönetici girişi");const mobileIcon=mobileAdminLink.querySelector("svg");if(mobileIcon)mobileIcon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>';}
  };
- subpageDb.auth.getSession().then(({data})=>refreshAdminButton(data.session));
- subpageDb.auth.onAuthStateChange((_event,session)=>refreshAdminButton(session));
+ const syncMobileAdminState=()=>subpageDb.auth.getSession().then(({data})=>refreshAdminButton(data.session));
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",syncMobileAdminState,{once:true});else syncMobileAdminState();
+ subpageDb.auth.onAuthStateChange((_event,session)=>{refreshAdminButton(session);});
 }
 </script>
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
