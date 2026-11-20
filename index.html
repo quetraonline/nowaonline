@@ -280,6 +280,30 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
 
 
 @media screen and (max-width: 768px){header .nav .nav-right{display:none!important;visibility:hidden!important;pointer-events:none!important}}
+
+/* Günlük etkinlik takvimi - geçici ana sayfa bölümü */
+.daily-events{margin:0 0 24px;padding:14px;border:1px solid #a83236;border-radius:13px;background:linear-gradient(145deg,#17120f,#0e1117 72%);box-shadow:0 8px 24px #0005}
+.daily-events-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.daily-events-title{display:flex;align-items:center;gap:9px;margin:0;font-size:17px;font-weight:900;color:#f5f5f5}
+.daily-events-title svg{width:22px;height:22px;color:#f0bd55}
+.daily-events-clock{font-size:11px;color:#d8b86c;white-space:nowrap}
+.daily-days{display:flex;gap:6px;overflow-x:auto;padding:2px 1px 10px;scrollbar-width:thin}
+.daily-day{flex:0 0 auto;border:1px solid #554432;border-radius:7px;background:#191a1d;color:#d8dce3;padding:6px 11px;font-size:11px;font-weight:800}
+.daily-day.active{background:linear-gradient(135deg,#f4d16b,#b9802b);border-color:#ffdf79;color:#20170a;box-shadow:0 0 12px #e8b95c55}
+.daily-event-list{display:grid;gap:6px}
+.daily-event-row{display:grid;grid-template-columns:minmax(130px,190px) minmax(150px,1fr) auto;align-items:center;gap:12px;padding:8px 10px;border:1px solid #38312a;border-radius:9px;background:linear-gradient(100deg,#201a16,#12151a)}
+.daily-event-row.next{border-color:#e9bd4d;box-shadow:0 0 12px #e9bd4d33;background:linear-gradient(100deg,#352716,#17191d)}
+.daily-event-type{font-size:10px;font-weight:900;letter-spacing:.4px;color:#e8bd62}
+.daily-event-name{font-size:13px;font-weight:850;color:#f5f5f5;line-height:1.25}
+.daily-event-times{display:flex;flex-wrap:wrap;gap:5px}
+.daily-event-time{border:1px solid #5a5148;border-radius:6px;background:#242323;color:#f2f2f2;padding:4px 8px;font-size:11px;font-weight:800}
+.daily-event-time.past{opacity:.38;text-decoration:line-through}
+.daily-event-time.next{background:#ffdc70;border-color:#ffdc70;color:#261b08;box-shadow:0 0 10px #ffdc7066}
+.daily-event-count{min-width:94px;text-align:right;color:#f4cd68;font-size:17px;font-weight:950;font-variant-numeric:tabular-nums}
+.daily-event-count small{display:block;color:#c4c5c8;font-size:9px;font-weight:600}
+.daily-event-empty{padding:18px;text-align:center;color:#aeb4bf;font-size:12px}
+@media(max-width:700px){.daily-events{padding:11px;margin-bottom:18px}.daily-events-title{font-size:15px}.daily-event-row{grid-template-columns:1fr auto;gap:7px}.daily-event-type{grid-column:1/-1}.daily-event-name{font-size:12px}.daily-event-times{grid-column:1/-1}.daily-event-count{grid-column:2;grid-row:1/3;font-size:15px}.daily-event-count small{font-size:8px}}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -316,6 +340,12 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
 </div>
 
 
+
+
+<section class="daily-events" id="dailyEventsSection">
+ <div class="daily-events-head"><h3 class="daily-events-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>YAKLAŞAN ETKİNLİKLER</h3><span class="daily-events-clock">◷ Türkiye saati</span></div>
+ <div class="daily-days" id="dailyEventDays" aria-label="Haftanın günleri"></div><div class="daily-event-list" id="dailyEventList"></div>
+</section>
 
 <section class="latest-youtube-section" id="latestYoutubeSection" hidden>
   <div class="latest-youtube-heading">
@@ -1009,5 +1039,36 @@ if(tiktokConnectionStatus){
 (()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const mobileAdminLink=nav.querySelector('a[href="/?openAdmin=1"]');if(mobileAdminLink)mobileAdminLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("adminOpen")?.click();});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
 </script>
 
+
+
+<script>
+(()=>{
+const schedules={
+"0":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]],
+"1":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["Mining Event[3H]","MADEN ETKİNLİĞİ","16:00,20:30"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]],
+"2":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["Ethernal Gate","ETKİNLİK","21:45"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]],
+"3":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["Fishing Event[3H]","BALIKÇILIK","16:00,20:30"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]],
+"4":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["Fishing Event[3H]","BALIKÇILIK","16:00,20:30"],["Mining Event[3H]","MADEN ETKİNLİĞİ","20:30"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]],
+"5":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["Ethernal Gate","ETKİNLİK","01:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["Mining Event[3H]","MADEN ETKİNLİĞİ","16:00,20:30"],["Fishing Event[3H]","BALIKÇILIK","16:00,20:30"],["CR [60] WP SC","COLLECTION RACE","16:05"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]],
+"6":[["C.Temple (80 - 83 Lvl)","PARTY / ETKİNLİK","00:01,12:30"],["CR [100]","COLLECTION RACE","00:30,20:15,22:00"],["CR [65]","COLLECTION RACE","02:30,15:30"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","03:00,17:00"],["CR [MIX]","COLLECTION RACE","04:05,10:15,13:30"],["[MIDDLE L.DRAW]","ÇEKİLİŞ","14:00"],["Mining Event[3H]","MADEN ETKİNLİĞİ","14:00,20:30"],["Fishing Event[3H]","BALIKÇILIK","14:00,20:30"],["MonumentW. (80 - 83 Lvl)","PARTY / ETKİNLİK","15:00,20:00"],["CR [65]","COLLECTION RACE","15:30"],["CR [60] WP SC","COLLECTION RACE","16:05"],["Monster Raid (55 - 83 Lvl)","BOSS ETKİNLİĞİ","17:00"],["Ethernal Gate","ETKİNLİK","17:00"],["CR [50] Spring","COLLECTION RACE","17:00"],["[H.WEAPON L.DRAW]","ÇEKİLİŞ","19:00"],["[OLD L.DRAW]","ÇEKİLİŞ","22:00"]]
+};
+const names=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"],root=document.getElementById("dailyEventsSection");
+if(!root)return;const tabs=root.querySelector("#dailyEventDays"),list=root.querySelector("#dailyEventList");
+let selected=new Date().getDay();
+function render(){
+ tabs.innerHTML=names.map((n,i)=>'<button type="button" class="daily-day '+(i===selected?'active':'')+'" data-day="'+i+'">'+n+'</button>').join("");
+ const now=new Date(),today=selected===now.getDay(),minute=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+ const events=(schedules[selected]||[]).map((e,index)=>({...e,index,times:e[2].split(",").map(t=>({label:t,mins:Number(t.slice(0,2))*60+Number(t.slice(3))}))}));
+ const upcoming=[];events.forEach(e=>e.times.forEach(t=>{let delta=t.mins-minute;if(today&&delta<0)delta+=1440;else if(!today)delta=t.mins+1440;upcoming.push({e,t,delta})}));
+ upcoming.sort((a,b)=>a.delta-b.delta);const next=upcoming[0];
+ list.innerHTML=events.map(e=>{const isNext=next&&next.e.index===e.index;const chips=e.times.map(t=>{const isPast=today&&t.mins<minute;const isCurrent=next&&next.e.index===e.index&&next.t.label===t.label;return '<span class="daily-event-time '+(isPast?'past ':'')+(isCurrent?'next':'')+'">'+t.label+'</span>'}).join("");
+ let count="";if(isNext){const sec=Math.max(0,Math.floor(next.delta*60));count=String(Math.floor(sec/3600)).padStart(2,"0")+":"+String(Math.floor(sec%3600/60)).padStart(2,"0");}
+ return '<div class="daily-event-row '+(isNext?'next':'')+'"><div><div class="daily-event-type">'+e[1]+'</div><div class="daily-event-name">'+e[0]+'</div></div><div class="daily-event-times">'+chips+'</div><div class="daily-event-count">'+(isNext?next.t.label:'')+(isNext?'<small>'+count+' kaldı</small>':'')+'</div></div>';
+ }).join("")||'<div class="daily-event-empty">Bu gün için etkinlik bulunamadı.</div>';
+}
+tabs.addEventListener("click",e=>{const b=e.target.closest("[data-day]");if(b){selected=Number(b.dataset.day);render();}});
+render();setInterval(()=>{if(selected===new Date().getDay())render();},1000);
+})();
+</script>
 
 </body></html>
