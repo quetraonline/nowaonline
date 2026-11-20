@@ -30,36 +30,10 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
 
 
 
-/* Üst menü ve bayraklar: Yayıncı Rehberi ile birebir aynı kod */
-/* Türk bayrağı ve logo yanı Atatürk bayrağı: tüm sayfalarda ortak başlık */
-header{position:sticky;top:0;z-index:10}
-.site-flag-gif{position:absolute;top:63px;left:calc(max(16px, (100% - 1160px)/2) + 21.5px);transform:translateX(-50%);z-index:15;width:92px;height:165px;object-fit:contain;object-position:top center;display:block;pointer-events:none;-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
-.site-ataturk-flag-gif{position:static;display:block;flex:0 0 auto;width:82px;height:48px;margin-left:0;transform:none;object-fit:contain;object-position:center;pointer-events:none;-webkit-user-select:none;user-select:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));border-radius:2px}
-@media(max-width:600px){.site-flag-gif{width:76px;height:138px;top:63px;left:37.5px}.site-ataturk-flag-gif{width:76px;height:44px}}
 
-/* Bayrak ayarı veritabanından gelene kadar görünmez; kayıtlı tercih ilk boyamada uygulanır */
-.site-flag-gif,.site-ataturk-flag-gif{visibility:hidden}
-.flag-setting-ready .site-flag-gif{visibility:visible}
-.flag-setting-hidden .site-flag-gif{display:none!important;visibility:hidden!important}
-.ataturk-flag-setting-ready .site-ataturk-flag-gif{visibility:visible}
-.ataturk-flag-setting-hidden .site-ataturk-flag-gif{display:none!important;visibility:hidden!important}
-
-/* Bayrak arka planda kalır; üst menü ve açılır menü her ekranda üstte görünür */
-header{isolation:isolate}
-.site-flag-gif{z-index:0!important}
-header .nav{position:relative;z-index:2}
-header .menu{position:relative;z-index:3}
-header .menu-dropdown{z-index:40}
-
-
-footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-size:11px}
-.foot{display:flex;justify-content:space-between;gap:15px;align-items:center}
-.footer-brand{display:flex;align-items:center;gap:11px}.footer-brand .mark{width:38px;height:38px;flex:0 0 38px}
-.foot b{color:#e7c16e;letter-spacing:.12em}
-.visitor-counter{display:flex;align-items:center;justify-content:center;gap:7px;color:#aeb8c5;font-size:11px;text-align:center}
-.visitor-counter strong{color:var(--gold);font-size:15px;font-variant-numeric:tabular-nums}.visitor-counter .visitor-icon{font-size:15px}
-@media(max-width:650px){.wrap{width:min(100% - 26px,1160px)}.nav{height:66px;min-height:0}.brand{gap:12px;min-width:max-content}.mark{width:38px;height:38px;flex-basis:38px}.brand strong{font-size:11px}.brand small{font-size:8px}.foot{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer-brand>div{text-align:left}}
-</style>
+/* Rehber sayfasından alınan eksiksiz üst menü CSS'i */
+.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
+header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff12}.nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.08em}.mark{width:43px;height:43px;display:grid;place-items:center;overflow:hidden;border:1px solid #d8a84c;border-radius:12px;background:linear-gradient(145deg,#382919,#12151b)}.mark img{display:block;width:100%;height:100%;object-fit:contain;padding:3px}.brand strong{font-size:14px;display:block}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em}.nav-right{display:flex;align-items:center;gap:9px}</style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
 <body>
