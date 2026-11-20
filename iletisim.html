@@ -130,9 +130,9 @@ if(adminButton){
   const icon=adminButton.querySelector("svg");
   if(icon)icon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/>';const mobileAdminLink=document.querySelector("#mobileBottomNav a[href=\"/?openAdmin=1\"]");if(mobileAdminLink){mobileAdminLink.classList.toggle("admin-logged-in",admin);mobileAdminLink.setAttribute("aria-label",admin?"Yönetici Paneli":"Yönetici girişi");const mobileIcon=mobileAdminLink.querySelector("svg");if(mobileIcon)mobileIcon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>';}
  };
- const syncMobileAdminState=()=>subpageDb.auth.getSession().then(({data})=>refreshAdminButton(data.session));
+ const syncMobileAdminState=async()=>{try{const {data:{session}}=await subpageDb.auth.getSession();await refreshAdminButton(session);}catch(error){console.warn("Yönetici durumu kontrol edilemedi:",error);}};
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",syncMobileAdminState,{once:true});else syncMobileAdminState();
- subpageDb.auth.onAuthStateChange((_event,session)=>{refreshAdminButton(session);});
+ subpageDb.auth.onAuthStateChange((_event,session)=>{queueMicrotask(()=>{refreshAdminButton(session).catch(error=>console.warn("Yönetici simgesi güncellenemedi:",error));});});
 }
 </script>
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
@@ -143,6 +143,6 @@ if(adminButton){
  <a href="/?openAdmin=1" class="nav-placeholder" data-no-active="true" aria-label="Yönetici girişi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>
 </nav>
 <script>
-(()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const mobileAdminLink=nav.querySelector('a[href="/?openAdmin=1"]');if(mobileAdminLink)mobileAdminLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("adminOpen")?.click();});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
+(()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const mobileAdminLink=nav.querySelector('a[href="/?openAdmin=1"]');if(mobileAdminLink)mobileAdminLink.addEventListener("click",event=>{event.preventDefault();window.location.assign("/?openAdmin=1");});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
 </script>
 </body></html>
