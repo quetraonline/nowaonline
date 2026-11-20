@@ -11,14 +11,34 @@
 :root{color-scheme:dark;--bg:#0b0f15;--panel:#151c26;--line:#303b4b;--gold:#e8b95c;--muted:#aab4c2;--text:#f4f6f9}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2431 0,#0b0f15 55%);color:var(--text);font:15px/1.75 Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}.topline{height:3px;background:linear-gradient(90deg,#8c6028,var(--gold),#8c6028)}header{border-bottom:1px solid #ffffff12;background:#0b0f15dd}.wrap{width:min(100% - 36px,980px);margin:auto}.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none}.mark{width:44px;height:44px;border:1px solid #b8873b88;border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;font-size:22px}.brand strong{display:block;letter-spacing:2px;font-size:14px}.brand small{display:block;color:var(--muted);letter-spacing:3px;font-size:10px}.home{border:1px solid #b8873b77;border-radius:9px;padding:8px 13px;color:var(--gold);text-decoration:none;font-weight:700;font-size:13px}.home:hover,.footer-link:hover{background:#e8b95c18}.content{padding:42px 0 70px}.eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}h1{font-size:clamp(30px,5vw,44px);line-height:1.15;margin:10px 0 12px;letter-spacing:-1px}.intro{color:var(--muted);font-size:16px;max-width:780px;margin:0 0 24px}.updated{display:inline-block;color:#d6dce5;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;margin-bottom:22px}.policy{background:linear-gradient(145deg,#19212c,#111720);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,4vw,36px);box-shadow:0 18px 50px #0004}.policy section+section{border-top:1px solid #ffffff14;margin-top:25px;padding-top:22px}h2{font-size:19px;margin:0 0 10px;color:#f7f8fa}p{margin:8px 0;color:#d0d7e1}ul{padding-left:22px;margin:8px 0;color:#d0d7e1}li{padding:3px 0}a{color:var(--gold);text-underline-offset:3px;overflow-wrap:anywhere}.note{color:var(--muted);font-size:13px}.footer{border-top:1px solid #ffffff14;padding:22px 0 30px;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.footer-link{display:inline-block;border:1px solid #b8873b66;border-radius:8px;padding:7px 11px;color:var(--gold);text-decoration:none;font-weight:700}
 @media(max-width:600px){.wrap{width:min(100% - 26px,980px)}.nav{min-height:68px}.brand strong{font-size:11px}.brand small{font-size:8px}.mark{width:38px;height:38px}.content{padding:28px 0 48px}.policy{border-radius:14px}}
+
+/* Ana sayfa ile ortak üst/alt alan stilleri */
+:root{--gold:#e8b95c;--muted:#aab4c2}
+.topline{background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
+header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff12}
+.nav{height:68px;position:relative;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-weight:900;letter-spacing:.08em}
+.mark{width:43px;height:43px;display:grid;place-items:center;overflow:hidden;border:1px solid #d8a84c;border-radius:12px;background:linear-gradient(145deg,#382919,#12151b);flex:0 0 43px}
+.mark img{display:block;width:100%;height:100%;object-fit:contain;padding:3px}
+.brand strong{font-size:14px;display:block;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em}
+.site-flag-gif{position:absolute;right:0;top:0;width:58px;height:33px;object-fit:contain;pointer-events:none}
+.site-ataturk-flag-gif{width:58px;height:33px;object-fit:contain;margin-left:2px}
+.policy-title{display:flex;align-items:center;gap:12px}
+.policy-title svg{width:32px;height:32px;flex:0 0 32px;fill:none;stroke:var(--gold);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-size:11px}
+.foot{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.footer-brand{display:flex;align-items:center;gap:11px}.footer-brand .mark{width:38px;height:38px;flex:0 0 38px}
+.footer-brand b{color:#e7c16e;letter-spacing:.12em}
+@media(max-width:650px){.foot{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer-brand>div{text-align:left}.brand strong{font-size:11px}.brand small{font-size:8px}.mark{width:38px;height:38px;flex-basis:38px}.site-ataturk-flag-gif{width:52px;height:30px}.policy-title svg{width:28px;height:28px;flex-basis:28px}}
+
 </style>
 </head>
 <body>
 <div class="topline"></div>
-<header><div class="wrap nav"><a class="brand" href="/" aria-label="Nowa Online World ana sayfa"><span class="mark">N</span><span><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span></a><a class="home" href="/">Ana Sayfa</a></div></header>
+<header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav"><a class="brand" href="/" aria-label="Nowa Online World ana sayfa"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></a></div></header>
 <main class="wrap content">
 <div class="eyebrow">Yasal Bilgilendirme</div>
-<h1>Gizlilik Politikası</h1>
+<h1 class="policy-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Gizlilik Politikası</h1>
 <p class="intro">Nowa Online World web sitesini kullanırken hangi bilgilerin işlendiğini, bu bilgilerin hangi amaçlarla kullanıldığını ve tercihlerinizle ilgili bize nasıl ulaşabileceğinizi açıklarız.</p>
 <div class="updated">Son güncelleme: 20 Kasım 2026</div>
 <article class="policy">
@@ -86,7 +106,7 @@
 <p class="note">Bu metin, web sitesinin mevcut işleyişini açıklamak amacıyla hazırlanmıştır. Hukuki danışmanlık yerine geçmez. Hizmetin veri işleme süreçlerinde değişiklik olduğunda bu metin de güncellenmelidir.</p>
 </article>
 </main>
-<footer class="footer"><div class="wrap footer-inner"><div><div>© 2025 NowaOnlineWorld.tv - Tüm hakları saklıdır.</div><div style="margin-top:5px"><a href="/gizlilik-politikasi">Gizlilik Politikası</a></div></div><a class="footer-link" href="/">Ana Sayfa</a></div></footer>
+<footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div>© 2025 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div style="margin-top:5px"><a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:underline;text-underline-offset:3px;font-size:12px">Gizlilik Politikası</a></div></div></div></footer>
 
 </body>
 </html>
