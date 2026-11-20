@@ -142,6 +142,6 @@ if(adminButton){
  <a href="/?openAdmin=1" class="nav-placeholder" data-no-active="true" aria-label="Yönetici girişi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>
 </nav>
 <script>
-(()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
+(()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const mobileAdminLink=nav.querySelector('a[href="/?openAdmin=1"]');if(mobileAdminLink)mobileAdminLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("adminOpen")?.click();});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
 </script>
 </body></html>
