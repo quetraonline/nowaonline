@@ -135,11 +135,12 @@ if(adminButton){
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
  <a href="/" aria-label="Ana Sayfa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span class="home-label">Ana Sayfa</span></a>
  <span class="nav-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg></span>
+ <a href="/?focusSearch=1" class="nav-placeholder" data-no-active="true" aria-label="Yayıncı ara"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></a>
  <a href="/rehber" class="nav-placeholder plus" aria-label="Rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
- <span class="nav-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/></svg></span>
- <span class="nav-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+ <a href="/iletisim" class="nav-placeholder" aria-label="İletişim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 7 9-7"/></svg></a>
+ <a href="/?openAdmin=1" class="nav-placeholder" data-no-active="true" aria-label="Yönetici girişi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>
 </nav>
 <script>
-(()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";nav.querySelectorAll("a[href]").forEach(link=>{const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
+(()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
 </script>
 </body></html>
