@@ -1003,4 +1003,45 @@ if(tiktokConnectionStatus){
 <script>
 (()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const mobileAdminLink=nav.querySelector('a[href="/?openAdmin=1"]');if(mobileAdminLink)mobileAdminLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("adminOpen")?.click();});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
 </script>
+
+<script>
+/* NOWA_DIRECT_PUBLISHER_RECOVERY: ana uygulama listeyi oluşturamazsa REST üzerinden bağımsız yükle */
+(function(){
+ const endpoint="https://hfmosadynxpwkscvpard.supabase.co/rest/v1/nowa_publishers?select=id,name,avatar_url,platform,platforms,platform_links,server,is_published&is_published=eq.true&order=sort_order.asc,name.asc";
+ const publicKey="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
+ const escHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ function card(p){
+  const name=escHtml(p.name||"Yayıncı");
+  const photo=p.avatar_url?'<img src="'+escHtml(p.avatar_url)+'" alt="'+name+'" loading="lazy" onerror="this.style.display=\'none\'">':escHtml(String(p.name||"NW").trim().slice(0,2).toUpperCase());
+  const links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
+  const platforms=Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:Object.keys(links).filter(k=>links[k]));
+  const tags=platforms.map(platform=>'<span class="platform-tag">'+escHtml(platform)+'</span>').join("");
+  return '<article class="card" data-publisher-id="'+escHtml(p.id)+'"><div class="cardtop"><div class="person"><div class="avatar">'+photo+'</div><div class="person-info"><div class="name">'+name+'</div></div></div><div class="platform-tags card-platforms">'+tags+'</div></div></article>';
+ }
+ async function recover(){
+  const aresBox=document.getElementById("aresCards"),atlasBox=document.getElementById("atlasCards");
+  if(!aresBox||!atlasBox)return;
+  if(aresBox.querySelector("article")||atlasBox.querySelector("article"))return;
+  try{
+   const response=await fetch(endpoint,{headers:{apikey:publicKey,Authorization:"Bearer "+publicKey,Accept:"application/json"},cache:"no-store"});
+   if(!response.ok)throw new Error("HTTP "+response.status);
+   const rows=await response.json();
+   if(!Array.isArray(rows))throw new Error("Beklenmeyen yayıncı verisi");
+   const ares=rows.filter(p=>String(p.server||"Ares").toLowerCase()==="ares");
+   const atlas=rows.filter(p=>String(p.server||"Ares").toLowerCase()==="atlas");
+   aresBox.innerHTML=ares.map(card).join("")||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
+   atlasBox.innerHTML=atlas.map(card).join("")||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
+   const aresCount=document.getElementById("aresCount"),atlasCount=document.getElementById("atlasCount");
+   const publisherCount=document.getElementById("publisherCount");
+   if(aresCount)aresCount.textContent=ares.length+" yayıncı";
+   if(atlasCount)atlasCount.textContent=atlas.length+" yayıncı";
+   if(publisherCount)publisherCount.textContent=rows.filter(p=>p.card_theme!=="youtube").length;
+   console.warn("Ana uygulama listeyi oluşturamadı; bağımsız yayıncı yüklemesi tamamlandı.",{total:rows.length,ares:ares.length,atlas:atlas.length});
+  }catch(error){
+   console.error("Bağımsız yayıncı yüklemesi başarısız:",error);
+  }
+ }
+ window.setTimeout(recover,4500);
+})();
+</script>
 </body></html>
