@@ -638,7 +638,49 @@ async function loadFlagVisibility(){try{const {data,error}=await db.from("nowa_s
 function applyLogoFlagVisibility(visible){const flag=document.querySelector(".site-ataturk-flag-gif");document.documentElement.classList.add("ataturk-flag-setting-ready");document.documentElement.classList.toggle("ataturk-flag-setting-hidden",!visible);if(flag){flag.style.display=visible?"block":"none";flag.style.visibility=visible?"visible":"hidden"}}
 async function loadLogoFlagVisibility(){try{const {data,error}=await db.from("nowa_site_settings").select("logo_flag_visible").eq("id",true).maybeSingle();if(error)throw error;const visible=data?.logo_flag_visible!==false;try{localStorage.setItem("nowa_logo_flag_visible",String(visible))}catch{}applyLogoFlagVisibility(visible);return visible}catch(error){console.warn("Logo yanı bayrak görünürlük ayarı yüklenemedi:",error);const cached=(()=>{try{return localStorage.getItem("nowa_logo_flag_visible")}catch{return null}})();const visible=cached==="true";applyLogoFlagVisibility(visible);return visible}}
 
-async function loadPublishers(){const requestId=(window.nowaPublishersLoadRequest||0)+1;window.nowaPublishersLoadRequest=requestId;const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");if(requestId!==window.nowaPublishersLoadRequest)return;if(error){console.warn("Yayıncı listesi yenilenemedi; son başarılı liste korunuyor:",error);if(!publishers.length)$("cards").innerHTML='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error.message)+'</div>';return}publishers=data||[];render();loadLivePublisherPlatforms();setTimeout(()=>loadLatestYoutubeFeed(),1200)}
+function renderPublisherRecoveryList(items){
+ const cards=items.map(p=>{
+  const name=esc(p.name||"Yayıncı");
+  const photo=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="'+name+'" onerror="this.remove()">':esc(String(p.name||"NW").trim().slice(0,2).toUpperCase());
+  const links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
+  const platformList=Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:Object.keys(links).filter(k=>links[k]));
+  const tags=platformList.map(x=>'<span class="platform-tag">'+esc(x)+'</span>').join("");
+  return '<article class="card"><div class="cardtop"><div class="person"><div class="avatar">'+photo+'</div><div class="person-info"><div class="name">'+name+'</div></div></div><div class="platform-tags card-platforms">'+tags+'</div></div></article>';
+ }).join("");
+ return cards||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
+}
+async function loadPublishers(){
+ const requestId=(window.nowaPublishersLoadRequest||0)+1;
+ window.nowaPublishersLoadRequest=requestId;
+ try{
+  const {data,error}=await db.from("nowa_publishers").select("*").eq("is_published",true).order("sort_order").order("name");
+  if(requestId!==window.nowaPublishersLoadRequest)return;
+  if(error)throw error;
+  publishers=Array.isArray(data)?data:[];
+  try{
+   render();
+  }catch(renderError){
+   console.error("Ana sayfa yayıncı kartları normal görünümde çizilemedi; güvenli liste görünümü devreye alındı:",renderError);
+   const ares=publishers.filter(p=>String(p.server||"Ares").toLowerCase()==="ares");
+   const atlas=publishers.filter(p=>String(p.server||"Ares").toLowerCase()==="atlas");
+   const aresBox=$("aresCards"),atlasBox=$("atlasCards");
+   if(aresBox)aresBox.innerHTML=renderPublisherRecoveryList(ares);
+   if(atlasBox)atlasBox.innerHTML=renderPublisherRecoveryList(atlas);
+   if($("aresCount"))$("aresCount").textContent=ares.length+" yayıncı";
+   if($("atlasCount"))$("atlasCount").textContent=atlas.length+" yayıncı";
+   if($("publisherCount"))$("publisherCount").textContent=publishers.filter(p=>p.card_theme!=="youtube").length;
+   if($("creatorCount"))$("creatorCount").textContent=publishers.filter(p=>p.card_theme==="youtube").length;
+  }
+  loadLivePublisherPlatforms();
+  setTimeout(()=>loadLatestYoutubeFeed(),1200);
+ }catch(error){
+  console.error("Yayıncı listesi yüklenemedi:",error);
+  if(requestId!==window.nowaPublishersLoadRequest)return;
+  const message='<div class="empty"><strong>Yayıncı listesi şu anda yüklenemedi.</strong>'+esc(error?.message||"Bağlantı hatası")+'</div>';
+  if($("aresCards"))$("aresCards").innerHTML=message;
+  if($("atlasCards"))$("atlasCards").innerHTML=message;
+ }
+}
 
 function formatDuration(seconds){const total=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(total/3600),m=Math.floor((total%3600)/60);return h?(h+" saat "+m+" dakika"):(m+" dakika")}
 async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false){
