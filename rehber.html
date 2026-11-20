@@ -81,6 +81,8 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
  .mobile-bottom-nav a.active{color:#e8b95c;opacity:1}
  .mobile-bottom-nav a:not(.active){opacity:.62}
  .mobile-bottom-nav a.active svg{fill:none!important;stroke:#e8b95c}
+ .mobile-bottom-nav a.admin-logged-in{color:#e8b95c!important;opacity:1!important}
+ .mobile-bottom-nav a.admin-logged-in svg{fill:none!important;stroke:#e8b95c!important}
  .mobile-bottom-nav .home-label{font-size:9px;font-weight:800;line-height:1}
  .mobile-bottom-nav .nav-placeholder{opacity:.55}
  .mobile-bottom-nav .nav-placeholder.active{opacity:1;color:#e8b95c}
@@ -191,7 +193,7 @@ if(adminButton){
   const label=adminButton.querySelector("#adminOpenLabel");
   if(label)label.textContent=admin?"Yönetici Paneli":"Giriş Yap";
   const icon=adminButton.querySelector("svg");
-  if(icon)icon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/>';
+  if(icon)icon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/>';const mobileAdminLink=document.querySelector("#mobileBottomNav a[href=\"/?openAdmin=1\"]");if(mobileAdminLink){mobileAdminLink.classList.toggle("admin-logged-in",admin);mobileAdminLink.setAttribute("aria-label",admin?"Yönetici Paneli":"Yönetici girişi");const mobileIcon=mobileAdminLink.querySelector("svg");if(mobileIcon)mobileIcon.innerHTML=admin?'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>':'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>';}
  };
  subpageDb.auth.getSession().then(({data})=>refreshAdminButton(data.session));
  subpageDb.auth.onAuthStateChange((_event,session)=>refreshAdminButton(session));
