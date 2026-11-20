@@ -48,36 +48,46 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
 .policy-content{padding:clamp(20px,4vw,36px);border:1px solid #303b4b;border-radius:16px;background:linear-gradient(145deg,#19212c,#10151d);box-shadow:0 18px 45px #0003}\n.policy-content section+section{margin-top:22px}\n.policy-content h2{margin:0 0 10px;font-size:19px;color:#f2d18d}\n.policy-content p{margin:8px 0;color:var(--muted);line-height:1.75}\n.policy-content ul{margin:8px 0;padding-left:21px;color:#c5ced9;line-height:1.9}\n.policy-content li{padding-left:4px}\n.policy-content a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}\n.policy-content .note{color:var(--muted);font-size:13px}\n@media(max-width:650px){main{padding:18px 0 55px}.policy-content{padding:19px}.page-title-with-icon{gap:8px}.page-title-with-icon svg{width:23px;height:23px;flex-basis:23px}.guide-hero .lead{font-size:14px}}
 
 
-/* Ana sayfa üst menü ve alt bilgi ile birebir ortak görünüm */
-:root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7}
-body{background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-.wrap{width:min(1160px,calc(100% - 32px));margin:auto}
-header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff12;isolation:isolate}
-.nav{height:68px;position:relative;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:20px}
+/* Üst alan: Yayıncı Rehberi sayfasıyla aynı ölçü ve bayrak görünürlük kontrolü */
+.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
+.nav{height:68px;min-height:0;position:relative;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-weight:900;letter-spacing:.08em}
 .mark{width:43px;height:43px;display:grid;place-items:center;overflow:hidden;border:1px solid #d8a84c;border-radius:12px;background:linear-gradient(145deg,#382919,#12151b);flex:0 0 43px}
 .mark img{display:block;width:100%;height:100%;object-fit:contain;padding:3px}
 .brand strong{font-size:14px;display:block;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em}
-.brand-menu{border:0;background:transparent;color:inherit;padding:0;cursor:pointer;text-align:left;width:auto}
-.brand-menu:focus-visible{outline:2px solid var(--gold);outline-offset:5px;border-radius:5px}
-.menu{position:relative;z-index:3}.menu-trigger{min-width:100px;display:flex;align-items:center;justify-content:center;gap:9px}
-.menu-dropdown{position:absolute;left:0;right:auto;top:calc(100% + 10px);width:190px;padding:7px;background:#141b25;border:1px solid #394657;border-radius:12px;box-shadow:0 16px 40px #0009;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.18s;z-index:40}
-.menu.open .menu-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
-.menu-dropdown a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;color:#e9edf3;font-size:13px;font-weight:750;text-decoration:none}
-.menu-dropdown a svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:var(--gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.menu-dropdown a:hover{background:#252f3c;color:var(--gold)}
-.site-flag-gif{position:absolute;top:63px;left:calc(max(16px,(100% - 1160px)/2) + 21.5px);transform:translateX(-50%);z-index:0;width:76px;height:138px;object-fit:contain;object-position:top center;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
-.site-ataturk-flag-gif{display:block;flex:0 0 auto;width:76px;height:44px;margin-left:0;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));border-radius:2px}
+header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff12;isolation:isolate}
+.menu{position:relative;z-index:3}header .nav{position:relative;z-index:2}
+/* Türk bayrağı ve logo yanı Atatürk bayrağı: tüm sayfalarda ortak başlık */
+header{position:sticky;top:0;z-index:10}
+.site-flag-gif{position:absolute;top:63px;left:calc(max(16px, (100% - 1160px)/2) + 21.5px);transform:translateX(-50%);z-index:15;width:92px;height:165px;object-fit:contain;object-position:top center;display:block;pointer-events:none;-webkit-user-select:none;user-select:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
+.site-ataturk-flag-gif{position:static;display:block;flex:0 0 auto;width:82px;height:48px;margin-left:0;transform:none;object-fit:contain;object-position:center;pointer-events:none;-webkit-user-select:none;user-select:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));border-radius:2px}
+@media(max-width:600px){.site-flag-gif{width:76px;height:138px;top:63px;left:37.5px}.site-ataturk-flag-gif{width:76px;height:44px}}
+
+/* Bayrak ayarı veritabanından gelene kadar görünmez; kayıtlı tercih ilk boyamada uygulanır */
+.site-flag-gif,.site-ataturk-flag-gif{visibility:hidden}
+.flag-setting-ready .site-flag-gif{visibility:visible}
+.flag-setting-hidden .site-flag-gif{display:none!important;visibility:hidden!important}
+.ataturk-flag-setting-ready .site-ataturk-flag-gif{visibility:visible}
+.ataturk-flag-setting-hidden .site-ataturk-flag-gif{display:none!important;visibility:hidden!important}
+
+/* Bayrak arka planda kalır; üst menü ve açılır menü her ekranda üstte görünür */
+header{isolation:isolate}
+.site-flag-gif{z-index:0!important}
 header .nav{position:relative;z-index:2}
+header .menu{position:relative;z-index:3}
+header .menu-dropdown{z-index:40}
+
+/* Ardream World özel imleci
 footer{border-top:1px solid #ffffff12;padding:27px 0 35px;color:#8994a3;font-size:11px}
 .foot{display:flex;justify-content:space-between;gap:15px;align-items:center}
 .footer-brand{display:flex;align-items:center;gap:11px}.footer-brand .mark{width:38px;height:38px;flex:0 0 38px}
 .foot b{color:#e7c16e;letter-spacing:.12em}
 .visitor-counter{display:flex;align-items:center;justify-content:center;gap:7px;color:#aeb8c5;font-size:11px;text-align:center}
 .visitor-counter strong{color:var(--gold);font-size:15px;font-variant-numeric:tabular-nums}.visitor-counter .visitor-icon{font-size:15px}
-@media(max-width:650px){.wrap{width:min(100% - 26px,1160px)}.nav{height:66px}.brand{gap:12px;min-width:max-content}.mark{width:38px;height:38px;flex-basis:38px}.brand strong{font-size:11px}.brand small{font-size:8px}.site-ataturk-flag-gif{width:76px;height:44px}.site-flag-gif{width:76px;height:138px;left:37.5px}.foot{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer-brand>div{text-align:left}}
+@media(max-width:650px){.wrap{width:min(100% - 26px,1160px)}.nav{height:66px;min-height:0}.brand{gap:12px;min-width:max-content}.mark{width:38px;height:38px;flex-basis:38px}.brand strong{font-size:11px}.brand small{font-size:8px}.foot{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer-brand>div{text-align:left}}
 
 </style>
+<script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
 <body>
 <div class="topline"></div>
