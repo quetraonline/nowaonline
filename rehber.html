@@ -75,14 +75,14 @@ input, textarea, [contenteditable="true"], [contenteditable=""] {
 .mobile-bottom-nav{display:none}
 @media(max-width:768px){
  body{padding-bottom:88px!important}
- .mobile-bottom-nav{position:fixed;z-index:9999;left:26px;right:26px;bottom:max(12px,env(safe-area-inset-bottom));height:58px;display:flex;align-items:center;justify-content:space-around;gap:2px;padding:4px 8px;border:1px solid rgba(255,255,255,.12);border-radius:36px;background:rgba(31,35,38,.68);box-shadow:0 7px 22px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+ .mobile-bottom-nav{position:fixed;z-index:9999;left:26px;right:26px;bottom:max(12px,env(safe-area-inset-bottom));height:58px;display:flex;align-items:center;justify-content:space-around;gap:2px;padding:4px 8px;border:1px solid rgba(255,255,255,.12);border-radius:36px;background:linear-gradient(145deg,#19212c,#10151d);box-shadow:0 7px 22px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
  .mobile-bottom-nav a,.mobile-bottom-nav .nav-placeholder{position:relative;display:flex;flex:1;min-width:0;height:46px;align-items:center;justify-content:center;flex-direction:column;gap:2px;border:0;background:transparent;color:#f4f5f6;text-decoration:none}
  .mobile-bottom-nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
  .mobile-bottom-nav a.active{color:#e8b95c}
  .mobile-bottom-nav a.active svg{fill:#e8b95c;stroke:#e8b95c}
  .mobile-bottom-nav .home-label{font-size:9px;font-weight:800;line-height:1}
  .mobile-bottom-nav .nav-placeholder{opacity:.96}
- .mobile-bottom-nav .nav-placeholder.plus{flex:0 0 50px;width:50px;height:50px;margin-top:-18px;border-radius:50%;background:#090b0d;border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 16px rgba(0,0,0,.35)}
+ .mobile-bottom-nav .nav-placeholder.plus{flex:0 0 50px;width:50px;height:50px;margin-top:-18px;border-radius:50%;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;box-shadow:0 4px 16px rgba(0,0,0,.35)}
  .mobile-bottom-nav .nav-placeholder.plus svg{width:26px;height:26px;stroke-width:2.5}
 }
 @media(min-width:769px){.mobile-bottom-nav{display:none!important}}
@@ -197,7 +197,7 @@ if(adminButton){
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
  <a href="/" class="active" aria-label="Ana Sayfa" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span class="home-label">Ana Sayfa</span></a>
  <span class="nav-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg></span>
- <span class="nav-placeholder plus" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+ <a href="/rehber" class="nav-placeholder plus" aria-label="Rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
  <span class="nav-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/></svg></span>
  <span class="nav-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
 </nav>
