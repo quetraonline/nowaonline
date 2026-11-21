@@ -1121,7 +1121,7 @@ function renderGameEvents(){
  const weeklyList=document.getElementById("weeklyEventsList");
  const weeklyDay=document.getElementById("weeklyEventsDay");
  if(weeklyList){
-  if(weeklyDay)weeklyDay.textContent="Bugün";
+  if(weeklyDay)weeklyDay.textContent=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",weekday:"long"}).format(new Date());
   const events=gameEventsCache.filter(e=>e.section==="weekly"&&Number(e.weekday)===now.weekday&&e.is_active!==false).map(e=>{
    const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
    let end=Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60;
