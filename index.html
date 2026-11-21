@@ -1135,10 +1135,10 @@ function renderGameEvents(){
    const clock=gameEventClockText(e.start_time);
    if(e.live){
     const duration=Math.max(1,e.end-e.start),progress=Math.max(0,Math.min(100,((e.current-e.start)/duration)*100));
-    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-active"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time weekly-time-live" data-live-time>'+clock+' · bitişe '+formatClock(e.left)+'</div><div class="weekly-event-progress"><i data-progress style="width:'+progress+'%"></i></div></div></article>';
+    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-active" style="'+eventBgStyle+'"><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time weekly-time-live" data-live-time>'+clock+' · bitişe '+formatClock(e.left)+'</div><div class="weekly-event-progress"><i data-progress style="width:'+progress+'%"></i></div></div></article>';
    }
-   if(e.current>=e.end)return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-done"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time weekly-time-done">'+clock+' · '+gameEventClockText(e.end_time)+'</span></div><span class="weekly-event-finished">BİTTİ</span></article>';
-   return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time weekly-time-next">'+clock+' · <b class="weekly-event-queued">Sırada</b></span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
+   if(e.current>=e.end)return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-done" style="'+eventBgStyle+'"><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time weekly-time-done">'+clock+' · '+gameEventClockText(e.end_time)+'</span></div><span class="weekly-event-finished">BİTTİ</span></article>';
+   return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next" style="'+eventBgStyle+'"><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time weekly-time-next">'+clock+' · <b class="weekly-event-queued">Sırada</b></span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
   };
   weeklyList.innerHTML=(previous.length?previous.map(card).join(""):'')+(active?card(active):'')+(upcoming.length?upcoming.map(card).join(""):'')+(!previous.length&&!active&&!upcoming.length?'<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>':'');
  }
@@ -1159,13 +1159,13 @@ function renderGameEvents(){
    const status=live?"ŞİMDİ":done?"BİTTİ":formatClock(remaining);
    const cls=live?"is-live":next?"is-next":"is-done";
    const eventBgStyle=e.image_url?'--event-bg:url(&quot;'+esc(e.image_url)+'&quot;)':'';
-   return '<article class="game-event-row '+cls+'"><div class="game-event-image">'+image+'</div><div class="game-event-info"><strong title="'+esc(e.event_name)+'">'+esc(e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+'</time></div><span class="game-event-status">'+status+'</span></article>';
+   return '<article class="game-event-row '+cls+'" style="'+eventBgStyle+'"><div class="game-event-info"><strong title="'+esc(e.event_name)+'">'+esc(e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+'</time></div><span class="game-event-status">'+status+'</span></article>';
   }).join("");
  }
 }
 async function loadGameEvents(){
  const {data,error}=await db.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time");
- if(error){console.warn("Oyun etkinlikleri yüklenemedi:",error);return}
+ if(error){console.warn("Oyun etkinlikleri yüklenemedi:",error);const message='<div class="game-events-empty">Etkinlikler şu anda yüklenemiyor.</div>';const weekly=document.getElementById("weeklyEventsList"),special=document.getElementById("specialEventsList");if(weekly)weekly.innerHTML=message;if(special)special.innerHTML=message;return}
  gameEventsCache=data||[];renderGameEvents();
 }
 function updateGameEventTimers(){
