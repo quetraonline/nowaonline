@@ -1129,7 +1129,7 @@ function renderGameEvents(){
    const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
    return {...e,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
-  const active=events.find(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start),completed=events.filter(e=>e.current>=e.end);
+  const active=events.find(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start),completed=events.filter(e=>e.current>=e.end);const previous=completed.slice(-1);
   const card=e=>{
    const image=e.image_url?'<img src="'+esc(e.image_url)+'" alt="" loading="lazy">':'<span>⚔</span>';
    const clock=gameEventClockText(e.start_time);
@@ -1140,7 +1140,7 @@ function renderGameEvents(){
    if(e.current>=e.end)return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-done"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time">'+clock+' · '+gameEventClockText(e.end_time)+'</span></div><span class="weekly-event-finished">BİTTİ</span></article>';
    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time">'+clock+'</span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
   };
-  weeklyList.innerHTML=(active?card(active):'')+(upcoming.length?'<div class="weekly-upcoming-label">SIRADAKİLER</div>'+upcoming.map(card).join(""):'')+(completed.length?'<div class="weekly-upcoming-label">TAMAMLANANLAR</div>'+completed.map(card).join(""):'')+(!active&&!upcoming.length&&!completed.length?'<div class="game-events-empty">Bugün için yaklaşan etkinlik bulunmuyor.</div>':'');
+  weeklyList.innerHTML=(previous.length?'<div class="weekly-upcoming-label">BİTEN</div>'+previous.map(card).join(""):'')+(active?'<div class="weekly-upcoming-label">ŞU AN</div>'+card(active):'')+(upcoming.length?'<div class="weekly-upcoming-label">SIRADAKİ</div>'+upcoming.map(card).join(""):'')+(!previous.length&&!active&&!upcoming.length?'<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>':'');
  }
  for(const section of ["special"]){
   const list=document.getElementById("specialEventsList");
