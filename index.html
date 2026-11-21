@@ -1203,12 +1203,12 @@ function renderGameEvents(){
   const events=gameEventsCache.filter(e=>{
    if(e.section!==section||e.is_active===false)return false;
    const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
    return Number(e.weekday)===now.weekday||carryover;
   }).map(e=>{
    const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
-   const current=carryover?nowSec+86400:gameEventAdjustedNow(nowSec,start,end);
+   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const current=carryover?nowSec+86400:nowSec;
    return {...e,_start:start,_end:end,_current:current,_live:current>=start&&current<end,_done:current>=end,_next:current<start};
   });
   if(!events.length){list.innerHTML='<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>';continue}
