@@ -1116,6 +1116,7 @@ function turkeyClockParts(date=new Date()){
  return {weekday:dayMap[get("weekday")],hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second")),dayName:GAME_EVENT_DAYS[dayMap[get("weekday")]]};
 }
 function gameEventClockText(value){return String(value||"").slice(0,5)}
+function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;if(end<=startSeconds)end+=86400;return end;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const dateParts=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
@@ -1127,8 +1128,7 @@ function renderGameEvents(){
   if(weeklyDay)weeklyDay.textContent=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",weekday:"long"}).format(new Date());
   const events=gameEventsCache.filter(e=>e.section==="weekly"&&Number(e.weekday)===now.weekday&&e.is_active!==false).map(e=>{
    const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
-   let end=Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60;
-   if(end<=start)end+=86400;
+   const end=gameEventEndSeconds(e,start);
    const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
    return {...e,display_name:e.event_title||e.event_name,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
@@ -1150,7 +1150,7 @@ function renderGameEvents(){
   const day=document.getElementById("specialEventsDay");
   if(!list)continue;
   if(day)day.textContent=dateText;
-  const eventPriority=e=>{const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;let end=Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60;if(end<=start)end+=86400;const current=nowSec<start&&end>86400?nowSec+86400:nowSec;return current>=end?0:current>=start?1:2};
+  const eventPriority=e=>{const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;const end=gameEventEndSeconds(e,start);const current=nowSec<start&&end>86400?nowSec+86400:nowSec;return current>=end?0:current>=start?1:2};
   const events=gameEventsCache.filter(e=>e.section===section&&Number(e.weekday)===now.weekday&&e.is_active!==false).sort((a,b)=>eventPriority(a)-eventPriority(b)||String(a.start_time).localeCompare(String(b.start_time))||Number(a.sort_order||0)-Number(b.sort_order||0));
   if(!events.length){list.innerHTML='<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>';continue}
   list.innerHTML=events.map(e=>{
@@ -1163,7 +1163,7 @@ function renderGameEvents(){
    const status=live?"ŞİMDİ":done?"BİTTİ":formatClock(remaining);
    const cls=live?"is-live":next?"is-next":"is-done";
    const eventBgStyle=e.image_url?'--event-bg:url(&quot;'+esc(e.image_url)+'&quot;)':'';
-   return '<article class="game-event-row '+cls+'" style="'+eventBgStyle+'"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+'</time></div><span class="game-event-status">'+status+'</span></article>';
+   return '<article class="game-event-row '+cls+'" style="'+eventBgStyle+'"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+'</time></div><span class="game-event-status">'+status+'</span></article>';
   }).join("");
  }
 }
@@ -1181,8 +1181,7 @@ function updateGameEventTimers(){
   const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.eventId);
   if(!event)return;
   const start=Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;
-  let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;
-  if(end<=start)end+=86400;
+  const end=gameEventEndSeconds(event,start);
   const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
   const live=current>=start&&current<end,finished=current>=end;
   if(card.classList.contains("weekly-event-active")!==live||(finished&&!card.classList.contains("weekly-event-done"))){needsRender=true;return}if(finished)return;
@@ -1239,7 +1238,7 @@ function gameEventForm(item=null,section=$("modal").dataset.gameEventSection||"w
  <div class="formfield"><label>Etkinlik türü</label><select name="event_name" id="gameEventPreset">${gameEventPresetOptions(initialSection,initialName)}</select><div id="gameEventPresetPreview" style="display:flex;align-items:center;gap:10px;margin-top:9px;color:#9aa5b4;font-size:11px">${initialImage?'<img src="'+esc(initialImage)+'" alt="Etkinlik görseli" style="width:76px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #a87c3d">':'Bu etkinlik için görsel dosyası belirtilmemiş.'}</div><small style="display:block;color:#8995a5;margin-top:6px">Seçtiğin etkinliğin görseli kartın arka planında otomatik kullanılır.</small></div>
  <div class="formfield"><label>Etkinlik ismi</label><input name="event_title" type="text" maxlength="120" required placeholder="Etkinlik ismini yazın" value="${esc(initialEventTitle)}"></div>
  <div class="formfield"><label>Etkinlik başlama saati</label><input name="start_time" type="time" required value="${gameEventClockText(item?.start_time||"")}"></div>
- <div class="formfield"><label>Etkinlik bitme saati</label><input name="end_time" type="time" required value="${gameEventClockText(item?.end_time||"")}"></div>
+ <div class="formfield"><label>Etkinlik bitme saati (İsteğe bağlı)</label><input name="end_time" type="time" value="${gameEventClockText(item?.end_time||"")}"></div>
  <div class="formfield"><label>Liste sırası</label><input name="sort_order" type="number" value="${Number(item?.sort_order||0)}"></div>
  <div class="checks"><label><input name="is_active" type="checkbox" ${item?.is_active!==false?"checked":""}> Ana sayfada göster</label></div>
  <div class="actions"><button class="btn" type="button" id="cancelGameEvent">Geri</button><button class="btn goldbtn" type="submit">Kaydet</button></div></form>`;
@@ -1248,7 +1247,7 @@ function gameEventForm(item=null,section=$("modal").dataset.gameEventSection||"w
  sectionSelect.onchange=()=>{presetSelect.innerHTML=gameEventPresetOptions(sectionSelect.value,"");presetSelect.value=GAME_EVENT_PRESETS[sectionSelect.value][0].name;updatePreview()};
  presetSelect.onchange=updatePreview;
  $("cancelGameEvent").onclick=()=>gameEventsAdminView(section);
- $("gameEventForm").onsubmit=async ev=>{ev.preventDefault();const f=new FormData(ev.currentTarget);const selectedSection=String(f.get("section"));const selectedName=String(f.get("event_name")||"").trim();const preset=(GAME_EVENT_PRESETS[selectedSection]||[]).find(x=>x.name===selectedName);const payload={section:selectedSection,weekday:Number(f.get("weekday")),event_name:selectedName,event_title:String(f.get("event_title")||"").trim(),start_time:f.get("start_time"),end_time:f.get("end_time"),image_url:preset?preset.image:null,sort_order:Number(f.get("sort_order")||0),is_active:f.get("is_active")==="on",updated_at:new Date().toISOString()};const req=item?db.from("nowa_game_events").update(payload).eq("id",item.id):db.from("nowa_game_events").insert(payload);const result=await req;if(result.error){toast("Etkinlik kaydedilemedi: "+result.error.message);return}toast("Etkinlik kaydedildi.");await gameEventsAdminView(selectedSection);await loadGameEvents()};
+ $("gameEventForm").onsubmit=async ev=>{ev.preventDefault();const f=new FormData(ev.currentTarget);const selectedSection=String(f.get("section"));const selectedName=String(f.get("event_name")||"").trim();const preset=(GAME_EVENT_PRESETS[selectedSection]||[]).find(x=>x.name===selectedName);const payload={section:selectedSection,weekday:Number(f.get("weekday")),event_name:selectedName,event_title:String(f.get("event_title")||"").trim(),start_time:f.get("start_time"),end_time:f.get("end_time")||null,image_url:preset?preset.image:null,sort_order:Number(f.get("sort_order")||0),is_active:f.get("is_active")==="on",updated_at:new Date().toISOString()};const req=item?db.from("nowa_game_events").update(payload).eq("id",item.id):db.from("nowa_game_events").insert(payload);const result=await req;if(result.error){toast("Etkinlik kaydedilemedi: "+result.error.message);return}toast("Etkinlik kaydedildi.");await gameEventsAdminView(selectedSection);await loadGameEvents()};
 }
 
 async function socialAdminView(){$("modal").dataset.view="social-admin";window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}$("modalTitle").textContent="Sosyal medya yönetimi";$("modalBody").innerHTML='<p class="notice">Ana sayfadaki indirme görsellerinin altında görünecek sosyal medya hesaplarını buradan ekleyebilir, düzenleyebilir, sıralayabilir veya gizleyebilirsin.</p><div class="actions" style="justify-content:space-between;margin:0 0 14px"><button class="btn" id="backPublishers">GERİ</button><button class="btn goldbtn" id="newSocial">+ Hesap ekle</button></div><div class="adminlist" id="socialAdminList">Yükleniyor...</div>';$("backPublishers").onclick=adminView;$("newSocial").onclick=()=>socialLinkForm();await refreshSocialAdminList()}
