@@ -1150,7 +1150,8 @@ function renderGameEvents(){
   const day=document.getElementById("specialEventsDay");
   if(!list)continue;
   if(day)day.textContent=dateText;
-  const events=gameEventsCache.filter(e=>e.section===section&&Number(e.weekday)===now.weekday&&e.is_active!==false).sort((a,b)=>String(a.start_time).localeCompare(String(b.start_time))||Number(a.sort_order||0)-Number(b.sort_order||0));
+  const eventPriority=e=>{const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;let end=Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60;if(end<=start)end+=86400;const current=nowSec<start&&end>86400?nowSec+86400:nowSec;return current>=end?0:current>=start?1:2};
+  const events=gameEventsCache.filter(e=>e.section===section&&Number(e.weekday)===now.weekday&&e.is_active!==false).sort((a,b)=>eventPriority(a)-eventPriority(b)||String(a.start_time).localeCompare(String(b.start_time))||Number(a.sort_order||0)-Number(b.sort_order||0));
   if(!events.length){list.innerHTML='<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>';continue}
   list.innerHTML=events.map(e=>{
    const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
