@@ -313,6 +313,54 @@ header .menu-dropdown{z-index:40}
 .upcoming-event-status-detail{color:#fff;font-size:11px}
 @media(max-width:700px){.upcoming-events-section{margin-bottom:18px}.upcoming-events-heading h3{font-size:13px}.upcoming-events-grid{gap:10px}.upcoming-events-panel{min-height:170px;padding:7px}.upcoming-event-cards{grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:7px}.upcoming-event-card{min-height:150px;padding:9px;border-radius:13px}.upcoming-event-time{font-size:21px}.upcoming-event-name{font-size:11px}.upcoming-event-thumb{width:38px;height:38px}}
 .upcoming-events-placeholder{min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+
+/* Upcoming events compact carousel */
+.upcoming-events-section{margin:0 0 34px;min-width:0;width:100%}
+.upcoming-events-heading{display:flex;align-items:center;gap:10px;margin:0 0 0;padding:0 0 10px;border-bottom:3px solid transparent;border-image:linear-gradient(90deg,#b98229,#ffe16b,#a87522) 1}
+.upcoming-events-heading svg{width:25px;height:25px;fill:none;stroke:#e9b83e;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.upcoming-events-heading h3{margin:0;color:#f4f6fa;font-size:16px;font-weight:950;letter-spacing:.6px}
+.upcoming-events-board{position:relative;padding:15px 14px 12px;border:1px solid #705321;border-radius:15px;background:radial-gradient(ellipse at 25% 0%,#3a3022 0%,transparent 54%),linear-gradient(115deg,#151b25,#101720 72%,#151a24);box-shadow:inset 0 0 24px #0005}
+.upcoming-events-track-wrap{overflow:hidden}
+.upcoming-events-track{display:flex;align-items:stretch;gap:12px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:1px 1px 8px}
+.upcoming-events-track::-webkit-scrollbar{display:none}
+.upcoming-event-tile{position:relative;display:flex;align-items:center;gap:12px;flex:1 0 0;min-width:0;min-height:78px;padding:11px 12px;border:1px solid #56535a;border-radius:14px;background:linear-gradient(120deg,#202531,#1b202b);color:#fff;scroll-snap-align:start}
+.upcoming-event-tile.is-live{border-color:#25d66a;background:linear-gradient(110deg,#123a2b,#152a28);box-shadow:0 0 12px #22d66a18}
+.upcoming-event-tile.is-soon{border-color:#a8792c;background:linear-gradient(110deg,#30271e,#20232c)}
+.upcoming-event-tile.is-next{border-color:#62616a}
+.upcoming-event-emblem{display:grid;place-items:center;width:54px;height:54px;flex:none;border-radius:11px;background:#ffffff10;color:#f5cf63;font-weight:1000}
+.upcoming-event-emblem.exp{font-family:Georgia,serif;font-size:18px;border:2px solid #c99c35;border-radius:50%;box-shadow:inset 0 0 0 3px #c99c3530}
+.upcoming-event-emblem.chest{font-size:32px;color:#e9bd58;text-shadow:0 2px 5px #000}
+.upcoming-event-emblem.swords{font-size:31px;color:#d9e2ec}
+.upcoming-event-info{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0}
+.upcoming-event-info time{font-family:Georgia,serif;font-size:23px;font-weight:900;line-height:1;color:#fff}
+.upcoming-event-info strong{overflow:hidden;color:#fff;font-size:13px;font-weight:850;text-overflow:ellipsis;white-space:nowrap}
+.upcoming-event-state{flex:none;padding:8px 10px;border-radius:9px;background:#ffffff13;color:#e8eaf0;font-size:11px;font-weight:900;white-space:nowrap}
+.is-live .upcoming-event-state{background:#08783d;color:#b9ffd1}
+.is-soon .upcoming-event-state{background:#684717;color:#ffd46b}
+.upcoming-events-controls{display:flex;justify-content:center;align-items:center;position:relative;min-height:24px;margin-top:2px}
+.upcoming-events-dots{display:flex;gap:8px;align-items:center}
+.upcoming-events-dots span{width:10px;height:10px;border-radius:50%;background:#666b75}
+.upcoming-events-dots span.active{width:12px;height:12px;background:#f5c342;box-shadow:0 0 9px #f5c34288}
+.upcoming-events-arrows{position:absolute;right:0;top:50%;display:flex;gap:7px;transform:translateY(-50%)}
+.upcoming-events-arrows button{display:grid;place-items:center;width:34px;height:34px;border:1px solid #555965;border-radius:9px;background:#ffffff0c;color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.upcoming-events-arrows button:hover{border-color:#e9b83e;color:#f5cf63}
+.upcoming-events-timezone{margin-top:7px;color:#d1d5de;font-size:12px;text-align:right}
+@media(max-width:700px){
+ .upcoming-events-section{margin-bottom:22px}
+ .upcoming-events-heading{gap:7px;padding-bottom:8px}
+ .upcoming-events-heading svg{width:21px;height:21px}
+ .upcoming-events-heading h3{font-size:13px}
+ .upcoming-events-board{padding:10px 9px;border-radius:12px}
+ .upcoming-events-track{gap:8px}
+ .upcoming-event-tile{flex:0 0 min(82vw,290px);min-height:70px;gap:9px;padding:9px}
+ .upcoming-event-emblem{width:43px;height:43px}
+ .upcoming-event-info time{font-size:20px}
+ .upcoming-event-info strong{font-size:11px}
+ .upcoming-event-state{padding:6px 7px;font-size:9px}
+ .upcoming-events-arrows{right:0}
+ .upcoming-events-arrows button{width:29px;height:29px}
+ .upcoming-events-timezone{font-size:10px}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -337,7 +385,59 @@ header .menu-dropdown{z-index:40}
 </section>
 <section class="announcement" id="announcementSection" aria-live="polite" hidden><div class="announcement-label">DUYURU</div><div class="announcement-body" id="announcementBody"></div></section>
 <section>
-<section class="upcoming-events-section" id="upcomingEventsSection" aria-label="Yaklaşan etkinlikler"><div class="upcoming-events-heading"><h3>YAKLAŞAN ETKİNLİKLER</h3></div><div class="upcoming-events-grid"><div class="upcoming-events-panel upcoming-events-placeholder">A</div><div class="upcoming-events-panel">B</div></div></section>
+<section class="upcoming-events-section" id="upcomingEventsSection" aria-label="Yaklaşan etkinlikler">
+<div class="upcoming-events-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M7 14h3M7 17h3M15 14h2"/></svg><h3>YAKLAŞAN ETKİNLİKLER</h3></div>
+<div class="upcoming-events-board">
+ <div class="upcoming-events-track-wrap">
+  <div class="upcoming-events-track" id="upcomingEventsTrack">
+   <article class="upcoming-event-tile is-live" data-time="15:00" data-name="Happy Hours"><div class="upcoming-event-emblem exp">EXP</div><div class="upcoming-event-info"><time>15:00</time><strong>Happy Hours</strong></div><span class="upcoming-event-state">● BAŞLADI</span></article>
+   <article class="upcoming-event-tile is-soon" data-time="17:00" data-name="Felankor (Mid) Time"><div class="upcoming-event-emblem chest">♜</div><div class="upcoming-event-info"><time>17:00</time><strong>Felankor (Mid) Time</strong></div><span class="upcoming-event-state" data-countdown>◷ -- dk</span></article>
+   <article class="upcoming-event-tile is-next" data-time="18:00" data-name="Border Defense War"><div class="upcoming-event-emblem swords">⚔</div><div class="upcoming-event-info"><time>18:00</time><strong>Border Defense War</strong></div><span class="upcoming-event-state" data-countdown>◷ -- dk</span></article>
+  </div>
+ </div>
+ <div class="upcoming-events-controls"><div class="upcoming-events-dots"><span class="active"></span><span></span><span></span></div><div class="upcoming-events-arrows"><button type="button" data-event-scroll="-1" aria-label="Önceki etkinlikler">‹</button><button type="button" data-event-scroll="1" aria-label="Sonraki etkinlikler">›</button></div></div>
+ <div class="upcoming-events-timezone">◷ Türkiye Saati (TSİ)</div>
+</div>
+</section>
+<script>
+(function(){
+ const root=document.getElementById("upcomingEventsSection");
+ if(!root)return;
+ const track=root.querySelector("#upcomingEventsTrack");
+ const dots=[...root.querySelectorAll(".upcoming-events-dots span")];
+ root.querySelectorAll("[data-event-scroll]").forEach(btn=>btn.addEventListener("click",()=>{
+  track.scrollBy({left:Number(btn.dataset.eventScroll)*Math.max(230,track.clientWidth*.72),behavior:"smooth"});
+ }));
+ const update=()=>{
+  const now=new Date();
+  const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(now);
+  const hour=Number(parts.find(p=>p.type==="hour").value), minute=Number(parts.find(p=>p.type==="minute").value);
+  const current=hour*60+minute;
+  const cards=[...track.querySelectorAll(".upcoming-event-tile")];
+  cards.forEach(card=>{
+   const [h,m]=card.dataset.time.split(":").map(Number), eventMinutes=h*60+m;
+   const diff=eventMinutes-current;
+   const state=card.querySelector(".upcoming-event-state");
+   card.classList.toggle("is-live",diff<=0&&diff>-120);
+   card.classList.toggle("is-soon",diff>0&&diff<=30);
+   card.classList.toggle("is-next",diff>30);
+   if(diff<=0&&diff>-120){state.textContent="● BAŞLADI";}
+   else if(diff>0){const hh=Math.floor(diff/60),mm=diff%60;state.textContent="◷ "+(hh?hh+" sa ":"")+mm+" dk";}
+   else {state.textContent="BİTTİ";}
+  });
+  const next=cards.find(c=>{const [h,m]=c.dataset.time.split(":").map(Number);return h*60+m>current;});
+  if(next){const [h,m]=next.dataset.time.split(":").map(Number);next.classList.add("is-soon");}
+ };
+ update();
+ setInterval(update,15000);
+ track.addEventListener("scroll",()=>{
+  const max=track.scrollWidth-track.clientWidth;
+  const p=max>0?track.scrollLeft/max:0;
+  const active=Math.min(dots.length-1,Math.floor(p*dots.length));
+  dots.forEach((d,i)=>d.classList.toggle("active",i===active));
+ },{passive:true});
+})();
+</script>
 <section class="live-channels-section" id="liveChannelsSection" hidden aria-label="Şu anda canlı kanallar"><div class="live-channels-heading"><h3>ŞU ANDA CANLI YAYINCILAR</h3><span id="liveChannelsCount"></span></div><div class="live-channels-carousel-wrap"><button class="latest-carousel-arrow prev" type="button" aria-label="Önceki canlı kanal" data-carousel-target="liveChannelsTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><div class="live-channels-track" id="liveChannelsTrack" aria-label="Şu anda canlı yayın yapan kanallar"></div><button class="latest-carousel-arrow next" type="button" aria-label="Sonraki canlı kanal" data-carousel-target="liveChannelsTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div></section>
 <div class="toolbar"><div><h2 class="toolbar-title"><img class="toolbar-title-icon" src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="" aria-hidden="true"><span>Yayıncılarımız</span></h2><p>Resmi onaylı Yayıncı ve İçerik Üreticisi Listesi</p></div>
 <div class="filters"><input class="field search" id="search" placeholder="Yayıncı ara..."><select class="field" id="platform"><option value="">Tüm platformlar</option><option>TikTok</option><option>YouTube</option><option>Twitch</option><option>Kick</option><option>Instagram</option><option>Facebook</option><option>Discord</option></select><div class="mobile-filter-actions"><button type="button" class="mobile-refresh-btn" id="mobileRefreshBtn"><svg aria-hidden="true" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.4 6.4L3 15.5"/><path d="M3 20v-4.5h4.5"/><path d="M3 12A9 9 0 0 1 18.4 5.6L21 8.5"/><path d="M21 4v4.5h-4.5"/></svg><span>Yenile</span></button><a class="mobile-refresh-btn mobile-join-btn" href="/rehber"><svg aria-hidden="true" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M19 8v6M16 11h6"/></svg><span>YAYINCI OL</span></a><label for="liveOnlyFilter" class="live-filter-label" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;color:var(--text,#f3f5f8);font-size:12px;cursor:pointer" aria-label="Canlı Yayınları Göster"><input id="liveOnlyFilter" type="checkbox" style="width:16px;height:16px;accent-color:#e8b95c;margin:0"> <span class="live-filter-desktop">Canlı Yayınları Göster</span><span class="live-filter-mobile">Canlı Yayınlar</span></label></div></div>
