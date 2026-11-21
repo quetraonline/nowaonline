@@ -1386,7 +1386,7 @@ window.nowaTwitchGlobalPoll=setInterval(pollTwitchLiveStatus,60000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollTwitchLiveStatus()});
 /* Profil fotoğraflarında sağ tık/uzun basma menüsünü ve sürüklemeyi engelle */
 document.addEventListener("contextmenu",event=>{
- if(event.target.closest(".avatar, .store-badges img, .mark img, .hero-logo img, .toolbar-title-icon")) event.preventDefault();
+ if(event.target.closest(".avatar, .store-badges img, .mark img, .hero-logo img, .toolbar-title-icon, #weeklyEventsList img, #specialEventsList img")) event.preventDefault();
 },true);
 document.addEventListener("dragstart",event=>{
  if(event.target.closest(".avatar, .store-badges img, .mark img")) event.preventDefault();
