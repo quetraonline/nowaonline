@@ -431,7 +431,7 @@ header .menu-dropdown{z-index:40}
 .game-events-empty{padding:13px 8px;color:#9aa5b4;font-size:11px;text-align:center}
 .game-events-timezone{margin-top:8px;color:#aab4c1;font-size:10px;text-align:right}
 @media(max-width:700px){.game-events-section{grid-template-columns:1fr;gap:10px;margin-bottom:20px}.game-events-panel{padding:10px}.game-events-panel-head h3{font-size:13px}.game-event-row{gap:8px;padding:7px 8px}.game-event-image{width:64px;height:64px;flex-basis:64px}.game-event-status{font-size:9px;padding:5px 6px}}
-.game-events-admin-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.game-events-admin-day-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;margin-top:12px;scrollbar-width:thin}.game-events-admin-day-tab{flex:1;min-width:72px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}.game-events-admin-day-tab.active{border-color:#e8b95c;background:linear-gradient(135deg,#e8b95c,#ffdf83);color:#241b0b}.game-events-admin-day-tab span{display:block;margin-top:2px;font-size:10px;opacity:.75}.game-events-admin-items{display:flex;flex-direction:column;gap:8px;margin-top:4px}.game-events-admin-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .game-events-admin-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .game-events-admin-row small{display:block;color:var(--muted);font-size:11px}
 .game-events-admin-actions{display:flex;gap:6px;flex:none}
@@ -1194,7 +1194,7 @@ function updateGameEventTimers(){
 }
 setInterval(updateGameEventTimers,1000);
 async function gameEventsAdminView(section="weekly"){
- $("modal").dataset.view="game-events-admin";$("modal").dataset.gameEventSection=section;window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
+ $("modal").dataset.view="game-events-admin";$("modal").dataset.gameEventSection=section;$("modal").dataset.gameEventWeekday=String(turkeyClockParts().weekday);window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}
  const sectionTitle=section==="special"?"ÖZEL ETKİNLİKLER":"HAFTALIK ETKİNLİKLER";$("modalTitle").textContent=sectionTitle+" YÖNETİMİ";
  $("modalBody").innerHTML='<div class="actions" style="justify-content:space-between;margin:0 0 12px"><button class="btn" type="button" id="backGameEvents">GERİ</button><button class="btn goldbtn" type="button" id="newGameEvent">+ Etkinlik ekle</button></div><p class="notice">Bu sayfada yalnızca seçilen etkinlik türünün kayıtlarını yönetebilirsin.</p><div class="game-events-admin-list" id="gameEventsAdminList">Yükleniyor...</div>';
@@ -1208,8 +1208,13 @@ async function refreshGameEventsAdminList(section=$("modal").dataset.gameEventSe
 }
 function renderGameEventsAdminList(section=$("modal").dataset.gameEventSection||"weekly"){
  const box=$("gameEventsAdminList");if(!box)return;
- const sectionEvents=gameEventsCache.filter(e=>e.section===section);box.innerHTML=sectionEvents.length?sectionEvents.map(e=>'<div class="game-events-admin-row"><div><strong>'+esc(e.event_name)+'</strong><small>'+(e.section==="weekly"?"Haftalık":"Özel")+" · "+GAME_EVENT_DAYS[Number(e.weekday)]+" · "+gameEventClockText(e.start_time)+" – "+gameEventClockText(e.end_time)+(e.is_active?" · Aktif":" · Gizli")+'</small></div><div class="game-events-admin-actions"><button class="btn" type="button" data-event-edit="'+e.id+'">Düzenle</button><button class="btn" type="button" data-event-delete="'+e.id+'">Sil</button></div></div>').join(""):'Henüz etkinlik eklenmedi.';
- box.onclick=async ev=>{const edit=ev.target.closest("[data-event-edit]"),del=ev.target.closest("[data-event-delete]");if(edit)gameEventForm(gameEventsCache.find(x=>x.id===edit.dataset.eventEdit),section);if(del){const item=gameEventsCache.find(x=>x.id===del.dataset.eventDelete);if(item&&confirm(item.event_name+" etkinliği silinsin mi?")){const {error}=await db.from("nowa_game_events").delete().eq("id",item.id);if(error)toast("Silinemedi: "+error.message);else{toast("Etkinlik silindi.");await refreshGameEventsAdminList(section);await loadGameEvents()}}}};
+ const sectionEvents=gameEventsCache.filter(e=>e.section===section);
+ const selected=Number($("modal").dataset.gameEventWeekday??turkeyClockParts().weekday);
+ const tabs=GAME_EVENT_DAYS.map((day,index)=>{const count=sectionEvents.filter(e=>Number(e.weekday)===index).length;return '<button type="button" class="game-events-admin-day-tab '+(selected===index?'active':'')+'" data-game-event-day="'+index+'">'+day+'<span>'+count+' etkinlik</span></button>'}).join("");
+ const dayEvents=sectionEvents.filter(e=>Number(e.weekday)===selected).sort((a,b)=>String(a.start_time).localeCompare(String(b.start_time))||Number(a.sort_order||0)-Number(b.sort_order||0));
+ const items=dayEvents.length?dayEvents.map(e=>'<div class="game-events-admin-row"><div><strong>'+esc(e.event_name)+'</strong><small>'+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+(e.is_active?" · Aktif":" · Gizli")+'</small></div><div class="game-events-admin-actions"><button class="btn" type="button" data-event-edit="'+e.id+'">Düzenle</button><button class="btn" type="button" data-event-delete="'+e.id+'">Sil</button></div></div>').join(""):'<div class="notice">'+GAME_EVENT_DAYS[selected]+' günü için henüz etkinlik eklenmedi.</div>';
+ box.innerHTML='<div class="game-events-admin-day-tabs" role="tablist" aria-label="Etkinlik günleri">'+tabs+'</div><div class="game-events-admin-items">'+items+'</div>';
+ box.onclick=async ev=>{const day=ev.target.closest("[data-game-event-day]"),edit=ev.target.closest("[data-event-edit]"),del=ev.target.closest("[data-event-delete]");if(day){$("modal").dataset.gameEventWeekday=day.dataset.gameEventDay;renderGameEventsAdminList(section);return}if(edit)gameEventForm(gameEventsCache.find(x=>x.id===edit.dataset.eventEdit),section);if(del){const item=gameEventsCache.find(x=>x.id===del.dataset.eventDelete);if(item&&confirm(item.event_name+" etkinliği silinsin mi?")){const {error}=await db.from("nowa_game_events").delete().eq("id",item.id);if(error)toast("Silinemedi: "+error.message);else{toast("Etkinlik silindi.");await refreshGameEventsAdminList(section);await loadGameEvents()}}}};
 }
 function gameEventForm(item=null,section=$("modal").dataset.gameEventSection||"weekly"){
  $("modal").dataset.view="game-event-form";$("modal").dataset.gameEventSection=section;window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
