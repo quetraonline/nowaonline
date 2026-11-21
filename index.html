@@ -1116,7 +1116,8 @@ function turkeyClockParts(date=new Date()){
  return {weekday:dayMap[get("weekday")],hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second")),dayName:GAME_EVENT_DAYS[dayMap[get("weekday")]]};
 }
 function gameEventClockText(value){return String(value||"").slice(0,5)}
-function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;if(end<=startSeconds)end+=86400;return end;}
+function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;if(end<startSeconds)end+=86400;return end;}
+function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds){return endSeconds>86400&&nowSeconds<(endSeconds-86400)?nowSeconds+86400:nowSeconds;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const dateParts=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
@@ -1129,7 +1130,7 @@ function renderGameEvents(){
   const events=gameEventsCache.filter(e=>e.section==="weekly"&&Number(e.weekday)===now.weekday&&e.is_active!==false).map(e=>{
    const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
    const end=gameEventEndSeconds(e,start);
-   const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
+   const current=gameEventAdjustedNow(nowSec,start,end);
    return {...e,display_name:e.event_title||e.event_name,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
   const active=events.find(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start),completed=events.filter(e=>e.current>=e.end);const previous=completed.slice(-1);
@@ -1156,7 +1157,7 @@ function renderGameEvents(){
   list.innerHTML=events.map(e=>{
    const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
    const end=gameEventEndSeconds(e,start);
-   const adjustedNow=nowSec<start&&end>86400?nowSec+86400:nowSec;
+   const adjustedNow=gameEventAdjustedNow(nowSec,start,end);
    const live=adjustedNow>=start&&adjustedNow<end,done=adjustedNow>=end,next=adjustedNow<start;
    const remaining=next?start-adjustedNow:live?end-adjustedNow:0;
    const status=live?"ŞİMDİ":done?"BİTTİ":formatClock(remaining);
