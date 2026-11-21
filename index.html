@@ -462,7 +462,7 @@ header .menu-dropdown{z-index:40}
 .weekly-event-next:nth-of-type(2) .weekly-event-countdown{background:#76502d;color:#ffd18c}
 .weekly-events-panel .game-events-timezone{padding-top:2px}
 @media(max-width:700px){.weekly-events-panel{padding:0 12px 12px!important}.weekly-upcoming-head{margin:0 -12px 14px;padding:13px 12px}.weekly-event-card{gap:9px;padding:9px}.weekly-event-image{width:90px;height:90px;flex-basis:90px}}
-</style>
+.weekly-event-done{opacity:.72;background:#24232d}.weekly-event-finished{flex:none;padding:5px 8px;border-radius:8px;background:#454550;color:#c9c7d2;font-size:10px;font-weight:950;white-space:nowrap}</style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
 <body>
@@ -1128,8 +1128,8 @@ function renderGameEvents(){
    if(end<=start)end+=86400;
    const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
    return {...e,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
-  }).filter(e=>e.end>e.current).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
-  const active=events.find(e=>e.live),upcoming=events.filter(e=>!e.live);
+  }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
+  const active=events.find(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start),completed=events.filter(e=>e.current>=e.end);
   const card=e=>{
    const image=e.image_url?'<img src="'+esc(e.image_url)+'" alt="" loading="lazy">':'<span>⚔</span>';
    const clock=gameEventClockText(e.start_time);
@@ -1137,9 +1137,10 @@ function renderGameEvents(){
     const duration=Math.max(1,e.end-e.start),progress=Math.max(0,Math.min(100,((e.current-e.start)/duration)*100));
     return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-active"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time" data-live-time>'+clock+' · bitişe '+formatClock(e.left)+'</div><div class="weekly-event-progress"><i data-progress style="width:'+progress+'%"></i></div></div></article>';
    }
+   if(e.current>=e.end)return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-done"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time">'+clock+' · '+gameEventClockText(e.end_time)+'</span></div><span class="weekly-event-finished">BİTTİ</span></article>';
    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time">'+clock+'</span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
   };
-  weeklyList.innerHTML=(active?card(active):'')+(upcoming.length?'<div class="weekly-upcoming-label">SIRADAKİLER</div>'+upcoming.map(card).join(""):'')+(!active&&!upcoming.length?'<div class="game-events-empty">Bugün için yaklaşan etkinlik bulunmuyor.</div>':'');
+  weeklyList.innerHTML=(active?card(active):'')+(upcoming.length?'<div class="weekly-upcoming-label">SIRADAKİLER</div>'+upcoming.map(card).join(""):'')+(completed.length?'<div class="weekly-upcoming-label">TAMAMLANANLAR</div>'+completed.map(card).join(""):'')+(!active&&!upcoming.length&&!completed.length?'<div class="game-events-empty">Bugün için yaklaşan etkinlik bulunmuyor.</div>':'');
  }
  for(const section of ["special"]){
   const list=document.getElementById("specialEventsList");
