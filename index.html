@@ -1181,7 +1181,7 @@ function updateGameEventTimers(){
   if(end<=start)end+=86400;
   const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
   const live=current>=start&&current<end,finished=current>=end;
-  if(card.classList.contains("weekly-event-active")!==live||finished){needsRender=true;return}
+  if(card.classList.contains("weekly-event-active")!==live||(finished&&!card.classList.contains("weekly-event-done"))){needsRender=true;return}if(finished)return;
   if(live){
    const left=Math.max(0,end-current),duration=Math.max(1,end-start);
    const timer=card.querySelector("[data-live-time]");if(timer)timer.textContent=gameEventClockText(event.start_time)+" · bitişe "+formatClock(left);
