@@ -1152,8 +1152,10 @@ function turkeyClockParts(date=new Date()){
  return {weekday:dayMap[get("weekday")],hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second")),dayName:GAME_EVENT_DAYS[dayMap[get("weekday")]]};
 }
 function gameEventClockText(value){return String(value||"").slice(0,5)}
-function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;if(end<startSeconds)end+=86400;return end;}
-function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds){return nowSeconds;}
+function gameEventRawStartSeconds(event){return Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;}
+function gameEventStartSeconds(event){const raw=gameEventRawStartSeconds(event);return raw<21600?raw+86400:raw;}
+function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart||rawStart<21600)end+=86400;return end;}
+function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds){return startSeconds>=86400?nowSeconds+86400:nowSeconds;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const dateLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).formatToParts(new Date());
@@ -1167,14 +1169,12 @@ function renderGameEvents(){
   const previousWeekday=(now.weekday+6)%7;
   const events=gameEventsCache.filter(e=>{
    if(e.section!=="weekly"||e.is_active===false)return false;
-   const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
-   const end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
+   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
    return Number(e.weekday)===now.weekday||carryover;
   }).map(e=>{
-   const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
-   const end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
+   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
    const current=carryover?nowSec+86400:gameEventAdjustedNow(nowSec,start,end);
    return {...e,display_name:e.event_title||e.event_name,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
@@ -1199,14 +1199,12 @@ function renderGameEvents(){
   const previousWeekday=(now.weekday+6)%7;
   const events=gameEventsCache.filter(e=>{
    if(e.section!==section||e.is_active===false)return false;
-   const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
-   const end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
+   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
    return Number(e.weekday)===now.weekday||carryover;
   }).map(e=>{
-   const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
-   const end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
+   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
    const current=carryover?nowSec+86400:gameEventAdjustedNow(nowSec,start,end);
    return {...e,_start:start,_end:end,_current:current,_live:current>=start&&current<end,_done:current>=end,_next:current<start};
   });
@@ -1233,15 +1231,15 @@ function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
  const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
- specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;const end=gameEventEndSeconds(event,start);const current=gameEventAdjustedNow(nowSec,start,end);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"ŞİMDİ":done?"BİTTİ":formatClock(Math.max(0,start-current));});
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=gameEventStartSeconds(event);const end=gameEventEndSeconds(event,start);const current=gameEventAdjustedNow(nowSec,start,end);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"ŞİMDİ":done?"BİTTİ":formatClock(Math.max(0,start-current));});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
   const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.eventId);
   if(!event)return;
-  const start=Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;
+  const start=gameEventStartSeconds(event);
   const end=gameEventEndSeconds(event,start);
-  const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
+  const current=gameEventAdjustedNow(nowSec,start,end);
   const live=current>=start&&current<end,finished=current>=end;
   if(card.classList.contains("weekly-event-active")!==live||(finished&&!card.classList.contains("weekly-event-done"))){needsRender=true;return}if(finished)return;
   if(live){
