@@ -361,6 +361,51 @@ header .menu-dropdown{z-index:40}
  .upcoming-events-arrows button{width:29px;height:29px}
  .upcoming-events-timezone{font-size:10px}
 }
+/* Upcoming events - closely matched to approved reference */
+.upcoming-events-section{width:100%;min-width:0;margin:0 0 34px}
+.upcoming-events-heading{display:flex;align-items:center;gap:10px;margin:0;padding:0 0 9px;border-bottom:3px solid transparent;border-image:linear-gradient(90deg,#bd8a32,#ffe36a,#bd8a32) 1}
+.upcoming-events-heading svg{width:25px;height:25px;flex:none;fill:none;stroke:#f1c13e;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.upcoming-events-heading h3{margin:0;color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:900;letter-spacing:.65px;text-shadow:none}
+.upcoming-events-board{position:relative;padding:20px 18px 13px;border:1px solid #795a26;border-radius:16px;background:radial-gradient(ellipse at 26% 0%,rgba(107,76,38,.24),transparent 52%),linear-gradient(110deg,#111923 0%,#151c28 55%,#101720 100%);box-shadow:inset 0 0 28px rgba(0,0,0,.3)}
+.upcoming-events-track-wrap{overflow:hidden}
+.upcoming-events-track{display:flex;gap:14px;align-items:stretch;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:1px 1px 9px}
+.upcoming-events-track::-webkit-scrollbar{display:none}
+.upcoming-event-tile{display:flex;align-items:center;gap:14px;flex:1 0 0;min-width:0;min-height:88px;padding:12px 14px;border:1.5px solid #5d6069;border-radius:17px;background:linear-gradient(115deg,#171e2a,#1d2430);color:#fff;scroll-snap-align:start;box-shadow:none}
+.upcoming-event-tile.is-live{border-color:#20d66a;background:linear-gradient(110deg,#102f25,#14372c);box-shadow:0 0 15px rgba(28,220,106,.12)}
+.upcoming-event-tile.is-soon{border-color:#a8792c;background:linear-gradient(110deg,#30261d,#22232c)}
+.upcoming-event-tile.is-next{border-color:#555963;background:linear-gradient(110deg,#1b202a,#202431)}
+.upcoming-event-image{width:62px;height:62px;flex:none;object-fit:contain;filter:drop-shadow(0 3px 5px rgba(0,0,0,.45))}
+.upcoming-event-info{display:flex;flex:1;flex-direction:column;gap:6px;min-width:0}
+.upcoming-event-info time{color:#fff;font-family:Georgia,'Times New Roman',serif;font-size:27px;font-weight:900;line-height:1;text-shadow:none}
+.upcoming-event-info strong{overflow:hidden;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:800;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;text-shadow:none}
+.upcoming-event-state{flex:none;max-width:135px;padding:9px 11px;border-radius:10px;background:#ffffff14;color:#f4f5f8;font-family:Arial,sans-serif;font-size:12px;font-weight:850;white-space:nowrap}
+.upcoming-event-tile.is-live .upcoming-event-state{background:#087b3c;color:#c7ffda}
+.upcoming-event-tile.is-soon .upcoming-event-state{background:#765019;color:#ffdc83}
+.upcoming-events-footer{position:relative;display:flex;align-items:center;justify-content:center;min-height:31px;margin-top:2px}
+.upcoming-events-dots{display:flex;align-items:center;gap:8px}
+.upcoming-events-dots span{width:10px;height:10px;border-radius:50%;background:#737986}
+.upcoming-events-dots span.active{width:12px;height:12px;background:#ffd342;box-shadow:0 0 10px rgba(255,211,66,.55)}
+.upcoming-events-arrows{position:absolute;right:0;top:50%;display:flex;gap:8px;transform:translateY(-50%)}
+.upcoming-events-arrows button{display:grid;place-items:center;width:37px;height:37px;border:1px solid #555c68;border-radius:10px;background:#ffffff0c;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+.upcoming-events-arrows button:hover{border-color:#e9b83e;color:#f5cf63}
+.upcoming-events-timezone{position:absolute;right:0;bottom:-1px;color:#e0e3e9;font-family:Arial,sans-serif;font-size:12px}
+@media(max-width:760px){
+ .upcoming-events-section{margin-bottom:22px}
+ .upcoming-events-heading{gap:7px;padding-bottom:8px}
+ .upcoming-events-heading svg{width:21px;height:21px}
+ .upcoming-events-heading h3{font-size:13px}
+ .upcoming-events-board{padding:11px 9px 12px;border-radius:12px}
+ .upcoming-events-track{gap:9px}
+ .upcoming-event-tile{flex:0 0 min(82vw,310px);min-height:75px;gap:10px;padding:9px 10px}
+ .upcoming-event-image{width:49px;height:49px}
+ .upcoming-event-info time{font-size:23px}
+ .upcoming-event-info strong{font-size:12px}
+ .upcoming-event-state{padding:7px 8px;font-size:10px}
+ .upcoming-events-footer{min-height:30px}
+ .upcoming-events-arrows{right:0}
+ .upcoming-events-arrows button{width:30px;height:30px}
+ .upcoming-events-timezone{position:static;margin-left:auto;font-size:10px}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -388,53 +433,46 @@ header .menu-dropdown{z-index:40}
 <section class="upcoming-events-section" id="upcomingEventsSection" aria-label="Yaklaşan etkinlikler">
 <div class="upcoming-events-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M7 14h3M7 17h3M15 14h2"/></svg><h3>YAKLAŞAN ETKİNLİKLER</h3></div>
 <div class="upcoming-events-board">
- <div class="upcoming-events-track-wrap">
-  <div class="upcoming-events-track" id="upcomingEventsTrack">
-   <article class="upcoming-event-tile is-live" data-time="15:00" data-name="Happy Hours"><div class="upcoming-event-emblem exp">EXP</div><div class="upcoming-event-info"><time>15:00</time><strong>Happy Hours</strong></div><span class="upcoming-event-state">● BAŞLADI</span></article>
-   <article class="upcoming-event-tile is-soon" data-time="17:00" data-name="Felankor (Mid) Time"><div class="upcoming-event-emblem chest">♜</div><div class="upcoming-event-info"><time>17:00</time><strong>Felankor (Mid) Time</strong></div><span class="upcoming-event-state" data-countdown>◷ -- dk</span></article>
-   <article class="upcoming-event-tile is-next" data-time="18:00" data-name="Border Defense War"><div class="upcoming-event-emblem swords">⚔</div><div class="upcoming-event-info"><time>18:00</time><strong>Border Defense War</strong></div><span class="upcoming-event-state" data-countdown>◷ -- dk</span></article>
-  </div>
- </div>
- <div class="upcoming-events-controls"><div class="upcoming-events-dots"><span class="active"></span><span></span><span></span></div><div class="upcoming-events-arrows"><button type="button" data-event-scroll="-1" aria-label="Önceki etkinlikler">‹</button><button type="button" data-event-scroll="1" aria-label="Sonraki etkinlikler">›</button></div></div>
- <div class="upcoming-events-timezone">◷ Türkiye Saati (TSİ)</div>
-</div>
-</section>
+ <div class="upcoming-events-track-wrap"><div class="upcoming-events-track" id="upcomingEventsTrack">
+  <article class="upcoming-event-tile" data-time="15:00" data-name="Happy Hours"><img class="upcoming-event-image" src="data:image/webp;base64,${assets.exp}" alt=""><div class="upcoming-event-info"><time>15:00</time><strong>Happy Hours</strong></div><span class="upcoming-event-state"></span></article>
+  <article class="upcoming-event-tile" data-time="17:00" data-name="Felankor (Mid) Time"><img class="upcoming-event-image" src="data:image/webp;base64,${assets.chest}" alt=""><div class="upcoming-event-info"><time>17:00</time><strong>Felankor (Mid) Time</strong></div><span class="upcoming-event-state"></span></article>
+  <article class="upcoming-event-tile" data-time="18:00" data-name="Border Defense War"><img class="upcoming-event-image" src="data:image/webp;base64,${assets.swords}" alt=""><div class="upcoming-event-info"><time>18:00</time><strong>Border Defense War</strong></div><span class="upcoming-event-state"></span></article>
+ </div></div>
+ <div class="upcoming-events-footer"><div class="upcoming-events-dots"><span class="active"></span><span></span><span></span></div><div class="upcoming-events-arrows"><button type="button" data-event-scroll="-1" aria-label="Önceki etkinlikler">‹</button><button type="button" data-event-scroll="1" aria-label="Sonraki etkinlikler">›</button></div><div class="upcoming-events-timezone">◷ Türkiye Saati (TSİ)</div></div>
+</div></section>
+
 <script>
 (function(){
  const root=document.getElementById("upcomingEventsSection");
  if(!root)return;
  const track=root.querySelector("#upcomingEventsTrack");
+ const cards=[...track.querySelectorAll(".upcoming-event-tile")];
  const dots=[...root.querySelectorAll(".upcoming-events-dots span")];
- root.querySelectorAll("[data-event-scroll]").forEach(btn=>btn.addEventListener("click",()=>{
-  track.scrollBy({left:Number(btn.dataset.eventScroll)*Math.max(230,track.clientWidth*.72),behavior:"smooth"});
- }));
- const update=()=>{
-  const now=new Date();
-  const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(now);
-  const hour=Number(parts.find(p=>p.type==="hour").value), minute=Number(parts.find(p=>p.type==="minute").value);
-  const current=hour*60+minute;
-  const cards=[...track.querySelectorAll(".upcoming-event-tile")];
-  cards.forEach(card=>{
-   const [h,m]=card.dataset.time.split(":").map(Number), eventMinutes=h*60+m;
-   const diff=eventMinutes-current;
+ root.querySelectorAll("[data-event-scroll]").forEach(btn=>btn.addEventListener("click",()=>track.scrollBy({left:Number(btn.dataset.eventScroll)*Math.max(260,track.clientWidth*.8),behavior:"smooth"})));
+ function update(){
+  const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
+  const now=Number(p.find(x=>x.type==="hour").value)*3600+Number(p.find(x=>x.type==="minute").value)*60+Number(p.find(x=>x.type==="second").value);
+  const times=cards.map(c=>{const [h,m]=c.dataset.time.split(":").map(Number);return h*3600+m*60;});
+  const nextIndex=times.findIndex(t=>t>now);
+  const activeIndex=nextIndex===0?-1:(nextIndex===-1?times.length-1:nextIndex-1);
+  cards.forEach((card,i)=>{
+   card.classList.toggle("is-live",i===activeIndex);
+   card.classList.toggle("is-soon",i===nextIndex);
+   card.classList.toggle("is-next",i!==activeIndex&&i!==nextIndex);
    const state=card.querySelector(".upcoming-event-state");
-   card.classList.toggle("is-live",diff<=0&&diff>-120);
-   card.classList.toggle("is-soon",diff>0&&diff<=30);
-   card.classList.toggle("is-next",diff>30);
-   if(diff<=0&&diff>-120){state.textContent="● BAŞLADI";}
-   else if(diff>0){const hh=Math.floor(diff/60),mm=diff%60;state.textContent="◷ "+(hh?hh+" sa ":"")+mm+" dk";}
-   else {state.textContent="BİTTİ";}
+   if(i===activeIndex){state.textContent="● BAŞLADI";return;}
+   if(i===nextIndex){
+    let diff=times[i]-now;if(diff<0)diff+=86400;
+    const hh=Math.floor(diff/3600),mm=Math.floor(diff%3600/60),ss=diff%60;
+    state.textContent="◷ "+(hh?hh+" sa ":"")+(hh?String(mm).padStart(2,"0")+" dk":mm+" dk")+" "+String(ss).padStart(2,"0")+" sn";
+   }else{state.textContent="BİTTİ";}
   });
-  const next=cards.find(c=>{const [h,m]=c.dataset.time.split(":").map(Number);return h*60+m>current;});
-  if(next){const [h,m]=next.dataset.time.split(":").map(Number);next.classList.add("is-soon");}
- };
- update();
- setInterval(update,15000);
+ }
+ update();setInterval(update,1000);
  track.addEventListener("scroll",()=>{
-  const max=track.scrollWidth-track.clientWidth;
-  const p=max>0?track.scrollLeft/max:0;
-  const active=Math.min(dots.length-1,Math.floor(p*dots.length));
-  dots.forEach((d,i)=>d.classList.toggle("active",i===active));
+  const max=track.scrollWidth-track.clientWidth,p=max>0?track.scrollLeft/max:0;
+  const n=Math.min(dots.length-1,Math.floor(p*dots.length));
+  dots.forEach((d,i)=>d.classList.toggle("active",i===n));
  },{passive:true});
 })();
 </script>
