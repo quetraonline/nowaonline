@@ -1146,7 +1146,7 @@ async function announcementAdminView(){
 const GAME_EVENT_DAYS=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 let gameEventsCache=[];
 function turkeyClockParts(date=new Date()){
- const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(date);
+ const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Etc/GMT-3",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(date);
  const get=k=>parts.find(p=>p.type===k)?.value||"00";
  const dayMap={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
  return {weekday:dayMap[get("weekday")],hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second")),dayName:GAME_EVENT_DAYS[dayMap[get("weekday")]]};
@@ -1156,7 +1156,7 @@ function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return start
 function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds){return nowSeconds;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
- const dateLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",weekday:"long"}).formatToParts(new Date());
+ const dateLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).formatToParts(new Date());
  const dateValue=key=>dateLabel.find(part=>part.type===key)?.value||"";
  const dateText=dateValue("day")+" "+dateValue("month")+" "+dateValue("weekday");
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
