@@ -1032,93 +1032,101 @@ if(tiktokConnectionStatus){
 
 <script id="nowa-gold-cursor">
 (() => {
-  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const finePointer = window.matchMedia('(pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!finePointer.matches || reducedMotion.matches) return;
+
   const canvas = document.createElement('canvas');
   canvas.id = 'nowa-gold-cursor-trail';
   canvas.setAttribute('aria-hidden', 'true');
   document.body.appendChild(canvas);
+
   const ctx = canvas.getContext('2d');
   if (!ctx) { canvas.remove(); return; }
-  let w=0,h=0,dpr=1,raf=0,lastSpawn=0,lastX=null,lastY=null,phase=0;
-  const motes=[], ribbons=[];
-  const resize=()=>{
-    dpr=Math.min(window.devicePixelRatio||1,2);w=innerWidth;h=innerHeight;
-    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
-    canvas.style.width=w+'px';canvas.style.height=h+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  const lifetime = 650;
+  const particles = [];
+  let raf = 0;
+  let last = { x: -1, y: -1 };
+
+  // QuetraOnline gold palette: brighter near the pointer, softer as it fades.
+  const colours = {
+    young: '#f4d58c',
+    old: '#a9823f',
+    glow: '#e2bf7a'
   };
-  const mote=(x,y,angle,speed,size,life)=>{
-    motes.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
-      size,life,max:life,spin:Math.random()*6.28,tw:Math.random()*6.28});
-    if(motes.length>220)motes.splice(0,motes.length-220);
+
+  const resize = () => {
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(window.innerWidth * ratio);
+    canvas.height = Math.round(window.innerHeight * ratio);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   };
-  const burst=(x,y,n=16)=>{
-    for(let i=0;i<n;i++)mote(x,y,Math.PI*2*i/n+Math.random()*.18,.35+Math.random()*2.1,.7+Math.random()*2.2,35+Math.random()*28);
-  };
-  const draw=()=>{
-    ctx.clearRect(0,0,w,h);
-    for(let i=ribbons.length-1;i>=0;i--){
-      const r=ribbons[i];r.life-=.022;
-      if(r.life<=0){ribbons.splice(i,1);continue;}
-      ctx.save();ctx.globalAlpha=Math.max(0,r.life)*.72;
-      ctx.lineCap='round';ctx.lineJoin='round';
-      ctx.shadowColor='#f1bd58';ctx.shadowBlur=19;
-      ctx.strokeStyle='#f6d58b';ctx.lineWidth=2.2*r.life;
-      ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.quadraticCurveTo(r.cx,r.cy,r.x2,r.y2);ctx.stroke();
-      ctx.shadowBlur=5;ctx.strokeStyle='#fff0c4';ctx.lineWidth=.7*r.life;
-      ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.quadraticCurveTo(r.cx,r.cy,r.x2,r.y2);ctx.stroke();
-      ctx.restore();
-    }
-    for(let i=motes.length-1;i>=0;i--){
-      const p=motes[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.978;p.vy=p.vy*.978+.006;
-      p.life--;p.tw+=.22;
-      if(p.life<=0){motes.splice(i,1);continue;}
-      const a=p.life/p.max;
-      ctx.save();ctx.globalAlpha=a*(.65+.35*Math.sin(p.tw));
-      ctx.fillStyle='#f4d58c';ctx.shadowColor='#ffca60';ctx.shadowBlur=10;
-      ctx.beginPath();ctx.arc(p.x,p.y,Math.max(.25,p.size*a),0,Math.PI*2);ctx.fill();
-      if(p.size>1.35&&a>.35){
-        ctx.strokeStyle='#fff2ca';ctx.lineWidth=.75;ctx.beginPath();
-        ctx.moveTo(p.x-2.8*a,p.y);ctx.lineTo(p.x+2.8*a,p.y);
-        ctx.moveTo(p.x,p.y-2.8*a);ctx.lineTo(p.x,p.y+2.8*a);ctx.stroke();
+
+  const animate = () => {
+    const now = performance.now();
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      const age = (now - p.born) / lifetime;
+
+      if (age >= 1) {
+        particles.splice(i, 1);
+        continue;
       }
-      ctx.restore();
+
+      ctx.globalAlpha = (1 - age) * 0.9;
+      ctx.fillStyle = age < 0.35 ? colours.young : colours.old;
+      ctx.shadowColor = colours.glow;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(
+        p.x + p.drift * age * 10,
+        p.y + age * 14,
+        p.size * (1 - age),
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
     }
-    if(motes.length||ribbons.length)raf=requestAnimationFrame(draw);else raf=0;
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    raf = particles.length > 0 ? requestAnimationFrame(animate) : 0;
   };
-  const wake=()=>{if(!raf)raf=requestAnimationFrame(draw);};
-  window.addEventListener('resize',resize,{passive:true});
-  window.addEventListener('mousemove',e=>{
-    const now=performance.now();if(now-lastSpawn<10)return;lastSpawn=now;
-    const x=e.clientX,y=e.clientY;
-    if(lastX!==null){
-      const dx=x-lastX,dy=y-lastY,dist=Math.hypot(dx,dy);
-      if(dist>1){
-        const angle=Math.atan2(dy,dx),steps=Math.min(5,Math.ceil(dist/13));
-        for(let i=0;i<steps;i++){
-          const t=(i+1)/steps,px=lastX+dx*t,py=lastY+dy*t;
-          phase+=.65;
-          const side=Math.sin(phase)*10;
-          const ox=px-Math.sin(angle)*side,oy=py+Math.cos(angle)*side;
-          ribbons.push({x1:lastX-Math.sin(angle)*Math.sin(phase-.65)*10,
-            y1:lastY+Math.cos(angle)*Math.sin(phase-.65)*10,
-            cx:(lastX+px)/2-Math.sin(angle)*side*1.8,
-            cy:(lastY+py)/2+Math.cos(angle)*side*1.8,
-            x2:ox,y2:oy,life:.95});
-          mote(ox,oy,angle+(Math.random()-.5)*2,.15+Math.random()*.65,.8+Math.random()*1.8,28+Math.random()*24);
-          if(Math.random()>.35) mote(px,py,Math.random()*6.28,.2+Math.random()*.8,.7+Math.random()*1.4,22+Math.random()*22);
-        }
-        if(dist>18&&Math.random()>.25)burst(x,y,3);
-      }
-    }
-    lastX=x;lastY=y;wake();
-  },{passive:true});
-  window.addEventListener('click',e=>{burst(e.clientX,e.clientY,24);wake();},{passive:true});
-  document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){motes.length=0;ribbons.length=0;if(raf)cancelAnimationFrame(raf);raf=0;}
-  });
+
+  const onPointerMove = (event) => {
+    if (event.pointerType !== 'mouse') return;
+
+    if (Math.hypot(event.clientX - last.x, event.clientY - last.y) < 6) return;
+
+    last = { x: event.clientX, y: event.clientY };
+    particles.push({
+      x: event.clientX + 3,
+      y: event.clientY + 3,
+      born: performance.now(),
+      size: 1.2 + Math.random() * 1.8,
+      drift: Math.random() * 2 - 1
+    });
+
+    if (particles.length > 60) particles.shift();
+    if (raf === 0) raf = requestAnimationFrame(animate);
+  };
+
   resize();
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      particles.length = 0;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  });
 })();
 </script>
 
