@@ -1153,7 +1153,7 @@ function turkeyClockParts(date=new Date()){
 }
 function gameEventClockText(value){return String(value||"").slice(0,5)}
 function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;if(end<startSeconds)end+=86400;return end;}
-function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds){return endSeconds>86400&&nowSeconds<(endSeconds-86400)?nowSeconds+86400:nowSeconds;}
+function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds){return nowSeconds;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const dateLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",weekday:"long"}).formatToParts(new Date());
