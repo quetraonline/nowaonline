@@ -463,8 +463,8 @@ header .menu-dropdown{z-index:40}
 .weekly-event-content{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
 .weekly-event-content strong{overflow:hidden;color:#fff;font-size:15px;font-weight:950;text-overflow:ellipsis;white-space:nowrap}
 .weekly-event-live-label{color:#54f18a;font-size:12px;font-weight:950;letter-spacing:.5px}
-@keyframes weeklyLivePulse{0%,100%{opacity:1;text-shadow:0 0 3px rgba(84,241,138,.35);transform:scale(1)}50%{opacity:.62;text-shadow:0 0 10px rgba(84,241,138,.95);transform:scale(1.035)}}
-.weekly-event-live-label{display:inline-block;transform-origin:left center;animation:weeklyLivePulse 1.15s ease-in-out infinite}
+@keyframes weeklyLivePulse{0%,100%{opacity:.38;text-shadow:0 0 1px rgba(84,241,138,.15)}50%{opacity:1;text-shadow:0 0 5px rgba(84,241,138,.75),0 0 12px rgba(84,241,138,.55)}}
+.weekly-event-live-label{display:inline-block;animation:weeklyLivePulse 1.25s ease-in-out infinite}
 .weekly-event-time{color:#e0deea;font-size:13px;font-weight:700;white-space:nowrap}
 .weekly-event-progress{height:4px;margin-top:5px;overflow:hidden;border-radius:5px;background:#565562}
 .weekly-event-progress i{display:block;height:100%;border-radius:5px;background:#35f58a}
