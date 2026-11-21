@@ -1172,7 +1172,7 @@ function renderGameEvents(){
    const status=live?"ŞİMDİ":done?"BİTTİ":formatClock(remaining);
    const cls=live?"is-live":next?"is-next":"is-done";
    const eventBgStyle=e.image_url?'--event-bg:url(&quot;'+esc(e.image_url)+'&quot;)':'';
-   return '<article class="game-event-row '+cls+'" style="'+eventBgStyle+'"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+'</time></div><span class="game-event-status">'+status+'</span></article>';
+   return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" class="game-event-row '+cls+'" style="'+eventBgStyle+'"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+'</time></div><span class="game-event-status">'+status+'</span></article>';
   }).join("");
  }
 }
@@ -1184,6 +1184,8 @@ async function loadGameEvents(){
 function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
+ const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;const end=gameEventEndSeconds(event,start);const current=gameEventAdjustedNow(nowSec,start,end);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"ŞİMDİ":done?"BİTTİ":formatClock(Math.max(0,start-current));});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
