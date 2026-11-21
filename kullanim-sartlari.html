@@ -92,17 +92,25 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
 
 @media screen and (max-width: 768px){header .nav .nav-right{display:none!important;visibility:hidden!important;pointer-events:none!important}}
 
-/* Ana sayfadaki Nowa özel imleci */
-html, body, body * {
-  cursor: url("/img/ko-cursor.png") 1 2, auto !important;
-}
-input, textarea, [contenteditable="true"], [contenteditable=""] {
-  cursor: text !important;
-}
+/* Eski sayfa imleci kaldırıldı; ortak altın imleç aşağıda tanımlıdır. */
 
 
 /* Masaüstü üst alan yüksekliği Rehber ve İletişim sayfalarıyla aynı */
 @media(min-width:701px){header .nav{height:68px}}
+
+/* QuetraOnline altın fare imleci ve parçacık izi */
+@media (hover:hover) and (pointer:fine) {
+  html, body, html body *, html body *::before, html body *::after {
+    cursor: url('/assets/cursor.svg') 3 3, auto !important;
+  }
+  html body input, html body textarea, html body [contenteditable="true"], html body [contenteditable=""] {
+    cursor: text !important;
+  }
+}
+#nowa-gold-cursor-trail { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:99999; }
+@media (hover:none), (pointer:coarse), (prefers-reduced-motion:reduce) {
+  #nowa-gold-cursor-trail { display:none !important; }
+}
 </style>
 
 </head>
@@ -195,6 +203,106 @@ loadVisitorCount();
 </nav>
 <script>
 (()=>{const nav=document.getElementById("mobileBottomNav");if(!nav)return;const current=window.location.pathname.replace(/\/+$/,"")||"/";const mobileAdminLink=nav.querySelector('a[href="/?openAdmin=1"]');if(mobileAdminLink&&document.getElementById("adminOpen"))mobileAdminLink.addEventListener("click",event=>{event.preventDefault();document.getElementById("adminOpen").click();});nav.querySelectorAll("a[href]").forEach(link=>{if(link.dataset.noActive==="true")return;const target=new URL(link.getAttribute("href"),window.location.origin).pathname.replace(/\/+$/,"")||"/";const active=current===target;link.classList.toggle("active",active);if(active)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});})();
+</script>
+
+<script id="nowa-gold-cursor">
+(() => {
+  const finePointer = window.matchMedia('(pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!finePointer.matches || reducedMotion.matches) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'nowa-gold-cursor-trail';
+  canvas.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) { canvas.remove(); return; }
+
+  const lifetime = 650;
+  const particles = [];
+  let raf = 0;
+  let last = { x: -1, y: -1 };
+
+  // QuetraOnline gold palette: brighter near the pointer, softer as it fades.
+  const colours = {
+    young: '#f4d58c',
+    old: '#a9823f',
+    glow: '#e2bf7a'
+  };
+
+  const resize = () => {
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(window.innerWidth * ratio);
+    canvas.height = Math.round(window.innerHeight * ratio);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  };
+
+  const animate = () => {
+    const now = performance.now();
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      const age = (now - p.born) / lifetime;
+
+      if (age >= 1) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      ctx.globalAlpha = (1 - age) * 0.9;
+      ctx.fillStyle = age < 0.35 ? colours.young : colours.old;
+      ctx.shadowColor = colours.glow;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(
+        p.x + p.drift * age * 10,
+        p.y + age * 14,
+        p.size * (1 - age),
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    raf = particles.length > 0 ? requestAnimationFrame(animate) : 0;
+  };
+
+  const onPointerMove = (event) => {
+    if (event.pointerType !== 'mouse') return;
+
+    if (Math.hypot(event.clientX - last.x, event.clientY - last.y) < 6) return;
+
+    last = { x: event.clientX, y: event.clientY };
+    particles.push({
+      x: event.clientX + 3,
+      y: event.clientY + 3,
+      born: performance.now(),
+      size: 1.2 + Math.random() * 1.8,
+      drift: Math.random() * 2 - 1
+    });
+
+    if (particles.length > 60) particles.shift();
+    if (raf === 0) raf = requestAnimationFrame(animate);
+  };
+
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      particles.length = 0;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  });
+})();
 </script>
 </body>
 </html>
