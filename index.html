@@ -487,6 +487,17 @@ header .menu-dropdown{z-index:40}
 .game-event-row.is-live .game-event-status{padding:0!important;background:transparent!important;color:#54f18a!important;letter-spacing:.5px!important}
 .game-event-row.is-next .game-event-status{padding:6px 9px!important;background:#76502d!important;color:#ffe0a8!important;letter-spacing:.25px!important;text-shadow:0 1px 2px #000!important}
 .game-event-row.is-done .game-event-status{padding:6px 9px!important;background:#454550!important;color:#c9c7d2!important}
+
+/* Özel Etkinlikler: etkinlik adı, server, saat ve satır kutusu Haftalık Etkinlikler ile aynı */
+.game-events-panel #specialEventsList .game-event-row{gap:10px!important;padding:10px 11px!important;border:1px solid #454550!important;border-radius:15px!important;background-color:#2b2a36!important}
+.game-events-panel #specialEventsList .game-event-row.is-live{border:1px solid #35f58a!important;background-color:#173d31!important;box-shadow:inset 3px 0 #45ff8e!important}
+.game-events-panel #specialEventsList .game-event-row.is-next{border:1px solid #f0a33d!important;background-color:#3b2b1c!important;box-shadow:inset 3px 0 #ffb347!important}
+.game-events-panel #specialEventsList .game-event-row.is-done{opacity:.72!important;background-color:#24232d!important}
+.game-events-panel #specialEventsList .game-event-info{gap:4px!important}
+.game-events-panel #specialEventsList .game-event-info strong{overflow:hidden!important;color:#fff!important;font-size:15px!important;font-weight:950!important;line-height:normal!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-shadow:none!important}
+.game-events-panel #specialEventsList .game-event-server{color:#e8c879!important;font-size:10px!important;font-weight:900!important;letter-spacing:.35px!important;line-height:1.2!important;text-transform:uppercase!important}
+.game-events-panel #specialEventsList .game-event-info time{overflow:hidden!important;color:#e0deea!important;font-size:13px!important;font-weight:700!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-shadow:none!important}
+@media(max-width:700px){.game-events-panel #specialEventsList .game-event-row{gap:9px!important;padding:9px!important}.game-events-panel #specialEventsList .game-event-image{width:40px!important;height:40px!important;flex-basis:40px!important}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
