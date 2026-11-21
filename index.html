@@ -296,32 +296,6 @@ header .menu-dropdown{z-index:40}
 .upcoming-events-heading h3{margin:0;color:#f4f6fa;font-size:15px;font-weight:950;letter-spacing:.45px}
 .upcoming-events-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
 .upcoming-events-panel{min-width:0;min-height:184px;padding:10px;border:1px solid #72552d;border-radius:12px;background:linear-gradient(145deg,#202833,#151b23);color:#e8c77f}
-.upcoming-events-demo{padding:12px;background:linear-gradient(145deg,#1d222e,#151922);border-color:#3a3d4a;overflow:hidden}
-.upcoming-events-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:12px}
-.upcoming-events-title{min-width:0}
-.upcoming-events-kicker{color:#f5b84f;font-size:9px;font-weight:950;letter-spacing:.13em}
-.upcoming-events-main-title{margin-top:3px;color:#fff;font-family:Georgia,serif;font-size:clamp(17px,2vw,25px);font-weight:900;line-height:1.08}
-.upcoming-events-next{grid-column:1/-1;display:flex;align-items:center;gap:8px;min-width:0;padding:7px 9px;border:1px solid #555461;border-radius:10px;background:#ffffff0b;color:#fff}
-.upcoming-events-next span{display:block;color:#f5b84f;font-size:8px;font-weight:900;letter-spacing:.07em}
-.upcoming-events-next strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
-.upcoming-events-next b{font-family:Georgia,serif;font-size:19px}
-.upcoming-events-arrows{display:flex;gap:5px;justify-content:flex-end}
-.upcoming-events-arrow{width:29px;height:29px;border:1px solid #555461;border-radius:8px;background:#ffffff0b;color:#fff;font-size:20px;line-height:1;cursor:pointer}
-.upcoming-events-arrow:hover{border-color:#e8b95c;color:#e8b95c}
-.upcoming-events-cards{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:2px 1px 8px;scrollbar-width:none;scroll-behavior:smooth;scroll-snap-type:x mandatory}
-.upcoming-events-cards::-webkit-scrollbar{display:none}
-.upcoming-event-card{display:flex;flex:0 0 116px;flex-direction:column;gap:7px;min-width:0;min-height:138px;padding:9px;border:1px solid #373b48;border-radius:12px;background:linear-gradient(155deg,#202431,#1a1e28);color:#fff;scroll-snap-align:start}
-.upcoming-event-card>strong{font-family:Georgia,serif;font-size:20px;line-height:1}
-.upcoming-event-thumb{display:grid;place-items:center;width:37px;height:37px;border-radius:9px;background:#ffffff12;font-size:22px}
-.upcoming-event-card>b{min-height:29px;font-size:10px;line-height:1.35}
-.upcoming-event-card>small{align-self:flex-start;margin-top:auto;padding:4px 7px;border-radius:5px;background:#ffffff16;color:#d2d3da;font-size:9px;font-weight:850}
-.upcoming-event-card.is-done{opacity:.62}
-.upcoming-event-card.is-live{border-color:#35d66c;background:linear-gradient(155deg,#214c3a,#1b302c)}
-.upcoming-event-card.is-live>small{background:#176d3b;color:#c8ffd7}
-.upcoming-event-card.is-soon{border-color:#ff8a32;background:linear-gradient(155deg,#5a392c,#30272a)}
-.upcoming-event-card.is-soon>small{background:#754126;color:#ffd3a8}
-.upcoming-events-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:4px;color:#c7cbd4;font-size:9px}
-.upcoming-events-bottom span:last-child{color:#fff;font-weight:850;white-space:nowrap}
 @media(max-width:700px){.upcoming-events-section{margin-bottom:18px}.upcoming-events-heading h3{font-size:13px}.upcoming-events-grid{gap:10px}.upcoming-events-panel{min-height:170px;padding:7px}.upcoming-events-demo{padding:9px}.upcoming-events-main-title{font-size:18px}.upcoming-events-next b{font-size:16px}.upcoming-event-card{flex-basis:105px;min-height:128px;padding:8px}.upcoming-events-bottom{font-size:8px}}
 .upcoming-event-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;align-items:start}
 .upcoming-event-card{position:relative;display:flex;flex-direction:column;gap:7px;min-width:0;min-height:164px;padding:12px;border:1px solid;border-radius:17px;overflow:hidden;box-shadow:0 7px 18px #0004}
@@ -338,6 +312,7 @@ header .menu-dropdown{z-index:40}
 .is-soon .upcoming-event-status-label{background:#754126;color:#ffd3a8}
 .upcoming-event-status-detail{color:#fff;font-size:11px}
 @media(max-width:700px){.upcoming-events-section{margin-bottom:18px}.upcoming-events-heading h3{font-size:13px}.upcoming-events-grid{gap:10px}.upcoming-events-panel{min-height:170px;padding:7px}.upcoming-event-cards{grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:7px}.upcoming-event-card{min-height:150px;padding:9px;border-radius:13px}.upcoming-event-time{font-size:21px}.upcoming-event-name{font-size:11px}.upcoming-event-thumb{width:38px;height:38px}}
+.upcoming-events-placeholder{min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -362,34 +337,7 @@ header .menu-dropdown{z-index:40}
 </section>
 <section class="announcement" id="announcementSection" aria-live="polite" hidden><div class="announcement-label">DUYURU</div><div class="announcement-body" id="announcementBody"></div></section>
 <section>
-<section class="upcoming-events-section" id="upcomingEventsSection" aria-label="Yaklaşan etkinlikler"><div class="upcoming-events-heading"><h3>YAKLAŞAN ETKİNLİKLER</h3></div><div class="upcoming-events-grid"><div class="upcoming-events-panel upcoming-events-demo">
-<div class="upcoming-events-top">
- <div class="upcoming-events-title"><div class="upcoming-events-kicker">GÜNÜN ETKİNLİKLERİ · BUGÜN</div><div class="upcoming-events-main-title">BUGÜN MORADON’DA</div></div>
- <div class="upcoming-events-next"><span>SIRADAKİ ETKİNLİK · 17:00</span><strong>Felankor (Mid) Time</strong><b>11:28</b></div>
- <div class="upcoming-events-arrows"><button type="button" class="upcoming-events-arrow" data-event-scroll="-1" aria-label="Önceki etkinlikler">‹</button><button type="button" class="upcoming-events-arrow" data-event-scroll="1" aria-label="Sonraki etkinlikler">›</button></div>
-</div>
-<div class="upcoming-events-cards" id="upcomingEventsDemoTrack">
- <article class="upcoming-event-card is-done"><strong>14:15</strong><span class="upcoming-event-thumb">⚔️</span><b>Juraid War</b><small>Bitti</small></article>
- <article class="upcoming-event-card is-done"><strong>14:55</strong><span class="upcoming-event-thumb">🎉</span><b>Santa Event</b><small>Bitti</small></article>
- <article class="upcoming-event-card is-live"><strong>15:00</strong><span class="upcoming-event-thumb">🌄</span><b>Happy Hours</b><small>● Şimdi</small></article>
- <article class="upcoming-event-card is-soon"><strong>17:00</strong><span class="upcoming-event-thumb">🐉</span><b>Felankor (Mid) Time</b><small>Yakında · 11 dk sonra</small></article>
- <article class="upcoming-event-card is-soon"><strong>18:00</strong><span class="upcoming-event-thumb">🛡️</span><b>Border Defense War</b><small>Yakında</small></article>
-</div>
-<div class="upcoming-events-bottom"><span>◷ Saatler Türkiye saatidir (TSİ)</span><span>Etkinlik Takvimi →</span></div>
-</div><div class="upcoming-events-panel">B</div></div><script>
-(function(){
- const section=document.getElementById("upcomingEventsSection");
- if(!section)return;
- section.querySelectorAll("[data-event-scroll]").forEach(button=>{
-  button.addEventListener("click",()=>{
-   const track=section.querySelector("#upcomingEventsDemoTrack");
-   if(!track)return;
-   track.scrollBy({left:Number(button.dataset.eventScroll)*Math.max(150,track.clientWidth*.72),behavior:"smooth"});
-  });
- });
-})();
-</script>
-</section>
+<section class="upcoming-events-section" id="upcomingEventsSection" aria-label="Yaklaşan etkinlikler"><div class="upcoming-events-heading"><h3>YAKLAŞAN ETKİNLİKLER</h3></div><div class="upcoming-events-grid"><div class="upcoming-events-panel upcoming-events-placeholder">A</div><div class="upcoming-events-panel">B</div></div></section>
 <section class="live-channels-section" id="liveChannelsSection" hidden aria-label="Şu anda canlı kanallar"><div class="live-channels-heading"><h3>ŞU ANDA CANLI YAYINCILAR</h3><span id="liveChannelsCount"></span></div><div class="live-channels-carousel-wrap"><button class="latest-carousel-arrow prev" type="button" aria-label="Önceki canlı kanal" data-carousel-target="liveChannelsTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><div class="live-channels-track" id="liveChannelsTrack" aria-label="Şu anda canlı yayın yapan kanallar"></div><button class="latest-carousel-arrow next" type="button" aria-label="Sonraki canlı kanal" data-carousel-target="liveChannelsTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div></section>
 <div class="toolbar"><div><h2 class="toolbar-title"><img class="toolbar-title-icon" src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="" aria-hidden="true"><span>Yayıncılarımız</span></h2><p>Resmi onaylı Yayıncı ve İçerik Üreticisi Listesi</p></div>
 <div class="filters"><input class="field search" id="search" placeholder="Yayıncı ara..."><select class="field" id="platform"><option value="">Tüm platformlar</option><option>TikTok</option><option>YouTube</option><option>Twitch</option><option>Kick</option><option>Instagram</option><option>Facebook</option><option>Discord</option></select><div class="mobile-filter-actions"><button type="button" class="mobile-refresh-btn" id="mobileRefreshBtn"><svg aria-hidden="true" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.4 6.4L3 15.5"/><path d="M3 20v-4.5h4.5"/><path d="M3 12A9 9 0 0 1 18.4 5.6L21 8.5"/><path d="M21 4v4.5h-4.5"/></svg><span>Yenile</span></button><a class="mobile-refresh-btn mobile-join-btn" href="/rehber"><svg aria-hidden="true" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M19 8v6M16 11h6"/></svg><span>YAYINCI OL</span></a><label for="liveOnlyFilter" class="live-filter-label" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;color:var(--text,#f3f5f8);font-size:12px;cursor:pointer" aria-label="Canlı Yayınları Göster"><input id="liveOnlyFilter" type="checkbox" style="width:16px;height:16px;accent-color:#e8b95c;margin:0"> <span class="live-filter-desktop">Canlı Yayınları Göster</span><span class="live-filter-mobile">Canlı Yayınlar</span></label></div></div>
