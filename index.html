@@ -438,7 +438,7 @@ header .menu-dropdown{z-index:40}
 @media(max-width:520px){.game-events-admin-row{align-items:flex-start;flex-direction:column}.game-events-admin-actions{width:100%}.game-events-admin-actions .btn{flex:1}}
 
 
-.weekly-events-panel{padding:0 16px 14px!important;border:1px solid #41414d!important;border-radius:18px!important;background:#24232d!important;box-shadow:0 8px 24px #0003!important;overflow:hidden}
+.weekly-events-panel{min-width:0;padding:12px 0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible}
 .weekly-upcoming-head{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:10px;margin:0 -16px 16px;padding:16px 16px 14px;border-bottom:1px solid #41414d}
 .weekly-upcoming-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#393944;color:#ffbf42}
 .weekly-upcoming-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -487,7 +487,7 @@ header .menu-dropdown{z-index:40}
 <section class="announcement" id="announcementSection" aria-live="polite" hidden><div class="announcement-label">DUYURU</div><div class="announcement-body" id="announcementBody"></div></section>
 <section class="game-events-section" id="gameEventsSection" aria-label="Oyun etkinlikleri">
  <section class="game-events-panel weekly-events-panel" aria-label="Haftalık etkinlikler">
-  <div class="weekly-upcoming-head"><div class="weekly-upcoming-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Yaklaşan Etkinlikler</h3><span class="weekly-upcoming-today" id="weeklyEventsDay">Bugün</span></div>
+  <div class="game-events-panel-head"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>YAKLAŞAN ETKİNLİKLER</h3><span class="game-events-day" id="weeklyEventsDay">Bugün</span></div>
   <div class="game-events-list" id="weeklyEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div><div class="game-events-timezone">◷ Türkiye Saati (TSİ)</div>
  </section>
  <section class="game-events-panel" aria-label="Özel etkinlikler">
