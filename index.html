@@ -1040,65 +1040,83 @@ if(tiktokConnectionStatus){
   document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   if (!ctx) { canvas.remove(); return; }
-  let w = 0, h = 0, dpr = 1, last = 0, frame = 0;
-  const particles = [];
-  const resize = () => {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = window.innerWidth; h = window.innerHeight;
-    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  let w=0,h=0,dpr=1,raf=0,lastSpawn=0,lastX=null,lastY=null,phase=0;
+  const motes=[], ribbons=[];
+  const resize=()=>{
+    dpr=Math.min(window.devicePixelRatio||1,2);w=innerWidth;h=innerHeight;
+    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+    canvas.style.width=w+'px';canvas.style.height=h+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
   };
-  const addParticle = (x, y, burst = false) => {
-    const angle = Math.random() * Math.PI * 2;
-    const speed = burst ? 0.5 + Math.random() * 1.8 : 0.25 + Math.random() * 1.0;
-    particles.push({
-      x: x + (Math.random() - .5) * 5, y: y + (Math.random() - .5) * 5,
-      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - (burst ? .35 : .15),
-      life: 1, decay: .012 + Math.random() * .018,
-      size: burst ? 1 + Math.random() * 2.1 : .8 + Math.random() * 1.5,
-      twinkle: Math.random() * Math.PI * 2
-    });
-    if (particles.length > 130) particles.splice(0, particles.length - 130);
+  const mote=(x,y,angle,speed,size,life)=>{
+    motes.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+      size,life,max:life,spin:Math.random()*6.28,tw:Math.random()*6.28});
+    if(motes.length>220)motes.splice(0,motes.length-220);
   };
-  const draw = () => {
-    ctx.clearRect(0, 0, w, h);
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx; p.y += p.vy; p.vx *= .985; p.vy = p.vy * .985 + .008;
-      p.life -= p.decay; p.twinkle += .12;
-      if (p.life <= 0) { particles.splice(i, 1); continue; }
-      const alpha = Math.max(0, p.life) * (.68 + Math.sin(p.twinkle) * .22);
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = '#f4d58c';
-      ctx.shadowColor = '#e8b95c'; ctx.shadowBlur = 8;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2); ctx.fill();
-      if (p.size > 1.5 && p.life > .45) {
-        ctx.strokeStyle = '#fff0c4'; ctx.lineWidth = .7;
-        ctx.beginPath(); ctx.moveTo(p.x - 2.4, p.y); ctx.lineTo(p.x + 2.4, p.y);
-        ctx.moveTo(p.x, p.y - 2.4); ctx.lineTo(p.x, p.y + 2.4); ctx.stroke();
+  const burst=(x,y,n=16)=>{
+    for(let i=0;i<n;i++)mote(x,y,Math.PI*2*i/n+Math.random()*.18,.35+Math.random()*2.1,.7+Math.random()*2.2,35+Math.random()*28);
+  };
+  const draw=()=>{
+    ctx.clearRect(0,0,w,h);
+    for(let i=ribbons.length-1;i>=0;i--){
+      const r=ribbons[i];r.life-=.022;
+      if(r.life<=0){ribbons.splice(i,1);continue;}
+      ctx.save();ctx.globalAlpha=Math.max(0,r.life)*.72;
+      ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.shadowColor='#f1bd58';ctx.shadowBlur=19;
+      ctx.strokeStyle='#f6d58b';ctx.lineWidth=2.2*r.life;
+      ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.quadraticCurveTo(r.cx,r.cy,r.x2,r.y2);ctx.stroke();
+      ctx.shadowBlur=5;ctx.strokeStyle='#fff0c4';ctx.lineWidth=.7*r.life;
+      ctx.beginPath();ctx.moveTo(r.x1,r.y1);ctx.quadraticCurveTo(r.cx,r.cy,r.x2,r.y2);ctx.stroke();
+      ctx.restore();
+    }
+    for(let i=motes.length-1;i>=0;i--){
+      const p=motes[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.978;p.vy=p.vy*.978+.006;
+      p.life--;p.tw+=.22;
+      if(p.life<=0){motes.splice(i,1);continue;}
+      const a=p.life/p.max;
+      ctx.save();ctx.globalAlpha=a*(.65+.35*Math.sin(p.tw));
+      ctx.fillStyle='#f4d58c';ctx.shadowColor='#ffca60';ctx.shadowBlur=10;
+      ctx.beginPath();ctx.arc(p.x,p.y,Math.max(.25,p.size*a),0,Math.PI*2);ctx.fill();
+      if(p.size>1.35&&a>.35){
+        ctx.strokeStyle='#fff2ca';ctx.lineWidth=.75;ctx.beginPath();
+        ctx.moveTo(p.x-2.8*a,p.y);ctx.lineTo(p.x+2.8*a,p.y);
+        ctx.moveTo(p.x,p.y-2.8*a);ctx.lineTo(p.x,p.y+2.8*a);ctx.stroke();
+      }
+      ctx.restore();
+    }
+    if(motes.length||ribbons.length)raf=requestAnimationFrame(draw);else raf=0;
+  };
+  const wake=()=>{if(!raf)raf=requestAnimationFrame(draw);};
+  window.addEventListener('resize',resize,{passive:true});
+  window.addEventListener('mousemove',e=>{
+    const now=performance.now();if(now-lastSpawn<10)return;lastSpawn=now;
+    const x=e.clientX,y=e.clientY;
+    if(lastX!==null){
+      const dx=x-lastX,dy=y-lastY,dist=Math.hypot(dx,dy);
+      if(dist>1){
+        const angle=Math.atan2(dy,dx),steps=Math.min(5,Math.ceil(dist/13));
+        for(let i=0;i<steps;i++){
+          const t=(i+1)/steps,px=lastX+dx*t,py=lastY+dy*t;
+          phase+=.65;
+          const side=Math.sin(phase)*10;
+          const ox=px-Math.sin(angle)*side,oy=py+Math.cos(angle)*side;
+          ribbons.push({x1:lastX-Math.sin(angle)*Math.sin(phase-.65)*10,
+            y1:lastY+Math.cos(angle)*Math.sin(phase-.65)*10,
+            cx:(lastX+px)/2-Math.sin(angle)*side*1.8,
+            cy:(lastY+py)/2+Math.cos(angle)*side*1.8,
+            x2:ox,y2:oy,life:.95});
+          mote(ox,oy,angle+(Math.random()-.5)*2,.15+Math.random()*.65,.8+Math.random()*1.8,28+Math.random()*24);
+          if(Math.random()>.35) mote(px,py,Math.random()*6.28,.2+Math.random()*.8,.7+Math.random()*1.4,22+Math.random()*22);
+        }
+        if(dist>18&&Math.random()>.25)burst(x,y,3);
       }
     }
-    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-    if (particles.length) frame = requestAnimationFrame(draw);
-    else frame = 0;
-  };
-  const wake = () => { if (!frame) frame = requestAnimationFrame(draw); };
-  window.addEventListener('resize', resize, {passive:true});
-  window.addEventListener('mousemove', e => {
-    const now = performance.now();
-    if (now - last < 13) return;
-    last = now;
-    addParticle(e.clientX, e.clientY);
-    if (Math.random() > .42) addParticle(e.clientX, e.clientY);
-    wake();
-  }, {passive:true});
-  window.addEventListener('click', e => {
-    for (let i = 0; i < 11; i++) addParticle(e.clientX, e.clientY, true);
-    wake();
-  }, {passive:true});
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { particles.length = 0; if (frame) cancelAnimationFrame(frame); frame = 0; }
+    lastX=x;lastY=y;wake();
+  },{passive:true});
+  window.addEventListener('click',e=>{burst(e.clientX,e.clientY,24);wake();},{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){motes.length=0;ribbons.length=0;if(raf)cancelAnimationFrame(raf);raf=0;}
   });
   resize();
 })();
