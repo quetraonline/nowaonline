@@ -460,60 +460,6 @@ header .menu-dropdown{z-index:40}
 
 </section>
 <section class="announcement" id="announcementSection" aria-live="polite" hidden><div class="announcement-label">DUYURU</div><div class="announcement-body" id="announcementBody"></div></section>
-<section>
-<section class="upcoming-events-section" id="upcomingEventsSection" aria-label="Yaklaşan etkinlikler">
- <div class="upcoming-events-heading">
-  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M7 14h3M7 17h3M15 14h2"/></svg>
-  <h3>YAKLAŞAN ETKİNLİKLER</h3>
- </div>
- <div class="upcoming-events-board">
-  <div class="upcoming-events-track-wrap"><div class="upcoming-events-track" id="upcomingEventsTrack">
-   <article class="upcoming-event-tile is-done" data-time="15:00" data-name="Happy Hours">
-    <div class="upcoming-event-icon exp-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 23 7 15l10 2 5-9 5 10M51 23l6-8-10 2-5-9-5 10" /><path d="M14 26c-7 12-2 27 10 31M50 26c7 12 2 27-10 31" /><path d="M19 48 13 51l1-8M45 48l6 3-1-8" /><path d="M21 23h22v22H21z" /><text x="32" y="39" text-anchor="middle">EXP</text></svg></div>
-    <div class="upcoming-event-info"><time>15:00</time><strong>Happy Hours</strong></div><span class="upcoming-event-state">BİTTİ</span>
-   </article>
-   <article class="upcoming-event-tile is-live" data-time="17:00" data-name="Felankor (Mid) Time">
-    <div class="upcoming-event-icon chest-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="m8 22 8-12h32l8 12v30H8z"/><path d="M8 22h48v9H8zM16 10l5 12M48 10l-5 12M8 31l10 8v13M56 31l-10 8v13" /><path d="M24 22v30M40 22v30M27 34h10v10H27z" /><path d="M30 31v-5h4v5" /></svg></div>
-    <div class="upcoming-event-info"><time>17:00</time><strong>Felankor (Mid) Time</strong></div><span class="upcoming-event-state">● BAŞLADI</span>
-   </article>
-   <article class="upcoming-event-tile is-soon" data-time="18:00" data-name="Border Defense War">
-    <div class="upcoming-event-icon swords-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="m12 8 31 31M18 6l-8 8 31 31M43 8 12 39M49 6l8 8-31 31" /><path d="m8 42 14-14 7 7-14 14zM35 29l7-7 14 14-7 7zM12 52l-4 4M52 52l4 4" /></svg></div>
-    <div class="upcoming-event-info"><time>18:00</time><strong>Border Defense War</strong></div><span class="upcoming-event-state" data-countdown>◷ 52 dk 46 sn</span>
-   </article>
-  </div></div>
-  <div class="upcoming-events-footer">
-   <div class="upcoming-events-dots"><span class="active"></span><span></span><span></span></div>
-   <div class="upcoming-events-arrows"><button type="button" data-event-scroll="-1" aria-label="Önceki etkinlikler">‹</button><button type="button" data-event-scroll="1" aria-label="Sonraki etkinlikler">›</button></div>
-   <div class="upcoming-events-timezone">◷ Türkiye Saati (TSİ)</div>
-  </div>
- </div>
-</section>
-
-
-<script>
-(function(){
- const root=document.getElementById("upcomingEventsSection");if(!root)return;
- const track=root.querySelector("#upcomingEventsTrack");
- const cards=[...track.querySelectorAll(".upcoming-event-tile")];
- const dots=[...root.querySelectorAll(".upcoming-events-dots span")];
- root.querySelectorAll("[data-event-scroll]").forEach(b=>b.addEventListener("click",()=>track.scrollBy({left:Number(b.dataset.eventScroll)*Math.max(240,track.clientWidth*.8),behavior:"smooth"})));
- function tick(){
-  const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
-  const now=+p.find(x=>x.type==="hour").value*3600 + +p.find(x=>x.type==="minute").value*60 + +p.find(x=>x.type==="second").value;
-  const t=cards.map(c=>{const [h,m]=c.dataset.time.split(":").map(Number);return h*3600+m*60;});
-  const next=t.findIndex(v=>v>now), live=next===0?-1:(next<0?t.length-1:next-1);
-  cards.forEach((c,i)=>{
-   c.classList.toggle("is-live",i===live);c.classList.toggle("is-soon",i===next);c.classList.toggle("is-done",i!==live&&i!==next);
-   const label=c.querySelector(".upcoming-event-state");
-   if(i===live){label.textContent="● BAŞLADI";return;}
-   if(i===next){let d=t[i]-now;if(d<0)d+=86400;const h=Math.floor(d/3600),m=Math.floor(d%3600/60),sec=d%60;label.textContent="◷ "+(h?h+" sa ":"")+(h?String(m).padStart(2,"0"):m)+" dk "+String(sec).padStart(2,"0")+" sn";return;}
-   label.textContent="BİTTİ";
-  });
- }
- tick();setInterval(tick,1000);
- track.addEventListener("scroll",()=>{const max=track.scrollWidth-track.clientWidth,p=max?track.scrollLeft/max:0,n=Math.min(dots.length-1,Math.floor(p*dots.length));dots.forEach((d,i)=>d.classList.toggle("active",i===n));},{passive:true});
-})();
-</script>
 <section class="game-events-section" id="gameEventsSection" aria-label="Oyun etkinlikleri">
  <section class="game-events-panel" aria-label="Haftalık etkinlikler">
   <div class="game-events-panel-head"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3m-3 3h6"/></svg>HAFTALIK ETKİNLİKLER</h3><span class="game-events-day" id="weeklyEventsDay"></span></div>
