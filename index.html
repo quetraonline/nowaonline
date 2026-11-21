@@ -1135,9 +1135,9 @@ function renderGameEvents(){
    const clock=gameEventClockText(e.start_time);
    if(e.live){
     const duration=Math.max(1,e.end-e.start),progress=Math.max(0,Math.min(100,((e.current-e.start)/duration)*100));
-    return '<article class="weekly-event-card weekly-event-active"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time">'+clock+' · bitişe '+formatClock(e.left)+'</div><div class="weekly-event-progress"><i style="width:'+progress+'%"></i></div></div></article>';
+    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-active"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time" data-live-time>'+clock+' · bitişe '+formatClock(e.left)+'</div><div class="weekly-event-progress"><i data-progress style="width:'+progress+'%"></i></div></div></article>';
    }
-   return '<article class="weekly-event-card weekly-event-next"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time">'+clock+'</span></div><span class="weekly-event-countdown">'+formatClock(e.remaining)+'</span></article>';
+   return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next"><div class="weekly-event-image">'+image+'</div><div class="weekly-event-content"><strong>'+esc(e.event_name)+'</strong><span class="weekly-event-time">'+clock+'</span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
   };
   weeklyList.innerHTML=(active?card(active):'')+(upcoming.length?'<div class="weekly-upcoming-label">SIRADAKİLER</div>'+upcoming.map(card).join(""):'')+(!active&&!upcoming.length?'<div class="game-events-empty">Bugün için yaklaşan etkinlik bulunmuyor.</div>':'');
  }
@@ -1167,7 +1167,31 @@ async function loadGameEvents(){
  if(error){console.warn("Oyun etkinlikleri yüklenemedi:",error);return}
  gameEventsCache=data||[];renderGameEvents();
 }
-setInterval(renderGameEvents,1000);
+function updateGameEventTimers(){
+ const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
+ const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
+ const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
+ let needsRender=false;
+ cards.forEach(card=>{
+  const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.eventId);
+  if(!event)return;
+  const start=Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;
+  let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;
+  if(end<=start)end+=86400;
+  const current=nowSec<start&&end>86400?nowSec+86400:nowSec;
+  const live=current>=start&&current<end,finished=current>=end;
+  if(card.classList.contains("weekly-event-active")!==live||finished){needsRender=true;return}
+  if(live){
+   const left=Math.max(0,end-current),duration=Math.max(1,end-start);
+   const timer=card.querySelector("[data-live-time]");if(timer)timer.textContent=gameEventClockText(event.start_time)+" · bitişe "+formatClock(left);
+   const bar=card.querySelector("[data-progress]");if(bar)bar.style.width=Math.max(0,Math.min(100,((current-start)/duration)*100))+"%";
+  }else{
+   const timer=card.querySelector("[data-countdown]");if(timer)timer.textContent=formatClock(Math.max(0,start-current));
+  }
+ });
+ if(needsRender)renderGameEvents();
+}
+setInterval(updateGameEventTimers,1000);
 async function gameEventsAdminView(section="weekly"){
  $("modal").dataset.view="game-events-admin";$("modal").dataset.gameEventSection=section;window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}
