@@ -1259,9 +1259,37 @@ function renderGameEventsAdminList(section=$("modal").dataset.gameEventSection||
  box.onclick=async ev=>{const day=ev.target.closest("[data-game-event-day]"),edit=ev.target.closest("[data-event-edit]"),del=ev.target.closest("[data-event-delete]");if(day){$("modal").dataset.gameEventWeekday=day.dataset.gameEventDay;renderGameEventsAdminList(section);return}if(edit)gameEventForm(gameEventsCache.find(x=>x.id===edit.dataset.eventEdit),section);if(del){const item=gameEventsCache.find(x=>x.id===del.dataset.eventDelete);if(item&&confirm(item.event_name+" etkinliği silinsin mi?")){const {error}=await db.from("nowa_game_events").delete().eq("id",item.id);if(error)toast("Silinemedi: "+error.message);else{toast("Etkinlik silindi.");await refreshGameEventsAdminList(section);await loadGameEvents()}}}};
 }
 const GAME_EVENT_PRESETS={weekly:[
-{name:"Cloudy Temple",image:"img/etkinlikler/jr.png"},{name:"CR",image:"img/etkinlikler/nowazemin.jpg"},{name:"Ethernal Gate",image:"img/etkinlikler/bifrost.png"},{name:"Monster Raid",image:"img/etkinlikler/monster.png"},{name:"Lucky DRAW",image:"img/etkinlikler/luckydraw.jpg"},{name:"Castle Siege War",image:"img/etkinlikler/csw.png"},{name:"Border Defense War",image:"img/etkinlikler/bdw.png"},{name:"Mining Event",image:"img/etkinlikler/maden.png"},{name:"Fishing Event",image:"img/etkinlikler/balik.png"},{name:"Winter Treant",image:"img/etkinlikler/winter.png"}],
+{name:"Cloudy Temple",image:"img/etkinlikler/sol/jr.png"},
+{name:"CR",image:"img/etkinlikler/sol/crbox.png"},
+{name:"Ethernal Gate",image:"img/etkinlikler/sol/EthernalGate.png"},
+{name:"Monster Raid",image:"img/etkinlikler/sol/MonsterRaid.png"},
+{name:"Lucky DRAW",image:"img/etkinlikler/sol/LuckyDraw.png"},
+{name:"Castle Siege War",image:"img/etkinlikler/sol/csw.png"},
+{name:"Border Defense War",image:"img/etkinlikler/sol/bdw.png"},
+{name:"Mining Event",image:"img/etkinlikler/sol/mining.png"},
+{name:"Fishing Event",image:"img/etkinlikler/sol/fishing.png"},
+{name:"Winter Treant",image:"img/etkinlikler/sol/winter.png"}
+],
 special:[
-{name:"Castle Siege War",image:"img/etkinlikler/csw.png"},{name:"Cursed Santa Event",image:"img/etkinlikler/santa.png"},{name:"Elder Dragon Event",image:"img/etkinlikler/felo.png"},{name:"PM Event",image:"img/etkinlikler/pmevent.jpg"},{name:"GM Kill Event",image:"img/etkinlikler/gmevent.jpg"},{name:"Chest Event",image:"img/etkinlikler/nowazemin.jpg"},{name:"Chest + Elder Dragon",image:"img/etkinlikler/felo.png"},{name:"Goat + Chest + Elder Dragon",image:"img/etkinlikler/keci.jpg"},{name:"WP Event",image:"img/etkinlikler/nowazemin.jpg"},{name:"Drop Event",image:"img/etkinlikler/nowazemin.jpg"},{name:"WP + Drop Event",image:"img/etkinlikler/nowazemin.jpg"},{name:"Mega Boss Stone",image:"img/etkinlikler/megatas.png"},{name:"Boss Stone Event",image:"img/etkinlikler/megatas.png"},{name:"Watcher Boss",image:"img/etkinlikler/nowazemin.jpg"},{name:"Giant Goat",image:"img/etkinlikler/keci.jpg"},{name:"Ödül Avcısı Etkinliği",image:""},{name:"Battle Map D.V",image:"img/etkinlikler/battlemapdv.png"},{name:"Battle Map C.V",image:"img/etkinlikler/battlemapcv.png"}]};
+{name:"Castle Siege War",image:"img/etkinlikler/sol/csw.png"},
+{name:"Cursed Santa Event",image:"img/etkinlikler/sol/cursedsanta.png"},
+{name:"Elder Dragon Event",image:"img/etkinlikler/sol/elderdragon.png"},
+{name:"Chest + Elder Dragon",image:"img/etkinlikler/sol/chest-elderdragon.png"},
+{name:"Goat + Chest + Elder Dragon",image:"img/etkinlikler/sol/goat-elder-chest.png"},
+{name:"PM Event",image:"img/etkinlikler/sol/pmevent.png"},
+{name:"GM Kill Event",image:"img/etkinlikler/sol/gmkill.png"},
+{name:"Chest Event",image:"img/etkinlikler/sol/chest.png"},
+{name:"Boss Stone Event",image:"img/etkinlikler/sol/megabos.png"},
+{name:"WP Event",image:"img/etkinlikler/sol/wp.png"},
+{name:"WP + Drop Event",image:"img/etkinlikler/sol/wp-drop.png"},
+{name:"Drop Event",image:"img/etkinlikler/sol/drop.png"},
+{name:"Mega Boss Stone",image:"img/etkinlikler/sol/megabos.png"},
+{name:"Watcher Boss",image:"img/etkinlikler/sol/Watcher.png"},
+{name:"Giant Goat",image:"img/etkinlikler/sol/goat.png"},
+{name:"Ödül Avcısı Etkinliği",image:"img/etkinlikler/sol/odulavcisi.png"},
+{name:"Battle Map D.V",image:"img/etkinlikler/sol/battlemap.png"},
+{name:"Battle Map C.V",image:"img/etkinlikler/sol/battlemap.png"}
+]};
 function gameEventPresetOptions(section,selected){const list=GAME_EVENT_PRESETS[section]||[];const legacy=selected&&!list.some(x=>x.name===selected)?'<option value="'+esc(selected)+'" selected>'+esc(selected)+' (mevcut kayıt)</option>':'';return legacy+list.map(x=>'<option value="'+esc(x.name)+'" '+(selected===x.name?'selected':'')+'>'+esc(x.name)+'</option>').join('')}
 function gameEventImageFor(event){const list=GAME_EVENT_PRESETS[event.section]||[];const preset=list.find(x=>x.name===event.event_name);return preset?preset.image:(event.image_url||'')}
 function gameEventForm(item=null,section=$("modal").dataset.gameEventSection||"weekly"){
