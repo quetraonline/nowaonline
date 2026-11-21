@@ -1109,7 +1109,7 @@ function renderGameEvents(){
    const status=live?"ŞİMDİ":done?"BİTTİ":formatLeft(remaining);
    const cls=live?"is-live":next?"is-next":"is-done";
    const image=e.image_url?'<img src="'+esc(e.image_url)+'" alt="" loading="lazy">':'<span>⚔</span>';
-   return '<article class="game-event-row '+cls+'"><div class="game-event-image">'+image+'</div><div class="game-event-info"><time>'+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+'</time><strong title="'+esc(e.event_name)+'">'+esc(e.event_name)+'</strong></div><span class="game-event-status">'+status+'</span></article>';
+   return '<article class="game-event-row '+cls+'"><div class="game-event-image">'+image+'</div><div class="game-event-info"><strong title="'+esc(e.event_name)+'">'+esc(e.event_name)+'</strong><time>'+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+'</time></div><span class="game-event-status">'+status+'</span></article>';
   }).join("");
  }
 }
