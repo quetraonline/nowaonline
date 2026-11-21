@@ -1159,6 +1159,9 @@ function gameEventRawStartSeconds(event){return Number(String(event.start_time).
 function gameEventStartSeconds(event){return gameEventRawStartSeconds(event);}
 function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart)end+=86400;return end;}
 function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds,event,nowWeekday){return nowSeconds;}
+function specialEventStartSeconds(event){const raw=gameEventRawStartSeconds(event);return raw<21600?raw+86400:raw;}
+function specialEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart||rawStart<21600)end+=86400;return end;}
+function specialEventAdjustedNow(nowSeconds,startSeconds,event,nowWeekday){return event&&Number(event.weekday)!==nowWeekday&&startSeconds>=86400?nowSeconds+86400:nowSeconds;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const dateLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).formatToParts(new Date());
@@ -1202,13 +1205,13 @@ function renderGameEvents(){
   const previousWeekday=(now.weekday+6)%7;
   const events=gameEventsCache.filter(e=>{
    if(e.section!==section||e.is_active===false)return false;
-   const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const start=specialEventStartSeconds(e),end=specialEventEndSeconds(e,start);
+   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
    return Number(e.weekday)===now.weekday||carryover;
   }).map(e=>{
-   const start=gameEventStartSeconds(e),end=gameEventEndSeconds(e,start);
-   const carryover=Number(e.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
-   const current=carryover?nowSec+86400:nowSec;
+   const start=specialEventStartSeconds(e),end=specialEventEndSeconds(e,start);
+   const carryover=Number(e.weekday)===previousWeekday&&start>=86400&&nowSec+86400>=start&&nowSec+86400<end;
+   const current=carryover?nowSec+86400:specialEventAdjustedNow(nowSec,start,e,now.weekday);
    return {...e,_start:start,_end:end,_current:current,_live:current>=start&&current<end,_done:current>=end,_next:current<start};
   });
   if(!events.length){list.innerHTML='<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>';continue}
@@ -1234,7 +1237,7 @@ function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
  const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
- specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=gameEventStartSeconds(event);const end=gameEventEndSeconds(event,start);const previousWeekday=(now.weekday+6)%7;const carryover=Number(event.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;const current=carryover?nowSec+86400:nowSec;const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"ŞİMDİ":done?"BİTTİ":formatClock(Math.max(0,start-current));});
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=specialEventAdjustedNow(nowSec,start,event,now.weekday);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"ŞİMDİ":done?"BİTTİ":formatClock(Math.max(0,start-current));});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
