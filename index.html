@@ -1157,6 +1157,7 @@ function turkeyClockParts(date=new Date()){
  return {weekday:dayMap[get("weekday")],hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second")),dayName:GAME_EVENT_DAYS[dayMap[get("weekday")]]};
 }
 function gameEventClockText(value){return String(value||"").slice(0,5)}
+function formatEventRemainingText(seconds){seconds=Math.max(0,Math.floor(seconds));const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return "Bitişe "+String(h).padStart(2,"0")+" saat "+String(m).padStart(2,"0")+" dakika "+String(sec).padStart(2,"0")+" saniye";}
 function gameEventRawStartSeconds(event){return Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;}
 function gameEventStartSeconds(event){return gameEventRawStartSeconds(event);}
 function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart)end+=86400;return end;}
@@ -1192,7 +1193,7 @@ function renderGameEvents(){
    const clock=gameEventClockText(e.start_time);
    if(e.live){
     const duration=Math.max(1,e.end-e.start),progress=Math.max(0,Math.min(100,((e.current-e.start)/duration)*100));
-    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-active" style="'+eventBgStyle+'"><img class="weekly-event-image" src="'+esc(eventImage)+'" alt="" loading="lazy"><div class="weekly-event-content"><strong>'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time weekly-time-live" data-live-time>'+clock+' · bitişe '+formatClock(e.left)+'</div><div class="weekly-event-progress"><i data-progress style="width:'+progress+'%"></i></div></div></article>';
+    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-active" style="'+eventBgStyle+'"><img class="weekly-event-image" src="'+esc(eventImage)+'" alt="" loading="lazy"><div class="weekly-event-content"><strong>'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="weekly-event-live-label">● ŞU AN AKTİF</span><div class="weekly-event-time weekly-time-live" data-live-time>'+clock+' · '+formatEventRemainingText(e.left)+'</div><div class="weekly-event-progress"><i data-progress style="width:'+progress+'%"></i></div></div></article>';
    }
    if(e.current>=e.end)return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-done" style="'+eventBgStyle+'"><img class="weekly-event-image" src="'+esc(eventImage)+'" alt="" loading="lazy"><div class="weekly-event-content"><strong>'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="weekly-event-time weekly-time-done">'+clock+(e.end_time?' · '+gameEventClockText(e.end_time):'')+'</span></div><span class="weekly-event-finished">BİTTİ</span></article>';
    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next" style="'+eventBgStyle+'"><img class="weekly-event-image" src="'+esc(eventImage)+'" alt="" loading="lazy"><div class="weekly-event-content"><strong>'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="weekly-event-time weekly-time-next">'+clock+' · <b class="weekly-event-queued">Sırada</b></span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
@@ -1252,7 +1253,7 @@ function updateGameEventTimers(){
   if(card.classList.contains("weekly-event-active")!==live||(finished&&!card.classList.contains("weekly-event-done"))){needsRender=true;return}if(finished)return;
   if(live){
    const left=Math.max(0,end-current),duration=Math.max(1,end-start);
-   const timer=card.querySelector("[data-live-time]");if(timer)timer.textContent=gameEventClockText(event.start_time)+(event.end_time?" · bitişe "+formatClock(left):"");
+   const timer=card.querySelector("[data-live-time]");if(timer)timer.textContent=gameEventClockText(event.start_time)+(event.end_time?" · "+formatEventRemainingText(left):"");
    const bar=card.querySelector("[data-progress]");if(bar)bar.style.width=Math.max(0,Math.min(100,((current-start)/duration)*100))+"%";
   }else{
    const timer=card.querySelector("[data-countdown]");if(timer)timer.textContent=formatClock(Math.max(0,start-current));
