@@ -227,6 +227,9 @@ header .menu-dropdown{z-index:40}
   white-space:nowrap!important;
  }
 }
+
+.event-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.event-panel-head .game-events-day{color:#d7bd79;font-size:10px;font-weight:800;white-space:nowrap;flex:0 0 auto}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -245,11 +248,11 @@ header .menu-dropdown{z-index:40}
  <div class="event-day-caption" id="eventDayCaption"></div>
  <div class="event-columns">
   <section class="event-panel weekly-events-panel" aria-label="Yaklaşan etkinlikler">
-   <div class="event-panel-head"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>YAKLAŞAN ETKİNLİKLER</h2></div>
+   <div class="event-panel-head"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>YAKLAŞAN ETKİNLİKLER</h2><span class="game-events-day" id="weeklyEventsDay"></span></div>
    <div class="event-list" id="weeklyEventsList"><div class="event-empty">Etkinlikler yükleniyor...</div></div>
   </section>
   <section class="event-panel special-events-panel" aria-label="Özel etkinlikler">
-   <div class="event-panel-head"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 16M20 4 4 20M8 3l2 2m6 14 2 2M3 8l2 2m14 4 2 2"/></svg>ÖZEL ETKİNLİKLER</h2></div>
+   <div class="event-panel-head"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 16M20 4 4 20M8 3l2 2m6 14 2 2M3 8l2 2m14 4 2 2"/></svg>ÖZEL ETKİNLİKLER</h2><span class="game-events-day" id="specialEventsDay"></span></div>
    <div class="event-list" id="specialEventsList"><div class="event-empty">Etkinlikler yükleniyor...</div></div>
   </section>
  </div>
@@ -537,10 +540,31 @@ special:[
  function endSec(e,start){if(!e.end_time)return start;const v=clock(e.end_time).split(":");let end=Number(v[0]||0)*3600+Number(v[1]||0)*60;if(end<start)end+=86400;return end}
  function buildTabs(){tabs.innerHTML=days.map(d=>'<button type="button" class="event-day-tab'+(d.id===selectedDay?' active':'')+(d.id===turkeyDay()?' today':'')+'" data-day="'+d.id+'" aria-pressed="'+(d.id===selectedDay)+'">'+d.name+'</button>').join("");tabs.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{selectedDay=Number(b.dataset.day);render()}))}
  function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);const raw=preset?.image||e.image_url||"";return raw?(raw.startsWith("/")?raw:"/"+raw):""}
- function renderList(section,dayOffset,nowSeconds){
+ function sectionHasRemaining(section,now,nowSeconds){
+  const today=now.day,previous=(today+6)%7;
+  return events.some(e=>{
+   if(e.section!==section||e.is_active===false)return false;
+   let start=startSec(e),end=endSec(e,start),current=nowSeconds;
+   if(section==="special"&&start<21600){start+=86400;end+=86400;}
+   if(Number(e.weekday)===today)return end>current;
+   if(Number(e.weekday)===previous&&end>86400){current+=86400;return current>=start&&current<end;}
+   return false;
+  });
+ }
+ function sectionDateText(offset){
+  const date=new Date(Date.now()+offset*86400000);
+  const parts=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",weekday:"long"}).formatToParts(date);
+  const get=k=>parts.find(p=>p.type===k)?.value||"";
+  return get("day")+" "+get("month")+" "+get("weekday");
+ }
+ function renderList(section,dayOffset,nowSeconds,now){
   const list=section==="weekly"?weeklyList:specialList;
-  const selected=events.filter(e=>e.section===section&&Number(e.weekday)===selectedDay&&e.is_active!==false).map(e=>{
-   let start=startSec(e),end=endSec(e,start),current=nowSeconds-dayOffset*86400;
+  const dayLabel=section==="weekly"?document.getElementById("weeklyEventsDay"):document.getElementById("specialEventsDay");
+  const effectiveOffset=selectedDay===now.day&&!sectionHasRemaining(section,now,nowSeconds)?dayOffset+1:dayOffset;
+  if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset);
+  const effectiveDay=(now.day+effectiveOffset)%7;
+  const selected=events.filter(e=>e.section===section&&Number(e.weekday)===effectiveDay&&e.is_active!==false).map(e=>{
+   let start=startSec(e),end=endSec(e,start),current=nowSeconds-effectiveOffset*86400;
    if(section==="special"&&start<21600){start+=86400;end+=86400;}
    return {...e,start,end,current,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>{const priority=e=>e.live?0:e.done?2:1;return priority(a)-priority(b)||(a.live||!a.done?a.start-b.start:b.end-a.end)||Number(a.sort_order||0)-Number(b.sort_order||0)});
@@ -556,7 +580,7 @@ special:[
    return '<article class="event-card '+cls+'" style="'+bg+'"><img class="event-card-image" src="'+esc(image)+'" alt="" loading="lazy"><div class="event-card-info"><strong title="'+esc(e.event_title||e.event_name)+'">'+esc(e.event_title||e.event_name)+'</strong><small class="event-card-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="event-card-time">'+time+'</span></div><span class="event-card-status">'+(e.live?'<span class="event-card-live-label">AKTİF</span>':e.done?'BİTTİ':status)+'</span>'+countdown+remain+'</article>';
   }).join("")
  }
- function render(){const now=turkeyParts(),offset=(selectedDay-now.day+7)%7;buildTabs();const label=days.find(d=>d.id===selectedDay)?.name||"";caption.textContent=selectedDay===now.day?new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",year:"numeric"}).format(new Date())+" · "+label:label;renderList("weekly",offset,now.seconds);renderList("special",offset,now.seconds)}
+ function render(){const now=turkeyParts(),offset=(selectedDay-now.day+7)%7;buildTabs();const label=days.find(d=>d.id===selectedDay)?.name||"";caption.textContent=selectedDay===now.day?new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",year:"numeric"}).format(new Date())+" · "+label:label;renderList("weekly",offset,now.seconds,now);renderList("special",offset,now.seconds,now)}
  function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});if(boundary)render()}
  async function load(){try{const {data,error}=await subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time");if(error)throw error;events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
  load();refreshTimer=setInterval(tickCountdowns,1000);
