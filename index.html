@@ -1380,9 +1380,11 @@ function updateGameEventTimers(){
  cards.forEach(card=>{
   const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.eventId);
   if(!event)return;
-  const start=gameEventStartSeconds(event);
-  const end=gameEventEndSeconds(event,start);
-  const previousWeekday=(now.weekday+6)%7;const carryover=Number(event.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;const current=carryover?nowSec+86400:nowSec;
+  let start=gameEventStartSeconds(event);
+  let end=gameEventEndSeconds(event,start);
+  const previousWeekday=(now.weekday+6)%7;const carryover=Number(event.weekday)===previousWeekday&&end>86400&&nowSec+86400>=start&&nowSec+86400<end;
+  if(!carryover&&Number(event.weekday)!==now.weekday){const dayOffset=(Number(event.weekday)-now.weekday+7)%7;start+=dayOffset*86400;end+=dayOffset*86400;}
+  const current=carryover?nowSec+86400:nowSec;
   const live=current>=start&&current<end,finished=current>=end;
   if(card.classList.contains("weekly-event-active")!==live||(finished&&!card.classList.contains("weekly-event-done"))){needsRender=true;return}if(finished)return;
   if(live){
