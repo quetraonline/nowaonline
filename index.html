@@ -498,6 +498,17 @@ header .menu-dropdown{z-index:40}
 .game-events-panel #specialEventsList .special-event-progress{position:absolute;left:78px;right:11px;bottom:9px;height:4px;overflow:hidden;border-radius:5px;background:#565562;pointer-events:none}
 .game-events-panel #specialEventsList .special-event-progress i{display:block;width:var(--special-progress,0%);height:100%;border-radius:5px;background:#35f58a;transition:width .5s linear}
 @media(max-width:700px){.game-events-panel #specialEventsList .special-event-progress{left:70px;right:9px;bottom:8px}}
+/* Haftalık ve özel etkinlik kartlarını aynı ölçü ve satır hizasına getir */
+.game-events-section{align-items:start!important}
+.game-events-section>.game-events-panel{min-width:0!important;align-self:start!important}
+#weeklyEventsList>.weekly-event-card,
+#specialEventsList>.game-event-row{height:90px!important;min-height:90px!important;max-height:90px!important;box-sizing:border-box!important;position:relative!important}
+#weeklyEventsList>.weekly-event-card .weekly-event-content{padding-bottom:10px!important}
+#weeklyEventsList>.weekly-event-card .weekly-event-progress{position:absolute!important;left:78px!important;right:11px!important;bottom:8px!important;margin:0!important}
+#specialEventsList>.game-event-row.is-live{padding-bottom:10px!important}
+@media(max-width:700px){
+ #weeklyEventsList>.weekly-event-card .weekly-event-progress{left:70px!important;right:9px!important;bottom:8px!important}
+}
 /* Özel Etkinlikler: etkinlik adı, server, saat ve satır kutusu Haftalık Etkinlikler ile aynı */
 .game-events-panel #specialEventsList .game-event-row{gap:10px!important;padding:10px 11px!important;border:1px solid #454550!important;border-radius:15px!important;background-color:#2b2a36!important}
 .game-events-panel #specialEventsList .game-event-row.is-live{border:1px solid #35f58a!important;background-color:#173d31!important;box-shadow:inset 3px 0 #45ff8e!important}
