@@ -1327,22 +1327,23 @@ function renderGameEvents(){
   const list=document.getElementById("specialEventsList");
   const day=document.getElementById("specialEventsDay");
   if(!list)continue;
-  const buildSpecialDay=(weekday,dayOffset)=>{
-   const dayBase=dayOffset*86400;
-   const current=nowSec+dayBase;
-   return gameEventsCache.filter(e=>e.section===section&&e.is_active!==false&&Number(e.weekday)===weekday).map(e=>{
-    const start=specialEventStartSeconds(e)+dayBase,end=specialEventEndSeconds(e,specialEventStartSeconds(e))+dayBase;
-    return {...e,_start:start,_end:end,_current:current,_live:current>=start&&current<end,_done:current>=end,_next:current<start};
-   });
-  };
-  let displayOffset=0,displayWeekday=now.weekday,events=buildSpecialDay(displayWeekday,displayOffset);
-  const hasPending=items=>items.some(e=>e._live||e._next);
-  if(!hasPending(events)){
-   for(let offset=1;offset<=7;offset++){
-    const weekday=(now.weekday+offset)%7,candidate=buildSpecialDay(weekday,offset);
-    if(candidate.length){displayOffset=offset;displayWeekday=weekday;events=candidate;break}
-   }
-  }
+  // Etkinlikler sayfasındaki ÖZEL ETKİNLİKLER ile aynı gün seçimi:
+  // Önceki günün geceye taşan özel etkinliği sürüyorsa önceki gün korunur.
+  const previousWeekday=(now.weekday+6)%7;
+  const hasPreviousDayEvent=gameEventsCache.some(e=>{
+   if(e.section!==section||e.is_active===false||Number(e.weekday)!==previousWeekday)return false;
+   const rawStart=gameEventRawStartSeconds(e),rawEnd=(()=>{let end=gameEventRawStartSeconds(e);if(e.end_time){end=Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60;if(end<rawStart)end+=86400;}return end;})();
+   if(rawStart<21600)return Boolean(e.end_time)&&nowSec<rawEnd&&rawEnd+86400>86400;
+   return Boolean(e.end_time)&&rawEnd>86400&&nowSec+86400<rawEnd;
+  });
+  const displayOffset=hasPreviousDayEvent?-1:0;
+  const displayWeekday=(now.weekday+displayOffset+7)%7;
+  const scheduleNow=nowSec-displayOffset*86400;
+  const events=gameEventsCache.filter(e=>e.section===section&&e.is_active!==false&&Number(e.weekday)===displayWeekday).map(e=>{
+   let start=specialEventStartSeconds(e),end=specialEventEndSeconds(e,start);
+   if(displayOffset===-1&&gameEventRawStartSeconds(e)<21600){start=gameEventRawStartSeconds(e)+86400;end=specialEventEndSeconds(e,start);}
+   return {...e,_start:start,_end:end,_current:scheduleNow,_live:scheduleNow>=start&&scheduleNow<end,_done:scheduleNow>=end,_next:scheduleNow<start};
+  });
   if(day){
    const date=new Date(Date.now()+displayOffset*86400000);
    day.textContent=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).format(date);
@@ -1395,7 +1396,7 @@ function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
  const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
- specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=nowSec+Number(card.dataset.specialDayOffset||0)*86400;const live=current>=start+Number(card.dataset.specialDayOffset||0)*86400&&current<end+Number(card.dataset.specialDayOffset||0)*86400,done=current>=end+Number(card.dataset.specialDayOffset||0)*86400;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));const remainingLabel=card.querySelector("[data-special-remaining]");if(remainingLabel&&live)remainingLabel.textContent=formatClock(Math.max(0,end-current));if(live){const progress=Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100));const bar=card.querySelector(".special-event-progress i");if(bar)bar.style.width=progress+"%";}});
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const dayOffset=Number(card.dataset.specialDayOffset||0);const current=nowSec-dayOffset*86400;const shift=dayOffset===-1&&gameEventRawStartSeconds(event)<21600?86400:0;const live=current>=start+shift&&current<end+shift,done=current>=end+shift;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));const remainingLabel=card.querySelector("[data-special-remaining]");if(remainingLabel&&live)remainingLabel.textContent=formatClock(Math.max(0,end-current));if(live){const progress=Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100));const bar=card.querySelector(".special-event-progress i");if(bar)bar.style.width=progress+"%";}});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
