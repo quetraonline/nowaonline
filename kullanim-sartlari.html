@@ -261,7 +261,7 @@ async function loadVisitorCount(){
   output.textContent="—";
  }
 }
-(()=>{const menu=document.getElementById("siteMenu"),trigger=document.getElementById("menuTrigger");if(!menu||!trigger)return;trigger.addEventListener("click",()=>{const open=menu.classList.toggle("open");trigger.setAttribute("aria-expanded",String(open))});document.addEventListener("click",e=>{if(!menu.contains(e.target)){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});document.addEventListener("keydown",e=>{if(e.key==="Escape"){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}})})();
+(()=>{const menu=document.getElementById("siteMenu"),trigger=document.getElementById("menuTrigger");if(!menu||!trigger)return;trigger.addEventListener("click",()=>{const open=menu.classList.toggle("open");trigger.setAttribute("aria-expanded",String(open))});document.addEventListener("click",e=>{if(!menu.contains(e.target)){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});document.addEventListener("keydown",e=>{if(e.key==="Escape"){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}});window.addEventListener("scroll",()=>{if(menu.classList.contains("open")){menu.classList.remove("open");trigger.setAttribute("aria-expanded","false")}} ,{passive:true})})();
 loadVisitorCount();
 </script>
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
