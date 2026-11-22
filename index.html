@@ -498,6 +498,11 @@ header .menu-dropdown{z-index:40}
 .game-events-panel #specialEventsList .special-event-progress{position:absolute;left:78px;right:11px;bottom:9px;height:4px;overflow:hidden;border-radius:5px;background:#565562;pointer-events:none}
 .game-events-panel #specialEventsList .special-event-progress i{display:block;width:var(--special-progress,0%);height:100%;border-radius:5px;background:#35f58a;transition:width .5s linear}
 @media(max-width:700px){.game-events-panel #specialEventsList .special-event-progress{left:70px;right:9px;bottom:8px}}
+/* Her iki etkinlik listesindeki kart aralıkları birebir aynı */
+#weeklyEventsList.game-events-list,
+#specialEventsList.game-events-list{display:flex!important;flex-direction:column!important;gap:9px!important}
+#weeklyEventsList>.weekly-event-card,
+#specialEventsList>.game-event-row{flex:0 0 90px!important;height:90px!important;min-height:90px!important;max-height:90px!important}
 /* Haftalık ve özel etkinlik kartlarını aynı ölçü ve satır hizasına getir */
 .game-events-section{align-items:start!important}
 .game-events-section>.game-events-panel{min-width:0!important;align-self:start!important}
