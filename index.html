@@ -532,6 +532,17 @@ header .menu-dropdown{z-index:40}
 /* AKTİF etiketlerini BİTTİ kutusu biçiminde göster */
 .weekly-event-live-label,
 .game-event-row.is-live .game-event-status{display:inline-block!important;width:max-content!important;flex:none!important;padding:6px 9px!important;border-radius:8px!important;background:#193222!important;color:#3ecf5a!important;font-size:12px!important;font-weight:950!important;letter-spacing:.25px!important;text-shadow:none!important;box-shadow:none!important;white-space:nowrap!important;animation:none!important}
+/* AKTİF etiketlerinin arkasında yumuşak, sürekli dalga efekti */
+.weekly-event-live-label,
+.game-event-row.is-live .game-event-status{position:relative!important;z-index:0!important;isolation:isolate!important}
+.weekly-event-live-label::before,
+.weekly-event-live-label::after,
+.game-event-row.is-live .game-event-status::before,
+.game-event-row.is-live .game-event-status::after{content:"";position:absolute;inset:-3px;border:1px solid rgba(62,207,90,.72);border-radius:10px;z-index:-1;pointer-events:none;animation:activeBadgeWave 2.4s ease-out infinite}
+.weekly-event-live-label::after,
+.game-event-row.is-live .game-event-status::after{animation-delay:1.2s}
+@keyframes activeBadgeWave{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.85,1.65);opacity:0}}
+@media(prefers-reduced-motion:reduce){.weekly-event-live-label::before,.weekly-event-live-label::after,.game-event-row.is-live .game-event-status::before,.game-event-row.is-live .game-event-status::after{animation:none!important;opacity:0!important}}
 /* Sırada olan etkinlik sayaç renkleri */
 .weekly-event-next .weekly-event-countdown,
 .game-event-row.is-next .game-event-status{background:#3d271d!important;color:#f9873c!important;text-shadow:none!important}
