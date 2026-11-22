@@ -790,7 +790,7 @@ function renderLiveChannels(){
  section.hidden=!liveChannelsVisible||!live.length;
  if(count)count.textContent=live.length+" yayıncı canlı";
  if(!section.hidden&&location.hash==="#liveChannelsSection"&&!window.nowaLiveHashScrolled){window.nowaLiveHashScrolled=true;requestAnimationFrame(()=>section.scrollIntoView({behavior:"smooth",block:"start"}));}
- const topLiveCount=$("topLiveCount");if(topLiveCount)topLiveCount.textContent=String(live.length);
+ const topLiveCount=$("topLiveCount");if(topLiveCount)topLiveCount.textContent=live.length+" yayıncı";
  track.innerHTML=live.map(p=>{
   const platforms=Array.from(livePublisherPlatforms.get(p.id)||[]).sort((a,b)=>["TikTok","Twitch","YouTube","Kick"].indexOf(a)-["TikTok","Twitch","YouTube","Kick"].indexOf(b));
   const status='<button type="button" class="live-status live-stats-frame" data-live-stats-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' yayın istatistiklerini aç" title="Yayın istatistiklerini aç"></button>';
