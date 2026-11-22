@@ -540,16 +540,17 @@ special:[
  function endSec(e,start){if(!e.end_time)return start;const v=clock(e.end_time).split(":");let end=Number(v[0]||0)*3600+Number(v[1]||0)*60;if(end<start)end+=86400;return end}
  function buildTabs(){tabs.innerHTML=days.map(d=>'<button type="button" class="event-day-tab'+(d.id===selectedDay?' active':'')+(d.id===turkeyDay()?' today':'')+'" data-day="'+d.id+'" aria-pressed="'+(d.id===selectedDay)+'">'+d.name+'</button>').join("");tabs.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{selectedDay=Number(b.dataset.day);render()}))}
  function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);const raw=preset?.image||e.image_url||"";return raw?(raw.startsWith("/")?raw:"/"+raw):""}
- function sectionHasRemaining(section,now,nowSeconds){
-  const today=now.day,previous=(today+6)%7;
-  return events.some(e=>{
-   if(e.section!==section||e.is_active===false)return false;
-   let start=startSec(e),end=endSec(e,start),current=nowSeconds;
+ function sectionCarryoverOffset(section,now,nowSeconds){
+  const previous=(now.day+6)%7;
+  const hasPreviousDayEvent=events.some(e=>{
+   if(e.section!==section||e.is_active===false||Number(e.weekday)!==previous)return false;
+   let start=startSec(e),end=endSec(e,start);
    if(section==="special"&&start<21600){start+=86400;end+=86400;}
-   if(Number(e.weekday)===today)return end>current;
-   if(Number(e.weekday)===previous&&end>86400){current+=86400;return current>=start&&current<end;}
-   return false;
+   else if(end<=86400)return false;
+   const current=nowSeconds+86400;
+   return end>86400&&current<end;
   });
+  return hasPreviousDayEvent?-1:0;
  }
  function sectionDateText(offset){
   const date=new Date(Date.now()+offset*86400000);
@@ -560,7 +561,7 @@ special:[
  function renderList(section,dayOffset,nowSeconds,now){
   const list=section==="weekly"?weeklyList:specialList;
   const dayLabel=section==="weekly"?document.getElementById("weeklyEventsDay"):document.getElementById("specialEventsDay");
-  const effectiveOffset=selectedDay===now.day&&!sectionHasRemaining(section,now,nowSeconds)?dayOffset+1:dayOffset;
+  const carryoverOffset=selectedDay===now.day?sectionCarryoverOffset(section,now,nowSeconds):0;const effectiveOffset=dayOffset+carryoverOffset;
   if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset);
   const effectiveDay=(now.day+effectiveOffset)%7;
   const selected=events.filter(e=>e.section===section&&Number(e.weekday)===effectiveDay&&e.is_active!==false).map(e=>{
