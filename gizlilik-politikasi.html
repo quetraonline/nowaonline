@@ -378,5 +378,20 @@ async function loadTopNextWeeklyEvent(){
 }
 loadTopNextWeeklyEvent();
 setInterval(updateTopNextWeeklyEvent,1000);
+</script>
+<script>
+async function refreshTopLivePublisherCount(){
+ const output=document.getElementById("topLiveCount");
+ if(!output)return;
+ try{
+  const {data,error}=await subpageDb.from("nowa_stream_sessions").select("publisher_id").is("ended_at",null);
+  if(error)throw error;
+  const uniquePublishers=new Set((data||[]).map(row=>String(row.publisher_id)).filter(Boolean));
+  output.textContent=uniquePublishers.size+" yayıncı";
+ }catch(error){console.warn("Canlı yayıncı sayısı alınamadı:",error);}
+}
+refreshTopLivePublisherCount();
+setInterval(refreshTopLivePublisherCount,30000);
+
 </script></body>
 </html>
