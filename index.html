@@ -1211,7 +1211,7 @@ function renderGameEvents(){
    const current=carryover?nowSec+86400:nowSec;
    return {...e,display_name:e.event_title||e.event_name,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
-  const active=events.filter(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start).slice(0,1),completed=events.filter(e=>e.current>=e.end).sort((a,b)=>b.end-a.end||b.start-a.start);const previous=completed.slice(0,1);
+  const active=events.filter(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start).slice(0,2),completed=events.filter(e=>e.current>=e.end).sort((a,b)=>b.end-a.end||b.start-a.start);const previous=completed.slice(0,1);
   const card=e=>{
    const eventImage=gameEventImageFor(e);const eventBgStyle=eventImage?'--event-bg:url(&quot;'+esc(eventImage)+'&quot;)':'';
    const clock=gameEventClockText(e.start_time);
