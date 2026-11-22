@@ -235,70 +235,92 @@ header .menu-dropdown{z-index:40}
 .event-panel-day-tabs .event-day-tab{padding:6px 9px;font-size:10px}
 @media(max-width:680px){.event-panel-day-tabs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:1px 1px 5px;scrollbar-width:thin}.event-panel-day-tabs .event-day-tab{flex:0 0 auto}}
 
-/* Mobil düzen: özel etkinlikler üstte, iki bölüm aynı sol hizadan ve tam genişlikte */
+/* Mobil etkinlik yerleşimini tek sütunlu grid ile sabitle; masaüstü iki sütun kalır */
 @media(max-width:760px){
- .event-calendar{
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  box-sizing:border-box!important;
- }
+ main{padding-top:16px;padding-bottom:110px}
+ .event-calendar{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin-top:20px!important}
  .event-columns{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:stretch!important;
-  justify-content:flex-start!important;
-  gap:14px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-auto-flow:row!important;
+  align-items:start!important;
+  justify-items:stretch!important;
+  gap:22px!important;
   width:100%!important;
   max-width:100%!important;
   min-width:0!important;
   margin:0!important;
-  box-sizing:border-box!important;
  }
  .event-panel{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:stretch!important;
-  order:initial;
-  flex:0 0 auto!important;
-  align-self:stretch!important;
+  display:block!important;
+  position:relative!important;
+  order:initial!important;
   width:100%!important;
   max-width:100%!important;
   min-width:0!important;
+  min-height:0!important;
   margin:0!important;
+  padding:0!important;
   box-sizing:border-box!important;
  }
- .special-events-panel{order:0!important}
- .weekly-events-panel{order:1!important}
+ .special-events-panel{order:0!important;grid-row:1!important}
+ .weekly-events-panel{order:1!important;grid-row:2!important}
  .event-panel-head{
   display:flex!important;
-  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:space-between!important;
   width:100%!important;
   max-width:100%!important;
   min-width:0!important;
-  justify-content:space-between!important;
+  margin:0 0 12px!important;
   box-sizing:border-box!important;
  }
+ .event-panel-head h2{min-width:0!important;font-size:14px!important}
+ .event-panel-head>span{flex:0 0 auto!important;white-space:nowrap!important;font-size:10px!important}
  .event-list{
   display:flex!important;
   flex-direction:column!important;
   align-items:stretch!important;
+  gap:10px!important;
   width:100%!important;
   max-width:100%!important;
   min-width:0!important;
-  overflow:hidden!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
   box-sizing:border-box!important;
  }
  .event-card{
+  position:relative!important;
   display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:9px!important;
   width:100%!important;
   max-width:100%!important;
   min-width:0!important;
+  height:auto!important;
+  min-height:104px!important;
   flex:0 0 auto!important;
+  margin:0!important;
+  padding:12px 10px!important;
   box-sizing:border-box!important;
  }
- .event-card-info{flex:1 1 0!important;min-width:0!important}
+ .event-card-image{width:46px!important;height:46px!important;flex:0 0 46px!important}
+ .event-card-info{display:flex!important;flex:1 1 0!important;min-width:0!important;gap:4px!important}
+ .event-card-info strong{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:12px!important}
+ .event-card-server{font-size:10px!important}
+ .event-card-time{font-size:11px!important;white-space:normal!important}
+ .event-card-status{flex:0 0 auto!important;max-width:78px!important;padding:6px!important;font-size:10px!important}
+ .event-card-countdown{flex:0 0 auto!important;max-width:82px!important;padding:6px!important;font-size:10px!important}
+ .event-progress{left:10px!important;right:10px!important;bottom:6px!important}
+}
+@media(max-width:390px){
+ .event-panel-head h2{font-size:13px!important}
+ .event-panel-head>span{font-size:9px!important}
+ .event-card{gap:7px!important;padding-left:8px!important;padding-right:8px!important}
+ .event-card-image{width:42px!important;height:42px!important;flex-basis:42px!important}
+ .event-card-status,.event-card-countdown{max-width:72px!important;font-size:9px!important}
 }
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
