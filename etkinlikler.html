@@ -234,6 +234,13 @@ header .menu-dropdown{z-index:40}
 .event-panel-day-tabs{margin:0 0 10px;gap:6px}
 .event-panel-day-tabs .event-day-tab{padding:6px 9px;font-size:10px}
 @media(max-width:680px){.event-panel-day-tabs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:1px 1px 5px;scrollbar-width:thin}.event-panel-day-tabs .event-day-tab{flex:0 0 auto}}
+
+/* Mobilde özel etkinlikler bölümü önce gösterilsin */
+@media(max-width:760px){
+ .event-columns{display:flex;flex-direction:column}
+ .special-events-panel{order:-1}
+ .weekly-events-panel{order:1}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
