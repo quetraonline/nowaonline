@@ -1287,7 +1287,7 @@ function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return start
 function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds,event,nowWeekday){return nowSeconds;}
 function specialEventStartSeconds(event){const raw=gameEventRawStartSeconds(event);return raw<21600?raw+86400:raw;}
 function specialEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart||rawStart<21600)end+=86400;return end;}
-function specialEventAdjustedNow(nowSeconds,startSeconds,event,nowWeekday){return event&&Number(event.weekday)!==nowWeekday&&startSeconds>=86400?nowSeconds+86400:nowSeconds;}
+function specialEventAdjustedNow(nowSeconds,startSeconds,event,nowWeekday){return nowSeconds;}
 function renderGameEvents(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const dateLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).formatToParts(new Date());
@@ -1327,19 +1327,12 @@ function renderGameEvents(){
   const list=document.getElementById("specialEventsList");
   const day=document.getElementById("specialEventsDay");
   if(!list)continue;
-  const previousWeekday=(now.weekday+6)%7;
   const buildSpecialDay=(weekday,dayOffset)=>{
-   const currentBase=nowSec+dayOffset*86400;
-   return gameEventsCache.filter(e=>{
-    if(e.section!==section||e.is_active===false)return false;
-    const start=specialEventStartSeconds(e),end=specialEventEndSeconds(e,start);
-    const carryover=Number(e.weekday)===(weekday+6)%7&&start>=86400&&currentBase+86400>=start&&currentBase+86400<end;
-    return Number(e.weekday)===weekday||carryover;
-   }).map(e=>{
-    const start=specialEventStartSeconds(e),end=specialEventEndSeconds(e,start);
-    const carryover=Number(e.weekday)===(weekday+6)%7&&start>=86400&&currentBase+86400>=start&&currentBase+86400<end;
-    const current=carryover?currentBase+86400:specialEventAdjustedNow(currentBase,start,e,weekday);
-    return {...e,_start:start+dayOffset*86400,_end:end+dayOffset*86400,_current:current,_live:current>=start+dayOffset*86400&&current<end+dayOffset*86400,_done:current>=end+dayOffset*86400,_next:current<start+dayOffset*86400};
+   const dayBase=dayOffset*86400;
+   const current=nowSec+dayBase;
+   return gameEventsCache.filter(e=>e.section===section&&e.is_active!==false&&Number(e.weekday)===weekday).map(e=>{
+    const start=specialEventStartSeconds(e)+dayBase,end=specialEventEndSeconds(e,specialEventStartSeconds(e))+dayBase;
+    return {...e,_start:start,_end:end,_current:current,_live:current>=start&&current<end,_done:current>=end,_next:current<start};
    });
   };
   let displayOffset=0,displayWeekday=now.weekday,events=buildSpecialDay(displayWeekday,displayOffset);
@@ -1366,7 +1359,7 @@ function renderGameEvents(){
    const eventBackground=gameEventImageFor(e);const eventBgStyle=eventBackground?'--event-bg:url(&quot;'+esc(eventBackground)+'&quot;)':'';
    const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
    const progressStyle=e._live?';--special-progress:'+progress+'%':'';
-   return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+(e._live?' · Bitişe <span data-special-remaining>'+formatClock(remaining)+'</span>':'')+'</time></div><span class="game-event-status">'+status+'</span>'+(e._live?'<div class="special-event-progress" aria-hidden="true"><i style="width:'+progress+'%"></i></div>':'')+'</article>';
+   return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" data-special-day-offset="'+displayOffset+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+(e._live?' · Bitişe <span data-special-remaining>'+formatClock(remaining)+'</span>':'')+'</time></div><span class="game-event-status">'+status+'</span>'+(e._live?'<div class="special-event-progress" aria-hidden="true"><i style="width:'+progress+'%"></i></div>':'')+'</article>';
   }).join("");
  }
 }
@@ -1402,7 +1395,7 @@ function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
  const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
- specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=specialEventAdjustedNow(nowSec,start,event,now.weekday);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));const remainingLabel=card.querySelector("[data-special-remaining]");if(remainingLabel&&live)remainingLabel.textContent=formatClock(Math.max(0,end-current));if(live){const progress=Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100));const bar=card.querySelector(".special-event-progress i");if(bar)bar.style.width=progress+"%";}});
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=nowSec+Number(card.dataset.specialDayOffset||0)*86400;const live=current>=start+Number(card.dataset.specialDayOffset||0)*86400&&current<end+Number(card.dataset.specialDayOffset||0)*86400,done=current>=end+Number(card.dataset.specialDayOffset||0)*86400;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));const remainingLabel=card.querySelector("[data-special-remaining]");if(remainingLabel&&live)remainingLabel.textContent=formatClock(Math.max(0,end-current));if(live){const progress=Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100));const bar=card.querySelector(".special-event-progress i");if(bar)bar.style.width=progress+"%";}});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
