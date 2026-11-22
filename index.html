@@ -498,15 +498,6 @@ header .menu-dropdown{z-index:40}
 .game-events-panel #specialEventsList .special-event-progress{position:absolute;left:78px;right:11px;bottom:9px;height:4px;overflow:hidden;border-radius:5px;background:#565562;pointer-events:none}
 .game-events-panel #specialEventsList .special-event-progress i{display:block;width:var(--special-progress,0%);height:100%;border-radius:5px;background:#35f58a;transition:width .5s linear}
 @media(max-width:700px){.game-events-panel #specialEventsList .special-event-progress{left:70px;right:9px;bottom:8px}}
-/* Etkinlik listeleri: YouTube şeridi gibi tek kart görünümü ve elle gezinme */
-.game-events-panel .event-carousel-controls{display:flex;justify-content:flex-end;gap:9px;margin:0 2px 9px}
-.game-events-panel .event-carousel-controls .latest-carousel-arrow{position:static;display:flex;transform:none;width:32px;height:32px;animation:none;box-shadow:0 0 0 2px rgba(232,185,92,.13),0 0 12px rgba(232,185,92,.28)}
-.game-events-panel .event-carousel-controls .latest-carousel-arrow svg{width:19px;height:19px}
-.game-events-panel .event-carousel-wrap{position:relative;min-width:0;width:100%;overflow:hidden}
-#weeklyEventsList.game-events-list,#specialEventsList.game-events-list{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;gap:9px!important;width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;scroll-behavior:smooth!important;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-#weeklyEventsList.game-events-list::-webkit-scrollbar,#specialEventsList.game-events-list::-webkit-scrollbar{display:none}
-#weeklyEventsList>.weekly-event-card,#specialEventsList>.game-event-row{flex:0 0 100%!important;width:100%!important;min-width:100%!important;max-width:100%!important;scroll-snap-align:start!important}
-@media(max-width:700px){.game-events-panel .event-carousel-controls{margin-bottom:8px}.game-events-panel .event-carousel-controls .latest-carousel-arrow{width:30px;height:30px}}
 /* Her iki etkinlik listesindeki kart aralıkları birebir aynı */
 #weeklyEventsList.game-events-list,
 #specialEventsList.game-events-list{display:flex!important;flex-direction:column!important;gap:9px!important}
@@ -574,11 +565,11 @@ header .menu-dropdown{z-index:40}
 <section class="game-events-section" id="gameEventsSection" aria-label="Oyun etkinlikleri">
  <section class="game-events-panel weekly-events-panel" aria-label="Haftalık etkinlikler">
   <div class="game-events-panel-head"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>YAKLAŞAN ETKİNLİKLER</h3><span class="game-events-day" id="weeklyEventsDay">Bugün</span></div>
-  <div class="event-carousel-controls" aria-label="Yaklaşan etkinlik gezinme"><button class="latest-carousel-arrow prev" type="button" aria-label="Önceki etkinlik" data-event-carousel="weeklyEventsList"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button class="latest-carousel-arrow next" type="button" aria-label="Sonraki etkinlik" data-event-carousel="weeklyEventsList"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div><div class="event-carousel-wrap"><div class="game-events-list" id="weeklyEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div></div>
+  <div class="game-events-list" id="weeklyEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div>
  </section>
  <section class="game-events-panel" aria-label="Özel etkinlikler">
   <div class="game-events-panel-head"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 16M20 4 4 20M8 3l2 2m6 14 2 2M3 8l2 2m14 4 2 2"/></svg>ÖZEL ETKİNLİKLER</h3><span class="game-events-day" id="specialEventsDay"></span></div>
-  <div class="event-carousel-controls" aria-label="Özel etkinlik gezinme"><button class="latest-carousel-arrow prev" type="button" aria-label="Önceki etkinlik" data-event-carousel="specialEventsList"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6 6"/></svg></button><button class="latest-carousel-arrow next" type="button" aria-label="Sonraki etkinlik" data-event-carousel="specialEventsList"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div><div class="event-carousel-wrap"><div class="game-events-list" id="specialEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div></div>
+  <div class="game-events-list" id="specialEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div>
  </section>
 </section>
 <section class="live-channels-section" id="liveChannelsSection" hidden aria-label="Şu anda canlı kanallar"><div class="live-channels-heading"><h3>ŞU ANDA CANLI YAYINCILAR</h3><span id="liveChannelsCount"></span></div><div class="live-channels-carousel-wrap"><button class="latest-carousel-arrow prev" type="button" aria-label="Önceki canlı kanal" data-carousel-target="liveChannelsTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><div class="live-channels-track" id="liveChannelsTrack" aria-label="Şu anda canlı yayın yapan kanallar"></div><button class="latest-carousel-arrow next" type="button" aria-label="Sonraki canlı kanal" data-carousel-target="liveChannelsTrack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div></section>
@@ -1461,8 +1452,6 @@ if(tiktokConnectionStatus){
 }
 </script>
 <script>
-/* Yaklaşan ve özel etkinlik şeritlerinde oklarla tek kart ilerleme */
-document.addEventListener("click",function(event){const button=event.target.closest("[data-event-carousel]");if(!button)return;const track=document.getElementById(button.dataset.eventCarousel);if(!track)return;const card=track.firstElementChild;if(!card||card.classList.contains("game-events-empty"))return;const gap=parseFloat(getComputedStyle(track).columnGap||getComputedStyle(track).gap)||0;const step=card.getBoundingClientRect().width+gap;const max=Math.max(0,track.scrollWidth-track.clientWidth);const next=button.classList.contains("next")?Math.min(max,track.scrollLeft+step):Math.max(0,track.scrollLeft-step);track.scrollTo({left:next,behavior:"smooth"});});
 /* YouTube ve Instagram şeritleri: masaüstünde tekerlek hareketini yataya çevir */
 (function(){
  document.addEventListener('wheel',function(e){
