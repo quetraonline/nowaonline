@@ -190,6 +190,37 @@ async function loadTopNextWeeklyEvent(){
 loadTopNextWeeklyEvent();
 setInterval(updateTopNextWeeklyEvent,1000);
 </script>
+<script>
+async function refreshTopLivePublisherCount(){
+ const output=document.getElementById("topLiveCount");
+ if(!output)return;
+ try{
+  const {data,error}=await subpageDb.from("nowa_stream_sessions").select("publisher_id").is("ended_at",null);
+  if(error)throw error;
+  const uniquePublishers=new Set((data||[]).map(row=>String(row.publisher_id)).filter(Boolean));
+  output.textContent=uniquePublishers.size+" yayıncı";
+ }catch(error){console.warn("Canlı yayıncı sayısı alınamadı:",error);}
+}
+refreshTopLivePublisherCount();
+setInterval(refreshTopLivePublisherCount,30000);
+
+(()=>{
+ const menu=document.getElementById("siteMenu");
+ const trigger=document.getElementById("menuTrigger");
+ if(!menu||!trigger||menu.dataset.menuReady==="true")return;
+ menu.dataset.menuReady="true";
+ const close=()=>{menu.classList.remove("open");trigger.setAttribute("aria-expanded","false");};
+ trigger.addEventListener("click",event=>{
+  event.preventDefault();
+  event.stopPropagation();
+  const open=menu.classList.toggle("open");
+  trigger.setAttribute("aria-expanded",String(open));
+ });
+ document.addEventListener("click",event=>{if(!menu.contains(event.target))close();});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")close();});
+})();
+
+</script>
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil alt menü">
  <a href="/" aria-label="Ana Sayfa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span class="home-label">Ana Sayfa</span></a>
  <a href="/?focusSearch=1" class="nav-placeholder" data-no-active="true" aria-label="Ara"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span class="home-label">Ara</span></a>
