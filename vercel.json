@@ -9,6 +9,10 @@
       "destination": "/rehber.html"
     },
     {
+      "source": "/etkinlikler",
+      "destination": "/etkinlikler.html"
+    },
+    {
       "source": "/gizlilik-politikasi",
       "destination": "/gizlilik-politikasi.html"
     },
@@ -26,6 +30,11 @@
     {
       "source": "/rehber.html",
       "destination": "/rehber",
+      "permanent": true
+    },
+    {
+      "source": "/etkinlikler.html",
+      "destination": "/etkinlikler",
       "permanent": true
     },
     {
