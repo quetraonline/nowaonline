@@ -1351,7 +1351,9 @@ function renderGameEvents(){
   if(!events.length){list.innerHTML='<div class="game-events-empty">Planlanmış özel etkinlik bulunmuyor.</div>';continue}
   const ordered=events.sort((a,b)=>{
    const priority=e=>e._live?0:e._next?1:2;
-   return priority(a)-priority(b)||a._start-b._start||Number(a.sort_order||0)-Number(b.sort_order||0);
+   if(priority(a)!==priority(b))return priority(a)-priority(b);
+   if(a._done&&b._done)return a._start-b._start||Number(a.sort_order||0)-Number(b.sort_order||0);
+   return a._start-b._start||Number(a.sort_order||0)-Number(b.sort_order||0);
   });
   list.innerHTML=ordered.map(e=>{
    const remaining=e._next?e._start-e._current:e._live?e._end-e._current:0;
