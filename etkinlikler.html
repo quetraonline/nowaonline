@@ -269,7 +269,7 @@ header .menu-dropdown{z-index:40}
 <a href="/kullanim-sartlari" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4Z"/><path d="M16 3v5h5M8 12h8M8 16h8"/></svg>Kullanım Şartları</a>
 </div></div></div></footer>
 <script>
-document.getElementById("year").textContent=new Date().getFullYear();
+const yearElement=document.getElementById("year");if(yearElement)yearElement.textContent=new Date().getFullYear();
 async function loadVisitorCount(){
  const output=document.getElementById("visitorCount");
  try{
