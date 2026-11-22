@@ -241,6 +241,29 @@ header .menu-dropdown{z-index:40}
  .special-events-panel{order:-1}
  .weekly-events-panel{order:1}
 }
+
+/* Mobil etkinlik bölümlerini aynı genişlikte ve taşmasız tut */
+@media(max-width:760px){
+ .event-calendar,
+ .event-columns,
+ .event-panel,
+ .event-panel-head,
+ .event-list{
+  display:flex;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+ }
+ .event-columns{flex-direction:column!important;align-items:stretch!important;gap:14px!important}
+ .event-panel{flex:0 0 100%!important;flex-direction:column!important;align-self:stretch!important}
+ .special-events-panel{order:-1!important}
+ .weekly-events-panel{order:1!important}
+ .event-panel-head{flex:0 0 auto;justify-content:space-between}
+ .event-list{flex-direction:column!important;align-items:stretch!important;overflow:hidden}
+ .event-card{width:100%!important;max-width:100%!important;min-width:0!important;flex:0 0 auto!important;box-sizing:border-box!important}
+ .event-card-info{flex:1 1 0!important;min-width:0!important}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
