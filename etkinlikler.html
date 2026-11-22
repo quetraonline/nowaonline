@@ -491,7 +491,7 @@ special:[
  function startSec(e){const v=clock(e.start_time).split(":");return Number(v[0]||0)*3600+Number(v[1]||0)*60}
  function endSec(e,start){if(!e.end_time)return start;const v=clock(e.end_time).split(":");let end=Number(v[0]||0)*3600+Number(v[1]||0)*60;if(end<start)end+=86400;return end}
  function buildTabs(){tabs.innerHTML=days.map(d=>'<button type="button" class="event-day-tab'+(d.id===selectedDay?' active':'')+(d.id===turkeyDay()?' today':'')+'" data-day="'+d.id+'" aria-pressed="'+(d.id===selectedDay)+'">'+d.name+'</button>').join("");tabs.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{selectedDay=Number(b.dataset.day);render()}))}
- function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);return preset?"/"+preset.image.replace(/^\\//,""):(e.image_url||"")}
+ function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);const raw=preset?.image||e.image_url||"";return raw?(raw.startsWith("/")?raw:"/"+raw):""}
  function renderList(section,dayOffset,nowSeconds){
   const list=section==="weekly"?weeklyList:specialList;
   const selected=events.filter(e=>e.section===section&&Number(e.weekday)===selectedDay&&e.is_active!==false).map(e=>{
