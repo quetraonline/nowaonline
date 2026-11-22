@@ -315,43 +315,59 @@ loadVisitorCount();
   });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script>
 const SUBPAGE_SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
 const SUBPAGE_SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
 const subpageDb=window.supabase.createClient(SUBPAGE_SUPABASE_URL,SUBPAGE_SUPABASE_KEY);
-async function loadTopNextWeeklyEvent(){
- const {data,error}=await subpageDb.from("nowa_game_events").select("event_name,event_title,weekday,start_time,is_active,section").in("section",["weekly","special"]).eq("is_active",true);
- if(error||!data){
-  ["topNextEventName","topNextEventTime","topNextEventCountdown","topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=id.endsWith("Name")?"Etkinlik bilgisi yüklenemedi":"--:--";}});
-  console.warn("Üst alan etkinlikleri yüklenemedi:",error);return;
- }
- window.topHeaderEvents=data;updateTopNextWeeklyEventSubpage();
+// Ana sayfayla birebir aynı saat ve etkinlik seçimi
+const SUBPAGE_GAME_EVENT_DAYS=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+function turkeyClockParts(date=new Date()){
+ const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Etc/GMT-3",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(date);
+ const get=k=>parts.find(p=>p.type===k)?.value||"00";
+ const dayMap={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+ return {weekday:dayMap[get("weekday")],hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second")),dayName:SUBPAGE_GAME_EVENT_DAYS[dayMap[get("weekday")]]};
 }
-function updateTopNextWeeklyEventSubpage(){
- if(!window.topHeaderEvents)return;
- const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Etc/GMT-3",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
- const get=k=>parts.find(p=>p.type===k)?.value||"00",days={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
- const day=days[get("weekday")],now=Number(get("hour"))*3600+Number(get("minute"))*60+Number(get("second"));
- const pick=section=>(window.topHeaderEvents||[]).filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
-  const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
-  let remaining=((Number(e.weekday)-day+7)%7)*86400+start-now;
+function gameEventClockText(value){return String(value||"").slice(0,5)}
+function gameEventRawStartSeconds(event){return Number(String(event.start_time).slice(0,2))*3600+Number(String(event.start_time).slice(3,5))*60;}
+function gameEventStartSeconds(event){return gameEventRawStartSeconds(event);}
+function gameEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart)end+=86400;return end;}
+function gameEventAdjustedNow(nowSeconds,startSeconds,endSeconds,event,nowWeekday){return nowSeconds;}
+function specialEventStartSeconds(event){const raw=gameEventRawStartSeconds(event);return raw<21600?raw+86400:raw;}
+function specialEventEndSeconds(event,startSeconds){if(!event.end_time)return startSeconds;let end=Number(String(event.end_time).slice(0,2))*3600+Number(String(event.end_time).slice(3,5))*60;const rawStart=gameEventRawStartSeconds(event);if(end<rawStart||rawStart<21600)end+=86400;return end;}
+function specialEventAdjustedNow(nowSeconds,startSeconds,event,nowWeekday){return event&&Number(event.weekday)!==nowWeekday&&startSeconds>=86400?nowSeconds+86400:nowSeconds;}
+
+let gameEventsCache=[];
+function updateTopNextWeeklyEvent(){
+ const ids=["topNextEventName","topNextEventTime","topNextEventCountdown","topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown"];
+ const [name,time,timer,sName,sTime,sTimer]=ids.map(id=>document.getElementById(id));
+ if(ids.some((id,i)=>!ids[i]||!document.getElementById(id)))return;
+ const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
+ const pick=section=>(gameEventsCache||[]).filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
+  const start=gameEventRawStartSeconds(e),day=Number(e.weekday);
+  let remaining=((day-now.weekday+7)%7)*86400+start-nowSec;
   if(section==="special"&&start<21600)remaining-=86400;
   if(remaining<=0)remaining+=604800;
-  return {e,remaining};
+  return {event:e,remaining};
  }).sort((a,b)=>a.remaining-b.remaining)[0];
- const draw=(item,prefix,label)=>{
-  const n=document.getElementById(prefix+"Name"),t=document.getElementById(prefix+"Time"),c=document.getElementById(prefix+"Countdown");
-  if(!n||!t||!c)return;
-  if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";c.textContent="--:--:--";return;}
-  n.textContent=item.e.event_title||item.e.event_name||label;
-  t.textContent=String(item.e.start_time||"").slice(0,5);
-  const h=Math.floor(item.remaining/3600),m=Math.floor(item.remaining%3600/60),sec=item.remaining%60;
+ const draw=(item,n,t,c,label)=>{
+  if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";c.textContent="--:--:--";return}
+  const e=item.event,remaining=item.remaining;
+  n.textContent=e.event_title||e.event_name||label;
+  t.textContent=gameEventClockText(e.start_time);
+  const h=Math.floor(remaining/3600),m=Math.floor(remaining%3600/60),sec=remaining%60;
   c.textContent=[h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");
  };
- draw(pick("weekly"),"topNextEvent","Haftalık Etkinlik");
- draw(pick("special"),"topSpecialEvent","Özel Etkinlik");
+ draw(pick("weekly"),name,time,timer,"Haftalık Etkinlik");
+ draw(pick("special"),sName,sTime,sTimer,"Özel Etkinlik");
+}
+async function loadTopNextWeeklyEvent(){
+ const {data,error}=await subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time");
+ if(error||!data){console.warn("Üst alan etkinlikleri yüklenemedi:",error);return;}
+ gameEventsCache=data;
+ updateTopNextWeeklyEvent();
 }
 loadTopNextWeeklyEvent();
-setInterval(updateTopNextWeeklyEventSubpage,1000);
+setInterval(updateTopNextWeeklyEvent,1000);
 </script></body>
 </html>
