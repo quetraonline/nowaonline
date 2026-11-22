@@ -533,9 +533,9 @@ header .menu-dropdown{z-index:40}
 .weekly-event-live-label,
 .game-event-row.is-live .game-event-status{display:inline-block!important;width:max-content!important;flex:none!important;padding:6px 9px!important;border-radius:8px!important;background:#193222!important;color:#3ecf5a!important;font-size:12px!important;font-weight:950!important;letter-spacing:.25px!important;text-shadow:none!important;box-shadow:none!important;white-space:nowrap!important;animation:none!important}
 /* AKTİF yazılarında yumuşak sönüp-parlama efekti */
-@keyframes activeTextPulse{0%,100%{color:rgba(62,207,90,.38)}50%{color:#3ecf5a}}
-.weekly-event-live-label,
-.game-event-row.is-live .game-event-status{animation:activeTextPulse 1.8s ease-in-out infinite!important;background:#193222!important}
+@keyframes activeTextPulse{0%,100%{-webkit-text-fill-color:rgba(62,207,90,.3);text-shadow:0 0 0 rgba(62,207,90,0)}50%{-webkit-text-fill-color:#3ecf5a;text-shadow:0 0 7px rgba(62,207,90,.45)}}
+.weekly-event-live-label{animation:activeTextPulse 1.8s ease-in-out infinite!important;background:#193222!important;-webkit-text-fill-color:#3ecf5a!important}
+.game-events-panel #specialEventsList .game-event-row.is-live .game-event-status{animation:activeTextPulse 1.8s ease-in-out infinite!important;background:#193222!important;-webkit-text-fill-color:#3ecf5a!important}
 /* Sırada olan etkinlik sayaç renkleri */
 .weekly-event-next .weekly-event-countdown,
 .game-event-row.is-next .game-event-status{background:#3d271d!important;color:#f9873c!important;text-shadow:none!important}
