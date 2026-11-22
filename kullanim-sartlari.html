@@ -316,9 +316,15 @@ loadVisitorCount();
 })();
 </script>
 <script>
+const SUBPAGE_SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
+const SUBPAGE_SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
+const subpageDb=window.supabase.createClient(SUBPAGE_SUPABASE_URL,SUBPAGE_SUPABASE_KEY);
 async function loadTopNextWeeklyEvent(){
  const {data,error}=await subpageDb.from("nowa_game_events").select("event_name,event_title,weekday,start_time,is_active,section").in("section",["weekly","special"]).eq("is_active",true);
- if(error||!data){["topNextEventName","topSpecialEventName"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="Etkinlik bilgisi yok"});return}
+ if(error||!data){
+  ["topNextEventName","topNextEventTime","topNextEventCountdown","topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=id.endsWith("Name")?"Etkinlik bilgisi yüklenemedi":"--:--";}});
+  console.warn("Üst alan etkinlikleri yüklenemedi:",error);return;
+ }
  window.topHeaderEvents=data;updateTopNextWeeklyEventSubpage();
 }
 function updateTopNextWeeklyEventSubpage(){
@@ -326,16 +332,60 @@ function updateTopNextWeeklyEventSubpage(){
  const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Etc/GMT-3",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
  const get=k=>parts.find(p=>p.type===k)?.value||"00",days={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
  const day=days[get("weekday")],now=Number(get("hour"))*3600+Number(get("minute"))*60+Number(get("second"));
- const pick=section=>window.topHeaderEvents.filter(e=>e.section===section&&e.start_time).map(e=>{
+ const pick=section=>(window.topHeaderEvents||[]).filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
   const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
   let remaining=((Number(e.weekday)-day+7)%7)*86400+start-now;
   if(section==="special"&&start<21600)remaining-=86400;
   if(remaining<=0)remaining+=604800;
   return {e,remaining};
  }).sort((a,b)=>a.remaining-b.remaining)[0];
- const draw=(item,prefix,label)=>{const n=document.getElementById(prefix+"Name"),t=document.getElementById(prefix+"Time"),c=document.getElementById(prefix+"Countdown");if(!n||!t||!c)return;if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";c.textContent="--:--:--";return}n.textContent=item.e.event_title||item.e.event_name||label;t.textContent=String(item.e.start_time).slice(0,5);const h=Math.floor(item.remaining/3600),m=Math.floor(item.remaining%3600/60),s=item.remaining%60;c.textContent=[h,m,s].map(v=>String(v).padStart(2,"0")).join(":")};
- draw(pick("weekly"),"topNextEvent","Haftalık Etkinlik");draw(pick("special"),"topSpecialEvent","Özel Etkinlik");
+ const draw=(item,prefix,label)=>{
+  const n=document.getElementById(prefix+"Name"),t=document.getElementById(prefix+"Time"),c=document.getElementById(prefix+"Countdown");
+  if(!n||!t||!c)return;
+  if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";c.textContent="--:--:--";return;}
+  n.textContent=item.e.event_title||item.e.event_name||label;
+  t.textContent=String(item.e.start_time||"").slice(0,5);
+  const h=Math.floor(item.remaining/3600),m=Math.floor(item.remaining%3600/60),sec=item.remaining%60;
+  c.textContent=[h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");
+ };
+ draw(pick("weekly"),"topNextEvent","Haftalık Etkinlik");
+ draw(pick("special"),"topSpecialEvent","Özel Etkinlik");
 }
+loadTopNextWeeklyEvent();
+setInterval(updateTopNextWeeklyEventSubpage,1000);
 
+ const {data,error}=await subpageDb.from("nowa_game_events").select("event_name,event_title,weekday,start_time,is_active,section").in("section",["weekly","special"]).eq("is_active",true);
+ if(error||!data){
+  ["topNextEventName","topNextEventTime","topNextEventCountdown","topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=id.endsWith("Name")?"Etkinlik bilgisi yüklenemedi":"--:--";}});
+  console.warn("Üst alan etkinlikleri yüklenemedi:",error);return;
+ }
+ window.topHeaderEvents=data;updateTopNextWeeklyEventSubpage();
+}
+function updateTopNextWeeklyEventSubpage(){
+ if(!window.topHeaderEvents)return;
+ const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Etc/GMT-3",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
+ const get=k=>parts.find(p=>p.type===k)?.value||"00",days={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+ const day=days[get("weekday")],now=Number(get("hour"))*3600+Number(get("minute"))*60+Number(get("second"));
+ const pick=section=>(window.topHeaderEvents||[]).filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
+  const start=Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60;
+  let remaining=((Number(e.weekday)-day+7)%7)*86400+start-now;
+  if(section==="special"&&start<21600)remaining-=86400;
+  if(remaining<=0)remaining+=604800;
+  return {e,remaining};
+ }).sort((a,b)=>a.remaining-b.remaining)[0];
+ const draw=(item,prefix,label)=>{
+  const n=document.getElementById(prefix+"Name"),t=document.getElementById(prefix+"Time"),c=document.getElementById(prefix+"Countdown");
+  if(!n||!t||!c)return;
+  if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";c.textContent="--:--:--";return;}
+  n.textContent=item.e.event_title||item.e.event_name||label;
+  t.textContent=String(item.e.start_time||"").slice(0,5);
+  const h=Math.floor(item.remaining/3600),m=Math.floor(item.remaining%3600/60),sec=item.remaining%60;
+  c.textContent=[h,m,sec].map(v=>String(v).padStart(2,"0")).join(":");
+ };
+ draw(pick("weekly"),"topNextEvent","Haftalık Etkinlik");
+ draw(pick("special"),"topSpecialEvent","Özel Etkinlik");
+}
+loadTopNextWeeklyEvent();
+setInterval(updateTopNextWeeklyEventSubpage,1000);
 </script></body>
 </html>
