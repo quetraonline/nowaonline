@@ -484,7 +484,7 @@ header .menu-dropdown{z-index:40}
 /* Özel Etkinlikler durum kutuları Haftalık Etkinlikler ile birebir eşitlendi */
 .game-event-row.is-live{border:1px solid #35f58a!important;background-image:linear-gradient(90deg,rgba(15,18,25,.94),rgba(15,18,25,.78)),var(--event-bg,none)!important;background-color:#173d31!important;box-shadow:inset 3px 0 #45ff8e!important}
 .game-event-row.is-next{border:1px solid #f0a33d!important;background-image:linear-gradient(90deg,rgba(15,18,25,.94),rgba(15,18,25,.78)),var(--event-bg,none)!important;background-color:#3b2b1c!important;box-shadow:inset 3px 0 #ffb347!important}
-.game-event-row.is-done{opacity:.72!important;background:#24232d!important}
+.game-event-row.is-done{opacity:.72!important;background-color:#24232d!important;background-image:linear-gradient(90deg,rgba(15,18,25,.94),rgba(15,18,25,.78)),var(--event-bg,none)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
 .game-event-row .game-event-status{flex:none!important;max-width:110px!important;min-width:0!important;border-radius:8px!important;font-size:12px!important;font-weight:950!important;line-height:1.2!important;letter-spacing:normal!important;text-shadow:none!important;white-space:nowrap!important;text-align:center!important;box-shadow:none!important}
 .game-event-row.is-live .game-event-status{padding:0!important;background:transparent!important;color:#54f18a!important;letter-spacing:.5px!important}
 .game-event-row.is-live .game-event-status{animation:weeklyLivePulse 2.2s ease-in-out infinite!important;font-size:12px!important;font-weight:950!important;letter-spacing:.5px!important}
@@ -1250,7 +1250,7 @@ function renderGameEvents(){
    const remaining=e._next?e._start-e._current:e._live?e._end-e._current:0;
    const status=e._live?"● ŞU AN AKTİF":e._done?"BİTTİ":formatClock(remaining);
    const cls=e._live?"is-live":e._next?"is-next":"is-done";
-   const eventBgStyle=e.image_url?'--event-bg:url(&quot;'+esc(e.image_url)+'&quot;)':'';
+   const eventBackground=gameEventImageFor(e);const eventBgStyle=eventBackground?'--event-bg:url(&quot;'+esc(eventBackground)+'&quot;)':'';
    const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
    const progressStyle=e._live?';--special-progress:'+progress+'%':'';
    return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+(e._live?' · Bitişe <span data-special-remaining>'+formatClock(remaining)+'</span>':'')+'</time></div><span class="game-event-status">'+status+'</span>'+(e._live?'<div class="special-event-progress" aria-hidden="true"><i style="width:'+progress+'%"></i></div>':'')+'</article>';
