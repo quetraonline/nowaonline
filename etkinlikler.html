@@ -544,11 +544,14 @@ special:[
   const previous=(now.day+6)%7;
   const hasPreviousDayEvent=events.some(e=>{
    if(e.section!==section||e.is_active===false||Number(e.weekday)!==previous)return false;
-   let start=startSec(e),end=endSec(e,start);
-   if(section==="special"&&start<21600){start+=86400;end+=86400;}
-   else if(end<=86400)return false;
-   const current=nowSeconds+86400;
-   return end>86400&&current<end;
+   const rawStart=startSec(e),rawEnd=endSec(e,rawStart);
+   if(section==="special"&&rawStart<21600){
+    // Early-morning special events belong to the previous day's schedule.
+    const shiftedEnd=rawEnd+86400;
+    return Boolean(e.end_time)&&nowSeconds<rawEnd&&shiftedEnd>86400;
+   }
+   // Events that started on the previous day and end after midnight.
+   return Boolean(e.end_time)&&rawEnd>86400&&nowSeconds+86400<rawEnd;
   });
   return hasPreviousDayEvent?-1:0;
  }
