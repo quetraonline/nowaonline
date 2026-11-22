@@ -564,7 +564,7 @@ special:[
   const preferred=selectedDays[section]===null?firstDay:selectedDays[section];
   if(select.options.length!==7){
    select.innerHTML="";
-   [preferred,...Array.from({length:7},(_,i)=>(preferred+i+1)%7)].forEach(day=>{
+   [preferred,...Array.from({length:6},(_,i)=>(preferred+i+1)%7)].forEach(day=>{
     const option=document.createElement("option");option.value=String(day);option.textContent=dayNames[day];select.appendChild(option);
    });
   }
