@@ -541,6 +541,7 @@ header .menu-dropdown{z-index:40}
 .weekly-event-next .weekly-event-countdown,
 .game-event-row.is-next .game-event-status{background:#3d271d!important;color:#f9873c!important;text-shadow:none!important}
 .top-info-strip{border-top:1px solid #ffffff12}
+.top-info-strip-content{display:flex;align-items:center;gap:12px}.top-info-strip-content::before{background:#ef4657;box-shadow:0 0 8px #ef465788;flex:0 0 6px;margin-right:-3px}.top-live-link{color:#e8b95c;font-weight:850;text-decoration:none;white-space:nowrap}.top-live-link:hover{color:#f5d58d;text-decoration:underline}.top-info-divider{align-self:stretch;width:1px;min-height:17px;background:#ffffff20}.top-info-extra{color:#c3cad4}@media(max-width:600px){.top-info-strip-content{gap:9px}.top-info-divider{min-height:15px}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -548,7 +549,7 @@ header .menu-dropdown{z-index:40}
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
 <div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span class="brand-copy"><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></button><nav class="menu-dropdown" aria-label="Ana menü"><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><a href="/rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22m4-15h8m-8 4h8"/></svg><span>Yayıncı Rehberi</span></a><a href="/iletisim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>İletişim</span></a></nav></div><div class="nav-right"><button class="btn goldbtn" id="adminOpen" type="button" aria-label="Giriş Yap" title="Giriş Yap"><svg class="admin-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg></button></div>
-</div><div class="top-info-strip" aria-label="Bilgi şeridi"><div class="top-info-strip-content">eeee</div></div>
+</div><div class="top-info-strip" aria-label="Bilgi şeridi"><div class="top-info-strip-content"><span>Şu anda <a class="top-live-link" href="/#liveChannelsSection"><b id="topLiveCount">2</b> yayıncı</a> canlı</span><span class="top-info-divider" aria-hidden="true"></span><span class="top-info-extra">eee</span></div></div>
 </header>
 <main class="wrap">
 <section class="hero">
@@ -787,6 +788,7 @@ function renderLiveChannels(){
  const live=publishers.filter(p=>(livePublisherPlatforms.get(p.id)?.size||0)>0);
  section.hidden=!liveChannelsVisible||!live.length;
  if(count)count.textContent=live.length+" yayıncı canlı";
+ const topLiveCount=$("topLiveCount");if(topLiveCount)topLiveCount.textContent=String(live.length);
  track.innerHTML=live.map(p=>{
   const platforms=Array.from(livePublisherPlatforms.get(p.id)||[]).sort((a,b)=>["TikTok","Twitch","YouTube","Kick"].indexOf(a)-["TikTok","Twitch","YouTube","Kick"].indexOf(b));
   const status='<button type="button" class="live-status live-stats-frame" data-live-stats-id="'+esc(p.id)+'" aria-label="'+esc(p.name)+' yayın istatistiklerini aç" title="Yayın istatistiklerini aç"></button>';
