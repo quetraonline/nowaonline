@@ -501,6 +501,10 @@ header .menu-dropdown{z-index:40}
 /* Özel Etkinlikler: etkinlik adı, server, saat ve satır kutusu Haftalık Etkinlikler ile aynı */
 .game-events-panel #specialEventsList .game-event-row{gap:10px!important;padding:10px 11px!important;border:1px solid #454550!important;border-radius:15px!important;background-color:#2b2a36!important}
 .game-events-panel #specialEventsList .game-event-row.is-live{border:1px solid #35f58a!important;background-color:#173d31!important;box-shadow:inset 3px 0 #45ff8e!important}
+.game-events-panel #specialEventsList .game-event-row.is-live .game-event-status{display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:center!important;gap:3px!important;padding:0!important;background:transparent!important;color:#54f18a!important;text-align:right!important;white-space:nowrap!important}
+.game-events-panel #specialEventsList .special-live-label{color:#54f18a!important;font-size:12px!important;font-weight:950!important;letter-spacing:.5px!important;animation:weeklyLivePulse 2.2s ease-in-out infinite}
+.game-events-panel #specialEventsList .special-live-remaining{color:#e0deea!important;font-size:12px!important;font-weight:800!important;line-height:1.2!important}
+.game-events-panel #specialEventsList .special-live-remaining b{color:#fff!important;font-weight:900!important}
 .game-events-panel #specialEventsList .game-event-row.is-next{border:1px solid #f0a33d!important;background-color:#3b2b1c!important;box-shadow:inset 3px 0 #ffb347!important}
 .game-events-panel #specialEventsList .game-event-row.is-done{opacity:.72!important;background-color:#24232d!important}
 .game-events-panel #specialEventsList .game-event-info{gap:4px!important}
@@ -1231,7 +1235,7 @@ function renderGameEvents(){
   });
   list.innerHTML=ordered.map(e=>{
    const remaining=e._next?e._start-e._current:e._live?e._end-e._current:0;
-   const status=e._live?"● ŞU AN AKTİF":e._done?"BİTTİ":formatClock(remaining);
+   const status=e._live?'<span class="special-live-label">● ŞU AN AKTİF</span><small class="special-live-remaining">Bitişe <b data-special-remaining>'+formatClock(remaining)+'</b></small>':e._done?"BİTTİ":formatClock(remaining);
    const cls=e._live?"is-live":e._next?"is-next":"is-done";
    const eventBgStyle=e.image_url?'--event-bg:url(&quot;'+esc(e.image_url)+'&quot;)':'';
    const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
@@ -1249,7 +1253,7 @@ function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
  const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
- specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=specialEventAdjustedNow(nowSec,start,event,now.weekday);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"● ŞU AN AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));if(live){const progress=Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100));const bar=card.querySelector(".special-event-progress i");if(bar)bar.style.width=progress+"%";}});
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=specialEventAdjustedNow(nowSec,start,event,now.weekday);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status){if(live){const remaining=status.querySelector("[data-special-remaining]");if(remaining)remaining.textContent=formatClock(Math.max(0,end-current));}else status.textContent=done?"BİTTİ":formatClock(Math.max(0,start-current));}if(live){const progress=Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100));const bar=card.querySelector(".special-event-progress i");if(bar)bar.style.width=progress+"%";}});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
