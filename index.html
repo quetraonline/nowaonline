@@ -491,6 +491,11 @@ header .menu-dropdown{z-index:40}
 .game-event-row.is-next .game-event-status{padding:6px 9px!important;background:#76502d!important;color:#ffe0a8!important;letter-spacing:.25px!important;text-shadow:0 1px 2px #000!important}
 .game-event-row.is-done .game-event-status{padding:6px 9px!important;background:#454550!important;color:#c9c7d2!important}
 
+/* Aktiflik yazıları sağa hizalı; iki etkinlik alanında aynı ilerleme göstergesi */
+.weekly-event-live-label{align-self:flex-end!important;text-align:right!important;width:100%!important}
+.game-events-panel #specialEventsList .game-event-row.is-live{position:relative!important;padding-bottom:17px!important}
+.game-events-panel #specialEventsList .game-event-row.is-live::after{content:"";position:absolute;left:78px;right:11px;bottom:9px;height:4px;border-radius:5px;background:linear-gradient(to right,#35f58a var(--special-progress,0%),#565562 var(--special-progress,0%));pointer-events:none}
+@media(max-width:700px){.game-events-panel #specialEventsList .game-event-row.is-live::after{left:70px;right:9px;bottom:8px}}
 /* Özel Etkinlikler: etkinlik adı, server, saat ve satır kutusu Haftalık Etkinlikler ile aynı */
 .game-events-panel #specialEventsList .game-event-row{gap:10px!important;padding:10px 11px!important;border:1px solid #454550!important;border-radius:15px!important;background-color:#2b2a36!important}
 .game-events-panel #specialEventsList .game-event-row.is-live{border:1px solid #35f58a!important;background-color:#173d31!important;box-shadow:inset 3px 0 #45ff8e!important}
@@ -1227,7 +1232,9 @@ function renderGameEvents(){
    const status=e._live?"● ŞU AN AKTİF":e._done?"BİTTİ":formatClock(remaining);
    const cls=e._live?"is-live":e._next?"is-next":"is-done";
    const eventBgStyle=e.image_url?'--event-bg:url(&quot;'+esc(e.image_url)+'&quot;)':'';
-   return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" class="game-event-row '+cls+'" style="'+eventBgStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+'</time></div><span class="game-event-status">'+status+'</span></article>';
+   const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
+   const progressStyle=e._live?';--special-progress:'+progress+'%':'';
+   return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+'</time></div><span class="game-event-status">'+status+'</span></article>';
   }).join("");
  }
 }
@@ -1240,7 +1247,7 @@ function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
  const formatClock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=seconds%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")};
  const specialCards=document.querySelectorAll("#specialEventsList [data-special-event-id]");
- specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=specialEventAdjustedNow(nowSec,start,event,now.weekday);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"● ŞU AN AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));});
+ specialCards.forEach(card=>{const event=gameEventsCache.find(e=>String(e.id||e.event_name)===card.dataset.specialEventId);if(!event)return;const start=specialEventStartSeconds(event);const end=specialEventEndSeconds(event,start);const current=specialEventAdjustedNow(nowSec,start,event,now.weekday);const live=current>=start&&current<end,done=current>=end;const cls=live?"is-live":done?"is-done":"is-next";card.classList.remove("is-live","is-done","is-next");card.classList.add(cls);const status=card.querySelector(".game-event-status");if(status)status.textContent=live?"● ŞU AN AKTİF":done?"BİTTİ":formatClock(Math.max(0,start-current));if(live)card.style.setProperty("--special-progress",Math.max(0,Math.min(100,((current-start)/Math.max(1,end-start))*100))+"%");});
  const cards=document.querySelectorAll("#weeklyEventsList [data-event-id]");
  let needsRender=false;
  cards.forEach(card=>{
