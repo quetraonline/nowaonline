@@ -1,5 +1,54 @@
+const SUPABASE_REST_URL = "https://hfmosadynxpwkscvpard.supabase.co/rest/v1";
+const YOUTUBE_CACHE_TTL_MS = 8 * 60 * 60 * 1000;
+
+async function readYoutubeCache(cacheKey) {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) return null;
+  try {
+    const response = await fetch(SUPABASE_REST_URL + "/nowa_youtube_api_cache?cache_key=eq." + encodeURIComponent(cacheKey) + "&select=payload,expires_at&limit=1", {
+      headers: { apikey: key, Authorization: "Bearer " + key }
+    });
+    if (!response.ok) {
+      console.warn("YouTube cache read failed:", response.status);
+      return null;
+    }
+    const rows = await response.json();
+    const row = rows?.[0];
+    if (!row?.payload || new Date(row.expires_at).getTime() <= Date.now()) return null;
+    return row.payload;
+  } catch (error) {
+    console.warn("YouTube cache read error:", error.message);
+    return null;
+  }
+}
+
+async function writeYoutubeCache(cacheKey, payload) {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) return;
+  try {
+    const response = await fetch(SUPABASE_REST_URL + "/nowa_youtube_api_cache?on_conflict=cache_key", {
+      method: "POST",
+      headers: {
+        apikey: key,
+        Authorization: "Bearer " + key,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=minimal"
+      },
+      body: JSON.stringify({
+        cache_key: cacheKey,
+        payload,
+        expires_at: new Date(Date.now() + YOUTUBE_CACHE_TTL_MS).toISOString(),
+        updated_at: new Date().toISOString()
+      })
+    });
+    if (!response.ok) console.warn("YouTube cache write failed:", response.status, (await response.text()).slice(0, 300));
+  } catch (error) {
+    console.warn("YouTube cache write error:", error.message);
+  }
+}
+
 export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+  res.setHeader("Cache-Control", "s-maxage=28800, stale-while-revalidate=3600");
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method not allowed" });
@@ -10,7 +59,7 @@ export default async function handler(req, res) {
     if (!apiKey) return res.status(500).json({ error: "YouTube API anahtarı sunucuda tanımlı değil." });
 
     const isVodFeedRequest = String(req.query.vodfeed || "") === "1";
-    if (isVodFeedRequest) res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=1800");
+    if (isVodFeedRequest) res.setHeader("Cache-Control", "s-maxage=28800, stale-while-revalidate=3600");
 
     const rawUrl = String(req.query.url || "").trim();
     if (!rawUrl) return res.status(400).json({ error: "YouTube kanal bağlantısı gerekli." });
@@ -22,6 +71,14 @@ export default async function handler(req, res) {
     }
 
     const path = parsed.pathname.replace(/\/+$/, "");
+    const cacheKey = (isVodFeedRequest ? "vod:" : "stats:") + parsed.hostname.toLowerCase() + path.toLowerCase();
+    const cachedPayload = await readYoutubeCache(cacheKey);
+    if (cachedPayload) {
+      res.setHeader("X-YouTube-Cache", "HIT");
+      return res.status(200).json(cachedPayload);
+    }
+    res.setHeader("X-YouTube-Cache", "MISS");
+
     const params = new URLSearchParams({ part: "snippet,statistics,contentDetails", key: apiKey });
     if (/^\/channel\/UC[\w-]+$/i.test(path)) {
       params.set("id", path.split("/")[2]);
@@ -60,12 +117,12 @@ export default async function handler(req, res) {
     const uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
     if (uploadsPlaylistId) {
       // İlk 50 video içinde arşivlenmiş yayın yoksa daha eski yüklemelere ilerle.
-      // En fazla 3 sayfa (150 video) kontrol edilir; gereksiz API kotası tüketilmez.
+      // Kota tasarrufu için her yenilemede en fazla 2 sayfa (100 video) taranır.
+      // Kalıcı 8 saatlik önbellek sayesinde aynı kanal tekrar tekrar sorgulanmaz.
       let pageToken = "";
       let scannedPages = 0;
       const isVodFeed = String(req.query.vodfeed || "") === "1";
-      // VOD akışında 15 arşiv kaydı bulunana kadar daha fazla sayfa tara.
-      const maxScanPages = isVodFeed ? 3 : (String(req.query.feed || "") === "1" ? 1 : 3);
+      const maxScanPages = 2;
       const normalizedVideos = [];
       const archivedFound = [];
 
@@ -158,7 +215,7 @@ export default async function handler(req, res) {
     }
 
     const stats = channel.statistics || {};
-    return res.status(200).json({
+    const payload = {
       channelId: channel.id,
       title: channel.snippet?.title || "",
       thumbnail: channel.snippet?.thumbnails?.default?.url || "",
@@ -168,7 +225,9 @@ export default async function handler(req, res) {
       hiddenSubscriberCount: Boolean(stats.hiddenSubscriberCount),
       latestVideos,
       latestStreams
-    });
+    };
+    await writeYoutubeCache(cacheKey, payload);
+    return res.status(200).json(payload);
   } catch (error) {
     return res.status(502).json({ error: error.message || "YouTube verileri alınırken bir hata oluştu." });
   }
