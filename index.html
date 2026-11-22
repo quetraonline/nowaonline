@@ -1350,7 +1350,7 @@ function renderGameEvents(){
   }
   if(!events.length){list.innerHTML='<div class="game-events-empty">Planlanmış özel etkinlik bulunmuyor.</div>';continue}
   const ordered=events.sort((a,b)=>{
-   const priority=e=>e._done?0:e._live?1:2;
+   const priority=e=>e._live?0:e._next?1:2;
    return priority(a)-priority(b)||a._start-b._start||Number(a.sort_order||0)-Number(b.sort_order||0);
   });
   list.innerHTML=ordered.map(e=>{
