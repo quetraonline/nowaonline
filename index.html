@@ -567,14 +567,15 @@ header .menu-dropdown{z-index:40}
 .top-info-strip-content{width:min(1160px,calc(100% - 32px));margin:0 auto;display:flex;align-items:center;flex-wrap:nowrap;gap:8px;overflow:hidden;white-space:nowrap}
 .top-live-link{flex:0 0 auto}
 .top-info-divider{flex:0 0 1px}
-.top-event-group{display:inline-flex;align-items:center;flex:1 1 0;min-width:0;gap:6px;white-space:nowrap;overflow:hidden}
+.top-event-group{display:inline-flex;align-items:center;flex:0 1 auto;min-width:0;gap:6px;white-space:nowrap}
 .top-event-group .top-event-date-icon{flex:0 0 14px}
 .top-event-group .top-info-extra-label{flex:0 0 auto}
-.top-event-group .top-next-event-name,.top-event-group .top-special-event-name{display:block;flex:1 1 120px;width:120px;min-width:0;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-event-group .top-next-event-name,.top-event-group .top-special-event-name{display:block;flex:0 1 auto;width:auto;min-width:0;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-event-group .top-special-event-name{max-width:180px}
 .top-event-group .top-next-event-time,.top-event-group .top-special-event-time{display:block;flex:0 0 5ch;width:5ch;text-align:center;font-variant-numeric:tabular-nums}
 .top-event-group .top-next-event-countdown,.top-event-group .top-special-event-countdown{display:block;flex:0 0 8ch;width:8ch;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;box-sizing:border-box}
 .top-announcement{flex:0 1 145px;max-width:145px;min-width:110px}
-@media(max-width:700px){.top-info-strip-content{gap:8px}.top-event-group{flex:0 0 auto;gap:5px}.top-event-group .top-next-event-name,.top-event-group .top-special-event-name{flex:0 0 100px;width:100px;max-width:100px}.top-event-group .top-next-event-countdown,.top-event-group .top-special-event-countdown{flex-basis:8ch;width:8ch}.top-announcement{flex:0 0 155px;max-width:155px;min-width:155px}}
+@media(max-width:700px){.top-info-strip-content{gap:8px}.top-event-group{flex:0 1 auto;gap:5px}.top-event-group .top-next-event-name{max-width:140px}.top-event-group .top-special-event-name{max-width:120px}.top-event-group .top-next-event-countdown,.top-event-group .top-special-event-countdown{flex-basis:8ch;width:8ch}.top-announcement{flex:0 0 155px;max-width:155px;min-width:155px}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
