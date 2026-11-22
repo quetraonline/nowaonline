@@ -183,6 +183,36 @@ header .menu-dropdown{z-index:40}
 @media(max-width:760px){.event-columns{grid-template-columns:1fr;gap:14px}.event-day-tabs{gap:5px}.event-day-tab{padding:10px 2px;font-size:10px;border-radius:8px}.event-card{gap:8px;padding:12px 10px}.event-card-image{width:52px;height:52px;flex-basis:52px}.event-card-info strong{font-size:13px}.event-card-status{padding:6px 7px;font-size:9px}.event-card-countdown{padding:6px 7px;font-size:10px}.event-progress{left:10px;right:10px;bottom:6px}}
 @media(max-width:390px){.event-day-tabs{gap:3px}.event-day-tab{font-size:9px;padding:9px 1px}.event-card-image{width:46px;height:46px;flex-basis:46px}.event-card-image{width:46px;height:46px;flex-basis:46px}.event-card-info strong{font-size:12px}.event-card-time{font-size:11px}.event-card-status{max-width:86px}}
 
+
+/* Ana sayfadaki etkinlik kartlarıyla birebir görsel eşleşme */
+.event-list{display:flex!important;flex-direction:column!important;gap:9px!important}
+.event-card{display:flex;align-items:center;gap:10px;min-width:0;height:90px;min-height:90px;padding:10px 11px;border:1px solid #454550;border-radius:15px;background-color:#2b2a36;background-image:linear-gradient(90deg,rgba(15,18,25,.94),rgba(15,18,25,.78)),var(--event-bg,none);background-size:cover;background-position:center;background-repeat:no-repeat;box-sizing:border-box}
+.event-card.is-live{border:1px solid #35f58a;background-color:#173d31;box-shadow:inset 3px 0 #45ff8e}
+.event-card.is-next{border:1px solid #f0a33d;background-color:#3b2b1c;box-shadow:inset 3px 0 #ffb347}
+.event-card.is-done{opacity:.72;background-color:#24232d}
+.event-card-image{width:58px;height:58px;flex:0 0 58px;object-fit:contain;object-position:center;padding:2px;border:0;border-radius:8px;background:transparent;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
+.event-card-info{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;padding-bottom:10px}
+.event-card-info strong{overflow:hidden;color:#fff;font-size:15px;font-weight:950;line-height:normal;text-overflow:ellipsis;white-space:nowrap;text-shadow:none}
+.event-card-server{color:#e8c879;font-size:10px;font-weight:900;letter-spacing:.35px;line-height:1.2;text-transform:uppercase}
+.event-card-time{overflow:hidden;color:#e0deea;font-size:13px;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
+.event-card-status{position:relative;z-index:1;flex:0 0 auto;max-width:110px;padding:6px 9px;border-radius:8px;background:#454550;color:#e3e5e9;font-size:12px;font-weight:950;text-align:center;white-space:nowrap}
+.event-card-live-label{display:inline-block;padding:6px 9px;border-radius:8px;background:#193222;color:#3ecf5a;font-size:12px;font-weight:950;letter-spacing:.5px}
+.event-card-countdown{flex:none;padding:6px 9px;border-radius:8px;background:#76502d;color:#ffe0a8;font-size:12px;font-weight:950;letter-spacing:.25px;line-height:1.2;text-shadow:0 1px 2px #000;font-variant-numeric:tabular-nums;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.event-card.is-live .event-card-status{background:transparent;padding:0}
+.event-card.is-next .event-card-status{background:transparent;color:#ffe0a8}
+.event-progress{position:absolute;left:78px;right:11px;bottom:8px;height:4px;overflow:hidden;border-radius:5px;background:#565562}
+.event-progress i{display:block;height:100%;border-radius:5px;background:#35f58a}
+@media(max-width:700px){
+ .event-list{gap:9px!important}
+ .event-card{gap:9px;padding:9px;height:90px;min-height:90px}
+ .event-card-image{width:52px;height:52px;flex-basis:52px}
+ .event-card-info{padding-bottom:10px}
+ .event-progress{left:70px;right:9px;bottom:8px}
+ .event-card-info strong{font-size:13px}
+ .event-card-time{font-size:12px}
+ .event-card-live-label{font-size:12px}
+}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
