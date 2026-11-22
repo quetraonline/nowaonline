@@ -416,6 +416,8 @@ header .menu-dropdown{z-index:40}
 }
 
 /* Haftalık ve özel oyun etkinlikleri */
+.game-events-calendar-link-wrap{display:flex;justify-content:flex-end;margin-top:9px}.game-events-calendar-link{display:inline-flex;align-items:center;gap:6px;color:#f28c28!important;font-size:12px;font-weight:800;text-decoration:none!important;text-underline-offset:0}.game-events-calendar-link:hover,.game-events-calendar-link:focus{text-decoration:none!important;color:#ffad55!important}.game-events-calendar-link svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
 .game-events-section{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 28px}
 .game-events-panel{min-width:0;padding:12px 0;border:0;border-radius:0;background:transparent;box-shadow:none}
 .game-events-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;padding:0 0 9px;border-bottom:2px solid #d4ad43}
@@ -657,10 +659,12 @@ header .menu-dropdown{z-index:40}
  <section class="game-events-panel weekly-events-panel" aria-label="Haftalık etkinlikler">
   <div class="game-events-panel-head"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>YAKLAŞAN ETKİNLİKLER</h3><span class="game-events-day" id="weeklyEventsDay">Bugün</span></div>
   <div class="game-events-list" id="weeklyEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div>
+  <div class="game-events-calendar-link-wrap"><a class="game-events-calendar-link" href="etkinlikler.html">Etkinlik Takvimi <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
  </section>
  <section class="game-events-panel" aria-label="Özel etkinlikler">
   <div class="game-events-panel-head"><h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 16M20 4 4 20M8 3l2 2m6 14 2 2M3 8l2 2m14 4 2 2"/></svg>ÖZEL ETKİNLİKLER</h3><span class="game-events-day" id="specialEventsDay"></span></div>
   <div class="game-events-list" id="specialEventsList"><div class="game-events-empty">Etkinlikler yükleniyor...</div></div>
+  <div class="game-events-calendar-link-wrap"><a class="game-events-calendar-link" href="etkinlikler.html">Etkinlik Takvimi <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
  </section>
 </section>
 <section class="latest-youtube-section" id="latestYoutubeSection" hidden>
