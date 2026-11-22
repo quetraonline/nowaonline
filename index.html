@@ -1211,7 +1211,7 @@ function renderGameEvents(){
    const current=carryover?nowSec+86400:nowSec;
    return {...e,display_name:e.event_title||e.event_name,start,end,current,live:current>=start&&current<end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).sort((a,b)=>a.start-b.start||Number(a.sort_order||0)-Number(b.sort_order||0));
-  const active=events.filter(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start).slice(0,2),completed=events.filter(e=>e.current>=e.end).sort((a,b)=>b.end-a.end||b.start-a.start);const previous=completed.slice(0,1);
+  const active=events.filter(e=>e.live),upcoming=events.filter(e=>!e.live&&e.current<e.start).slice(0,active.length?1:2),completed=events.filter(e=>e.current>=e.end).sort((a,b)=>b.end-a.end||b.start-a.start);const previous=completed.slice(0,1);
   const card=e=>{
    const eventImage=gameEventImageFor(e);const eventBgStyle=eventImage?'--event-bg:url(&quot;'+esc(eventImage)+'&quot;)':'';
    const clock=gameEventClockText(e.start_time);
@@ -1222,7 +1222,7 @@ function renderGameEvents(){
    if(e.current>=e.end)return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-done" style="'+eventBgStyle+'"><img class="weekly-event-image" src="'+esc(eventImage)+'" alt="" loading="lazy"><div class="weekly-event-content"><strong>'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="weekly-event-time weekly-time-done">'+clock+(e.end_time?' · '+gameEventClockText(e.end_time):'')+'</span></div><span class="weekly-event-finished">BİTTİ</span></article>';
    return '<article data-event-id="'+esc(e.id||e.event_name)+'" class="weekly-event-card weekly-event-next" style="'+eventBgStyle+'"><img class="weekly-event-image" src="'+esc(eventImage)+'" alt="" loading="lazy"><div class="weekly-event-content"><strong>'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="weekly-event-time weekly-time-next">'+clock+' · <b class="weekly-event-queued">Sırada</b></span></div><span class="weekly-event-countdown" data-countdown>'+formatClock(e.remaining)+'</span></article>';
   };
-  weeklyList.innerHTML=(active.length?active.map(card).join(""):'')+(previous.length?previous.map(card).join(""):'')+(upcoming.length?upcoming.map(card).join(""):'')+(!previous.length&&!active.length&&!upcoming.length?'<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>':'');
+  weeklyList.innerHTML=(previous.length?previous.map(card).join(""):'')+(active.length?active.map(card).join(""):'')+(upcoming.length?upcoming.map(card).join(""):'')+(!previous.length&&!active.length&&!upcoming.length?'<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>':'');
  }
  for(const section of ["special"]){
   const list=document.getElementById("specialEventsList");
