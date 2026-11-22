@@ -180,6 +180,20 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
  .top-announcement{flex:0 0 250px;min-width:250px;max-width:250px;width:250px}
  .top-announcement-window{flex:1 1 auto;min-width:0;max-width:none}
 }
+
+/* Mobil bilgi çubuğunda etkinlik adları kısaltılmadan gösterilsin */
+@media(max-width:600px){
+ .top-event-group .top-next-event-name,
+ .top-event-group .top-special-event-name{
+  flex:0 0 auto!important;
+  width:max-content!important;
+  max-width:none!important;
+  min-width:max-content!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+ }
+}
 </style>
 
 </head>
