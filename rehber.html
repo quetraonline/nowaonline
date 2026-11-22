@@ -131,6 +131,20 @@ header .menu-dropdown{z-index:40}
 .top-announcement[hidden]{display:none!important}
 @media(max-width:700px){.top-announcement{flex:0 1 155px;max-width:155px;gap:5px}.top-announcement-icon{width:14px;height:14px;flex-basis:14px}.top-announcement-track{font-size:11px;animation-duration:18s}}
 @media(prefers-reduced-motion:reduce){.top-announcement-track{animation:none;padding-left:0;overflow:hidden;text-overflow:ellipsis;min-width:0}}
+
+/* Mobil bilgi şeridi ve duyuru: ana sayfayla aynı yatay kaydırma düzeni */
+@media(max-width:600px){
+ .top-info-strip{overflow:hidden}
+ .top-info-strip-content{width:max-content!important;min-width:100%;max-width:none;margin:0;padding:7px 16px;box-sizing:border-box;display:flex;flex-wrap:nowrap;align-items:center;gap:12px;white-space:nowrap;overflow-x:auto!important;overflow-y:hidden!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:none}
+ .top-info-strip-content::-webkit-scrollbar{display:none}
+ .top-info-strip-content>*{flex:0 0 auto}
+ .top-event-group{flex:0 0 auto;min-width:max-content;gap:5px;overflow:visible}
+ .top-event-group .top-next-event-name,.top-event-group .top-special-event-name{flex:0 0 auto;width:auto;max-width:140px}
+ .top-event-group .top-next-event-time,.top-event-group .top-special-event-time{flex:0 0 auto;width:auto;text-align:left}
+ .top-event-group .top-next-event-countdown,.top-event-group .top-special-event-countdown{flex:0 0 8ch;width:8ch;text-align:right}
+ .top-announcement{flex:0 0 250px;min-width:250px;max-width:250px;width:250px}
+ .top-announcement-window{flex:1 1 auto;min-width:0;max-width:none}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
