@@ -163,24 +163,24 @@ header .menu-dropdown{z-index:40}
 .event-panel-head h2 svg{width:19px;height:19px;flex:0 0 19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .event-panel-head>span{color:#929eae;font-size:10px;font-weight:800}
 .event-list{display:flex;flex-direction:column;gap:9px}
-.event-card{position:relative;display:flex;align-items:center;gap:11px;min-height:90px;height:90px;padding:10px 12px;overflow:hidden;border:1px solid #454550;border-radius:14px;background:linear-gradient(110deg,#2b2a36,#22232d)}
-.event-card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 20%,rgba(0,0,0,.45));pointer-events:none}
-.event-card.is-live{border-color:#35f58a;background:#173d31;box-shadow:inset 3px 0 #45ff8e}
-.event-card.is-next{border-color:#f0a33d;background:#3b2b1c;box-shadow:inset 3px 0 #ffb347}
-.event-card.is-done{opacity:.72;background:#24232d}
-.event-card-image{position:relative;z-index:1;width:58px;height:58px;flex:0 0 58px;object-fit:cover;border:1px solid #ffffff20;border-radius:10px;background:#161c26}
+.event-card{position:relative;display:flex;align-items:center;gap:11px;min-height:90px;min-width:0;padding:12px 14px;overflow:hidden;border:1px solid #454550;border-radius:15px;background-color:#2b2a36;background-image:linear-gradient(90deg,rgba(15,18,25,.94),rgba(15,18,25,.78)),var(--event-bg,none);background-size:cover;background-position:center;background-repeat:no-repeat}
+.event-card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 20%,rgba(0,0,0,.12));pointer-events:none}
+.event-card.is-live{border-color:#35f58a;background-color:#173d31;box-shadow:inset 3px 0 #45ff8e}
+.event-card.is-next{border-color:#f0a33d;background-color:#3b2b1c;box-shadow:inset 3px 0 #ffb347}
+.event-card.is-done{opacity:.72;background-color:#24232d}
+
 .event-card-info{position:relative;z-index:1;display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
 .event-card-info strong{overflow:hidden;color:#fff;font-size:14px;font-weight:950;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}
 .event-card-server{color:#e8c879;font-size:10px;font-weight:900;letter-spacing:.35px;text-transform:uppercase}
 .event-card-time{color:#e0deea;font-size:12px;font-weight:700;white-space:nowrap}
-.event-card-status{position:relative;z-index:1;flex:0 0 auto;max-width:110px;padding:6px 9px;border-radius:8px;background:#454550;color:#e3e5e9;font-size:10px;font-weight:950;text-align:center;white-space:nowrap}
-.event-card.is-live .event-card-status{background:#193222;color:#3ecf5a}
+.event-card-status{position:relative;z-index:1;flex:0 0 auto;max-width:110px;padding:6px 9px;border-radius:8px;background:#454550;color:#e3e5e9;font-size:10px;font-weight:950;text-align:center;white-space:nowrap}.event-card-countdown{position:relative;z-index:1;flex:none;padding:6px 9px;border-radius:8px;background:#454550;color:#fff;font-size:12px;font-weight:950;letter-spacing:.25px;white-space:nowrap;font-variant-numeric:tabular-nums}.event-card-live-label{display:inline-block;padding:6px 9px;border-radius:8px;background:#193222;color:#3ecf5a;font-size:12px;font-weight:950;letter-spacing:.5px;animation:weeklyLivePulse 2.2s ease-in-out infinite}@keyframes weeklyLivePulse{0%,100%{opacity:.45}50%{opacity:1;text-shadow:0 0 8px #35f58a}}
+.event-card.is-live .event-card-status{background:transparent;color:#3ecf5a}
 .event-card.is-next .event-card-status{background:#76502d;color:#ffe0a8}
 .event-card-countdown{font-variant-numeric:tabular-nums}
-.event-progress{position:absolute;z-index:2;left:80px;right:12px;bottom:8px;height:4px;overflow:hidden;border-radius:5px;background:#565562}
+.event-progress{position:absolute;z-index:2;left:14px;right:14px;bottom:7px;height:4px;overflow:hidden;border-radius:5px;background:#565562}
 .event-progress i{display:block;height:100%;border-radius:5px;background:#35f58a}
 .event-empty{padding:24px 12px;border:1px dashed #394657;border-radius:12px;color:#9aa5b4;font-size:12px;text-align:center}
-@media(max-width:760px){.event-columns{grid-template-columns:1fr;gap:14px}.event-panel{padding:16px}.event-day-tabs{gap:5px}.event-day-tab{padding:10px 2px;font-size:10px;border-radius:8px}.event-card{gap:9px;padding:9px}.event-card-image{width:52px;height:52px;flex-basis:52px}.event-card-info strong{font-size:13px}.event-card-status{padding:6px 7px;font-size:9px}.event-progress{left:70px;right:9px;bottom:7px}}
+@media(max-width:760px){.event-columns{grid-template-columns:1fr;gap:14px}.event-day-tabs{gap:5px}.event-day-tab{padding:10px 2px;font-size:10px;border-radius:8px}.event-card{gap:8px;padding:12px 10px}.event-card-info strong{font-size:13px}.event-card-status{padding:6px 7px;font-size:9px}.event-card-countdown{padding:6px 7px;font-size:10px}.event-progress{left:10px;right:10px;bottom:6px}}
 @media(max-width:390px){.event-day-tabs{gap:3px}.event-day-tab{font-size:9px;padding:9px 1px}.event-card-image{width:46px;height:46px;flex-basis:46px}.event-card-info strong{font-size:12px}.event-card-time{font-size:11px}.event-card-status{max-width:86px}}
 
 </style>
@@ -444,6 +444,40 @@ loadTopNextWeeklyEvent();
 </script>
 
 <script>
+const EVENT_PAGE_PRESETS={weekly:[
+{name:"Cloudy Temple",image:"img/etkinlikler/sol/jr.png"},
+{name:"CR",image:"img/etkinlikler/sol/crbox.png"},
+{name:"CR [60] WP SC",image:"img/etkinlikler/sol/crwpsc.png"},
+{name:"Ethernal Gate",image:"img/etkinlikler/sol/EthernalGate.png"},
+{name:"Monster Raid",image:"img/etkinlikler/sol/MonsterRaid.png"},
+{name:"Lucky DRAW",image:"img/etkinlikler/sol/LuckyDraw.png"},
+{name:"Castle Siege War",image:"img/etkinlikler/sol/csw.png"},
+{name:"Border Defense War",image:"img/etkinlikler/sol/bdw.png"},
+{name:"Mining Event",image:"img/etkinlikler/sol/mining.png"},
+{name:"Fishing Event",image:"img/etkinlikler/sol/fishing.png"},
+{name:"Winter Treant",image:"img/etkinlikler/sol/winter.png"}
+],
+special:[
+{name:"Castle Siege War",image:"img/etkinlikler/sol/csw.png"},
+{name:"Cursed Santa Event",image:"img/etkinlikler/sol/cursedsanta.png"},
+{name:"Elder Dragon Event",image:"img/etkinlikler/sol/elderdragon.png"},
+{name:"Chest + Elder Dragon",image:"img/etkinlikler/felo.png"},
+{name:"Goat + Chest + Elder Dragon",image:"img/etkinlikler/keci.jpg"},
+{name:"PM Event",image:"img/etkinlikler/sol/pmevent.png"},
+{name:"GM Kill Event",image:"img/etkinlikler/sol/gmkill.png"},
+{name:"Chest Event",image:"img/etkinlikler/sol/chest.png"},
+{name:"Boss Stone Event",image:"img/etkinlikler/nowazemin.jpg"},
+{name:"WP Event",image:"img/etkinlikler/sol/wp.png"},
+{name:"WP + Drop Event",image:"img/etkinlikler/sol/wp-drop.png"},
+{name:"Drop Event",image:"img/etkinlikler/sol/drop.png"},
+{name:"Mega Boss Stone",image:"img/etkinlikler/sol/megabos.png"},
+{name:"Watcher Boss",image:"img/etkinlikler/sol/Watcher.png"},
+{name:"Giant Goat",image:"img/etkinlikler/sol/goat.png"},
+{name:"Ödül Avcısı Etkinliği",image:"img/etkinlikler/sol/odulavcisi.png"},
+{name:"Battle Map D.V",image:"img/etkinlikler/sol/battlemap.png"},
+{name:"Battle Map C.V",image:"img/etkinlikler/sol/battlemap.png"}
+]};
+
 (()=>{
  const days=[{id:1,name:"Pazartesi"},{id:2,name:"Salı"},{id:3,name:"Çarşamba"},{id:4,name:"Perşembe"},{id:5,name:"Cuma"},{id:6,name:"Cumartesi"},{id:0,name:"Pazar"}];
  const tabs=document.getElementById("eventDayTabs"),caption=document.getElementById("eventDayCaption");
@@ -457,9 +491,26 @@ loadTopNextWeeklyEvent();
  function startSec(e){const v=clock(e.start_time).split(":");return Number(v[0]||0)*3600+Number(v[1]||0)*60}
  function endSec(e,start){if(!e.end_time)return start;const v=clock(e.end_time).split(":");let end=Number(v[0]||0)*3600+Number(v[1]||0)*60;if(end<start)end+=86400;return end}
  function buildTabs(){tabs.innerHTML=days.map(d=>'<button type="button" class="event-day-tab'+(d.id===selectedDay?' active':'')+(d.id===turkeyDay()?' today':'')+'" data-day="'+d.id+'" aria-pressed="'+(d.id===selectedDay)+'">'+d.name+'</button>').join("");tabs.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{selectedDay=Number(b.dataset.day);render()}))}
- function renderList(section,dayOffset,nowSeconds){const list=section==="weekly"?weeklyList:specialList;const selected=events.filter(e=>e.section===section&&Number(e.weekday)===selectedDay&&e.is_active!==false).map(e=>{const start=startSec(e),end=endSec(e,start);let current=nowSeconds-dayOffset*86400;if(section==="special"&&start<21600){const adjustedStart=start+86400,adjustedEnd=end+(end>start?86400:86400);return {...e,start:adjustedStart,end:adjustedEnd,current,live:current>=adjustedStart&&current<adjustedEnd,done:current>=adjustedEnd,remaining:Math.max(0,adjustedStart-current),left:Math.max(0,adjustedEnd-current)}}return {...e,start,end,current,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)}}).sort((a,b)=>{const priority=e=>e.live?0:e.done?2:1;return priority(a)-priority(b)||(a.live||!a.done?a.start-b.start:b.end-a.end)||Number(a.sort_order||0)-Number(b.sort_order||0)});
- if(!selected.length){list.innerHTML='<div class="event-empty">Bu gün için planlanmış etkinlik bulunmuyor.</div>';return}
- list.innerHTML=selected.map(e=>{const next=!e.live&&!e.done;const status=e.live?"AKTİF":e.done?"BİTTİ":duration(e.remaining);const cls=e.live?"is-live":next?"is-next":"is-done";const image=e.image_url?'<img class="event-card-image" src="'+esc(e.image_url)+'" alt="" loading="lazy">':'<div class="event-card-image" aria-hidden="true"></div>';const time=clock(e.start_time)+(e.end_time?" – "+clock(e.end_time):"");const remain=e.live?'<span data-remain="'+esc(e.id)+'">'+duration(e.left)+'</span>':'';const progress=e.live?'<div class="event-progress"><i style="width:'+Math.max(0,Math.min(100,((e.current-e.start)/Math.max(1,e.end-e.start))*100))+'%"></i></div>':'';return '<article class="event-card '+cls+'">'+image+'<div class="event-card-info"><strong title="'+esc(e.event_title||e.event_name)+'">'+esc(e.event_title||e.event_name)+'</strong><small class="event-card-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="event-card-time">'+time+(e.live?" · Bitişe "+remain:"")+'</span></div><span class="event-card-status">'+(next?'<span class="event-card-countdown">'+status+'</span>':status)+'</span>'+progress+'</article>'}).join("")}
+ function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);return preset?"/"+preset.image.replace(/^\\//,""):(e.image_url||"")}
+ function renderList(section,dayOffset,nowSeconds){
+  const list=section==="weekly"?weeklyList:specialList;
+  const selected=events.filter(e=>e.section===section&&Number(e.weekday)===selectedDay&&e.is_active!==false).map(e=>{
+   let start=startSec(e),end=endSec(e,start),current=nowSeconds-dayOffset*86400;
+   if(section==="special"&&start<21600){start+=86400;end+=86400;}
+   return {...e,start,end,current,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
+  }).sort((a,b)=>{const priority=e=>e.live?0:e.done?2:1;return priority(a)-priority(b)||(a.live||!a.done?a.start-b.start:b.end-a.end)||Number(a.sort_order||0)-Number(b.sort_order||0)});
+  if(!selected.length){list.innerHTML='<div class="event-empty">Bu gün için planlanmış etkinlik bulunmuyor.</div>';return}
+  list.innerHTML=selected.map(e=>{
+   const next=!e.live&&!e.done, image=eventImage(e), bg=image?'--event-bg:url(&quot;'+esc(image)+'&quot;)':'';
+   const clockText=clock(e.start_time)+(e.end_time?' – '+clock(e.end_time):'');
+   const status=e.live?'AKTİF':e.done?'BİTTİ':'Sırada';
+   const cls=e.live?'is-live':next?'is-next':'is-done';
+   const time=e.live?clock(e.start_time)+' · Bitişe '+duration(e.left):clockText;
+   const remain=e.live?'<div class="event-progress"><i style="width:'+Math.max(0,Math.min(100,((e.current-e.start)/Math.max(1,e.end-e.start))*100))+'%"></i></div>':'';
+   const countdown=next?'<span class="event-card-countdown">'+duration(e.remaining)+'</span>':'';
+   return '<article class="event-card '+cls+'" style="'+bg+'"><div class="event-card-info"><strong title="'+esc(e.event_title||e.event_name)+'">'+esc(e.event_title||e.event_name)+'</strong><small class="event-card-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="event-card-time">'+time+'</span></div><span class="event-card-status">'+(e.live?'<span class="event-card-live-label">AKTİF</span>':e.done?'BİTTİ':status)+'</span>'+countdown+remain+'</article>';
+  }).join("")
+ }
  function render(){const now=turkeyParts(),offset=(selectedDay-now.day+7)%7;buildTabs();const label=days.find(d=>d.id===selectedDay)?.name||"";caption.textContent=selectedDay===now.day?new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",year:"numeric"}).format(new Date())+" · "+label:label;renderList("weekly",offset,now.seconds);renderList("special",offset,now.seconds)}
  async function load(){try{const {data,error}=await subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time");if(error)throw error;events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
  load();refreshTimer=setInterval(render,1000);
