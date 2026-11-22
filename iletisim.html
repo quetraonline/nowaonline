@@ -133,6 +133,27 @@ document.getElementById("contactForm").addEventListener("submit",async e=>{e.pre
 const SUBPAGE_SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
 const SUBPAGE_SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
 const subpageDb=window.supabase.createClient(SUBPAGE_SUPABASE_URL,SUBPAGE_SUPABASE_KEY);
+async function loadTopNextWeeklyEvent(){
+ const name=document.getElementById("topNextEventName"),time=document.getElementById("topNextEventTime"),timer=document.getElementById("topNextEventCountdown");
+ if(!name||!time||!timer)return;
+ const {data,error}=await subpageDb.from("nowa_game_events").select("event_name,event_title,weekday,start_time,is_active,section").eq("section","weekly").eq("is_active",true);
+ if(error||!data){name.textContent="Etkinlik bilgisi yok";time.textContent="--:--";timer.textContent="--:--:--";return}
+ window.topWeeklyEvents=data;
+ updateTopNextWeeklyEventSubpage();
+}
+function updateTopNextWeeklyEventSubpage(){
+ const name=document.getElementById("topNextEventName"),time=document.getElementById("topNextEventTime"),timer=document.getElementById("topNextEventCountdown");
+ if(!name||!time||!timer||!window.topWeeklyEvents)return;
+ const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Etc/GMT-3",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
+ const get=k=>parts.find(p=>p.type===k)?.value||"00",days={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+ const day=days[get("weekday")],now=Number(get("hour"))*3600+Number(get("minute"))*60+Number(get("second"));
+ const next=window.topWeeklyEvents.map(e=>{let remaining=((Number(e.weekday)-day+7)%7)*86400+Number(String(e.start_time).slice(0,2))*3600+Number(String(e.start_time).slice(3,5))*60-now;if(remaining<=0)remaining+=604800;return {e,remaining}}).sort((a,b)=>a.remaining-b.remaining)[0];
+ if(!next){name.textContent="Etkinlik bulunmuyor";time.textContent="--:--";timer.textContent="--:--:--";return}
+ name.textContent=next.e.event_title||next.e.event_name||"Haftalık Etkinlik";time.textContent=String(next.e.start_time).slice(0,5);
+ const h=Math.floor(next.remaining/3600),m=Math.floor(next.remaining%3600/60),s=next.remaining%60;
+ timer.textContent=[h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
+}
+setInterval(updateTopNextWeeklyEventSubpage,1000);
 function applySubpageFlagVisibility(visible){const flag=document.querySelector(".site-flag-gif");document.documentElement.classList.add("flag-setting-ready");document.documentElement.classList.toggle("flag-setting-hidden",!visible);if(flag){flag.style.display=visible?"block":"none";flag.style.visibility=visible?"visible":"hidden"}}
 (async()=>{try{const {data,error}=await subpageDb.from("nowa_site_settings").select("flag_visible").eq("id",true).maybeSingle();if(error)throw error;const visible=data?.flag_visible!==false;try{localStorage.setItem("nowa_flag_visible",String(visible))}catch{}applySubpageFlagVisibility(visible)}catch(error){console.warn("Bayrak görünürlük ayarı yüklenemedi:",error);let cached=null;try{cached=localStorage.getItem("nowa_flag_visible")}catch{}applySubpageFlagVisibility(cached==="true")}})();
 function applySubpageLogoFlagVisibility(visible){const flag=document.querySelector(".site-ataturk-flag-gif");document.documentElement.classList.add("ataturk-flag-setting-ready");document.documentElement.classList.toggle("ataturk-flag-setting-hidden",!visible);if(flag){flag.style.display=visible?"block":"none";flag.style.visibility=visible?"visible":"hidden"}}
@@ -270,5 +291,6 @@ if(adminButton){
     }
   });
 })();
+loadTopNextWeeklyEvent();
 </script>
 </body></html>
