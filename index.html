@@ -1457,6 +1457,71 @@ function specialDayMediaAdminEditor(day){
  const visible=specialDayMediaSettings["special_day_download_visible_"+day]!==false;
  return '<section class="special-day-media-admin"><div class="special-day-media-head"><strong>'+GAME_EVENT_DAYS[day]+' paylaşım görseli</strong><small>Yalnızca bu güne ait Özel Etkinlikler listesinin altında görünür.</small></div>'+(image?'<img class="special-day-media-preview" src="'+esc(image)+'" alt="'+GAME_EVENT_DAYS[day]+' paylaşım görseli">':'<div class="special-day-media-empty">Henüz görsel yüklenmedi.</div>')+'<label class="special-day-media-upload">Görsel yükle / değiştir<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-special-day-image="'+day+'"></label><label class="special-day-media-toggle"><input type="checkbox" data-special-download-visible="'+day+'" '+(visible?'checked':'')+'> Paylaşmak için alanını göster</label></section>';
 }
+async function cleanupOldSpecialEventMonthFolders(currentYear,currentMonth){
+ const storage=db.storage.from("nowa-game-updates");
+ const monthNames=["Ocak","Subat","Mart","Nisan","Mayis","Haziran","Temmuz","Agustos","Eylul","Ekim","Kasim","Aralik"];
+ const currentIndex=currentYear*12+(currentMonth-1);
+ const expired=[];
+ async function listAllFiles(prefix){
+  const files=[];
+  let offset=0;
+  while(true){
+   const {data,error}=await storage.list(prefix,{limit:1000,offset});
+   if(error)throw error;
+   const entries=Array.isArray(data)?data:[];
+   for(const entry of entries){
+    if(entry.id===null){files.push(...await listAllFiles(prefix+"/"+entry.name))}
+    else files.push(prefix+"/"+entry.name);
+   }
+   if(entries.length<1000)break;
+   offset+=1000;
+  }
+  return files;
+ }
+ try{
+  const {data:years,error:yearError}=await storage.list("special-event-days",{limit:1000,offset:0});
+  if(yearError)throw yearError;
+  for(const yearEntry of (years||[])){
+   if(yearEntry.id!==null||!/^(19|20|21)\d{2}$/.test(yearEntry.name))continue;
+   const year=Number(yearEntry.name);
+   const {data:months,error:monthError}=await storage.list("special-event-days/"+yearEntry.name,{limit:1000,offset:0});
+   if(monthError)throw monthError;
+   for(const monthEntry of (months||[])){
+    if(monthEntry.id!==null)continue;
+    const monthNumber=monthNames.indexOf(monthEntry.name)+1;
+    if(!monthNumber)continue;
+    const folderIndex=year*12+(monthNumber-1);
+    if(folderIndex<currentIndex-1){
+     const prefix="special-event-days/"+yearEntry.name+"/"+monthEntry.name;
+     const files=await listAllFiles(prefix);
+     for(let i=0;i<files.length;i+=100){
+      const {error:removeError}=await storage.remove(files.slice(i,i+100));
+      if(removeError)throw removeError;
+     }
+     expired.push({year,month:monthEntry.name,prefix});
+    }
+   }
+  }
+  if(expired.length){
+   const {data:settings,error:settingsError}=await db.from("nowa_site_settings").select("special_day_image_0,special_day_image_1,special_day_image_2,special_day_image_3,special_day_image_4,special_day_image_5,special_day_image_6").eq("id",true).maybeSingle();
+   if(settingsError)throw settingsError;
+   const clearPatch={};
+   for(let day=0;day<7;day++){
+    const key="special_day_image_"+day;
+    const image=settings?.[key]||"";
+    if(expired.some(item=>image.includes("/"+item.prefix+"/")))clearPatch[key]=null;
+   }
+   if(Object.keys(clearPatch).length){
+    const {error:clearError}=await db.from("nowa_site_settings").update(clearPatch).eq("id",true);
+    if(clearError)throw clearError;
+    for(const key of Object.keys(clearPatch))specialDayMediaSettings[key]=null;
+   }
+  }
+  if(expired.length)console.info("Eski özel etkinlik ay klasörleri temizlendi:",expired.map(x=>x.prefix));
+ }catch(error){
+  console.warn("Eski özel etkinlik ay klasörleri otomatik temizlenemedi:",error);
+ }
+}
 async function saveSpecialDayMedia(day,patch){
  const {data:userData}=await db.auth.getUser();
  const payload={...patch,updated_at:new Date().toISOString(),updated_by:userData?.user?.id||null};
@@ -1502,11 +1567,17 @@ function renderGameEventsAdminList(section=$("modal").dataset.gameEventSection||
    upload.disabled=true;toast("Görsel yükleniyor...");
    const ext={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"}[file.type]||"jpg";
    const dayFolder=["Pazar","Pazartesi","Sali","Carsamba","Persembe","Cuma","Cumartesi"][day];
-   const path="special-event-days/"+dayFolder+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
+   const monthNames=["Ocak","Subat","Mart","Nisan","Mayis","Haziran","Temmuz","Agustos","Eylul","Ekim","Kasim","Aralik"];
+   const turkeyDateParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit"}).formatToParts(new Date());
+   const uploadYear=Number(turkeyDateParts.find(x=>x.type==="year").value);
+   const uploadMonth=Number(turkeyDateParts.find(x=>x.type==="month").value);
+   const monthFolder=monthNames[uploadMonth-1];
+   const path="special-event-days/"+uploadYear+"/"+monthFolder+"/"+dayFolder+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
    const {data,error}=await db.storage.from("nowa-game-updates").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
    if(error){toast("Görsel yüklenemedi: "+error.message);upload.disabled=false;return}
    const {data:publicData}=db.storage.from("nowa-game-updates").getPublicUrl(data.path);
-   await saveSpecialDayMedia(day,{["special_day_image_"+day]:publicData.publicUrl});
+   const saved=await saveSpecialDayMedia(day,{["special_day_image_"+day]:publicData.publicUrl});
+   if(saved)await cleanupOldSpecialEventMonthFolders(uploadYear,uploadMonth);
   }
  };
 }
