@@ -615,6 +615,8 @@ header .menu-dropdown{z-index:40}
   white-space:nowrap!important;
  }
 }
+
+.special-day-download{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-top:10px;padding:10px 12px;border:1px solid #8e6a35;border-radius:10px;background:linear-gradient(110deg,rgba(52,39,22,.68),rgba(20,25,33,.92));color:#e8b95c;font-size:12px;font-weight:800}.special-day-download-arrow{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.special-day-download-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:6px 11px;border:1px solid #d5a54d;border-radius:8px;background:linear-gradient(135deg,#f0c96d,#bd8733);color:#1a1711!important;text-decoration:none!important;font-size:11px;font-weight:900}.special-day-download-button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.special-day-media-admin{margin:12px 0;padding:13px;border:1px solid #66502f;border-radius:12px;background:rgba(35,30,23,.52)}.special-day-media-head{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}.special-day-media-head strong{color:var(--gold,#e8b95c);font-size:13px}.special-day-media-head small{color:var(--muted,#9aa5b4);font-size:11px}.special-day-media-preview{display:block;width:min(100%,360px);max-height:190px;object-fit:contain;object-position:left center;margin:8px 0;border:1px solid #555;border-radius:8px}.special-day-media-empty{padding:13px;border:1px dashed #555;border-radius:8px;color:#9aa5b4;font-size:11px;margin:8px 0}.special-day-media-upload{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #8e6a35;border-radius:8px;color:#e8b95c;font-size:12px;font-weight:800;cursor:pointer}.special-day-media-upload input{max-width:190px;color:#aeb5c0;font-size:11px}.special-day-media-toggle{display:flex;align-items:center;gap:8px;margin-top:10px;color:#d5d9df;font-size:12px}.special-day-media-toggle input{accent-color:#e8b95c;width:16px;height:16px}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -1359,7 +1361,7 @@ function renderGameEvents(){
    const date=new Date(Date.now()+displayOffset*86400000);
    day.textContent=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).format(date);
   }
-  if(!events.length){list.innerHTML='<div class="game-events-empty">Planlanmış özel etkinlik bulunmuyor.</div>';continue}
+  if(!events.length){list.innerHTML='<div class="game-events-empty">Planlanmış özel etkinlik bulunmuyor.</div>'+specialDayDownloadMarkup(displayWeekday);continue}
   const ordered=events.sort((a,b)=>{
    const priority=e=>e._live?0:e._next?1:2;
    if(priority(a)!==priority(b))return priority(a)-priority(b);
@@ -1374,7 +1376,7 @@ function renderGameEvents(){
    const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
    const progressStyle=e._live?';--special-progress:'+progress+'%':'';
    return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" data-special-day-offset="'+displayOffset+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+gameEventClockText(e.end_time):'')+(e._live?' · Bitişe <span data-special-remaining>'+formatClock(remaining)+'</span>':'')+'</time></div><span class="game-event-status">'+status+'</span>'+(e._live?'<div class="special-event-progress" aria-hidden="true"><i style="width:'+progress+'%"></i></div>':'')+'</article>';
-  }).join("");
+  }).join("")+specialDayDownloadMarkup(displayWeekday);
  }
 }
 function updateTopNextWeeklyEvent(){
@@ -1400,10 +1402,25 @@ function updateTopNextWeeklyEvent(){
  draw(pick("weekly"),name,time,timer,"Haftalık Etkinlik");
  draw(pick("special"),sName,sTime,sTimer,"Özel Etkinlik");
 }
+let specialDayMediaSettings={};
+async function loadSpecialDayMediaSettings(){
+ const {data,error}=await db.from("nowa_site_settings").select("special_day_image_0,special_day_download_visible_0,special_day_image_1,special_day_download_visible_1,special_day_image_2,special_day_download_visible_2,special_day_image_3,special_day_download_visible_3,special_day_image_4,special_day_download_visible_4,special_day_image_5,special_day_download_visible_5,special_day_image_6,special_day_download_visible_6").eq("id",true).maybeSingle();
+ if(error){console.warn("Özel gün paylaşım görselleri yüklenemedi:",error);return specialDayMediaSettings}
+ specialDayMediaSettings=data||{};return specialDayMediaSettings;
+}
+function specialDayDownloadMarkup(day){
+ const image=specialDayMediaSettings["special_day_image_"+day];
+ if(!image||specialDayMediaSettings["special_day_download_visible_"+day]===false)return "";
+ const names=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+ const slug=["pazar","pazartesi","sali","carsamba","persembe","cuma","cumartesi"][day];
+ const fileName="nowa-ozel-etkinlik-"+slug+".jpg";
+ const url=image+(image.includes("?")?"&":"?")+"download="+encodeURIComponent(fileName);
+ return '<div class="special-day-download"><span>Paylaşmak için İndir</span><svg class="special-day-download-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><a href="'+esc(url)+'" class="special-day-download-button" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg>İndir</a></div>';
+}
 async function loadGameEvents(){
  const {data,error}=await db.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time");
  if(error){console.warn("Oyun etkinlikleri yüklenemedi:",error);const message='<div class="game-events-empty">Etkinlikler şu anda yüklenemiyor.</div>';const weekly=document.getElementById("weeklyEventsList"),special=document.getElementById("specialEventsList");if(weekly)weekly.innerHTML=message;if(special)special.innerHTML=message;return}
- gameEventsCache=data||[];renderGameEvents();updateTopNextWeeklyEvent();
+ gameEventsCache=data||[];await loadSpecialDayMediaSettings();renderGameEvents();updateTopNextWeeklyEvent();
 }
 function updateGameEventTimers(){
  const now=turkeyClockParts(),nowSec=now.hour*3600+now.minute*60+now.second;
@@ -1434,12 +1451,29 @@ function updateGameEventTimers(){
 }
 setInterval(updateGameEventTimers,1000);
 setInterval(updateTopNextWeeklyEvent,1000);
+function specialDayMediaAdminEditor(day){
+ const image=specialDayMediaSettings["special_day_image_"+day]||"";
+ const visible=specialDayMediaSettings["special_day_download_visible_"+day]!==false;
+ return '<section class="special-day-media-admin"><div class="special-day-media-head"><strong>'+GAME_EVENT_DAYS[day]+' paylaşım görseli</strong><small>Yalnızca bu güne ait Özel Etkinlikler listesinin altında görünür.</small></div>'+(image?'<img class="special-day-media-preview" src="'+esc(image)+'" alt="'+GAME_EVENT_DAYS[day]+' paylaşım görseli">':'<div class="special-day-media-empty">Henüz görsel yüklenmedi.</div>')+'<label class="special-day-media-upload">Görsel yükle / değiştir<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-special-day-image="'+day+'"></label><label class="special-day-media-toggle"><input type="checkbox" data-special-download-visible="'+day+'" '+(visible?'checked':'')+'> Paylaşmak için İndir alanını göster</label></section>';
+}
+async function saveSpecialDayMedia(day,patch){
+ const {data:userData}=await db.auth.getUser();
+ const payload={...patch,updated_at:new Date().toISOString(),updated_by:userData?.user?.id||null};
+ const {error}=await db.from("nowa_site_settings").update(payload).eq("id",true);
+ if(error){toast("Görsel ayarı kaydedilemedi: "+error.message);return false}
+ specialDayMediaSettings={...specialDayMediaSettings,...patch};
+ toast("Gün görseli ayarı kaydedildi.");
+ await loadSpecialDayMediaSettings();
+ renderGameEventsAdminList("special");
+ await loadGameEvents();
+ return true;
+}
 async function gameEventsAdminView(section="weekly"){
  $("modal").dataset.view="game-events-admin";$("modal").dataset.gameEventSection=section;$("modal").dataset.gameEventWeekday=String(turkeyClockParts().weekday);window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}
  const sectionTitle=section==="special"?"ÖZEL ETKİNLİKLER":"HAFTALIK ETKİNLİKLER";$("modalTitle").textContent=sectionTitle+" YÖNETİMİ";
  $("modalBody").innerHTML='<div class="actions" style="justify-content:space-between;margin:0 0 12px"><button class="btn" type="button" id="backGameEvents">GERİ</button><button class="btn goldbtn" type="button" id="newGameEvent">+ Etkinlik ekle</button></div><p class="notice">Bu sayfada yalnızca seçilen etkinlik türünün kayıtlarını yönetebilirsin.</p><div class="game-events-admin-list" id="gameEventsAdminList">Yükleniyor...</div>';
- $("backGameEvents").onclick=adminView;$("newGameEvent").onclick=()=>gameEventForm(null,section);await refreshGameEventsAdminList(section);
+ $("backGameEvents").onclick=adminView;$("newGameEvent").onclick=()=>gameEventForm(null,section);if(section==="special")await loadSpecialDayMediaSettings();await refreshGameEventsAdminList(section);
 }
 async function refreshGameEventsAdminList(section=$("modal").dataset.gameEventSection||"weekly"){
  const box=$("gameEventsAdminList");if(!box)return;
@@ -1454,8 +1488,25 @@ function renderGameEventsAdminList(section=$("modal").dataset.gameEventSection||
  const tabs=[1,2,3,4,5,6,0].map(index=>{const day=GAME_EVENT_DAYS[index],count=sectionEvents.filter(e=>Number(e.weekday)===index).length;return '<button type="button" class="game-events-admin-day-tab '+(selected===index?'active':'')+'" data-game-event-day="'+index+'">'+day+'<span>'+count+' etkinlik</span></button>'}).join("");
  const dayEvents=sectionEvents.filter(e=>Number(e.weekday)===selected).sort((a,b)=>String(a.start_time).localeCompare(String(b.start_time))||Number(a.sort_order||0)-Number(b.sort_order||0));
  const items=dayEvents.length?dayEvents.map(e=>'<div class="game-events-admin-row"><div><strong>'+esc(e.event_title||e.event_name)+'</strong><small>'+esc(e.event_name)+' · '+String(e.server||"Ares - Atlas").toLocaleUpperCase("tr-TR")+' · '+gameEventClockText(e.start_time)+' – '+gameEventClockText(e.end_time)+(e.is_active?" · Aktif":" · Gizli")+'</small></div><div class="game-events-admin-actions"><button class="btn" type="button" data-event-edit="'+e.id+'">Düzenle</button><button class="btn" type="button" data-event-delete="'+e.id+'">Sil</button></div></div>').join(""):'<div class="notice">'+GAME_EVENT_DAYS[selected]+' günü için henüz etkinlik eklenmedi.</div>';
- box.innerHTML='<div class="game-events-admin-day-tabs" role="tablist" aria-label="Etkinlik günleri">'+tabs+'</div><div class="game-events-admin-items">'+items+'</div>';
+ box.innerHTML='<div class="game-events-admin-day-tabs" role="tablist" aria-label="Etkinlik günleri">'+tabs+'</div>'+(section==="special"?specialDayMediaAdminEditor(selected):"")+'<div class="game-events-admin-items">'+items+'</div>';
  box.onclick=async ev=>{const day=ev.target.closest("[data-game-event-day]"),edit=ev.target.closest("[data-event-edit]"),del=ev.target.closest("[data-event-delete]");if(day){$("modal").dataset.gameEventWeekday=day.dataset.gameEventDay;renderGameEventsAdminList(section);return}if(edit)gameEventForm(gameEventsCache.find(x=>x.id===edit.dataset.eventEdit),section);if(del){const item=gameEventsCache.find(x=>x.id===del.dataset.eventDelete);if(item&&confirm(item.event_name+" etkinliği silinsin mi?")){const {error}=await db.from("nowa_game_events").delete().eq("id",item.id);if(error)toast("Silinemedi: "+error.message);else{toast("Etkinlik silindi.");await refreshGameEventsAdminList(section);await loadGameEvents()}}}};
+ box.onchange=async ev=>{
+  const toggle=ev.target.closest("[data-special-download-visible]");
+  const upload=ev.target.closest("[data-special-day-image]");
+  if(toggle){const day=Number(toggle.dataset.specialDownloadVisible);await saveSpecialDayMedia(day,{["special_day_download_visible_"+day]:toggle.checked});return}
+  if(upload&&upload.files&&upload.files[0]){
+   const day=Number(upload.dataset.specialDayImage),file=upload.files[0];
+   if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){toast("Yalnızca PNG, JPG, WEBP veya GIF yükleyebilirsin.");upload.value="";return}
+   if(file.size>10*1024*1024){toast("Görsel en fazla 10 MB olabilir.");upload.value="";return}
+   upload.disabled=true;toast("Görsel yükleniyor...");
+   const ext={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"}[file.type]||"jpg";
+   const path="special-event-days/"+day+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
+   const {data,error}=await db.storage.from("nowa-game-updates").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
+   if(error){toast("Görsel yüklenemedi: "+error.message);upload.disabled=false;return}
+   const {data:publicData}=db.storage.from("nowa-game-updates").getPublicUrl(data.path);
+   await saveSpecialDayMedia(day,{["special_day_image_"+day]:publicData.publicUrl});
+  }
+ };
 }
 const GAME_EVENT_PRESETS={weekly:[
 {name:"Cloudy Temple",image:"img/etkinlikler/sol/jr.png"},
