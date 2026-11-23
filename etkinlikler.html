@@ -253,6 +253,8 @@ header .menu-dropdown{z-index:40}
 }
 
 .breadcrumbs{display:flex;align-items:center;gap:10px;margin:0 0 12px;color:#9aa5b4;font-size:14px;font-weight:500;line-height:20px;height:20px;min-height:20px}.breadcrumbs a{display:inline-flex;align-items:center;gap:8px;height:20px;color:#9aa5b4;text-decoration:none;line-height:20px;white-space:nowrap;transition:color .18s}.breadcrumbs a:hover{color:#e8b95c}.breadcrumbs a>span{display:inline-block;line-height:20px}.breadcrumbs svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.breadcrumb-separator{display:inline-flex;align-items:center;justify-content:center;flex:0 0 13px;width:13px;height:20px;color:#687383;line-height:20px}.breadcrumb-separator svg{width:13px;height:13px;flex:0 0 13px;stroke-width:2}.breadcrumb-current{display:inline-block;align-self:center;height:20px;margin:0;padding:0;color:#aab2bf;font-size:inherit;font-weight:inherit;line-height:20px;white-space:nowrap;vertical-align:middle;transform:translateY(1px)}@media(max-width:600px){.breadcrumbs{font-size:13px;gap:8px;margin-bottom:10px}}
+
+.special-day-download{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-top:10px;padding:10px 12px;border:1px solid #8e6a35;border-radius:10px;background:linear-gradient(110deg,rgba(52,39,22,.68),rgba(20,25,33,.92));color:#e8b95c;font-size:12px;font-weight:800}.special-day-download-arrow{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.special-day-download-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:6px 11px;border:1px solid #d5a54d;border-radius:8px;background:linear-gradient(135deg,#f0c96d,#bd8733);color:#1a1711!important;text-decoration:none!important;font-size:11px;font-weight:900}.special-day-download-button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.special-day-media-admin{margin:12px 0;padding:13px;border:1px solid #66502f;border-radius:12px;background:rgba(35,30,23,.52)}.special-day-media-head{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}.special-day-media-head strong{color:var(--gold,#e8b95c);font-size:13px}.special-day-media-head small{color:var(--muted,#9aa5b4);font-size:11px}.special-day-media-preview{display:block;width:min(100%,360px);max-height:190px;object-fit:contain;object-position:left center;margin:8px 0;border:1px solid #555;border-radius:8px}.special-day-media-empty{padding:13px;border:1px dashed #555;border-radius:8px;color:#9aa5b4;font-size:11px;margin:8px 0}.special-day-media-upload{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #8e6a35;border-radius:8px;color:#e8b95c;font-size:12px;font-weight:800;cursor:pointer}.special-day-media-upload input{max-width:190px;color:#aeb5c0;font-size:11px}.special-day-media-toggle{display:flex;align-items:center;gap:8px;margin-top:10px;color:#d5d9df;font-size:12px}.special-day-media-toggle input{accent-color:#e8b95c;width:16px;height:16px}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -602,6 +604,20 @@ special:[
   const get=k=>parts.find(p=>p.type===k)?.value||"";
   return get("day")+" "+get("month")+" "+get("weekday");
  }
+let specialDayMediaSettings={};
+async function loadSpecialDayMediaSettings(){
+ const {data,error}=await subpageDb.from("nowa_site_settings").select("special_day_image_0,special_day_download_visible_0,special_day_image_1,special_day_download_visible_1,special_day_image_2,special_day_download_visible_2,special_day_image_3,special_day_download_visible_3,special_day_image_4,special_day_download_visible_4,special_day_image_5,special_day_download_visible_5,special_day_image_6,special_day_download_visible_6").eq("id",true).maybeSingle();
+ if(error){console.warn("Özel gün paylaşım görselleri yüklenemedi:",error);return specialDayMediaSettings}
+ specialDayMediaSettings=data||{};return specialDayMediaSettings;
+}
+function specialDayDownloadMarkup(day){
+ const image=specialDayMediaSettings["special_day_image_"+day];
+ if(!image||specialDayMediaSettings["special_day_download_visible_"+day]===false)return "";
+ const slug=["pazar","pazartesi","sali","carsamba","persembe","cuma","cumartesi"][day];
+ const fileName="nowa-ozel-etkinlik-"+slug+".jpg";
+ const url=image+(image.includes("?")?"&":"?")+"download="+encodeURIComponent(fileName);
+ return '<div class="special-day-download"><span>Paylaşmak için İndir</span><svg class="special-day-download-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><a href="'+esc(url)+'" class="special-day-download-button" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg>İndir</a></div>';
+}
  function renderList(section,dayOffset,nowSeconds,now){
   const list=section==="weekly"?weeklyList:specialList;
   const dayLabel=section==="weekly"?document.getElementById("weeklyEventsDay"):document.getElementById("specialEventsDay");
@@ -620,7 +636,7 @@ special:[
    if(section==="special"&&start<21600){start+=86400;end+=86400;}
    return {...e,start,end,current,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).filter(e=>!term||[e.event_title,e.event_name,e.server].some(value=>String(value||"").toLocaleLowerCase("tr-TR").includes(term))).sort((a,b)=>{const priority=e=>e.live?0:e.done?2:1;return priority(a)-priority(b)||(a.live||!a.done?a.start-b.start:b.end-a.end)||Number(a.sort_order||0)-Number(b.sort_order||0)});
-  if(!selected.length){list.innerHTML='<div class="event-empty">'+(term?'Aramanızla eşleşen etkinlik bulunamadı.':'Bu gün için planlanmış etkinlik bulunmuyor.')+'</div>';return}
+  if(!selected.length){list.innerHTML='<div class="event-empty">'+(term?'Aramanızla eşleşen etkinlik bulunamadı.':'Bu gün için planlanmış etkinlik bulunmuyor.')+'</div>'+(section==="special"?specialDayDownloadMarkup(effectiveDay):"");return}
   list.innerHTML=selected.map(e=>{
    const next=!e.live&&!e.done, image=eventImage(e), bg=image?'--event-bg:url(&quot;'+esc(image)+'&quot;)':'';
    const clockText=clock(e.start_time)+(e.end_time?' – '+clock(e.end_time):'');
@@ -630,7 +646,7 @@ special:[
    const remain=e.live?'<div class="event-progress"><i style="width:'+Math.max(0,Math.min(100,((e.current-e.start)/Math.max(1,e.end-e.start))*100))+'%"></i></div>':'';
    const countdown=next?'<span class="event-card-countdown" data-remaining="'+e.remaining+'">'+duration(e.remaining)+'</span>':'';
    return '<article class="event-card '+cls+'" style="'+bg+'"><img class="event-card-image" src="'+esc(image)+'" alt="" loading="lazy"><div class="event-card-info"><strong title="'+esc(e.event_title||e.event_name)+'">'+esc(e.event_title||e.event_name)+'</strong><small class="event-card-server">'+esc(e.server||"Ares - Atlas")+'</small><span class="event-card-time">'+time+'</span></div><span class="event-card-status">'+(e.live?'<span class="event-card-live-label">AKTİF</span>':e.done?'BİTTİ':status)+'</span>'+countdown+remain+'</article>';
-  }).join("")
+  }).join("")+(section==="special"?specialDayDownloadMarkup(effectiveDay):"");
  }
  function render(){const now=turkeyParts();lastRenderedDay=now.day;renderList("weekly",0,now.seconds,now);renderList("special",0,now.seconds,now)}
  function bindEventFilters(){
@@ -642,7 +658,7 @@ special:[
   });
  }
  function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const currentDay=turkeyParts().day;if(boundary||currentDay!==lastRenderedDay)render()}
- async function load(){try{const {data,error}=await subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time");if(error)throw error;events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
+ async function load(){try{const [{data,error},{data:settings,error:settingsError}]=await Promise.all([subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time"),subpageDb.from("nowa_site_settings").select("special_day_image_0,special_day_download_visible_0,special_day_image_1,special_day_download_visible_1,special_day_image_2,special_day_download_visible_2,special_day_image_3,special_day_download_visible_3,special_day_image_4,special_day_download_visible_4,special_day_image_5,special_day_download_visible_5,special_day_image_6,special_day_download_visible_6").eq("id",true).maybeSingle()]);if(error)throw error;if(settingsError)console.warn("Özel gün görselleri yüklenemedi:",settingsError);specialDayMediaSettings=settings||{};events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
  bindEventFilters();load();refreshTimer=setInterval(tickCountdowns,1000);
 })();
 </script>
