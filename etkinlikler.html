@@ -614,9 +614,10 @@ function specialDayDownloadMarkup(day){
  const image=specialDayMediaSettings["special_day_image_"+day];
  if(!image||specialDayMediaSettings["special_day_download_visible_"+day]===false)return "";
  const slug=["pazar","pazartesi","sali","carsamba","persembe","cuma","cumartesi"][day];
- const fileName="nowa-ozel-etkinlik-"+slug+".jpg";
+ const ext=(image.split("?")[0].match(/\.([a-z0-9]+)$/i)||[])[1]||"jpg";
+ const fileName="nowa-ozel-etkinlik-"+slug+"."+ext;
  const url=image+(image.includes("?")?"&":"?")+"download="+encodeURIComponent(fileName);
- return '<div class="special-day-download"><span>Paylaşmak için İndir</span><svg class="special-day-download-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><a href="'+esc(url)+'" class="special-day-download-button" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg>İndir</a></div>';
+ return '<div class="special-day-download"><span>Paylaşmak için İndir</span><svg class="special-day-download-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><a href="'+esc(url)+'" class="special-day-download-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg>İndir</a></div>';
 }
  function renderList(section,dayOffset,nowSeconds,now){
   const list=section==="weekly"?weeklyList:specialList;
