@@ -1,0 +1,15 @@
+alter table public.nowa_site_settings
+  add column if not exists special_day_image_0 text,
+  add column if not exists special_day_download_visible_0 boolean not null default true,
+  add column if not exists special_day_image_1 text,
+  add column if not exists special_day_download_visible_1 boolean not null default true,
+  add column if not exists special_day_image_2 text,
+  add column if not exists special_day_download_visible_2 boolean not null default true,
+  add column if not exists special_day_image_3 text,
+  add column if not exists special_day_download_visible_3 boolean not null default true,
+  add column if not exists special_day_image_4 text,
+  add column if not exists special_day_download_visible_4 boolean not null default true,
+  add column if not exists special_day_image_5 text,
+  add column if not exists special_day_download_visible_5 boolean not null default true,
+  add column if not exists special_day_image_6 text,
+  add column if not exists special_day_download_visible_6 boolean not null default true;
