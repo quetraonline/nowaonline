@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/blog-yonetim-onizleme",
+      "destination": "/blog-yonetim-onizleme.html"
+    },
+    {
       "source": "/iletisim",
       "destination": "/iletisim.html"
     },
@@ -22,6 +30,16 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/blog.html",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog-yonetim-onizleme.html",
+      "destination": "/blog-yonetim-onizleme",
+      "permanent": true
+    },
     {
       "source": "/iletisim.html",
       "destination": "/iletisim",
