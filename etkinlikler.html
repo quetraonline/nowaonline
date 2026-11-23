@@ -606,7 +606,7 @@ special:[
   const carryoverOffset=sectionCarryoverOffset(section,now,nowSeconds);
   const defaultOffset=dayOffset+carryoverOffset;
   if(selectedDays[section]===null)selectedDays[section]=(now.day+defaultOffset+7)%7;
-  const effectiveOffset=selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7;
+  const effectiveOffset=section==="special"?selectedDays[section]-now.day:(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
   if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset);
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
