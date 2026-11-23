@@ -607,7 +607,8 @@ special:[
   const defaultOffset=dayOffset+carryoverOffset;
   if(selectedDays[section]===null)selectedDays[section]=(now.day+defaultOffset+7)%7;
   const weekStartMs=Date.UTC(now.year,now.month-1,now.date-now.day)-3*60*60*1000;
-  const selectedDayWasUpdated=section==="special"&&selectedDays[section]<now.day&&events.some(e=>{if(e.section!==section||Number(e.weekday)!==selectedDays[section]||e.is_active===false)return false;const created=Date.parse(e.created_at||"")||0,updated=Date.parse(e.updated_at||"")||0;return Math.max(created,updated)>=weekStartMs;});\n  const effectiveOffset=section==="special"?(selectedDayWasUpdated?selectedDays[section]-now.day+7:selectedDays[section]-now.day):(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
+  const selectedDayWasUpdated=section==="special"&&selectedDays[section]<now.day&&events.some(e=>{if(e.section!==section||Number(e.weekday)!==selectedDays[section]||e.is_active===false)return false;const created=Date.parse(e.created_at||"")||0,updated=Date.parse(e.updated_at||"")||0;return Math.max(created,updated)>=weekStartMs;});
+  const effectiveOffset=section==="special"?(selectedDayWasUpdated?selectedDays[section]-now.day+7:selectedDays[section]-now.day):(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
   if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset);
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
