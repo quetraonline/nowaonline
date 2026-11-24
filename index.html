@@ -796,6 +796,10 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
  #siteMenu>.menu-dropdown>a[href="/gizlilik-politikasi"],
  #siteMenu>.menu-dropdown>a[href="/kullanim-sartlari"]{display:none!important}
 }
+
+@keyframes nowa-live-dot-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(239,70,87,0),0 0 5px rgba(239,70,87,.45)}50%{opacity:.35;box-shadow:0 0 0 4px rgba(239,70,87,.14),0 0 10px rgba(239,70,87,.8)}}
+.top-info-strip-content .top-live-dot{animation:nowa-live-dot-pulse 1.15s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.top-info-strip-content .top-live-dot{animation:none}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
