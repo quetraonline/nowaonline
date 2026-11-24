@@ -642,7 +642,7 @@ special:[
 (()=>{
  const weeklyList=document.getElementById("weeklyEventsList"),specialList=document.getElementById("specialEventsList");
  let events=[],refreshTimer=null,lastRenderedDay=turkeyDay();
- const selectedDays={weekly:null,special:null},searchTerms={weekly:"",special:""};
+ const selectedDays={weekly:null,special:null},manualDaySelection={weekly:false,special:false},searchTerms={weekly:"",special:""};
  const dayNames=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
  function setupDaySelect(section,firstDay){
   const select=document.getElementById(section==="weekly"?"weeklyEventDaySelect":"specialEventDaySelect");
@@ -706,7 +706,7 @@ function specialDayDownloadMarkup(day){
   const list=section==="weekly"?weeklyList:specialList;
   const dayLabel=section==="weekly"?document.getElementById("weeklyEventsDay"):document.getElementById("specialEventsDay");
   const carryoverOffset=sectionCarryoverOffset(section,now,nowSeconds);
-  const defaultOffset=dayOffset+carryoverOffset;
+  const defaultOffset=section==="special"?0:dayOffset+carryoverOffset;
   if(selectedDays[section]===null)selectedDays[section]=(now.day+defaultOffset+7)%7;
   const weekStartMs=Date.UTC(now.year,now.month-1,now.date-now.day)-3*60*60*1000;
   const selectedDayWasUpdated=section==="special"&&selectedDays[section]<now.day&&events.some(e=>{if(e.section!==section||Number(e.weekday)!==selectedDays[section]||e.is_active===false)return false;const created=Date.parse(e.created_at||"")||0,updated=Date.parse(e.updated_at||"")||0;return Math.max(created,updated)>=weekStartMs;});
@@ -715,11 +715,14 @@ function specialDayDownloadMarkup(day){
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
   const term=searchTerms[section].trim().toLocaleLowerCase("tr-TR");
-  const selected=events.filter(e=>e.section===section&&e.is_active!==false&&(section==="weekly"||!e.end_weekday&&e.end_weekday!==0?Number(e.weekday)===effectiveDay:true)).map(e=>{
+  const selected=events.filter(e=>e.section===section&&e.is_active!==false).map(e=>{
    const hasExplicitEndDay=section==="special"&&e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="";
-   const startDayOffset=hasExplicitEndDay?(effectiveDay-Number(e.weekday)+7)%7:0;
-   const rawStart=startSec(e),endOffset=hasExplicitEndDay?endDayOffset(e,rawStart):0;
+   const rawStart=startSec(e),rawEndClock=e.end_time?Number(clock(e.end_time).slice(0,2))*3600+Number(clock(e.end_time).slice(3,5))*60:null;
+   const isOvernightCarry=section==="special"&&!hasExplicitEndDay&&effectiveDay===now.day&&Number(e.weekday)===(now.day+6)%7&&Boolean(e.end_time)&&rawEndClock<rawStart&&nowSeconds<rawEndClock;
+   const startDayOffset=hasExplicitEndDay?(effectiveDay-Number(e.weekday)+7)%7:isOvernightCarry?1:0;
+   const endOffset=hasExplicitEndDay?endDayOffset(e,rawStart):isOvernightCarry?1:0;
    if(section==="special"&&startDayOffset>endOffset)return null;
+   if(section==="special"&&!hasExplicitEndDay&&!isOvernightCarry&&Number(e.weekday)!==effectiveDay)return null;
    let start=rawStart-startDayOffset*86400,end=endSec(e,rawStart)-startDayOffset*86400,current=nowSeconds-effectiveOffset*86400;
    if(section==="special"&&rawStart<21600){start+=86400;end+=86400;}
    return {...e,start,end,current,_startDayOffset:startDayOffset,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
@@ -743,11 +746,11 @@ function specialDayDownloadMarkup(day){
   ["weekly","special"].forEach(section=>{
    const select=document.getElementById(section==="weekly"?"weeklyEventDaySelect":"specialEventDaySelect");
    const input=document.getElementById(section==="weekly"?"weeklyEventSearch":"specialEventSearch");
-   if(select)select.addEventListener("change",()=>{selectedDays[section]=Number(select.value);const now=turkeyParts();renderList(section,0,now.seconds,now)});
+   if(select)select.addEventListener("change",()=>{selectedDays[section]=Number(select.value);manualDaySelection[section]=true;const now=turkeyParts();renderList(section,0,now.seconds,now)});
    if(input)input.addEventListener("input",()=>{searchTerms[section]=input.value;const now=turkeyParts();renderList(section,0,now.seconds,now)});
   });
  }
- function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const currentDay=turkeyParts().day;if(boundary||currentDay!==lastRenderedDay)render()}
+ function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const currentDay=turkeyParts().day;if(currentDay!==lastRenderedDay){if(!manualDaySelection.weekly&&selectedDays.weekly===lastRenderedDay)selectedDays.weekly=currentDay;if(!manualDaySelection.special&&selectedDays.special===lastRenderedDay)selectedDays.special=currentDay;}if(boundary||currentDay!==lastRenderedDay)render()}
  async function load(){try{const [{data,error},{data:settings,error:settingsError}]=await Promise.all([subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time"),subpageDb.from("nowa_site_settings").select("special_day_image_0,special_day_download_visible_0,special_day_image_1,special_day_download_visible_1,special_day_image_2,special_day_download_visible_2,special_day_image_3,special_day_download_visible_3,special_day_image_4,special_day_download_visible_4,special_day_image_5,special_day_download_visible_5,special_day_image_6,special_day_download_visible_6").eq("id",true).maybeSingle()]);if(error)throw error;if(settingsError)console.warn("Özel gün görselleri yüklenemedi:",settingsError);specialDayMediaSettings=settings||{};events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
  bindEventFilters();load();refreshTimer=setInterval(tickCountdowns,1000);
 })();
