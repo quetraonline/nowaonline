@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b10">
+<title>Yönetim Paneli Önizleme | Nowa Online World</title>
+<link rel="icon" href="/img/favicon.png">
+<style>
+:root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7;--green:#5bd49a;--red:#f07878}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,a{font:inherit}a{color:inherit;text-decoration:none}button{cursor:pointer}.preview-note{padding:8px 16px;text-align:center;background:#352815;border-bottom:1px solid #a77b37;color:#f3ce86;font-size:11px;font-weight:800;letter-spacing:.04em}.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}.topbar{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #ffffff12;background:#0b0d12ed;backdrop-filter:blur(16px);position:sticky;top:0;z-index:5}.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.08em}.mark{width:42px;height:42px;display:grid;place-items:center;overflow:hidden;border:1px solid #d8a84c;border-radius:12px;background:linear-gradient(145deg,#382919,#12151b);color:var(--gold);font-size:20px}.brand strong{font-size:14px;display:block}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em}.top-actions{display:flex;align-items:center;gap:12px}.top-actions .status{color:#b5c0cd;font-size:11px}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#382919;border:1px solid #a77b37;color:#f0c66f;font-weight:900}.layout{display:grid;grid-template-columns:238px minmax(0,1fr);min-height:calc(100vh - 103px)}.sidebar{border-right:1px solid #ffffff12;padding:22px 14px;background:#0c1017}.side-label{padding:12px 12px 8px;color:#758191;font-size:9px;font-weight:900;letter-spacing:.16em}.nav{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;margin:3px 0;border:1px solid transparent;border-radius:9px;background:transparent;color:#aeb8c5;text-align:left;font-size:12px;font-weight:750}.nav .ico{width:18px;text-align:center;color:#d2a44f;font-size:15px}.nav:hover,.nav.active{color:#f3cc7b;background:linear-gradient(100deg,#b8873b22,#b8873b08);border-color:#9e773b55}.nav.active{box-shadow:inset 2px 0 #e8b95c}.side-bottom{margin-top:26px;padding:14px 12px;border:1px solid #293442;border-radius:11px;background:#111923}.side-bottom b{display:block;font-size:11px;color:#e9c77e}.side-bottom span{display:block;margin-top:4px;color:#8995a5;font-size:10px}.main{min-width:0;padding:28px clamp(16px,3vw,38px) 44px;max-width:1500px;width:100%;margin:auto}.crumb{font-size:11px;color:#8995a5;margin-bottom:9px}.crumb span{color:var(--gold)}.heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}.heading h1{margin:0;font-size:clamp(23px,3vw,30px);letter-spacing:-.04em}.heading p{margin:5px 0 0;color:var(--muted);font-size:12px}.goldbtn{border:0;border-radius:9px;background:linear-gradient(135deg,#f0c66f,#b17a2e);color:#17120a;padding:10px 15px;font-size:11px;font-weight:900;box-shadow:0 5px 18px #b17a2e22}.goldbtn:hover{filter:brightness(1.08);transform:translateY(-1px)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:18px}.stat{padding:17px 18px;border:1px solid #2b3544;border-radius:13px;background:linear-gradient(145deg,#19212c,#10151d);box-shadow:0 12px 30px #0002}.stat-top{display:flex;align-items:center;justify-content:space-between;color:#aab5c2;font-size:11px;font-weight:750}.stat-icon{width:32px;height:32px;display:grid;place-items:center;border:1px solid #b8873b55;border-radius:9px;background:#b8873b16;color:#e8b95c;font-size:15px}.stat strong{display:block;margin-top:11px;font-size:26px;line-height:1.1;letter-spacing:-.04em}.stat small{display:block;margin-top:7px;color:#7f8b9b;font-size:10px}.up{color:var(--green)!important}.content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,.85fr);gap:15px}.panel{min-width:0;border:1px solid #2b3544;border-radius:13px;background:linear-gradient(145deg,#151d27,#10151d);padding:18px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.panel-head h2{margin:0;font-size:14px}.panel-head a{color:var(--gold);font-size:10px;font-weight:800}.muted{color:var(--muted)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{padding:10px 9px;text-align:left;color:#778494;font-size:9px;letter-spacing:.08em;font-weight:900;border-bottom:1px solid #ffffff14}td{padding:12px 9px;border-bottom:1px solid #ffffff0d;color:#d9dfe7;font-size:11px}tbody tr:last-child td{border-bottom:0}.person{display:flex;align-items:center;gap:9px}.person .pic{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#263343;border:1px solid #45566b;color:#e8c16e;font-size:10px;font-weight:900}.person b{display:block;font-size:11px}.person small{display:block;color:#8491a0;font-size:9px}.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:900}.pill.live{background:#193b2c;color:#65d99e}.pill.wait{background:#392b1b;color:#e8b95c}.pill.off{background:#292f38;color:#a8b2bf}.dot{width:5px;height:5px;border-radius:50%;background:currentColor}.activity{display:grid;gap:13px}.activity-item{display:flex;gap:10px;align-items:flex-start}.activity-icon{width:29px;height:29px;flex:0 0 29px;display:grid;place-items:center;border:1px solid #b8873b44;border-radius:8px;background:#b8873b12;color:var(--gold)}.activity-item b{display:block;font-size:10px}.activity-item small{display:block;margin-top:3px;color:#8793a2;font-size:9px}.quick{display:grid;grid-template-columns:1fr 1fr;gap:9px}.quick button{padding:12px 10px;border:1px solid #303c4b;border-radius:9px;background:#171f2a;color:#dce2e9;text-align:left;font-size:10px;font-weight:800}.quick button span{display:block;margin-bottom:6px;color:var(--gold);font-size:15px}.quick button:hover{border-color:#b8873b}.system{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #ffffff10;font-size:10px}.system:last-child{border:0}.system b{color:var(--green);font-size:10px}.mobile-menu{display:none}.toast{position:fixed;right:20px;bottom:20px;padding:12px 16px;border:1px solid #806333;border-radius:10px;background:#171d25;color:#f1cf8a;font-size:11px;box-shadow:0 12px 35px #0008;display:none;z-index:20}.toast.show{display:block}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid{grid-template-columns:1fr}.side-bottom{display:none}}
+@media(max-width:700px){.topbar{height:60px;padding:0 14px}.brand strong{font-size:12px}.brand small{font-size:8px}.mark{width:36px;height:36px}.top-actions .status{display:none}.layout{display:block}.sidebar{position:fixed;z-index:15;left:0;top:63px;bottom:0;width:min(280px,84vw);transform:translateX(-105%);transition:transform .22s;box-shadow:20px 0 50px #0009}.sidebar.open{transform:translateX(0)}.mobile-menu{display:grid;place-items:center;width:34px;height:34px;border:1px solid #344050;border-radius:8px;background:#151d27;color:var(--gold);font-size:18px}.brand-wrap{display:flex;align-items:center;gap:10px}.main{padding:22px 14px 35px}.heading{align-items:flex-start;flex-direction:column}.heading .goldbtn{width:100%}.cards{gap:9px}.stat{padding:13px}.stat strong{font-size:23px}.stat-top{font-size:10px}.stat-icon{width:28px;height:28px}.panel{padding:14px}.preview-note{font-size:10px}}
+@media(max-width:380px){.cards{grid-template-columns:1fr 1fr}.stat strong{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="preview-note">✦ TASARIM ÖNİZLEMESİ · Bu sayfa demo amaçlıdır; mevcut site verilerinde değişiklik yapmaz.</div>
+<div class="topline"></div>
+<header class="topbar">
+  <div class="brand-wrap">
+    <button class="mobile-menu" id="menuToggle" aria-label="Menüyü aç">☰</button>
+    <a class="brand" href="/"><span class="mark">N</span><span><strong>NOWA ONLINE WORLD</strong><small>YÖNETİM MERKEZİ</small></span></a>
+  </div>
+  <div class="top-actions"><span class="status">● Sistem aktif</span><span class="avatar">Q</span></div>
+</header>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="side-label">YÖNETİM</div>
+  <button class="nav active" data-title="Genel Bakış"><span class="ico">▦</span> Genel Bakış</button>
+  <button class="nav" data-title="Yayıncı Yönetimi"><span class="ico">♙</span> Yayıncı Yönetimi</button>
+  <button class="nav" data-title="Etkinlik Yönetimi"><span class="ico">▣</span> Etkinlik Yönetimi</button>
+  <button class="nav" data-title="Duyuru Yönetimi"><span class="ico">◉</span> Duyuru Yönetimi</button>
+  <div class="side-label">İSTATİSTİKLER</div>
+  <button class="nav" data-title="TikTok İstatistikleri"><span class="ico">◷</span> TikTok İstatistikleri</button>
+  <button class="nav" data-title="Canlı Yayın Takibi"><span class="ico">◉</span> Canlı Yayın Takibi</button>
+  <div class="side-label">SİTE</div>
+  <button class="nav" data-title="Site Ayarları"><span class="ico">⚙</span> Site Ayarları</button>
+  <button class="nav" data-title="Görünüm ve Menüler"><span class="ico">▤</span> Görünüm ve Menüler</button>
+  <div class="side-bottom"><b>NOWA ONLINE WORLD</b><span>Yönetim paneli önizleme sürümü</span></div>
+</aside>
+<main class="main">
+  <div class="crumb">Yönetim Merkezi <span>/</span> Genel Bakış</div>
+  <div class="heading"><div><h1 id="pageTitle">Genel Bakış</h1><p>Site performansını ve içeriklerini tek noktadan yönetin.</p></div><button class="goldbtn" id="addBtn">＋ Hızlı İşlem</button></div>
+  <section class="cards">
+    <article class="stat"><div class="stat-top">Toplam Yayıncı <span class="stat-icon">♙</span></div><strong>128</strong><small class="up">↑ 6 yeni yayıncı</small></article>
+    <article class="stat"><div class="stat-top">Şu An Canlı <span class="stat-icon">◉</span></div><strong>14</strong><small class="up">● Platformlardan güncel durum</small></article>
+    <article class="stat"><div class="stat-top">Etkinlikler <span class="stat-icon">▣</span></div><strong>23</strong><small>Aktif ve yaklaşan etkinlik</small></article>
+    <article class="stat"><div class="stat-top">Duyurular <span class="stat-icon">◈</span></div><strong>3</strong><small>1 duyuru yayında</small></article>
+  </section>
+  <section class="content-grid">
+    <div class="panel">
+      <div class="panel-head"><h2>Son Güncellenen Yayıncılar</h2><a href="#" data-demo="Yayıncı listesi">Tümünü Gör →</a></div>
+      <div class="table-wrap"><table><thead><tr><th>YAYINCI</th><th>PLATFORM</th><th>DURUM</th><th>GÜNCELLEME</th></tr></thead><tbody>
+      <tr><td><div class="person"><span class="pic">NO</span><span><b>NowaPlayer</b><small>@nowaplayer</small></span></div></td><td>TikTok</td><td><span class="pill live"><i class="dot"></i> CANLI</span></td><td>2 dk önce</td></tr>
+      <tr><td><div class="person"><span class="pic">KO</span><span><b>KnightOnlineTR</b><small>@knightonline</small></span></div></td><td>Twitch</td><td><span class="pill live"><i class="dot"></i> CANLI</span></td><td>5 dk önce</td></tr>
+      <tr><td><div class="person"><span class="pic">GA</span><span><b>GameArena</b><small>@gamearena</small></span></div></td><td>YouTube</td><td><span class="pill off">ÇEVRİMDIŞI</span></td><td>18 dk önce</td></tr>
+      <tr><td><div class="person"><span class="pic">ME</span><span><b>Mekansizz</b><small>@bestofmekansizz</small></span></div></td><td>TikTok</td><td><span class="pill wait">KONTROL</span></td><td>31 dk önce</td></tr>
+      </tbody></table></div>
+    </div>
+    <div style="display:grid;gap:15px;align-content:start">
+      <div class="panel"><div class="panel-head"><h2>Hızlı Erişim</h2></div><div class="quick">
+        <button data-demo="Yayıncı ekleme"><span>＋</span>Yayıncı Ekle</button><button data-demo="Etkinlik oluşturma"><span>▣</span>Etkinlik Oluştur</button><button data-demo="Duyuru düzenleme"><span>◈</span>Duyuru Düzenle</button><button data-demo="İstatistik raporu"><span>▥</span>Raporları Gör</button>
+      </div></div>
+      <div class="panel"><div class="panel-head"><h2>Sistem Durumu</h2><span class="pill live">● AKTİF</span></div>
+        <div class="system"><span>Web sitesi</span><b>Çalışıyor</b></div><div class="system"><span>Veritabanı</span><b>Bağlı</b></div><div class="system"><span>TikTok takip servisi</span><b>Aktif</b></div><div class="system"><span>Son kontrol</span><span class="muted">Az önce</span></div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Son İşlemler</h2><a href="#" data-demo="İşlem geçmişi">Geçmiş</a></div><div class="activity">
+        <div class="activity-item"><span class="activity-icon">✎</span><span><b>Yayıncı bilgileri güncellendi</b><small>Yönetici paneli · 12 dk önce</small></span></div>
+        <div class="activity-item"><span class="activity-icon">▣</span><span><b>Etkinlik takvimi düzenlendi</b><small>Etkinlikler · 46 dk önce</small></span></div>
+        <div class="activity-item"><span class="activity-icon">◈</span><span><b>Duyuru yayına alındı</b><small>Ana sayfa · 1 saat önce</small></span></div>
+      </div></div>
+    </div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast">Bu bölüm tasarım önizlemesinde gösterim amaçlıdır.</div>
+<script>
+const sidebar=document.getElementById('sidebar'),toast=document.getElementById('toast');
+document.getElementById('menuToggle').addEventListener('click',()=>sidebar.classList.toggle('open'));
+document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));btn.classList.add('active');document.getElementById('pageTitle').textContent=btn.dataset.title;sidebar.classList.remove('open');showToast(btn.dataset.title+' bölümü için arayüz taslağı hazırlanıyor.');}));
+function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove('show'),2600);}
+document.getElementById('addBtn').addEventListener('click',()=>showToast('Hızlı işlem menüsü · Demo önizleme'));
+document.querySelectorAll('[data-demo]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();showToast(el.dataset.demo+' · Demo önizleme');}));
+</script>
+</body>
+</html>
