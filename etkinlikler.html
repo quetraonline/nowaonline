@@ -708,8 +708,11 @@ special:[
    // Events that started on the previous day and end after midnight.
    return Boolean(e.end_time)&&rawEnd>86400&&nowSeconds+86400<rawEnd;
   });
-  const fridayOrSaturdayCarry=section==="special"&&(previous===5||previous===6);
-  return hasPreviousDayEvent&&!fridayOrSaturdayCarry?-1:0;
+  // Özel etkinliklerde önceki günden devam eden aktif etkinliği yalnızca
+  // Cuma ve Cumartesi günlerinde yeni güne geçir; diğer günlerde etkinlik
+  // bitene kadar önceki günün takvimini göstermeye devam et.
+  const allowNextDayWhilePreviousActive=section==="special"&&(now.day===5||now.day===6);
+  return hasPreviousDayEvent&&!allowNextDayWhilePreviousActive?-1:0;
  }
  function sectionDateText(offset){
   const date=new Date(Date.now()+offset*86400000);
