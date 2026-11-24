@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/giris",
+      "destination": "/index.html"
+    },
+    {
       "source": "/yonetim",
       "destination": "/index.html"
     },
@@ -86,6 +90,15 @@
     },
     {
       "source": "/yonetim",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/giris",
       "headers": [
         {
           "key": "Cache-Control",
