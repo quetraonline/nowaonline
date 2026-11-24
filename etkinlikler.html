@@ -311,11 +311,12 @@ body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!importa
 @media(max-width:700px){.back-to-top{right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:10000;width:42px;height:42px}}
 
 
-/* Mobilde yukarı çık düğmesi daima görünür; masaüstünde kaydırma eşiği korunur */
-@media(max-width:700px){
- .back-to-top{display:grid!important;position:fixed!important;right:14px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 18px)!important;z-index:2147483000!important;width:44px!important;height:44px!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:none!important}
- body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-}
+
+/* Back-to-top: aynı kaydırma eşiği mobil ve masaüstü */
+.back-to-top{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px)}
+.back-to-top.visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+@media(max-width:700px){.back-to-top{display:grid;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:10000;width:44px;height:44px}}
+body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
@@ -369,7 +370,7 @@ async function loadVisitorCount(){
 }
 loadVisitorCount();
 document.getElementById("contactForm").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget;const button=f.querySelector('button[type="submit"]');const status=document.getElementById("formStatus");button.disabled=true;button.textContent="Gönderiliyor...";status.textContent="Mesajınız gönderiliyor...";status.style.color="#e8b95c";try{const response=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:f.name.value,email:f.email.value,subject:f.subject.value,message:f.message.value,website:f.website.value})});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.message||"Mesaj gönderilemedi.");status.textContent="Mesajınız başarıyla gönderildi. Teşekkür ederiz.";status.style.color="#72d6a0";f.reset()}catch(error){status.textContent=error.message||"Bir hata oluştu. Lütfen tekrar deneyin.";status.style.color="#ff8585"}finally{button.disabled=false;button.textContent="Mesajı gönder"}});
-</script><button class="back-to-top" id="backToTop" type="button" aria-label="Yukarı çık" title="Yukarı çık"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script>const backToTop=document.getElementById("backToTop");window.addEventListener("scroll",()=>backToTop.classList.toggle("visible",window.scrollY>260),{passive:true});backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
+</script><button class="back-to-top" id="backToTop" type="button" aria-label="Yukarı çık" title="Yukarı çık"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script>
 const SUBPAGE_SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
 const SUBPAGE_SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
@@ -731,11 +732,11 @@ function specialDayDownloadMarkup(day){
 (()=>{const current=location.pathname.replace(/\/$/,"")||"/";document.querySelectorAll("#siteMenu .menu-dropdown a").forEach(link=>{const target=new URL(link.getAttribute("href"),location.origin).pathname.replace(/\/$/,"")||"/";if(target===current){link.setAttribute("aria-current","page");}else{link.removeAttribute("aria-current");}});})();
 </script>
 
-<script id="nowa-back-to-top-fix">
-(()=>{const btn=document.getElementById("backToTop");if(!btn)return;const update=()=>btn.classList.toggle("visible",window.scrollY>260||document.documentElement.scrollTop>260);btn.addEventListener("click",event=>{event.preventDefault();window.scrollTo({top:0,behavior:"smooth"});});window.addEventListener("scroll",update,{passive:true});window.addEventListener("pageshow",update);window.addEventListener("resize",update);update();})();
-</script>
 
-<script id="nowa-back-to-top-mobile-final">
-(()=>{const btn=document.getElementById("backToTop");if(!btn)return;const goTop=()=>{const root=document.scrollingElement||document.documentElement;try{root.scrollTo({top:0,behavior:"smooth"});}catch(_){root.scrollTop=0;}window.scrollTo(0,0);};btn.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();goTop();});})();
+
+
+
+<script id="nowa-back-to-top-controller">
+(()=>{const btn=document.getElementById("backToTop");if(!btn||btn.dataset.controllerReady==="1")return;btn.dataset.controllerReady="1";const getY=()=>Math.max(window.scrollY||0,document.documentElement?.scrollTop||0,document.body?.scrollTop||0,document.scrollingElement?.scrollTop||0);const update=()=>{const show=getY()>260&&!document.body.classList.contains("mobile-menu-open");btn.classList.toggle("visible",show);};const goTop=event=>{event?.preventDefault();const root=document.scrollingElement||document.documentElement;try{root.scrollTo({top:0,behavior:"smooth"});}catch(_){root.scrollTop=0;}document.body.scrollTop=0;document.documentElement.scrollTop=0;window.scrollTo({top:0,behavior:"smooth"});};btn.addEventListener("click",goTop);window.addEventListener("scroll",update,{passive:true});document.addEventListener("scroll",update,{passive:true,capture:true});document.body.addEventListener("scroll",update,{passive:true});document.documentElement.addEventListener("scroll",update,{passive:true});window.addEventListener("pageshow",update);window.addEventListener("resize",update);update();})();
 </script>
 </body></html>
