@@ -715,9 +715,10 @@ function specialDayDownloadMarkup(day){
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
   const term=searchTerms[section].trim().toLocaleLowerCase("tr-TR");
-  const selected=events.filter(e=>e.section===section&&e.is_active!==false&&(section==="weekly"?Number(e.weekday)===effectiveDay:true)).map(e=>{
-   const startDayOffset=section==="special"?(effectiveDay-Number(e.weekday)+7)%7:0;
-   const rawStart=startSec(e),endOffset=section==="special"?endDayOffset(e,rawStart):(e.end_time&&endSec(e,rawStart)>rawStart?0:0);
+  const selected=events.filter(e=>e.section===section&&e.is_active!==false&&(section==="weekly"||!e.end_weekday&&e.end_weekday!==0?Number(e.weekday)===effectiveDay:true)).map(e=>{
+   const hasExplicitEndDay=section==="special"&&e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="";
+   const startDayOffset=hasExplicitEndDay?(effectiveDay-Number(e.weekday)+7)%7:0;
+   const rawStart=startSec(e),endOffset=hasExplicitEndDay?endDayOffset(e,rawStart):0;
    if(section==="special"&&startDayOffset>endOffset)return null;
    let start=rawStart-startDayOffset*86400,end=endSec(e,rawStart)-startDayOffset*86400,current=nowSeconds-effectiveOffset*86400;
    if(section==="special"&&rawStart<21600){start+=86400;end+=86400;}
