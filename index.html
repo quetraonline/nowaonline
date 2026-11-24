@@ -1485,8 +1485,9 @@ function renderGameEvents(){
     }else if(endClock<rawStart)endDayOffset=1;
    }
    if(startDayOffset>endDayOffset)return null;
-   const start=specialEventStartSeconds(e)-startDayOffset*86400;
-   const end=specialEventEndSeconds(e,start)+0-startDayOffset*86400;
+   const baseStart=specialEventStartSeconds(e);
+   const start=baseStart-startDayOffset*86400;
+   const end=(e.end_time?specialEventEndSeconds(e,baseStart):baseStart)-startDayOffset*86400;
    return {...e,_start:start,_end:end,_current:scheduleNow,_startDayOffset:startDayOffset,_live:scheduleNow>=start&&scheduleNow<end,_done:scheduleNow>=end,_next:scheduleNow<start};
   }).filter(Boolean);
   if(day){
