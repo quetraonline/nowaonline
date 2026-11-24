@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b10">
+<title>Yönetim Paneli Önizleme | Nowa Online World</title>
+<style>
+:root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7;--green:#5bd49a;--red:#f07878}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 32px));margin:auto}.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
+header{position:sticky;top:0;z-index:10;background:#0b0d12ed;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff12}.nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.08em}.mark{width:43px;height:43px;display:grid;place-items:center;border:1px solid #d8a84c;border-radius:12px;background:linear-gradient(145deg,#382919,#12151b);color:#e8c77f;font-weight:950;font-size:22px}.brand strong{display:block;font-size:14px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em}.nav-right{display:flex;align-items:center;gap:9px}.btn{border:1px solid var(--line);border-radius:10px;background:#18202b;color:var(--text);padding:10px 15px;font-size:12px;font-weight:800;transition:.2s}.btn:hover{border-color:var(--gold);transform:translateY(-1px)}.goldbtn{background:linear-gradient(135deg,#f0c66f,#b17a2e);color:#17120a;border:0}
+.preview-banner{margin:22px auto 0;padding:9px 13px;border:1px solid #72552d;border-radius:9px;background:#b8873b14;color:#e7bf72;font-size:11px;font-weight:850;letter-spacing:.08em;display:flex;align-items:center;gap:9px}.preview-banner i{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 9px var(--gold)}
+.page-head{padding:26px 0 18px}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#e7bf72;font-size:10px;font-weight:900;letter-spacing:.18em}.page-head h1{font-size:clamp(27px,4vw,36px);letter-spacing:-.04em;line-height:1.15;margin:8px 0 6px}.page-head p{margin:0;color:var(--muted);font-size:13px}
+.admin-shell{margin:0 auto 50px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#121720,#0f141c);box-shadow:0 18px 55px #0006;overflow:hidden}
+.admin-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 17px;border-bottom:1px solid var(--line);background:#121720}.admin-title{display:flex;align-items:center;gap:10px;min-width:0}.admin-symbol{width:35px;height:35px;display:grid;place-items:center;border:1px solid #72552d;border-radius:10px;background:#332719;color:var(--gold);font-size:16px}.admin-title strong{display:block;font-size:14px;letter-spacing:.04em}.admin-title small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.admin-status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;white-space:nowrap}.admin-status i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px #5bd49a88}
+.tabs{display:flex;gap:5px;padding:10px 12px;border-bottom:1px solid var(--line);background:#0e131b;overflow-x:auto;scrollbar-width:thin}.tab{flex:0 0 auto;border:1px solid transparent;border-radius:8px;background:transparent;color:#c2cad5;padding:9px 14px;font-size:12px;font-weight:800;white-space:nowrap}.tab:hover{background:#19212c;color:#fff}.tab.active{border-color:#8b6937;background:#332719;color:#f0cb7b}
+.panel{padding:17px}.panel[hidden]{display:none}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}.section-head h2{margin:0;font-size:16px;letter-spacing:-.02em}.section-head p{margin:3px 0 0;color:var(--muted);font-size:11px}.section-label{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:.12em}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.stat{padding:13px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;margin-top:4px;color:var(--gold);font-size:24px;line-height:1.2;font-weight:900}.stat em{display:block;margin-top:5px;color:var(--muted);font-size:10px;font-style:normal}
+.home-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.9fr);gap:12px;margin-top:13px}.box{min-width:0;padding:13px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}.box h3{margin:0 0 10px;font-size:13px;color:#f4f5f7}.publisher-row,.activity-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid #ffffff10}.publisher-row:first-of-type,.activity-row:first-of-type{border-top:0}.person{display:flex;align-items:center;gap:9px;min-width:0}.avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;border:1px solid #a87c3d;background:linear-gradient(145deg,#49341c,#202a36);color:#f3ca79;font-weight:900;font-size:12px}.person strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.person small,.activity-row small{display:block;color:var(--muted);font-size:10px}.live{padding:3px 7px;border:1px solid #a23d48;border-radius:5px;background:#4a1720;color:#ff9aa3;font-size:9px;font-weight:900;white-space:nowrap}.activity-row{align-items:flex-start;font-size:11px}.activity-dot{width:7px;height:7px;flex:0 0 7px;margin-top:5px;border-radius:50%;background:var(--gold)}
+.actions-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.action{display:flex;align-items:center;gap:9px;min-height:48px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#18202b;color:#e9edf3;font-size:11px;font-weight:800;text-align:left}.action:hover{border-color:var(--gold);background:#202a37}.action .ico{width:25px;height:25px;flex:0 0 25px;display:grid;place-items:center;border:1px solid #72552d;border-radius:7px;background:#332719;color:var(--gold);font-size:12px}
+.notice{margin-top:12px;padding:10px 12px;border:1px solid #72552d;border-radius:9px;background:#b8873b12;color:#d8c18f;font-size:11px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}.toolbar .left{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap}.field{min-height:37px;border:1px solid #354153;border-radius:8px;background:#0b1017;color:#f3f5f8;padding:8px 10px;outline:none;font-size:12px}.field:focus{border-color:var(--gold);box-shadow:0 0 0 2px #e8b95c22}.field.search{width:min(270px,100%)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px}.table{width:100%;border-collapse:collapse;min-width:570px;font-size:11px}.table th{padding:10px;text-align:left;color:var(--muted);background:#171e28;font-size:10px;font-weight:800;white-space:nowrap}.table td{padding:10px;border-top:1px solid #ffffff10;color:#e8ebf0}.table tr:hover td{background:#ffffff05}.table .person{gap:8px}.table .avatar{width:29px;height:29px;flex-basis:29px;font-size:10px}.tag{display:inline-block;padding:3px 7px;border:1px solid var(--line);border-radius:5px;color:#c7cfda;font-size:9px;white-space:nowrap}.tag.green{border-color:#275e48;background:#193222;color:#5bd49a}.tag.red{border-color:#71353e;background:#3a1820;color:#f07878}
+.action-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.sync-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.sync-card strong{display:block;font-size:12px}.sync-card small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.sync-card .btn{padding:8px 11px;white-space:nowrap}
+.settings-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.setting{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.setting strong{display:block;font-size:12px}.setting small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.switch{position:relative;width:37px;height:21px;flex:0 0 37px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:30px;background:#3a4554;transition:.2s}.slider:before{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;border-radius:50%;background:#d8dee7;transition:.2s}.switch input:checked+.slider{background:#8a682f}.switch input:checked+.slider:before{transform:translateX(16px);background:#fff0c2}
+.footer-note{padding:12px 17px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;background:#0e131b}
+@media(max-width:760px){.wrap{width:min(100% - 22px,1160px)}.nav{height:60px}.nav-right .btn:first-child{display:none}.brand strong{font-size:12px}.mark{width:38px;height:38px}.page-head{padding:21px 0 15px}.admin-top{padding:12px}.admin-status{font-size:0}.admin-status i{width:8px;height:8px}.panel{padding:12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:11px}.stat strong{font-size:22px}.home-grid{grid-template-columns:1fr}.actions-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.action-list,.settings-list{grid-template-columns:1fr}.tabs{padding:8px}.tab{padding:9px 12px}.section-head h2{font-size:15px}}
+@media(max-width:420px){.wrap{width:calc(100% - 18px)}.brand small{font-size:8px}.nav-right .btn{padding:8px 10px}.page-head h1{font-size:26px}.stats{gap:7px}.stat small{font-size:10px}.stat strong{font-size:21px}.actions-grid{gap:6px}.action{padding:8px;font-size:10px;gap:7px}.action .ico{width:23px;height:23px;flex-basis:23px}.section-head{align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header><div class="wrap nav">
+  <a class="brand" href="https://nowaonline.vercel.app"><span class="mark">N</span><span><strong>NOWA ONLINE WORLD</strong><small>QUETRAONLINE</small></span></a>
+  <div class="nav-right"><a class="btn" href="https://nowaonline.vercel.app">Siteye dön ↗</a><span class="btn goldbtn">Yönetici Önizlemesi</span></div>
+</div></header>
+<main class="wrap">
+  <div class="preview-banner"><i></i> TASARIM ÖNİZLEMESİ · DEMO VERİLERİ KULLANILIR · CANLI SİSTEME BAĞLI DEĞİLDİR</div>
+  <section class="page-head"><div class="eyebrow">NOWA ONLINE WORLD · QUETRAONLINE</div><h1>Yönetim Paneli</h1><p>Mevcut sitenin renkleri, yazı karakteri, boyutları ve arayüz diliyle hazırlanmış yönetim ekranı önizlemesi.</p></section>
+  <section class="admin-shell">
+    <div class="admin-top"><div class="admin-title"><span class="admin-symbol">N</span><span><strong>YÖNETİM PANELİ</strong><small>Nowa Online World · Sistem Yönetimi</small></span></div><div class="admin-status"><i></i> Sistem arayüzü hazır · <span>Önizleme</span></div></div>
+    <nav class="tabs" role="tablist" aria-label="Yönetim bölümleri">
+      <button class="tab active" data-tab="home" role="tab" aria-selected="true">Ana Sayfa</button>
+      <button class="tab" data-tab="publish" role="tab" aria-selected="false">Yayın</button>
+      <button class="tab" data-tab="update" role="tab" aria-selected="false">Güncelle</button>
+      <button class="tab" data-tab="show" role="tab" aria-selected="false">Göster</button>
+    </nav>
+    <section class="panel" data-panel="home">
+      <div class="section-head"><div><h2>Genel Bakış</h2><p>Yayıncı ve site yönetimine hızlı erişim</p></div><span class="section-label">ANA PANEL</span></div>
+      <div class="stats">
+        <div class="stat"><small>Toplam Yayıncı</small><strong>156</strong><em>Yayıncı kayıtları</em></div>
+        <div class="stat"><small>Canlı Yayıncı</small><strong>12</strong><em style="color:var(--green)">● Şu an aktif</em></div>
+        <div class="stat"><small>Yaklaşan Etkinlik</small><strong>8</strong><em>Haftalık ve özel</em></div>
+        <div class="stat"><small>Aktif Duyuru</small><strong>2</strong><em>Yayında</em></div>
+      </div>
+      <div class="box" style="margin-top:12px"><h3>Hızlı İşlemler</h3><div class="actions-grid">
+        <button class="action" data-go="publish"><span class="ico">＋</span>Yayıncı ekle / düzenle</button>
+        <button class="action" data-go="update"><span class="ico">↻</span>Platformları güncelle</button>
+        <button class="action" data-go="show"><span class="ico">◉</span>Site görünüm ayarları</button>
+        <button class="action" data-demo="Haftalık Etkinlikler"><span class="ico">▦</span>Haftalık Etkinlikler</button>
+        <button class="action" data-demo="Özel Etkinlikler"><span class="ico">☆</span>Özel Etkinlikler</button>
+        <button class="action" data-demo="Duyuru Yönetimi"><span class="ico">▤</span>Duyuru Yönetimi</button>
+      </div></div>
+      <div class="home-grid">
+        <div class="box"><h3>Canlı Yayıncılar <span style="color:var(--muted);font-weight:500">(12)</span></h3>
+          <div class="publisher-row"><div class="person"><span class="avatar">B</span><span><strong>BestOFMekansizz</strong><small>TikTok</small></span></div><span class="live">CANLI</span></div>
+          <div class="publisher-row"><div class="person"><span class="avatar">Y</span><span><strong>Yapaymage</strong><small>Twitch</small></span></div><span class="live">CANLI</span></div>
+          <div class="publisher-row"><div class="person"><span class="avatar">U</span><span><strong>UchihaTR</strong><small>TikTok · Twitch</small></span></div><span class="live">CANLI</span></div>
+          <div class="publisher-row"><div class="person"><span class="avatar">C</span><span><strong>CelikTravel</strong><small>Kick</small></span></div><span class="live">CANLI</span></div>
+        </div>
+        <div class="box"><h3>Son Yönetim İşlemleri</h3>
+          <div class="activity-row"><span class="activity-dot"></span><span style="flex:1">Yayıncı bilgisi düzenlendi<small>BestOFMekansizz · 2 dk önce</small></span></div>
+          <div class="activity-row"><span class="activity-dot"></span><span style="flex:1">Etkinlik güncellendi<small>Border War · 14 dk önce</small></span></div>
+          <div class="activity-row"><span class="activity-dot"></span><span style="flex:1">Duyuru yayınlandı<small>Bakım bilgilendirmesi · 37 dk önce</small></span></div>
+          <div class="activity-row"><span class="activity-dot"></span><span style="flex:1">Platform kontrolü tamamlandı<small>TikTok · 1 saat önce</small></span></div>
+        </div>
+      </div>
+      <div class="notice">Bu ekrandaki sayılar ve son işlem kayıtları yalnızca tasarımı göstermek için eklenmiş örnek verilerdir.</div>
+    </section>
+    <section class="panel" data-panel="publish" hidden>
+      <div class="section-head"><div><h2>Yayıncı Yönetimi</h2><p>Yayıncıları listeleme, arama ve düzenleme görünümü</p></div><button class="btn goldbtn" data-demo="Yeni yayıncı ekleme formu">＋ Yayıncı ekle</button></div>
+      <div class="toolbar"><div class="left"><input class="field search" id="pubSearch" placeholder="Yayıncı ara..."><select class="field"><option>Tüm serverlar</option><option>ARES</option><option>ATLAS</option></select></div><label style="font-size:11px;color:var(--muted);white-space:nowrap"><input type="checkbox" style="accent-color:#e8b95c;vertical-align:middle"> Gizli yayıncıları göster</label></div>
+      <div class="table-wrap"><table class="table" id="pubTable"><thead><tr><th>Yayıncı</th><th>Server</th><th>Platformlar</th><th>Durum</th><th>İşlem</th></tr></thead><tbody>
+        <tr><td><div class="person"><span class="avatar">B</span><strong>BestOFMekansizz</strong></div></td><td>ARES</td><td>TikTok</td><td><span class="tag green">Yayında</span></td><td><button class="btn" data-demo="Yayıncı düzenleme">Düzenle</button></td></tr>
+        <tr><td><div class="person"><span class="avatar">Y</span><strong>Yapaymage</strong></div></td><td>ATLAS</td><td>Twitch · TikTok</td><td><span class="tag green">Yayında</span></td><td><button class="btn" data-demo="Yayıncı düzenleme">Düzenle</button></td></tr>
+        <tr><td><div class="person"><span class="avatar">U</span><strong>UchihaTR</strong></div></td><td>ARES</td><td>TikTok</td><td><span class="tag">Aktif</span></td><td><button class="btn" data-demo="Yayıncı düzenleme">Düzenle</button></td></tr>
+        <tr><td><div class="person"><span class="avatar">C</span><strong>CelikTravel</strong></div></td><td>ATLAS</td><td>Kick</td><td><span class="tag">Aktif</span></td><td><button class="btn" data-demo="Yayıncı düzenleme">Düzenle</button></td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="panel" data-panel="update" hidden>
+      <div class="section-head"><div><h2>Platform Güncellemeleri</h2><p>Mevcut paneldeki senkronizasyon işlemlerinin yerleşimi</p></div><span class="section-label">GÜNCELLE</span></div>
+      <div class="action-list">
+        <div class="sync-card"><div><strong>TikTok Güncelle</strong><small>Profil ve yayıncı istatistiklerini kontrol et</small></div><button class="btn" data-demo="TikTok güncelleme">Başlat</button></div>
+        <div class="sync-card"><div><strong>Twitch Güncelle</strong><small>Canlı yayın ve EventSub kontrolü</small></div><button class="btn" data-demo="Twitch güncelleme">Başlat</button></div>
+        <div class="sync-card"><div><strong>Instagram Güncelle</strong><small>Son paylaşımları senkronize et</small></div><button class="btn" data-demo="Instagram güncelleme">Başlat</button></div>
+        <div class="sync-card"><div><strong>Twitch VOD Düzelt</strong><small>Yayın kayıtlarının sürelerini denetle</small></div><button class="btn" data-demo="Twitch VOD düzeltme">Başlat</button></div>
+        <div class="sync-card"><div><strong>Kick VOD Düzelt</strong><small>Kick yayın kayıtlarını kontrol et</small></div><button class="btn" data-demo="Kick VOD düzeltme">Başlat</button></div>
+      </div>
+      <div class="notice">Önizlemede güncelleme düğmeleri gerçek API çağrısı yapmaz.</div>
+    </section>
+    <section class="panel" data-panel="show" hidden>
+      <div class="section-head"><div><h2>Site Görünüm Ayarları</h2><p>Ana sayfada gösterilecek bölümlerin ayar yerleşimi</p></div><span class="section-label">GÖSTER</span></div>
+      <div class="settings-list">
+        <div class="setting"><span><strong>Türk bayrağı</strong><small>Bayrak görselini göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>Logo yanı bayrak</strong><small>Logonun yanında göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>Canlı yayıncılar kutusu</strong><small>Canlı yayın şeridini göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>YouTube videoları</strong><small>Son videolar bölümünü göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>Yaklaşan etkinlikler</strong><small>Etkinlik alanını göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>Özel etkinlikler</strong><small>Özel etkinlik alanını göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>Instagram bölümü</strong><small>Instagram paylaşımlarını göster</small></span><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+        <div class="setting"><span><strong>Duyuru alanı</strong><small>Ana sayfa duyurusunu göster</small></span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+      </div>
+      <div class="notice">Anahtarlar yalnızca arayüz önizlemesidir; mevcut site ayarlarını kaydetmez.</div>
+    </section>
+    <div class="footer-note">NOWA ONLINE WORLD · QuetraOnline · Yönetim paneli arayüz önizlemesi</div>
+  </section>
+</main>
+<script>
+const tabs=[...document.querySelectorAll(".tab")],panels=[...document.querySelectorAll("[data-panel]")];
+function activate(name){tabs.forEach(t=>{const on=t.dataset.tab===name;t.classList.toggle("active",on);t.setAttribute("aria-selected",String(on))});panels.forEach(p=>p.hidden=p.dataset.panel!==name);window.scrollTo({top:0,behavior:"smooth"})}
+tabs.forEach(t=>t.addEventListener("click",()=>activate(t.dataset.tab)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>activate(b.dataset.go)));
+document.querySelectorAll("[data-demo]").forEach(b=>b.addEventListener("click",()=>alert(b.dataset.demo+" · Bu sayfa yalnızca tasarım önizlemesidir.")));
+document.getElementById("pubSearch").addEventListener("input",e=>{const q=e.target.value.toLocaleLowerCase("tr-TR");document.querySelectorAll("#pubTable tbody tr").forEach(row=>row.hidden=!row.textContent.toLocaleLowerCase("tr-TR").includes(q))});
+</script>
+</body></html>
