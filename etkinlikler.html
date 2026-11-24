@@ -679,7 +679,8 @@ special:[
    // Events that started on the previous day and end after midnight.
    return Boolean(e.end_time)&&rawEnd>86400&&nowSeconds+86400<rawEnd;
   });
-  return hasPreviousDayEvent?-1:0;
+  const fridayOrSaturdayCarry=section==="special"&&(previous===5||previous===6);
+  return hasPreviousDayEvent&&!fridayOrSaturdayCarry?-1:0;
  }
  function sectionDateText(offset){
   const date=new Date(Date.now()+offset*86400000);
@@ -706,7 +707,7 @@ function specialDayDownloadMarkup(day){
   const list=section==="weekly"?weeklyList:specialList;
   const dayLabel=section==="weekly"?document.getElementById("weeklyEventsDay"):document.getElementById("specialEventsDay");
   const carryoverOffset=sectionCarryoverOffset(section,now,nowSeconds);
-  const defaultOffset=section==="special"?0:dayOffset+carryoverOffset;
+  const defaultOffset=dayOffset+carryoverOffset;
   if(selectedDays[section]===null)selectedDays[section]=(now.day+defaultOffset+7)%7;
   const weekStartMs=Date.UTC(now.year,now.month-1,now.date-now.day)-3*60*60*1000;
   const selectedDayWasUpdated=section==="special"&&selectedDays[section]<now.day&&events.some(e=>{if(e.section!==section||Number(e.weekday)!==selectedDays[section]||e.is_active===false)return false;const created=Date.parse(e.created_at||"")||0,updated=Date.parse(e.updated_at||"")||0;return Math.max(created,updated)>=weekStartMs;});
@@ -750,7 +751,7 @@ function specialDayDownloadMarkup(day){
    if(input)input.addEventListener("input",()=>{searchTerms[section]=input.value;const now=turkeyParts();renderList(section,0,now.seconds,now)});
   });
  }
- function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const currentDay=turkeyParts().day;if(currentDay!==lastRenderedDay){if(!manualDaySelection.weekly&&selectedDays.weekly===lastRenderedDay)selectedDays.weekly=currentDay;if(!manualDaySelection.special&&selectedDays.special===lastRenderedDay)selectedDays.special=currentDay;}if(boundary||currentDay!==lastRenderedDay)render()}
+ function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const now=turkeyParts(),currentDay=now.day;if(!manualDaySelection.weekly&&currentDay!==lastRenderedDay&&selectedDays.weekly===lastRenderedDay)selectedDays.weekly=currentDay;if(!manualDaySelection.special){const specialCarry=sectionCarryoverOffset("special",now,now.seconds);if(specialCarry===0)selectedDays.special=currentDay;else if(currentDay!==lastRenderedDay)selectedDays.special=lastRenderedDay;}if(boundary||currentDay!==lastRenderedDay)render()}
  async function load(){try{const [{data,error},{data:settings,error:settingsError}]=await Promise.all([subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time"),subpageDb.from("nowa_site_settings").select("special_day_image_0,special_day_download_visible_0,special_day_image_1,special_day_download_visible_1,special_day_image_2,special_day_download_visible_2,special_day_image_3,special_day_download_visible_3,special_day_image_4,special_day_download_visible_4,special_day_image_5,special_day_download_visible_5,special_day_image_6,special_day_download_visible_6").eq("id",true).maybeSingle()]);if(error)throw error;if(settingsError)console.warn("Özel gün görselleri yüklenemedi:",settingsError);specialDayMediaSettings=settings||{};events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
  bindEventFilters();load();refreshTimer=setInterval(tickCountdowns,1000);
 })();
