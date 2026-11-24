@@ -2053,9 +2053,8 @@ async function gameEventsAdminView(section="weekly"){
  if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}
  $("modalTitle").textContent="YÖNETİM PANELİ";
  const sectionTitle=section==="special"?"ÖZEL ETKİNLİKLER":"HAFTALIK ETKİNLİKLER";
- $("modalBody").innerHTML=adminSidebarMarkup("",section)+'<section class="admin-tab-panel admin-event-workspace"><div class="admin-event-workspace-head"><div><h4>'+sectionTitle+'</h4><p>Seçili etkinlik türünün kayıtlarını buradan düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn" type="button" id="backGameEvents">GERİ</button><button class="btn goldbtn" type="button" id="newGameEvent">+ Etkinlik ekle</button></div></div><div class="game-events-admin-list" id="gameEventsAdminList">Yükleniyor...</div></section>';
+ $("modalBody").innerHTML=adminSidebarMarkup("",section)+'<section class="admin-tab-panel admin-event-workspace"><div class="admin-event-workspace-head"><div><h4>'+sectionTitle+'</h4><p>Seçili etkinlik türünün kayıtlarını buradan düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn goldbtn" type="button" id="newGameEvent">+ Etkinlik ekle</button></div></div><div class="game-events-admin-list" id="gameEventsAdminList">Yükleniyor...</div></section>';
  bindAdminSidebarNavigation(true);
- $("backGameEvents").onclick=()=>adminView("home");
  $("newGameEvent").onclick=()=>gameEventForm(null,section);
  if(section==="special")await loadSpecialDayMediaSettings();
  await refreshGameEventsAdminList(section);
@@ -2142,7 +2141,7 @@ function gameEventForm(item=null,section=$("modal").dataset.gameEventSection||"w
  const initialName=item?.event_name||GAME_EVENT_PRESETS[initialSection][0].name;
  const initialImage=gameEventImageFor({section:initialSection,event_name:initialName,image_url:item?.image_url});
  const initialEventTitle=item?.event_title||item?.event_name||"";
- $("modalBody").innerHTML=adminSidebarMarkup("",section)+'<section class="admin-tab-panel admin-event-form-panel"><div class="admin-event-form-heading"><h4>'+ (item?"Etkinliği düzenle":"Yeni etkinlik ekle") +'</h4><p>Etkinlik bilgilerini düzenle ve kaydet.</p></div><form id="gameEventForm">'+`
+ $("modalBody").innerHTML=adminSidebarMarkup("",section)+'<section class="admin-tab-panel admin-event-form-panel"><div class="admin-event-form-heading"><div><h4>'+ (item?"Etkinliği düzenle":"Yeni etkinlik ekle") +'</h4><p>Etkinlik bilgilerini düzenle ve kaydet.</p></div><button class="btn" type="button" id="backGameEvents">GERİ</button></div><form id="gameEventForm">'+`
  <div class="formfield"><label>Etkinlik bölümü</label><select name="section" id="gameEventSection"><option value="weekly" ${initialSection==="weekly"?"selected":""}>Haftalık Etkinlikler</option><option value="special" ${initialSection==="special"?"selected":""}>Özel Etkinlikler</option></select></div>
  <div class="formfield"><label>Server Seçimi</label><select name="server"><option value="Ares - Atlas" ${(item?.server||"Ares - Atlas")==="Ares - Atlas"?"selected":""}>Ares - Atlas</option><option value="Ares" ${item?.server==="Ares"?"selected":""}>Ares</option><option value="Atlas" ${item?.server==="Atlas"?"selected":""}>Atlas</option></select></div>
  <div class="formfield"><label>Etkinlik günü</label><select name="weekday">${[1,2,3,4,5,6,0].map(i=>'<option value="'+i+'" '+(Number(item?.weekday??1)===i?"selected":"")+'>'+GAME_EVENT_DAYS[i]+'</option>').join("")}</select></div>
@@ -2155,6 +2154,7 @@ function gameEventForm(item=null,section=$("modal").dataset.gameEventSection||"w
  ${initialSection==="weekly"?(item?'<div class="checks"><label><input name="edit_all_weekdays" type="checkbox"> Tümünde Düzenle (Pazartesi–Pazar)</label></div>':'<div class="checks"><label><input name="add_all_weekdays" type="checkbox"> Tümüne Ekle (Pazartesi–Pazar)</label></div>'):''}
  <div class="actions"><button class="btn goldbtn" type="submit">Kaydet</button></div></form></section>`;
  bindAdminSidebarNavigation(true);
+ $("backGameEvents").onclick=()=>gameEventsAdminView(section);
  const sectionSelect=$("gameEventSection"),presetSelect=$("gameEventPreset"),preview=$("gameEventPresetPreview");
  const updatePreview=()=>{const preset=(GAME_EVENT_PRESETS[sectionSelect.value]||[]).find(x=>x.name===presetSelect.value);preview.innerHTML=preset&&preset.image?'<img src="'+esc(preset.image)+'" alt="Etkinlik görseli" style="width:76px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #a87c3d">':'Bu etkinlik için görsel dosyası belirtilmemiş.'};
  const endWeekdaySelect=$("gameEventEndWeekday"),endHint=$("gameEventEndHint");const updateEndDayVisibility=()=>{const special=sectionSelect.value==="special";endWeekdaySelect.disabled=!special;endWeekdaySelect.hidden=!special;document.getElementById("gameEventEndControls").style.gridTemplateColumns=special?"minmax(110px,1fr) minmax(150px,1.25fr)":"1fr";if(!special)endWeekdaySelect.value="";endHint.textContent=special?"Gün seçilmezse bitiş, mevcut saat hesabına göre belirlenir. Gün seçersen geri sayımlar seçilen gün ve saate göre hesaplanır.":"Haftalık etkinliklerde mevcut bitiş saati hesabı kullanılır."};updateEndDayVisibility();sectionSelect.onchange=()=>{presetSelect.innerHTML=gameEventPresetOptions(sectionSelect.value,"");presetSelect.value=GAME_EVENT_PRESETS[sectionSelect.value][0].name;updatePreview();updateEndDayVisibility()};
