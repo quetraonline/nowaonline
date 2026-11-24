@@ -609,7 +609,8 @@ loadTopNextWeeklyEvent();
  document.addEventListener("touchmove",event=>{
   if(!opened)return;
   const target=event.target instanceof Element?event.target:null;
-  if(target&&menu.contains(target))return;
+  // Only the actual drawer panel may scroll; touches on the dimmed page are always cancelled.
+  if(target&&target.closest("#siteMenu>.menu-dropdown"))return;
   event.preventDefault();
  },{capture:true,passive:false});
  // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
