@@ -3,7 +3,7 @@
 <head>
 <link rel="icon" type="image/png" href="/img/favicon.png">
 <link rel="shortcut icon" href="/img/favicon.png">
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
 <meta name="description" content="Nowa Online World - Resmi onaylı Yayıncı ve İçerik Üreticisi Listesi.">
 <title>Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi</title>
@@ -2105,5 +2105,29 @@ if(tiktokConnectionStatus){
 
 <script id="nowa-mobile-horizontal-overflow-fix">
 (()=>{const reset=()=>{if(window.matchMedia("(max-width:700px)").matches&&window.scrollX!==0)window.scrollTo({left:0,top:window.scrollY,behavior:"instant"});};reset();window.addEventListener("pageshow",reset);window.addEventListener("orientationchange",()=>setTimeout(reset,80));})();
+</script>
+<script id="nowa-ios-visual-viewport-alignment">
+(()=> {
+ const toggle=document.getElementById("mobileMenuToggle");
+ const drawer=document.querySelector("#siteMenu>.menu-dropdown");
+ const back=document.getElementById("backToTop");
+ if(!toggle||!drawer||!back)return;
+ const vv=window.visualViewport;
+ const sync=()=>{
+  if(!vv||!window.matchMedia("(max-width:700px)").matches)return;
+  // iOS Chrome/Safari can expose a visual viewport narrower or offset from the layout viewport.
+  // Compensate for that difference so fixed controls stay the same distance from the visible right edge.
+  const right=Math.max(0,window.innerWidth-(vv.offsetLeft+vv.width))+14;
+  const value=right+"px";
+  toggle.style.setProperty("right",value,"important");
+  drawer.style.setProperty("right",right-14+"px","important");
+  back.style.setProperty("right",value,"important");
+ };
+ sync();
+ vv?.addEventListener("resize",sync,{passive:true});
+ vv?.addEventListener("scroll",sync,{passive:true});
+ window.addEventListener("resize",sync,{passive:true});
+ window.addEventListener("orientationchange",()=>requestAnimationFrame(sync),{passive:true});
+})();
 </script>
 </body></html>
