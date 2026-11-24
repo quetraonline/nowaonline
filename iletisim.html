@@ -227,6 +227,10 @@ body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!importa
 @media(max-width:700px){.back-to-top{display:grid;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:10000;width:44px;height:44px}}
 body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 
+
+/* Mobilde sayfanın yatay eksende kayıp içerikten kopmasını engelle */
+@media(max-width:700px){html,body{width:100%;max-width:100%;overflow-x:hidden!important;overflow-x:clip!important}body{position:relative;left:auto;right:auto}}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -494,5 +498,9 @@ loadTopNextWeeklyEvent();
 
 <script id="nowa-back-to-top-controller">
 (()=>{const btn=document.getElementById("backToTop");if(!btn||btn.dataset.controllerReady==="1")return;btn.dataset.controllerReady="1";const getY=()=>Math.max(window.scrollY||0,document.documentElement?.scrollTop||0,document.body?.scrollTop||0,document.scrollingElement?.scrollTop||0);const update=()=>{const show=getY()>260&&!document.body.classList.contains("mobile-menu-open");btn.classList.toggle("visible",show);};const goTop=event=>{event?.preventDefault();const root=document.scrollingElement||document.documentElement;try{root.scrollTo({top:0,behavior:"smooth"});}catch(_){root.scrollTop=0;}document.body.scrollTop=0;document.documentElement.scrollTop=0;window.scrollTo({top:0,behavior:"smooth"});};btn.addEventListener("click",goTop);window.addEventListener("scroll",update,{passive:true});document.addEventListener("scroll",update,{passive:true,capture:true});document.body.addEventListener("scroll",update,{passive:true});document.documentElement.addEventListener("scroll",update,{passive:true});window.addEventListener("pageshow",update);window.addEventListener("resize",update);update();})();
+</script>
+
+<script id="nowa-mobile-horizontal-overflow-fix">
+(()=>{const reset=()=>{if(window.matchMedia("(max-width:700px)").matches&&window.scrollX!==0)window.scrollTo({left:0,top:window.scrollY,behavior:"instant"});};reset();window.addEventListener("pageshow",reset);window.addEventListener("orientationchange",()=>setTimeout(reset,80));})();
 </script>
 </body></html>
