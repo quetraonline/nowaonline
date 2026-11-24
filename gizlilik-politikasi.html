@@ -318,6 +318,9 @@ footer{padding-bottom:18px!important}
 @media(max-width:700px){main{padding-bottom:20px!important}}
 
 .menu-dropdown a.menu-login-link{color:#e8b95c;font-weight:900}.menu-dropdown a.menu-login-link:hover{background:#252f3c;color:#ffe09a}.menu-dropdown a.menu-login-link svg{color:#e8b95c}
+
+/* Keep the floating hamburger behind modal dialogs; restore it when they close. */
+body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 </style>
 
 </head>
