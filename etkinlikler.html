@@ -752,7 +752,7 @@ function specialDayDownloadMarkup(day){
    if(section==="special"&&rawStart<21600){start+=86400;end+=86400;}
    return {...e,start,end,current,_startDayOffset:startDayOffset,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).filter(Boolean).filter(e=>!term||[e.event_title,e.event_name,e.server].some(value=>String(value||"").toLocaleLowerCase("tr-TR").includes(term))).sort((a,b)=>{const priority=e=>e.live?0:e.done?2:1;return priority(a)-priority(b)||(a.live||!a.done?a.start-b.start:b.end-a.end)||Number(a.sort_order||0)-Number(b.sort_order||0)});
-  if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset)+" · "+selected.length+" Etkinlik";
+  if(dayLabel)dayLabel.innerHTML=sectionDateText(effectiveOffset)+' <span style="color:#ffffff">· '+selected.length+' Etkinlik</span>';
   if(!selected.length){list.innerHTML='<div class="event-empty">'+(term?'Aramanızla eşleşen etkinlik bulunamadı.':'Bu gün için planlanmış etkinlik bulunmuyor.')+'</div>'+(section==="special"?specialDayDownloadMarkup(effectiveDay):"");return}
   list.innerHTML=selected.map(e=>{
    const next=!e.live&&!e.done, image=eventImage(e), bg=image?'--event-bg:url(&quot;'+esc(image)+'&quot;)':'';
