@@ -33,11 +33,6 @@
       "permanent": true
     },
     {
-      "source": "/etkinlikler.html",
-      "destination": "/etkinliktakvimi",
-      "permanent": true
-    },
-    {
       "source": "/gizlilik-politikasi.html",
       "destination": "/gizlilik-politikasi",
       "permanent": true
@@ -45,11 +40,6 @@
     {
       "source": "/kullanim-sartlari.html",
       "destination": "/kullanim-sartlari",
-      "permanent": true
-    },
-    {
-      "source": "/etkinlikler",
-      "destination": "/etkinliktakvimi",
       "permanent": true
     }
   ],
