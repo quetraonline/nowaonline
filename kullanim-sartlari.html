@@ -576,9 +576,7 @@ refreshTopLivePublisherCount();
 setInterval(refreshTopLivePublisherCount,30000);
 
 </script>
-<script>
-(()=>{const menu=document.getElementById("siteMenu"),open=document.getElementById("mobileMenuToggle"),close=document.getElementById("mobileMenuClose");if(!menu||!open||!close)return;const setOpen=value=>{menu.classList.toggle("open",value);document.body.classList.toggle("mobile-menu-open",value);open.setAttribute("aria-expanded",String(value));open.setAttribute("aria-label",value?"Menüyü kapat":"Menüyü aç");};open.addEventListener("click",()=>setOpen(true));close.addEventListener("click",()=>setOpen(false));menu.querySelectorAll(".menu-dropdown a").forEach(a=>a.addEventListener("click",()=>setOpen(false)));document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});menu.addEventListener("click",e=>{if(e.target===menu)setOpen(false)});})();
-</script>
+
 
 <script id="nowa-active-menu-page">
 (()=>{const current=location.pathname.replace(/\/$/,"")||"/";document.querySelectorAll("#siteMenu .menu-dropdown a").forEach(link=>{const target=new URL(link.getAttribute("href"),location.origin).pathname.replace(/\/$/,"")||"/";if(target===current){link.setAttribute("aria-current","page");}else{link.removeAttribute("aria-current");}});})();
