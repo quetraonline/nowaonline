@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#090b10">
 <meta name="description" content="Nowa Online World - Resmi onaylı Yayıncı ve İçerik Üreticisi Listesi.">
 <title>Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi</title>
-<script>if(location.pathname.replace(/\/+$/,"")==="/yonetim")document.documentElement.classList.add("admin-route");</script>
+<script>const __nowaPath=location.pathname.replace(/\/+$/,"")||"/";if(__nowaPath==="/yonetim"||__nowaPath==="/giris")document.documentElement.classList.add("admin-route");if(__nowaPath==="/giris")document.documentElement.classList.add("admin-login-route");</script>
 <style>
 :root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7;--green:#5bd49a;--red:#f07878}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 32px));margin:auto}.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
@@ -1058,6 +1058,16 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
  html.admin-route #modal[data-view="login"] #modalBody{padding:18px 16px 22px!important}
 }
 
+
+/* Dedicated login route uses the same compact authenticated shell. */
+html.admin-login-route #modal[data-view="login"]{align-items:flex-start!important}
+html.admin-login-route #modal[data-view="login"] .modal{min-height:0!important;height:auto!important;max-height:none!important;margin:26px auto!important}
+html.admin-login-route #modal[data-view="login"] #modalBody{flex:0 0 auto!important;min-height:0!important;padding:22px 36px 30px!important;box-sizing:border-box!important}
+html.admin-login-route #modal[data-view="login"] #loginForm{width:100%;max-width:none;margin:0}
+html.admin-login-route #modal[data-view="login"] #loginForm .formfield{margin-bottom:14px}
+html.admin-login-route #modal[data-view="login"] #loginForm .actions{justify-content:flex-end;margin-top:16px}
+@media(max-width:760px){html.admin-login-route #modal[data-view="login"] .modal{margin:14px auto!important}html.admin-login-route #modal[data-view="login"] #modalBody{padding:18px 16px 22px!important}}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -1611,7 +1621,7 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
 }
 
 async function checkAdmin(user){if(!user){isAdmin=false;return false}const {data,error}=await db.from("nowa_admins").select("user_id").eq("user_id",user.id).maybeSingle();isAdmin=!!data&&!error;return isAdmin}
-function loginView(){$("modal").dataset.view="login";window.nowaModalViewToken=(window.nowaModalViewToken||0)+1; $("modalTitle").textContent="Kullanıcı Girişi";$("modalBody").innerHTML='<p class="notice"></p><form id="loginForm"><div class="formfield"><label>E-posta</label><input name="email" type="email" autocomplete="username" required placeholder="E-posta adresin"></div><div class="formfield"><label>Şifre</label><input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></div><div class="actions"><button class="btn goldbtn" type="submit">Giriş yap</button></div></form>'; $("modal").classList.add("open");$("loginForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const {data,error}=await db.auth.signInWithPassword({email:f.get("email"),password:f.get("password")});if(error){toast("Giriş başarısız: "+error.message);return}if(!await checkAdmin(data.user)){await db.auth.signOut();toast("Bu hesap yönetici yetkisine sahip değil.");return}adminView()}}
+function loginView(){$("modal").dataset.view="login";window.nowaModalViewToken=(window.nowaModalViewToken||0)+1; $("modalTitle").textContent="Kullanıcı Girişi";$("modalBody").innerHTML='<p class="notice"></p><form id="loginForm"><div class="formfield"><label>E-posta</label><input name="email" type="email" autocomplete="username" required placeholder="E-posta adresin"></div><div class="formfield"><label>Şifre</label><input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></div><div class="actions"><button class="btn goldbtn" type="submit">Giriş yap</button></div></form>'; $("modal").classList.add("open");$("loginForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const {data,error}=await db.auth.signInWithPassword({email:f.get("email"),password:f.get("password")});if(error){toast("Giriş başarısız: "+error.message);return}if(!await checkAdmin(data.user)){await db.auth.signOut();toast("Bu hesap yönetici yetkisine sahip değil.");return}location.replace("/yonetim")}}
 async function buildAdminStatsSnapshot(){
  const [{data:rows,error:pubError},{data:liveRows,error:liveError}]=await Promise.all([
   db.from("nowa_publishers").select("id,name,platform,platforms,is_published,server"),
@@ -2588,11 +2598,15 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
   try{
    const {data,error}=await db.auth.getUser();
    if(error)throw error;
-   if(await checkAdmin(data.user))await adminView();
-   else loginView();
+   const authorized=await checkAdmin(data.user);
+   const isLoginRoute=location.pathname.replace(/\\/+$/,"")==="/giris";
+   if(isLoginRoute){if(authorized)location.replace("/yonetim");else loginView()}
+   else if(authorized)await adminView();
+   else location.replace("/giris");
   }catch(error){
    console.error("Yönetim paneli açılış kontrolü:",error);
-   loginView();
+   if(location.pathname.replace(/\\/+$/,"")==="/giris")loginView();
+   else location.replace("/giris");
    toast("Yönetim paneli oturumu kontrol edilemedi. Tekrar giriş yapmayı deneyin.");
   }
  })();
