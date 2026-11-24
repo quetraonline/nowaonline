@@ -715,7 +715,7 @@ function specialDayDownloadMarkup(day){
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
   const term=searchTerms[section].trim().toLocaleLowerCase("tr-TR");
-  const selected=events.filter(e=>e.section===section&&e.is_active!==false).map(e=>{
+  const selected=events.filter(e=>e.section===section&&e.is_active!==false&&(section==="weekly"?Number(e.weekday)===effectiveDay:true)).map(e=>{
    const startDayOffset=section==="special"?(effectiveDay-Number(e.weekday)+7)%7:0;
    const rawStart=startSec(e),endOffset=section==="special"?endDayOffset(e,rawStart):(e.end_time&&endSec(e,rawStart)>rawStart?0:0);
    if(section==="special"&&startDayOffset>endOffset)return null;
