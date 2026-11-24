@@ -696,23 +696,19 @@ special:[
 
  function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);const raw=preset?.image||e.image_url||"";return raw?(raw.startsWith("/")?raw:"/"+raw):""}
  function sectionCarryoverOffset(section,now,nowSeconds){
+  if(section!=="special")return 0;
   const previous=(now.day+6)%7;
-  const hasPreviousDayEvent=events.some(e=>{
-   if(e.section!==section||e.is_active===false||Number(e.weekday)!==previous)return false;
+  // Cuma ve Cumartesi günleri mevcut özel etkinlik gün geçişi davranışı korunur.
+  if(now.day===5||now.day===6)return 0;
+  // Önceki günün gece yarısını aşan özel etkinliği varsa, yeni gün başladıktan
+  // sonra da önceki günün takvimini göster. Etkinlik bitince BİTTİ olarak kalır;
+  // aynı haftanın sonraki gününe/gelecek haftaya atlanmaz.
+  const hasOvernightEvent=events.some(e=>{
+   if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previous||!e.end_time)return false;
    const rawStart=startSec(e),rawEnd=endSec(e,rawStart);
-   if(section==="special"&&rawStart<21600){
-    // Early-morning special events belong to the previous day's schedule.
-    const shiftedEnd=rawEnd+86400;
-    return Boolean(e.end_time)&&nowSeconds<rawEnd&&shiftedEnd>86400;
-   }
-   // Events that started on the previous day and end after midnight.
-   return Boolean(e.end_time)&&rawEnd>86400&&nowSeconds+86400<rawEnd;
+   return rawEnd>86400 || rawStart<21600;
   });
-  // Özel etkinliklerde önceki günden devam eden aktif etkinliği yalnızca
-  // Cuma ve Cumartesi günlerinde yeni güne geçir; diğer günlerde etkinlik
-  // bitene kadar önceki günün takvimini göstermeye devam et.
-  const allowNextDayWhilePreviousActive=section==="special"&&(now.day===5||now.day===6);
-  return hasPreviousDayEvent&&!allowNextDayWhilePreviousActive?-1:0;
+  return hasOvernightEvent?-1:0;
  }
  function sectionDateText(offset){
   const date=new Date(Date.now()+offset*86400000);
@@ -747,9 +743,9 @@ function specialDayDownloadMarkup(day){
   }else if(selectedDays[section]===null){
    selectedDays[section]=(now.day+defaultOffset+7)%7;
   }
-  const weekStartMs=Date.UTC(now.year,now.month-1,now.date-now.day)-3*60*60*1000;
-  const selectedDayWasUpdated=section==="special"&&selectedDays[section]<now.day&&events.some(e=>{if(e.section!==section||Number(e.weekday)!==selectedDays[section]||e.is_active===false)return false;const created=Date.parse(e.created_at||"")||0,updated=Date.parse(e.updated_at||"")||0;return Math.max(created,updated)>=weekStartMs;});
-  const effectiveOffset=section==="special"?(selectedDayWasUpdated?selectedDays[section]-now.day+7:selectedDays[section]-now.day):(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
+  const effectiveOffset=section==="special"
+   ?(!manualDaySelection.special&&carryoverOffset===-1&&selectedDays.special===(now.day+6)%7?-1:(selectedDays.special-now.day+7)%7)
+   :(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
   const term=searchTerms[section].trim().toLocaleLowerCase("tr-TR");
@@ -789,7 +785,7 @@ function specialDayDownloadMarkup(day){
    if(input)input.addEventListener("input",()=>{searchTerms[section]=input.value;const now=turkeyParts();renderList(section,0,now.seconds,now)});
   });
  }
- function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const now=turkeyParts(),currentDay=now.day;if(!manualDaySelection.weekly&&currentDay!==lastRenderedDay&&selectedDays.weekly===lastRenderedDay)selectedDays.weekly=currentDay;if(!manualDaySelection.special){const specialCarry=sectionCarryoverOffset("special",now,now.seconds);if(specialCarry===0)selectedDays.special=currentDay;else selectedDays.special=(currentDay+6)%7;}if(boundary||currentDay!==lastRenderedDay)render()}
+ function tickCountdowns(){let boundary=false;document.querySelectorAll("[data-remaining],[data-live-remaining]").forEach(node=>{let left=Math.max(0,Number(node.dataset.remaining??node.dataset.liveRemaining??0)-1);if(node.hasAttribute("data-remaining"))node.dataset.remaining=left;else node.dataset.liveRemaining=left;node.textContent=duration(left);if(left===0)boundary=true});const now=turkeyParts(),currentDay=now.day;if(!manualDaySelection.weekly&&currentDay!==lastRenderedDay&&selectedDays.weekly===lastRenderedDay)selectedDays.weekly=currentDay;if(!manualDaySelection.special){const specialCarry=sectionCarryoverOffset("special",now,now.seconds);selectedDays.special=specialCarry===-1?(currentDay+6)%7:currentDay;}if(boundary||currentDay!==lastRenderedDay)render()}
  async function load(){try{const [{data,error},{data:settings,error:settingsError}]=await Promise.all([subpageDb.from("nowa_game_events").select("*").eq("is_active",true).order("sort_order").order("start_time"),subpageDb.from("nowa_site_settings").select("special_day_image_0,special_day_download_visible_0,special_day_image_1,special_day_download_visible_1,special_day_image_2,special_day_download_visible_2,special_day_image_3,special_day_download_visible_3,special_day_image_4,special_day_download_visible_4,special_day_image_5,special_day_download_visible_5,special_day_image_6,special_day_download_visible_6").eq("id",true).maybeSingle()]);if(error)throw error;if(settingsError)console.warn("Özel gün görselleri yüklenemedi:",settingsError);specialDayMediaSettings=settings||{};events=Array.isArray(data)?data:[];render()}catch(e){weeklyList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';specialList.innerHTML='<div class="event-empty">Etkinlikler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';console.warn("Etkinlik takvimi yüklenemedi:",e)}}
  bindEventFilters();load();refreshTimer=setInterval(tickCountdowns,1000);
 })();
