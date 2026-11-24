@@ -719,5 +719,26 @@ setInterval(refreshTopLivePublisherCount,30000);
 <script id="nowa-mobile-horizontal-overflow-fix">
 (()=>{const reset=()=>{if(window.matchMedia("(max-width:700px)").matches&&window.scrollX!==0)window.scrollTo({left:0,top:window.scrollY,behavior:"instant"});};reset();window.addEventListener("pageshow",reset);window.addEventListener("orientationchange",()=>setTimeout(reset,80));})();
 </script>
+
+<script id="nowa-desktop-menu-auto-close">
+(()=>{
+ const menu=document.getElementById("siteMenu");
+ if(!menu||menu.dataset.desktopAutoClose==="1")return;
+ menu.dataset.desktopAutoClose="1";
+ const isDesktop=()=>window.matchMedia("(min-width:701px)").matches;
+ const close=()=>{if(isDesktop()&&menu.classList.contains("open"))menu.classList.remove("open");};
+ document.addEventListener("click",event=>{
+  if(!isDesktop()||!menu.classList.contains("open"))return;
+  const target=event.target instanceof Element?event.target:null;
+  if(!target)return;
+  if(target.closest("#siteMenu .menu-dropdown a")){close();return;}
+  if(!target.closest("#siteMenu")&&!target.closest(".brand"))close();
+ },true);
+ window.addEventListener("scroll",close,{passive:true});
+ window.addEventListener("wheel",close,{passive:true});
+ window.addEventListener("touchmove",close,{passive:true});
+ window.addEventListener("resize",()=>{if(!isDesktop())close();},{passive:true});
+})();
+</script>
 </body>
 </html>
