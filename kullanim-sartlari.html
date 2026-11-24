@@ -626,6 +626,14 @@ setInterval(refreshTopLivePublisherCount,30000);
   toggle.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
   brand?.setAttribute("aria-expanded",String(open));
  };
+ // Android browsers may still scroll the document through the uncovered area beside the drawer.
+ // Cancel only touch gestures that start outside the drawer; keep drawer scrolling intact.
+ document.addEventListener("touchmove",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target&&menu.contains(target))return;
+  event.preventDefault();
+ },{capture:true,passive:false});
  // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
  document.addEventListener("click",event=>{
   const target=event.target instanceof Element?event.target:null;
