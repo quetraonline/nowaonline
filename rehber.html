@@ -453,38 +453,7 @@ async function loadTopNextWeeklyEvent(){
 loadTopNextWeeklyEvent();
 setInterval(updateTopNextWeeklyEvent,1000);
 </script>
-<script>
-async function refreshTopLivePublisherCount(){
- const output=document.getElementById("topLiveCount");
- if(!output)return;
- try{
-  const {data,error}=await subpageDb.from("nowa_stream_sessions").select("publisher_id").is("ended_at",null);
-  if(error)throw error;
-  const uniquePublishers=new Set((data||[]).map(row=>String(row.publisher_id)).filter(Boolean));
-  output.textContent=uniquePublishers.size+" yayıncı";
- }catch(error){console.warn("Canlı yayıncı sayısı alınamadı:",error);}
-}
-refreshTopLivePublisherCount();
-setInterval(refreshTopLivePublisherCount,30000);
-
-(()=>{
- const menu=document.getElementById("siteMenu");
- const trigger=document.getElementById("menuTrigger");
- if(!menu||!trigger||menu.dataset.menuReady==="true")return;
- menu.dataset.menuReady="true";
- const close=()=>{menu.classList.remove("open");trigger.setAttribute("aria-expanded","false");};
- trigger.addEventListener("click",event=>{
-  event.preventDefault();
-  event.stopPropagation();
-  const open=menu.classList.toggle("open");
-  trigger.setAttribute("aria-expanded",String(open));
- });
- document.addEventListener("click",event=>{if(!menu.contains(event.target))close();});
- document.addEventListener("keydown",event=>{if(event.key==="Escape")close();});
- window.addEventListener("scroll",()=>{if(menu.classList.contains("open"))close();},{passive:true});
-})();
-
-</script><script id="nowa-gold-cursor">
+<script id="nowa-gold-cursor">
 (() => {
   const finePointer = window.matchMedia('(pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -585,9 +554,7 @@ setInterval(refreshTopLivePublisherCount,30000);
 loadTopNextWeeklyEvent();
 </script>
 
-<script>
-(()=>{const menu=document.getElementById("siteMenu"),open=document.getElementById("mobileMenuToggle"),close=document.getElementById("mobileMenuClose");if(!menu||!open||!close)return;const setOpen=value=>{menu.classList.toggle("open",value);document.body.classList.toggle("mobile-menu-open",value);open.setAttribute("aria-expanded",String(value));open.setAttribute("aria-label",value?"Menüyü kapat":"Menüyü aç");};open.addEventListener("click",()=>setOpen(true));close.addEventListener("click",()=>setOpen(false));menu.querySelectorAll(".menu-dropdown a").forEach(a=>a.addEventListener("click",()=>setOpen(false)));document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});menu.addEventListener("click",e=>{if(e.target===menu)setOpen(false)});})();
-</script>
+
 
 <script id="nowa-active-menu-page">
 (()=>{const current=location.pathname.replace(/\/$/,"")||"/";document.querySelectorAll("#siteMenu .menu-dropdown a").forEach(link=>{const target=new URL(link.getAttribute("href"),location.origin).pathname.replace(/\/$/,"")||"/";if(target===current){link.setAttribute("aria-current","page");}else{link.removeAttribute("aria-current");}});})();
