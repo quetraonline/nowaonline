@@ -2599,13 +2599,13 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
    const {data,error}=await db.auth.getUser();
    if(error)throw error;
    const authorized=await checkAdmin(data.user);
-   const isLoginRoute=location.pathname.replace(/\\/+$/,"")==="/giris";
+   const isLoginRoute=location.pathname.replace(/\/+$/,"")==="/giris";
    if(isLoginRoute){if(authorized)location.replace("/yonetim");else loginView()}
    else if(authorized)await adminView();
    else location.replace("/giris");
   }catch(error){
    console.error("Yönetim paneli açılış kontrolü:",error);
-   if(location.pathname.replace(/\\/+$/,"")==="/giris")loginView();
+   if(location.pathname.replace(/\/+$/,"")==="/giris")loginView();
    else location.replace("/giris");
    toast("Yönetim paneli oturumu kontrol edilemedi. Tekrar giriş yapmayı deneyin.");
   }
