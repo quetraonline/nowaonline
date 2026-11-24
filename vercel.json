@@ -9,16 +9,16 @@
       "destination": "/rehber.html"
     },
     {
-      "source": "/etkinlikler",
-      "destination": "/etkinlikler.html"
-    },
-    {
       "source": "/gizlilik-politikasi",
       "destination": "/gizlilik-politikasi.html"
     },
     {
       "source": "/kullanim-sartlari",
       "destination": "/kullanim-sartlari.html"
+    },
+    {
+      "source": "/etkinliktakvimi",
+      "destination": "/etkinlikler.html"
     }
   ],
   "redirects": [
@@ -34,7 +34,7 @@
     },
     {
       "source": "/etkinlikler.html",
-      "destination": "/etkinlikler",
+      "destination": "/etkinliktakvimi",
       "permanent": true
     },
     {
@@ -45,6 +45,11 @@
     {
       "source": "/kullanim-sartlari.html",
       "destination": "/kullanim-sartlari",
+      "permanent": true
+    },
+    {
+      "source": "/etkinlikler",
+      "destination": "/etkinliktakvimi",
       "permanent": true
     }
   ],
