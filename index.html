@@ -669,6 +669,13 @@ header .menu-dropdown{z-index:40}
 body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 @media(max-width:700px){.back-to-top{right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:10000;width:42px;height:42px}}
 
+
+/* Mobilde yukarı çık düğmesi daima görünür; masaüstünde kaydırma eşiği korunur */
+@media(max-width:700px){
+ .back-to-top{display:grid!important;position:fixed!important;right:14px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 18px)!important;z-index:2147483000!important;width:44px!important;height:44px!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:none!important}
+ body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -1908,5 +1915,9 @@ if(tiktokConnectionStatus){
 
 <script id="nowa-back-to-top-fix">
 (()=>{const btn=document.getElementById("backToTop");if(!btn)return;const update=()=>btn.classList.toggle("visible",window.scrollY>260||document.documentElement.scrollTop>260);btn.addEventListener("click",event=>{event.preventDefault();window.scrollTo({top:0,behavior:"smooth"});});window.addEventListener("scroll",update,{passive:true});window.addEventListener("pageshow",update);window.addEventListener("resize",update);update();})();
+</script>
+
+<script id="nowa-back-to-top-mobile-final">
+(()=>{const btn=document.getElementById("backToTop");if(!btn)return;const goTop=()=>{const root=document.scrollingElement||document.documentElement;try{root.scrollTo({top:0,behavior:"smooth"});}catch(_){root.scrollTop=0;}window.scrollTo(0,0);};btn.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();goTop();});})();
 </script>
 </body></html>
