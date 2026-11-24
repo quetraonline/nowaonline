@@ -785,6 +785,13 @@ footer{padding-bottom:18px!important}
 }
 /* Keep the floating hamburger behind modal dialogs; restore it when they close. */
 body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+
+/* iPhone Chrome: prevent scrolled page content showing through the shared sticky header. */
+@media(max-width:700px){
+ header{background:#090b10!important;opacity:1!important;isolation:isolate!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+ header .top-info-strip{background:#090b10!important;opacity:1!important}
+ header .top-info-strip-content{background:transparent!important}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
