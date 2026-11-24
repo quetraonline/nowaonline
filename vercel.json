@@ -1,18 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/blog-yonetim",
-      "destination": "/blog-yonetim.html"
-    },
-    {
-      "source": "/blog",
-      "destination": "/blog.html"
-    },
-    {
-      "source": "/blog/:slug",
-      "destination": "/blog-yazi.html"
-    },
-    {
       "source": "/yonetim",
       "destination": "/index.html"
     },
@@ -60,33 +48,6 @@
     }
   ],
   "headers": [
-    {
-      "source": "/blog-yonetim",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/blog",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/blog-yazi.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
-        }
-      ]
-    },
     {
       "source": "/",
       "headers": [
