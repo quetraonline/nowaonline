@@ -662,7 +662,7 @@ special:[
  function clock(v){return String(v||"").slice(0,5)}
  function duration(s){s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0")}
  function startSec(e){const v=clock(e.start_time).split(":");return Number(v[0]||0)*3600+Number(v[1]||0)*60}
- function endSec(e,start){if(!e.end_time)return start;const v=clock(e.end_time).split(":");let end=Number(v[0]||0)*3600+Number(v[1]||0)*60;if(e.section==="special"&&e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!==""){let dayOffset=(Number(e.end_weekday)-Number(e.weekday)+7)%7;if(dayOffset===0&&end<start)dayOffset=7;return end+dayOffset*86400;}if(end<start)end+=86400;return end}
+ function endSec(e,start){if(!e.end_time)return start;const v=clock(e.end_time).split(":");let end=Number(v[0]||0)*3600+Number(v[1]||0)*60;if(e.section==="special"&&e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!==""){let dayOffset=(Number(e.end_weekday)-Number(e.weekday)+7)%7;if(dayOffset===0&&end<=start)dayOffset=7;return end+dayOffset*86400;}if(end<start)end+=86400;return end}
 
  function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);const raw=preset?.image||e.image_url||"";return raw?(raw.startsWith("/")?raw:"/"+raw):""}
  function sectionCarryoverOffset(section,now,nowSeconds){
