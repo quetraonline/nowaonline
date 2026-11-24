@@ -744,41 +744,29 @@ footer{padding-bottom:18px!important}
 
 .mobile-drawer-head-actions{display:flex;align-items:center;gap:26px;flex:0 0 auto}.menu-login-icon{display:grid;place-items:center;width:36px;height:36px;flex:0 0 36px;border:1px solid #b8873b88;border-radius:10px;background:#1b1b22;color:#e8b95c;text-decoration:none}.menu-login-icon svg{display:block;width:19px;height:19px;transform:translateX(-3px);fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.menu-login-icon:hover{background:#252f3c;color:#ffe09a;border-color:#e8b95c}
 
-/* Unified mobile controls: stable viewport alignment on iOS WebKit and Android Chrome. */
+/* Single source of truth for mobile fixed controls. Keep offsets in CSS; no runtime viewport compensation. */
 @media(max-width:700px){
  html,body{max-width:100%;overflow-x:clip!important}
  .mobile-menu-toggle{
-  position:fixed!important;
-  top:max(10px,env(safe-area-inset-top,0px))!important;
-  right:max(14px,env(safe-area-inset-right,0px))!important;
-  left:auto!important;
-  width:44px!important;height:44px!important;
-  margin:0!important;
-  z-index:2147483000!important;
-  transform:none!important;
-  touch-action:manipulation!important;
+  position:fixed!important;top:12px!important;right:14px!important;left:auto!important;
+  width:44px!important;height:44px!important;margin:0!important;
+  z-index:2147483000!important;transform:none!important;touch-action:manipulation!important;
  }
  #siteMenu>.menu-dropdown{
-  position:fixed!important;
-  top:0!important;right:0!important;bottom:0!important;left:auto!important;
-  width:min(88vw,420px)!important;
-  max-width:calc(100vw - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px))!important;
-  height:100dvh!important;max-height:100dvh!important;
-  box-sizing:border-box!important;
-  padding-left:max(12px,env(safe-area-inset-left,0px))!important;
-  padding-right:max(12px,env(safe-area-inset-right,0px))!important;
-  overflow-y:auto!important;
+  position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;
+  width:min(88vw,420px)!important;max-width:100vw!important;
+  height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+  box-sizing:border-box!important;overflow-y:auto!important;
   -webkit-overflow-scrolling:touch!important;
+  padding-left:12px!important;padding-right:12px!important;
  }
  .back-to-top{
-  right:max(14px,env(safe-area-inset-right,0px))!important;
-  bottom:max(18px,env(safe-area-inset-bottom,0px))!important;
-  left:auto!important;
+  position:fixed!important;right:14px!important;left:auto!important;
+  bottom:18px!important;bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;
   transform:none!important;
  }
  body.mobile-menu-open .mobile-menu-toggle{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 }
-
 /* Keep the floating hamburger behind modal dialogs; restore it when they close. */
 body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 </style>
@@ -2106,28 +2094,5 @@ if(tiktokConnectionStatus){
 <script id="nowa-mobile-horizontal-overflow-fix">
 (()=>{const reset=()=>{if(window.matchMedia("(max-width:700px)").matches&&window.scrollX!==0)window.scrollTo({left:0,top:window.scrollY,behavior:"instant"});};reset();window.addEventListener("pageshow",reset);window.addEventListener("orientationchange",()=>setTimeout(reset,80));})();
 </script>
-<script id="nowa-ios-visual-viewport-alignment">
-(()=> {
- const toggle=document.getElementById("mobileMenuToggle");
- const drawer=document.querySelector("#siteMenu>.menu-dropdown");
- const back=document.getElementById("backToTop");
- if(!toggle||!drawer||!back)return;
- const vv=window.visualViewport;
- const sync=()=>{
-  if(!vv||!window.matchMedia("(max-width:700px)").matches)return;
-  // iOS Chrome/Safari can expose a visual viewport narrower or offset from the layout viewport.
-  // Compensate for that difference so fixed controls stay the same distance from the visible right edge.
-  const right=Math.max(0,window.innerWidth-(vv.offsetLeft+vv.width))+14;
-  const value=right+"px";
-  toggle.style.setProperty("right",value,"important");
-  drawer.style.setProperty("right",right-14+"px","important");
-  back.style.setProperty("right",value,"important");
- };
- sync();
- vv?.addEventListener("resize",sync,{passive:true});
- vv?.addEventListener("scroll",sync,{passive:true});
- window.addEventListener("resize",sync,{passive:true});
- window.addEventListener("orientationchange",()=>requestAnimationFrame(sync),{passive:true});
-})();
-</script>
+
 </body></html>
