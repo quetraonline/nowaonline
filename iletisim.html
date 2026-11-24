@@ -594,4 +594,23 @@ loadTopNextWeeklyEvent();
 <script id="nowa-mobile-horizontal-overflow-fix">
 (()=>{const reset=()=>{if(window.matchMedia("(max-width:700px)").matches&&window.scrollX!==0)window.scrollTo({left:0,top:window.scrollY,behavior:"instant"});};reset();window.addEventListener("pageshow",reset);window.addEventListener("orientationchange",()=>setTimeout(reset,80));})();
 </script>
+
+<script>
+async function refreshTopLivePublisherCount(){
+ const output=document.getElementById("topLiveCount");
+ if(!output)return;
+ try{
+  const {data:published,error:publisherError}=await subpageDb.from("nowa_publishers").select("id").eq("is_published",true);
+  if(publisherError)throw publisherError;
+  const ids=(published||[]).map(row=>String(row.id)).filter(Boolean);
+  if(!ids.length){output.textContent="0 yayıncı";return;}
+  const {data:sessions,error}=await subpageDb.from("nowa_stream_sessions").select("publisher_id,platform").is("ended_at",null).in("publisher_id",ids).in("platform",["TikTok","Twitch","YouTube","Kick"]);
+  if(error)throw error;
+  const uniquePublishers=new Set((sessions||[]).map(row=>String(row.publisher_id)).filter(Boolean));
+  output.textContent=uniquePublishers.size+" yayıncı";
+ }catch(error){console.warn("Canlı yayıncı sayısı alınamadı:",error);}
+}
+refreshTopLivePublisherCount();
+setInterval(refreshTopLivePublisherCount,30000);
+</script>
 </body></html>
