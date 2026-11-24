@@ -703,10 +703,17 @@ header .menu-dropdown{z-index:40}
 
 /* Menü açıldığında sayfa üst alanını ve yukarı çık düğmesini koru */
 @media(max-width:700px){
- body.mobile-menu-open header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:10004!important}
+ body.mobile-menu-open header{position:sticky!important;top:0!important;z-index:10004!important}
  body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important;z-index:9998!important;transform:translateY(10px)!important}
 }
 
+
+/* Mobil menü son düzeltme: sayfa konumunu koru, başlığı akıştan çıkarma, butonu gizle */
+@media(max-width:700px){
+ html.mobile-menu-open,body.mobile-menu-open{overflow:hidden!important;overscroll-behavior:none!important}
+ body.mobile-menu-open header{position:sticky!important;top:0!important;left:auto!important;right:auto!important;width:100%!important;z-index:10004!important}
+ body.mobile-menu-open #backToTop,html.mobile-menu-open #backToTop{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -1318,35 +1325,29 @@ function publisherForm(p=null){$("modal").dataset.view="publisher-form";window.n
 function bindPublisherCardClicks(containerId){const el=$(containerId);if(!el)return;el.addEventListener("click",e=>{if(e.target.closest("a"))return;const card=e.target.closest("[data-publisher-id]");if(card){const p=publishers.find(x=>x.id===card.dataset.publisherId);if(p)openPublisherDetails(p)}});el.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const card=e.target.closest("[data-publisher-id]");if(card){e.preventDefault();const p=publishers.find(x=>x.id===card.dataset.publisherId);if(p)openPublisherDetails(p)}})}
 bindPublisherCardClicks("featuredCards");bindPublisherCardClicks("aresCards");bindPublisherCardClicks("atlasCards");
 const siteMenu=$("siteMenu"),menuTrigger=$("menuTrigger"),mobileToggle=document.getElementById("mobileMenuToggle"),mobileClose=document.getElementById("mobileMenuClose"),backToTopButton=document.getElementById("backToTop");
-const mobileScrollLock={y:0,active:false,position:"",top:"",left:"",right:"",width:"",overflow:""};
-const openMobileMenu=()=>{
- if(!mobileScrollLock.active){
-  mobileScrollLock.y=window.scrollY||document.documentElement.scrollTop||0;
-  const st=document.body.style;
-  mobileScrollLock.position=st.position;mobileScrollLock.top=st.top;mobileScrollLock.left=st.left;mobileScrollLock.right=st.right;mobileScrollLock.width=st.width;mobileScrollLock.overflow=st.overflow;
-  st.position="fixed";st.top=(-mobileScrollLock.y)+"px";st.left="0";st.right="0";st.width="100%";st.overflow="hidden";
-  mobileScrollLock.active=true;
+let mobileMenuOpen=false,savedHtmlOverflow="",savedBodyOverflow="";
+const setMobileMenuOpen=open=>{
+ if(open===mobileMenuOpen)return;
+ mobileMenuOpen=open;
+ if(open){
+  savedHtmlOverflow=document.documentElement.style.overflow;savedBodyOverflow=document.body.style.overflow;
+  document.documentElement.style.setProperty("overflow","hidden","important");document.body.style.setProperty("overflow","hidden","important");
+  document.documentElement.classList.add("mobile-menu-open");document.body.classList.add("mobile-menu-open");siteMenu.classList.add("open");
+  if(backToTopButton){backToTopButton.classList.remove("visible");backToTopButton.style.setProperty("display","none","important");}
+ }else{
+  siteMenu.classList.remove("open");document.documentElement.classList.remove("mobile-menu-open");document.body.classList.remove("mobile-menu-open");
+  document.documentElement.style.overflow=savedHtmlOverflow;document.body.style.overflow=savedBodyOverflow;
+  if(backToTopButton)backToTopButton.style.removeProperty("display");
  }
- siteMenu.classList.add("open");document.body.classList.add("mobile-menu-open");document.documentElement.classList.add("mobile-menu-open");
- if(backToTopButton){backToTopButton.style.setProperty("display","none","important");backToTopButton.classList.remove("visible");}
- mobileToggle?.setAttribute("aria-expanded","true");menuTrigger.setAttribute("aria-expanded","true");
+ menuTrigger.setAttribute("aria-expanded",String(open));mobileToggle?.setAttribute("aria-expanded",String(open));mobileToggle?.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
+ if(!open)window.dispatchEvent(new Event("scroll"));
 };
-const closeSiteMenu=()=>{
- siteMenu.classList.remove("open");document.body.classList.remove("mobile-menu-open");document.documentElement.classList.remove("mobile-menu-open");
- if(mobileScrollLock.active){
-  const st=document.body.style;
-  st.position=mobileScrollLock.position;st.top=mobileScrollLock.top;st.left=mobileScrollLock.left;st.right=mobileScrollLock.right;st.width=mobileScrollLock.width;st.overflow=mobileScrollLock.overflow;
-  mobileScrollLock.active=false;window.scrollTo(0,mobileScrollLock.y);
- }
- if(backToTopButton){backToTopButton.style.removeProperty("display");}
- menuTrigger.setAttribute("aria-expanded","false");mobileToggle?.setAttribute("aria-expanded","false");
- window.dispatchEvent(new Event("scroll"));
-};
-menuTrigger.onclick=()=>{const open=siteMenu.classList.toggle("open");menuTrigger.setAttribute("aria-expanded",String(open))};
-document.addEventListener("click",e=>{if(!siteMenu.contains(e.target)&&!mobileToggle?.contains(e.target))closeSiteMenu()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSiteMenu()});
-mobileToggle?.addEventListener("click",openMobileMenu);mobileClose?.addEventListener("click",closeSiteMenu);
-window.addEventListener("scroll",()=>{if(siteMenu.classList.contains("open")&&!mobileScrollLock.active)closeSiteMenu()},{passive:true});
+const closeSiteMenu=()=>setMobileMenuOpen(false);
+menuTrigger.onclick=()=>{if(window.matchMedia("(max-width:700px)").matches){setMobileMenuOpen(!mobileMenuOpen);return;}const open=siteMenu.classList.toggle("open");menuTrigger.setAttribute("aria-expanded",String(open));};
+mobileToggle?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();setMobileMenuOpen(!mobileMenuOpen);});
+mobileClose?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();closeSiteMenu();});
+document.addEventListener("click",e=>{if(mobileMenuOpen&&!siteMenu.contains(e.target)&&!mobileToggle?.contains(e.target))closeSiteMenu();else if(!mobileMenuOpen&&!siteMenu.contains(e.target))siteMenu.classList.remove("open");});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSiteMenu();});
 const heroLogoMenu=$("heroLogoMenu"),heroLogoMenuTrigger=$("heroLogoMenuTrigger");const closeHeroLogoMenu=()=>{heroLogoMenu.classList.remove("open");heroLogoMenuTrigger.setAttribute("aria-expanded","false")};heroLogoMenuTrigger.onclick=()=>{const open=heroLogoMenu.classList.toggle("open");heroLogoMenuTrigger.setAttribute("aria-expanded",String(open))};document.addEventListener("click",e=>{if(!heroLogoMenu.contains(e.target))closeHeroLogoMenu()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeHeroLogoMenu()});window.addEventListener("scroll",()=>{if(heroLogoMenu.classList.contains("open"))closeHeroLogoMenu()},{passive:true});
 $("adminOpen").onclick=async()=>{const {data}=await db.auth.getUser();if(await checkAdmin(data.user))adminView();else loginView()};const mobileSearchParams=new URLSearchParams(location.search);if(mobileSearchParams.get("focusSearch")==="1"){history.replaceState(null,"",location.pathname+location.hash);const mobileSearchField=$("search");if(mobileSearchField){mobileSearchField.focus({preventScroll:true});mobileSearchField.scrollIntoView({behavior:"smooth",block:"center"})}}
 
