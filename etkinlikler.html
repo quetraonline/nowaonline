@@ -716,7 +716,7 @@ function specialDayDownloadMarkup(day){
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
   const term=searchTerms[section].trim().toLocaleLowerCase("tr-TR");
-  const selected=events.filter(e=>e.section===section&&e.is_active!==false).map(e=>{
+  const selected=events.filter(e=>e.section===section&&e.is_active!==false&&(section==="weekly"?Number(e.weekday)===effectiveDay:true)).map(e=>{
    const hasExplicitEndDay=section==="special"&&e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="";
    const rawStart=startSec(e),rawEndClock=e.end_time?Number(clock(e.end_time).slice(0,2))*3600+Number(clock(e.end_time).slice(3,5))*60:null;
    const isOvernightCarry=section==="special"&&!hasExplicitEndDay&&effectiveDay===now.day&&Number(e.weekday)===(now.day+6)%7&&Boolean(e.end_time)&&rawEndClock<rawStart&&nowSeconds<rawEndClock;
