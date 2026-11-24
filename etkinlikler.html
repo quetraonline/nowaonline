@@ -753,7 +753,9 @@ function specialDayDownloadMarkup(day){
   const selected=events.filter(e=>e.section===section&&e.is_active!==false&&(section==="weekly"?Number(e.weekday)===effectiveDay:true)).map(e=>{
    const hasExplicitEndDay=section==="special"&&e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="";
    const rawStart=startSec(e),rawEndClock=e.end_time?Number(clock(e.end_time).slice(0,2))*3600+Number(clock(e.end_time).slice(3,5))*60:null;
-   const isOvernightCarry=section==="special"&&!hasExplicitEndDay&&effectiveDay===now.day&&Number(e.weekday)===(now.day+6)%7&&Boolean(e.end_time)&&rawEndClock<rawStart&&nowSeconds<rawEndClock;
+   // Önceki günün gece yarısını aşan etkinliği, seçili yeni günün
+   // listesine ekleme. Bu taşıma yalnızca Cuma/Cumartesi için uygulanır.
+   const isOvernightCarry=section==="special"&&(now.day===5||now.day===6)&&!hasExplicitEndDay&&effectiveDay===now.day&&Number(e.weekday)===(now.day+6)%7&&Boolean(e.end_time)&&rawEndClock<rawStart&&nowSeconds<rawEndClock;
    const startDayOffset=hasExplicitEndDay?(effectiveDay-Number(e.weekday)+7)%7:isOvernightCarry?1:0;
    const endOffset=hasExplicitEndDay?endDayOffset(e,rawStart):isOvernightCarry?1:0;
    if(section==="special"&&startDayOffset>endOffset)return null;
