@@ -307,6 +307,9 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
  #siteMenu.open:after{position:fixed!important;inset:0!important;z-index:2147481000!important}
  body.mobile-menu-open #backToTop,html.mobile-menu-open #backToTop{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 }
+
+/* Prevent the sticky header from being detached from document flow when drawer opens. */
+@media(max-width:700px){body.mobile-menu-open header{position:sticky!important;top:0!important;left:auto!important;right:auto!important;width:100%!important}}
 </style>
 
 </head>
