@@ -713,6 +713,14 @@ header .menu-dropdown{z-index:40}
  body.mobile-menu-open header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:10004!important}
  body.mobile-menu-open #backToTop,html.mobile-menu-open #backToTop{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 }
+/* Mobil erişim ve menü kilidi: hamburger her kaydırma konumunda erişilebilir */
+@media(max-width:700px){
+ .mobile-menu-toggle{position:fixed!important;top:12px!important;right:14px!important;z-index:10006!important;margin:0!important}
+ body.mobile-menu-open .mobile-menu-toggle{opacity:0!important;pointer-events:none!important}
+ body.mobile-menu-open header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:10004!important}
+ body.mobile-menu-open #backToTop,html.mobile-menu-open #backToTop{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+ .back-to-top.visible{display:grid!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -1324,22 +1332,22 @@ function publisherForm(p=null){$("modal").dataset.view="publisher-form";window.n
 function bindPublisherCardClicks(containerId){const el=$(containerId);if(!el)return;el.addEventListener("click",e=>{if(e.target.closest("a"))return;const card=e.target.closest("[data-publisher-id]");if(card){const p=publishers.find(x=>x.id===card.dataset.publisherId);if(p)openPublisherDetails(p)}});el.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const card=e.target.closest("[data-publisher-id]");if(card){e.preventDefault();const p=publishers.find(x=>x.id===card.dataset.publisherId);if(p)openPublisherDetails(p)}})}
 bindPublisherCardClicks("featuredCards");bindPublisherCardClicks("aresCards");bindPublisherCardClicks("atlasCards");
 const siteMenu=$("siteMenu"),menuTrigger=$("menuTrigger"),mobileToggle=document.getElementById("mobileMenuToggle"),mobileClose=document.getElementById("mobileMenuClose"),backToTopButton=document.getElementById("backToTop");
-let mobileMenuOpen=false,savedHtmlOverflow="",savedBodyOverflow="";
+let mobileMenuOpen=false,mobileSavedY=0,mobileSavedBody={};
 const setMobileMenuOpen=open=>{
- if(open===mobileMenuOpen)return;
- mobileMenuOpen=open;
+ if(open===mobileMenuOpen)return;mobileMenuOpen=open;
  if(open){
-  savedHtmlOverflow=document.documentElement.style.overflow;savedBodyOverflow=document.body.style.overflow;
-  document.documentElement.style.setProperty("overflow","hidden","important");document.body.style.setProperty("overflow","hidden","important");
+  mobileSavedY=Math.max(window.scrollY||0,document.scrollingElement?.scrollTop||0,document.documentElement.scrollTop||0,document.body.scrollTop||0);
+  mobileSavedBody={position:document.body.style.position,top:document.body.style.top,left:document.body.style.left,right:document.body.style.right,width:document.body.style.width,overflow:document.body.style.overflow};
+  Object.assign(document.body.style,{position:"fixed",top:(-mobileSavedY)+"px",left:"0",right:"0",width:"100%",overflow:"hidden"});
   document.documentElement.classList.add("mobile-menu-open");document.body.classList.add("mobile-menu-open");siteMenu.classList.add("open");
   if(backToTopButton){backToTopButton.classList.remove("visible");backToTopButton.style.setProperty("display","none","important");}
  }else{
   siteMenu.classList.remove("open");document.documentElement.classList.remove("mobile-menu-open");document.body.classList.remove("mobile-menu-open");
-  document.documentElement.style.overflow=savedHtmlOverflow;document.body.style.overflow=savedBodyOverflow;
+  Object.assign(document.body.style,mobileSavedBody);
   if(backToTopButton)backToTopButton.style.removeProperty("display");
+  window.scrollTo(0,mobileSavedY);
  }
- menuTrigger.setAttribute("aria-expanded",String(open));mobileToggle?.setAttribute("aria-expanded",String(open));mobileToggle?.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
- if(!open)window.dispatchEvent(new Event("scroll"));
+ menuTrigger.setAttribute("aria-expanded",String(open));mobileToggle?.setAttribute("aria-expanded",String(open));mobileToggle?.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");if(!open)window.dispatchEvent(new Event("scroll"));
 };
 const closeSiteMenu=()=>setMobileMenuOpen(false);
 menuTrigger.onclick=()=>{if(window.matchMedia("(max-width:700px)").matches){setMobileMenuOpen(!mobileMenuOpen);return;}const open=siteMenu.classList.toggle("open");menuTrigger.setAttribute("aria-expanded",String(open));};
