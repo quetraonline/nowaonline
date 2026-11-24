@@ -597,13 +597,14 @@ setInterval(refreshTopLivePublisherCount,30000);
  menu.dataset.drawerController="3";
  // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
  document.body.appendChild(toggle);
- let opened=false,savedY=0,savedBody={};
+ let opened=false,savedY=0,savedBody={},savedHtmlOverflow="";
  const root=()=>document.scrollingElement||document.documentElement;
  const setOpen=open=>{
   if(open===opened)return;
   opened=open;
   if(open){
-   savedY=root().scrollTop||window.scrollY||0;
+   savedY=window.scrollY||root().scrollTop||document.documentElement.scrollTop||0;
+   savedHtmlOverflow=document.documentElement.style.overflow;
    savedBody={position:document.body.style.position,top:document.body.style.top,left:document.body.style.left,right:document.body.style.right,width:document.body.style.width,overflow:document.body.style.overflow};
    document.body.style.position="fixed";
    document.body.style.top=(-savedY)+"px";
@@ -611,6 +612,8 @@ setInterval(refreshTopLivePublisherCount,30000);
    document.body.style.right="0";
    document.body.style.width="100%";
    document.body.style.overflow="hidden";
+   document.documentElement.style.overflow="hidden";
+   root().scrollTop=0;
    document.documentElement.classList.add("mobile-menu-open");
    document.body.classList.add("mobile-menu-open");
    menu.classList.add("open");
@@ -625,8 +628,9 @@ setInterval(refreshTopLivePublisherCount,30000);
    document.body.style.right=savedBody.right||"";
    document.body.style.width=savedBody.width||"";
    document.body.style.overflow=savedBody.overflow||"";
+   document.documentElement.style.overflow=savedHtmlOverflow;
    if(back)back.style.removeProperty("display");
-   requestAnimationFrame(()=>{root().scrollTop=savedY;window.scrollTo(0,savedY);window.dispatchEvent(new Event("scroll"));});
+   requestAnimationFrame(()=>{root().scrollTop=savedY;window.dispatchEvent(new Event("scroll"));});
   }
   toggle.setAttribute("aria-expanded",String(open));
   toggle.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
