@@ -589,9 +589,13 @@ async function refreshTopLivePublisherCount(){
  const output=document.getElementById("topLiveCount");
  if(!output)return;
  try{
-  const {data,error}=await subpageDb.from("nowa_stream_sessions").select("publisher_id").is("ended_at",null);
+  const {data:published,error:publisherError}=await subpageDb.from("nowa_publishers").select("id").eq("is_published",true);
+  if(publisherError)throw publisherError;
+  const ids=(published||[]).map(row=>String(row.id)).filter(Boolean);
+  if(!ids.length){output.textContent="0 yayıncı";return;}
+  const {data:sessions,error}=await subpageDb.from("nowa_stream_sessions").select("publisher_id,platform").is("ended_at",null).in("publisher_id",ids).in("platform",["TikTok","Twitch","YouTube","Kick"]);
   if(error)throw error;
-  const uniquePublishers=new Set((data||[]).map(row=>String(row.publisher_id)).filter(Boolean));
+  const uniquePublishers=new Set((sessions||[]).map(row=>String(row.publisher_id)).filter(Boolean));
   output.textContent=uniquePublishers.size+" yayıncı";
  }catch(error){console.warn("Canlı yayıncı sayısı alınamadı:",error);}
 }
