@@ -882,6 +882,46 @@ html.admin-route #toast{position:fixed;z-index:10000}
  html.admin-route #modal .admin-home-options,html.admin-route #modal .admin-update-options{grid-template-columns:1fr!important}
 }
 
+
+/* Sidebar and mobile tab icons: remove the old boxed glyph backgrounds. */
+html.admin-route #modal .admin-tab-button:before{
+ content:""!important;
+ display:block!important;
+ width:18px!important;
+ height:18px!important;
+ min-width:18px!important;
+ flex:0 0 18px!important;
+ border:0!important;
+ border-radius:0!important;
+ background:currentColor!important;
+ box-shadow:none!important;
+ color:inherit!important;
+ font-size:0!important;
+ line-height:0!important;
+ mask-repeat:no-repeat!important;
+ mask-position:center!important;
+ mask-size:contain!important;
+ -webkit-mask-repeat:no-repeat!important;
+ -webkit-mask-position:center!important;
+ -webkit-mask-size:contain!important;
+}
+html.admin-route #modal .admin-tab-button[data-admin-tab="home"]:before{
+ mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 10 9-7 9 7'/%3E%3Cpath d='M5 9v12h14V9'/%3E%3Cpath d='M9 21v-6h6v6'/%3E%3C/svg%3E")!important;
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 10 9-7 9 7'/%3E%3Cpath d='M5 9v12h14V9'/%3E%3Cpath d='M9 21v-6h6v6'/%3E%3C/svg%3E")!important;
+}
+html.admin-route #modal .admin-tab-button[data-admin-tab="publish"]:before{
+ mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E")!important;
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E")!important;
+}
+html.admin-route #modal .admin-tab-button[data-admin-tab="update"]:before{
+ mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 7v5h-5'/%3E%3Cpath d='M4 17v-5h5'/%3E%3Cpath d='M5.6 9A7 7 0 0 1 17.5 6.5L20 12'/%3E%3Cpath d='M4 12l2.5 5.5A7 7 0 0 0 18.4 15'/%3E%3C/svg%3E")!important;
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 7v5h-5'/%3E%3Cpath d='M4 17v-5h5'/%3E%3Cpath d='M5.6 9A7 7 0 0 1 17.5 6.5L20 12'/%3E%3Cpath d='M4 12l2.5 5.5A7 7 0 0 0 18.4 15'/%3E%3C/svg%3E")!important;
+}
+html.admin-route #modal .admin-tab-button[data-admin-tab="show"]:before{
+ mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E")!important;
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E")!important;
+}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
