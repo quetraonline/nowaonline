@@ -1725,11 +1725,18 @@ function adminSidebarMarkup(activeTab="home",activeEvent="",activeSetting=""){
  '</div>';
 }
 function bindAdminSidebarNavigation(routeMainTabs=false){
+ const nav=document.querySelector("#modal .admin-tabs");
+ if(nav&&Number.isFinite(window.nowaAdminSidebarScrollLeft))nav.scrollLeft=window.nowaAdminSidebarScrollLeft;
+ const rememberAdminSidebarScroll=()=>{
+  const current=document.querySelector("#modal .admin-tabs");
+  if(current)window.nowaAdminSidebarScrollLeft=current.scrollLeft;
+ };
  document.querySelectorAll("[data-admin-event-section]").forEach(button=>{
-  button.onclick=()=>gameEventsAdminView(button.dataset.adminEventSection);
+  button.onclick=()=>{rememberAdminSidebarScroll();gameEventsAdminView(button.dataset.adminEventSection)};
  });
  document.querySelectorAll("[data-admin-site-section]").forEach(button=>{
   button.onclick=()=>{
+   rememberAdminSidebarScroll();
    const section=button.dataset.adminSiteSection;
    if(section==="announcement")announcementAdminView();
    else if(section==="social")socialAdminView();
@@ -1738,7 +1745,7 @@ function bindAdminSidebarNavigation(routeMainTabs=false){
  });
  if(routeMainTabs){
   document.querySelectorAll(".admin-tabs [data-admin-tab]").forEach(button=>{
-   button.onclick=()=>adminView(button.dataset.adminTab);
+   button.onclick=()=>{rememberAdminSidebarScroll();adminView(button.dataset.adminTab)};
   });
  }
 }
