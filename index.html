@@ -928,7 +928,7 @@ html.admin-route #modal .admin-sidebar-group-title{
  display:block;margin:20px 10px 7px;padding-top:15px;border-top:1px solid #283342;
  color:#8895a7;font-size:9px;font-weight:950;letter-spacing:.16em;line-height:1.3
 }
-html.admin-route #modal .admin-sidebar-site-title{margin:14px 10px 7px;padding-top:0;border-top:0}
+html.admin-route #modal .admin-sidebar-site-title{margin:14px 10px 7px;padding-top:0;border-top:0}\nhtml.admin-route #modal .admin-event-sidebar-title{border-top:0;padding-top:0}
 html.admin-route #modal .admin-site-nav-button svg{fill:none}
 html.admin-route #modal .admin-site-workspace{grid-column:2;grid-row:1;min-width:0;padding:22px 23px}
 html.admin-route #modal .admin-site-workspace .adminlist{display:grid;gap:9px}
@@ -973,7 +973,7 @@ html.admin-route #modal .admin-event-form-panel #gameEventForm{max-width:860px}
   min-height:28px;border-top:0;border-left:1px solid #354052;color:#c1a365;
   font-size:8px;letter-spacing:.12em;white-space:nowrap
  }
- html.admin-route #modal .admin-sidebar-site-title{margin:0 2px 0 6px;padding:0 8px 0 10px}
+ html.admin-route #modal .admin-sidebar-site-title{margin:0 2px 0 6px;padding:0 8px 0 10px}\n html.admin-route #modal .admin-event-sidebar-title{border-left:0;padding-left:0}
  html.admin-route #modal .admin-site-nav-button{display:inline-flex;flex:0 0 auto;width:auto;min-height:37px;padding:7px 10px;font-size:10px;white-space:nowrap}
  html.admin-route #modal .admin-site-nav-button svg{width:15px;height:15px;flex-basis:15px}
  html.admin-route #modal .admin-site-workspace{grid-column:1;grid-row:2;padding:14px 12px 25px}
@@ -1655,7 +1655,7 @@ function adminSidebarMarkup(activeTab="home",activeEvent="",activeSetting=""){
   siteButton("announcement","Duyuru",'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>')+
   siteButton("social","Sosyal Medya",'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1"/>')+
   siteButton("stats","İstatistikler",'<path d="M3 3v18h18"/><path d="M8 16V9M13 16V5M18 16v-4"/>')+
-  '<div class="admin-sidebar-group-title">ETKİNLİKLER</div>'+
+  '<div class="admin-sidebar-group-title admin-event-sidebar-title">ETKİNLİKLER</div>'+
   eventButton("weekly","Haftalık Etkinlikler",'<rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 9.5h18M8 13h3M8 17h6"/>')+
   eventButton("special","Özel Etkinlikler",'<path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3L2.9 9.4l6.3-.9z"/>')+
  '</div>';
@@ -2053,8 +2053,9 @@ async function gameEventsAdminView(section="weekly"){
  if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}
  $("modalTitle").textContent="YÖNETİM PANELİ";
  const sectionTitle=section==="special"?"ÖZEL ETKİNLİKLER":"HAFTALIK ETKİNLİKLER";
- $("modalBody").innerHTML=adminSidebarMarkup("",section)+'<section class="admin-tab-panel admin-event-workspace"><div class="admin-event-workspace-head"><div><h4>'+sectionTitle+'</h4><p>Seçili etkinlik türünün kayıtlarını buradan düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn goldbtn" type="button" id="newGameEvent">+ Etkinlik ekle</button></div></div><div class="game-events-admin-list" id="gameEventsAdminList">Yükleniyor...</div></section>';
+ $("modalBody").innerHTML=adminSidebarMarkup("",section)+'<section class="admin-tab-panel admin-event-workspace"><div class="admin-event-workspace-head"><div><h4>'+sectionTitle+'</h4><p>Seçili etkinlik türünün kayıtlarını buradan düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn" type="button" id="backGameEvents">GERİ</button><button class="btn goldbtn" type="button" id="newGameEvent">+ Etkinlik ekle</button></div></div><div class="game-events-admin-list" id="gameEventsAdminList">Yükleniyor...</div></section>';
  bindAdminSidebarNavigation(true);
+ $("backGameEvents").onclick=()=>adminView("home");
  $("newGameEvent").onclick=()=>gameEventForm(null,section);
  if(section==="special")await loadSpecialDayMediaSettings();
  await refreshGameEventsAdminList(section);
