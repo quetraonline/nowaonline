@@ -243,6 +243,14 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
  #siteMenu>.menu-dropdown>a{padding-left:4px;padding-right:4px}
 }
 
+
+.back-to-top{position:fixed;right:18px;bottom:18px;z-index:10000;width:44px;height:44px;display:grid;place-items:center;border:1px solid #d8a84c;border-radius:13px;background:linear-gradient(145deg,#382919,#12151b);color:#f2c66f;box-shadow:0 8px 24px #0008;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px);transition:opacity .22s,transform .22s,visibility .22s}
+.back-to-top.visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+.back-to-top:hover{border-color:#f5d58c;transform:translateY(-3px)}
+.back-to-top svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+@media(max-width:700px){.back-to-top{right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:10000;width:42px;height:42px}}
+
 </style>
 
 </head>
@@ -305,6 +313,7 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
 <a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>Gizlilik Politikası</a>
 <a href="/kullanim-sartlari" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4Z"/><path d="M16 3v5h5M8 12h8M8 16h8"/></svg>Kullanım Şartları</a>
 </div></div></div></footer>
+<button class="back-to-top" id="backToTop" type="button" aria-label="Yukarı çık" title="Yukarı çık"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <script>
 const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
@@ -525,6 +534,10 @@ setInterval(refreshTopLivePublisherCount,30000);
 
 <script id="nowa-active-menu-page">
 (()=>{const current=location.pathname.replace(/\/$/,"")||"/";document.querySelectorAll("#siteMenu .menu-dropdown a").forEach(link=>{const target=new URL(link.getAttribute("href"),location.origin).pathname.replace(/\/$/,"")||"/";if(target===current){link.setAttribute("aria-current","page");}else{link.removeAttribute("aria-current");}});})();
+</script>
+
+<script id="nowa-back-to-top-fix">
+(()=>{const btn=document.getElementById("backToTop");if(!btn)return;const update=()=>btn.classList.toggle("visible",window.scrollY>260||document.documentElement.scrollTop>260);btn.addEventListener("click",event=>{event.preventDefault();window.scrollTo({top:0,behavior:"smooth"});});window.addEventListener("scroll",update,{passive:true});window.addEventListener("pageshow",update);window.addEventListener("resize",update);update();})();
 </script>
 </body>
 </html>
