@@ -1006,6 +1006,24 @@ html.admin-route #modal .admin-event-form-panel #gameEventForm{max-width:860px}
 }
 
 
+
+/* Mobil yönetim paneli: Ana Sayfa, Güncelle ve Göster sekmelerinde menü altındaki gereksiz dikey boşluğu kaldır. */
+@media(max-width:760px){
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-tab-button.is-active[data-admin-tab="home"]),
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-tab-button.is-active[data-admin-tab="update"]),
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-tab-button.is-active[data-admin-tab="show"]){
+  grid-template-rows:max-content 1fr!important;
+  align-content:start!important;
+  min-height:calc(100vh - 61px)!important;
+ }
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-tab-button.is-active[data-admin-tab="home"])>.admin-tabs,
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-tab-button.is-active[data-admin-tab="update"])>.admin-tabs,
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-tab-button.is-active[data-admin-tab="show"])>.admin-tabs{
+  align-self:start!important;
+  height:max-content!important;
+ }
+}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
