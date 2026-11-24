@@ -1317,7 +1317,36 @@ function publisherForm(p=null){$("modal").dataset.view="publisher-form";window.n
 
 function bindPublisherCardClicks(containerId){const el=$(containerId);if(!el)return;el.addEventListener("click",e=>{if(e.target.closest("a"))return;const card=e.target.closest("[data-publisher-id]");if(card){const p=publishers.find(x=>x.id===card.dataset.publisherId);if(p)openPublisherDetails(p)}});el.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const card=e.target.closest("[data-publisher-id]");if(card){e.preventDefault();const p=publishers.find(x=>x.id===card.dataset.publisherId);if(p)openPublisherDetails(p)}})}
 bindPublisherCardClicks("featuredCards");bindPublisherCardClicks("aresCards");bindPublisherCardClicks("atlasCards");
-const siteMenu=$("siteMenu"),menuTrigger=$("menuTrigger"),mobileToggle=document.getElementById("mobileMenuToggle"),mobileClose=document.getElementById("mobileMenuClose");const closeSiteMenu=()=>{siteMenu.classList.remove("open");document.body.classList.remove("mobile-menu-open");document.documentElement.classList.remove("mobile-menu-open");menuTrigger.setAttribute("aria-expanded","false");mobileToggle?.setAttribute("aria-expanded","false")};menuTrigger.onclick=()=>{const open=siteMenu.classList.toggle("open");menuTrigger.setAttribute("aria-expanded",String(open))};document.addEventListener("click",e=>{if(!siteMenu.contains(e.target)&&!mobileToggle?.contains(e.target))closeSiteMenu()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSiteMenu()});mobileToggle?.addEventListener("click",()=>{siteMenu.classList.add("open");document.body.classList.add("mobile-menu-open");document.documentElement.classList.add("mobile-menu-open");mobileToggle.setAttribute("aria-expanded","true");menuTrigger.setAttribute("aria-expanded","true")});mobileClose?.addEventListener("click",closeSiteMenu);window.addEventListener("scroll",()=>{if(siteMenu.classList.contains("open"))closeSiteMenu()},{passive:true});
+const siteMenu=$("siteMenu"),menuTrigger=$("menuTrigger"),mobileToggle=document.getElementById("mobileMenuToggle"),mobileClose=document.getElementById("mobileMenuClose"),backToTopButton=document.getElementById("backToTop");
+const mobileScrollLock={y:0,active:false,position:"",top:"",left:"",right:"",width:"",overflow:""};
+const openMobileMenu=()=>{
+ if(!mobileScrollLock.active){
+  mobileScrollLock.y=window.scrollY||document.documentElement.scrollTop||0;
+  const st=document.body.style;
+  mobileScrollLock.position=st.position;mobileScrollLock.top=st.top;mobileScrollLock.left=st.left;mobileScrollLock.right=st.right;mobileScrollLock.width=st.width;mobileScrollLock.overflow=st.overflow;
+  st.position="fixed";st.top=(-mobileScrollLock.y)+"px";st.left="0";st.right="0";st.width="100%";st.overflow="hidden";
+  mobileScrollLock.active=true;
+ }
+ siteMenu.classList.add("open");document.body.classList.add("mobile-menu-open");document.documentElement.classList.add("mobile-menu-open");
+ if(backToTopButton){backToTopButton.style.setProperty("display","none","important");backToTopButton.classList.remove("visible");}
+ mobileToggle?.setAttribute("aria-expanded","true");menuTrigger.setAttribute("aria-expanded","true");
+};
+const closeSiteMenu=()=>{
+ siteMenu.classList.remove("open");document.body.classList.remove("mobile-menu-open");document.documentElement.classList.remove("mobile-menu-open");
+ if(mobileScrollLock.active){
+  const st=document.body.style;
+  st.position=mobileScrollLock.position;st.top=mobileScrollLock.top;st.left=mobileScrollLock.left;st.right=mobileScrollLock.right;st.width=mobileScrollLock.width;st.overflow=mobileScrollLock.overflow;
+  mobileScrollLock.active=false;window.scrollTo(0,mobileScrollLock.y);
+ }
+ if(backToTopButton){backToTopButton.style.removeProperty("display");}
+ menuTrigger.setAttribute("aria-expanded","false");mobileToggle?.setAttribute("aria-expanded","false");
+ window.dispatchEvent(new Event("scroll"));
+};
+menuTrigger.onclick=()=>{const open=siteMenu.classList.toggle("open");menuTrigger.setAttribute("aria-expanded",String(open))};
+document.addEventListener("click",e=>{if(!siteMenu.contains(e.target)&&!mobileToggle?.contains(e.target))closeSiteMenu()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSiteMenu()});
+mobileToggle?.addEventListener("click",openMobileMenu);mobileClose?.addEventListener("click",closeSiteMenu);
+window.addEventListener("scroll",()=>{if(siteMenu.classList.contains("open")&&!mobileScrollLock.active)closeSiteMenu()},{passive:true});
 const heroLogoMenu=$("heroLogoMenu"),heroLogoMenuTrigger=$("heroLogoMenuTrigger");const closeHeroLogoMenu=()=>{heroLogoMenu.classList.remove("open");heroLogoMenuTrigger.setAttribute("aria-expanded","false")};heroLogoMenuTrigger.onclick=()=>{const open=heroLogoMenu.classList.toggle("open");heroLogoMenuTrigger.setAttribute("aria-expanded",String(open))};document.addEventListener("click",e=>{if(!heroLogoMenu.contains(e.target))closeHeroLogoMenu()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeHeroLogoMenu()});window.addEventListener("scroll",()=>{if(heroLogoMenu.classList.contains("open"))closeHeroLogoMenu()},{passive:true});
 $("adminOpen").onclick=async()=>{const {data}=await db.auth.getUser();if(await checkAdmin(data.user))adminView();else loginView()};const mobileSearchParams=new URLSearchParams(location.search);if(mobileSearchParams.get("focusSearch")==="1"){history.replaceState(null,"",location.pathname+location.hash);const mobileSearchField=$("search");if(mobileSearchField){mobileSearchField.focus({preventScroll:true});mobileSearchField.scrollIntoView({behavior:"smooth",block:"center"})}}
 
