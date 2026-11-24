@@ -257,6 +257,10 @@ body.mobile-menu-open .back-to-top{opacity:0!important;visibility:hidden!importa
 /* Mobilde sayfanın yatay eksende kayıp içerikten kopmasını engelle */
 @media(max-width:700px){html,body{width:100%;max-width:100%;overflow-x:hidden!important;overflow-x:clip!important}body{position:relative;left:auto;right:auto}}
 
+
+/* Mobil menü panelini ekranın alt güvenli alanına kadar uzat */
+@media(max-width:700px){#siteMenu>.menu-dropdown{top:0!important;bottom:calc(-1 * env(safe-area-inset-bottom,0px))!important;height:calc(100dvh + env(safe-area-inset-bottom,0px) + 24px)!important;max-height:none!important;min-height:100vh!important;padding-bottom:calc(34px + env(safe-area-inset-bottom,0px))!important}}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
