@@ -737,7 +737,6 @@ function specialDayDownloadMarkup(day){
   const weekStartMs=Date.UTC(now.year,now.month-1,now.date-now.day)-3*60*60*1000;
   const selectedDayWasUpdated=section==="special"&&selectedDays[section]<now.day&&events.some(e=>{if(e.section!==section||Number(e.weekday)!==selectedDays[section]||e.is_active===false)return false;const created=Date.parse(e.created_at||"")||0,updated=Date.parse(e.updated_at||"")||0;return Math.max(created,updated)>=weekStartMs;});
   const effectiveOffset=section==="special"?(selectedDayWasUpdated?selectedDays[section]-now.day+7:selectedDays[section]-now.day):(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
-  if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset);
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
   const term=searchTerms[section].trim().toLocaleLowerCase("tr-TR");
@@ -753,6 +752,7 @@ function specialDayDownloadMarkup(day){
    if(section==="special"&&rawStart<21600){start+=86400;end+=86400;}
    return {...e,start,end,current,_startDayOffset:startDayOffset,live:current>=start&&current<end,done:current>=end,remaining:Math.max(0,start-current),left:Math.max(0,end-current)};
   }).filter(Boolean).filter(e=>!term||[e.event_title,e.event_name,e.server].some(value=>String(value||"").toLocaleLowerCase("tr-TR").includes(term))).sort((a,b)=>{const priority=e=>e.live?0:e.done?2:1;return priority(a)-priority(b)||(a.live||!a.done?a.start-b.start:b.end-a.end)||Number(a.sort_order||0)-Number(b.sort_order||0)});
+  if(dayLabel)dayLabel.textContent=sectionDateText(effectiveOffset)+" · "+selected.length+" Etkinlik";
   if(!selected.length){list.innerHTML='<div class="event-empty">'+(term?'Aramanızla eşleşen etkinlik bulunamadı.':'Bu gün için planlanmış etkinlik bulunmuyor.')+'</div>'+(section==="special"?specialDayDownloadMarkup(effectiveDay):"");return}
   list.innerHTML=selected.map(e=>{
    const next=!e.live&&!e.done, image=eventImage(e), bg=image?'--event-bg:url(&quot;'+esc(image)+'&quot;)':'';
