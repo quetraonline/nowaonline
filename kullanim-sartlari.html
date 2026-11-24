@@ -288,6 +288,14 @@ h1{margin:18px 0 10px;font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;line
  body.mobile-menu-open header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:10004!important}
  body.mobile-menu-open #backToTop,html.mobile-menu-open #backToTop{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 }
+/* Mobil erişim ve menü kilidi: hamburger her kaydırma konumunda erişilebilir */
+@media(max-width:700px){
+ .mobile-menu-toggle{position:fixed!important;top:12px!important;right:14px!important;z-index:10006!important;margin:0!important}
+ body.mobile-menu-open .mobile-menu-toggle{opacity:0!important;pointer-events:none!important}
+ body.mobile-menu-open header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:10004!important}
+ body.mobile-menu-open #backToTop,html.mobile-menu-open #backToTop{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+ .back-to-top.visible{display:grid!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+}
 </style>
 
 </head>
@@ -571,44 +579,32 @@ setInterval(refreshTopLivePublisherCount,30000);
 
 <script id="nowa-mobile-drawer-controller">
 (()=>{
- const menu=document.getElementById("siteMenu");
- const toggle=document.getElementById("mobileMenuToggle");
- const closeButton=document.getElementById("mobileMenuClose");
- const brand=document.getElementById("menuTrigger");
- const back=document.getElementById("backToTop");
- if(!menu||!toggle||menu.dataset.drawerController==="1")return;
- menu.dataset.drawerController="1";
- let savedHtmlOverflow="",savedBodyOverflow="",opened=false;
- const setOpen=(open)=>{
+ const menu=document.getElementById("siteMenu"),toggle=document.getElementById("mobileMenuToggle"),closeButton=document.getElementById("mobileMenuClose"),brand=document.getElementById("menuTrigger"),back=document.getElementById("backToTop");
+ if(!menu||!toggle||menu.dataset.drawerController==="2")return;
+ menu.dataset.drawerController="2";
+ let opened=false,savedY=0,saved={};
+ const setOpen=open=>{
   if(open===opened)return;
   opened=open;
   if(open){
-   savedHtmlOverflow=document.documentElement.style.overflow;
-   savedBodyOverflow=document.body.style.overflow;
-   document.documentElement.style.setProperty("overflow","hidden","important");
-   document.body.style.setProperty("overflow","hidden","important");
-   document.documentElement.classList.add("mobile-menu-open");
-   document.body.classList.add("mobile-menu-open");
-   menu.classList.add("open");
+   savedY=Math.max(window.scrollY||0,document.scrollingElement?.scrollTop||0,document.documentElement.scrollTop||0,document.body.scrollTop||0);
+   saved={position:document.body.style.position,top:document.body.style.top,left:document.body.style.left,right:document.body.style.right,width:document.body.style.width,overflow:document.body.style.overflow};
+   document.body.style.position="fixed";document.body.style.top=(-savedY)+"px";document.body.style.left="0";document.body.style.right="0";document.body.style.width="100%";document.body.style.overflow="hidden";
+   document.documentElement.classList.add("mobile-menu-open");document.body.classList.add("mobile-menu-open");menu.classList.add("open");
    if(back){back.classList.remove("visible");back.style.setProperty("display","none","important");}
   }else{
-   menu.classList.remove("open");
-   document.documentElement.classList.remove("mobile-menu-open");
-   document.body.classList.remove("mobile-menu-open");
-   document.documentElement.style.overflow=savedHtmlOverflow;
-   document.body.style.overflow=savedBodyOverflow;
+   menu.classList.remove("open");document.documentElement.classList.remove("mobile-menu-open");document.body.classList.remove("mobile-menu-open");
+   document.body.style.position=saved.position;document.body.style.top=saved.top;document.body.style.left=saved.left;document.body.style.right=saved.right;document.body.style.width=saved.width;document.body.style.overflow=saved.overflow;
    if(back)back.style.removeProperty("display");
+   window.scrollTo(0,savedY);
   }
-  toggle.setAttribute("aria-expanded",String(open));
-  toggle.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
-  brand?.setAttribute("aria-expanded",String(open));
-  if(!open)window.dispatchEvent(new Event("scroll"));
+  toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");brand?.setAttribute("aria-expanded",String(open));
  };
- toggle.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();setOpen(!opened);});
- closeButton?.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();setOpen(false);});
- document.addEventListener("click",event=>{if(opened&&!menu.contains(event.target)&&!toggle.contains(event.target))setOpen(false);});
- document.addEventListener("keydown",event=>{if(event.key==="Escape")setOpen(false);});
- menu.querySelectorAll(".menu-dropdown a").forEach(link=>link.addEventListener("click",()=>setOpen(false)));
+ toggle.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();setOpen(!opened);});
+ closeButton?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();setOpen(false);});
+ document.addEventListener("click",e=>{if(opened&&!menu.contains(e.target)&&!toggle.contains(e.target))setOpen(false);});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false);});
+ menu.querySelectorAll(".menu-dropdown a").forEach(a=>a.addEventListener("click",()=>setOpen(false)));
  window.addEventListener("pagehide",()=>{if(opened)setOpen(false);});
 })();
 </script>
