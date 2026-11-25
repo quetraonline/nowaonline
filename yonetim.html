@@ -2587,11 +2587,13 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
  window.nowaAdminRouteBooted=true;
  document.body.classList.add("admin-page");
  $("closeModal").onclick=()=>location.replace("/");
+ $("modalBody").innerHTML='<div class="notice" style="margin:16px">Yönetici paneli yükleniyor...</div>';
  (async()=>{
   try{
-   const {data,error}=await db.auth.getUser();
+   const {data,error}=await db.auth.getSession();
    if(error)throw error;
-   if(await checkAdmin(data.user))await adminView();
+   const user=data.session?.user||null;
+   if(await checkAdmin(user))await adminView();
    else loginView();
   }catch(error){
    console.error("Yönetim paneli açılış kontrolü:",error);
