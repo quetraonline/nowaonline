@@ -1137,7 +1137,7 @@ const supa=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.c
  const nodes=["topNextEventName","topNextEventTime","topNextEventCountdown","topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown"].map(id=>document.getElementById(id));
  if(!countNode||!announcement||!announcementText||nodes.some(x=>!x))return;
  const clock=()=>{const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const v=Object.fromEntries(p.map(x=>[x.type,x.value]));return {day:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(v.weekday),sec:Number(v.hour)*3600+Number(v.minute)*60+Number(v.second)};};
- const seconds=value=>{const m=String(value||"").match(/(\\d{1,2}):(\\d{2})/);return m?Number(m[1])*3600+Number(m[2])*60:0;};
+ const seconds=value=>{const m=String(value||"").match(/(\d{1,2}):(\d{2})/);return m?Number(m[1])*3600+Number(m[2])*60:0;};
  const refreshLiveCount=async()=>{
   try{
    const [pubs,sessions]=await Promise.all([
@@ -1155,7 +1155,7 @@ const supa=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.c
    const {data,error}=await supa.from("nowa_announcements").select("body,is_visible").eq("id",1).eq("is_visible",true).maybeSingle();
    if(error)throw error;
    const temp=document.createElement("div");temp.innerHTML=String(data?.body||"");
-   const message=(temp.textContent||temp.innerText||"").replace(/\\s+/g," ").trim();
+   const message=(temp.textContent||temp.innerText||"").replace(/\s+/g," ").trim();
    if(!data||!message){announcement.hidden=true;return}
    announcementText.textContent=message;announcement.hidden=false;
   }catch(error){announcement.hidden=true;console.warn("Üst duyuru alınamadı:",error)}
