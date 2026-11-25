@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#090b10">
 <meta name="description" content="Nowa Online World - Resmi onaylı Yayıncı ve İçerik Üreticisi Listesi.">
 <title>Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi</title>
-<script>if(location.pathname.replace(/\/+$/,"")==="/yonetim"){document.documentElement.classList.add("admin-route");document.title="Yönetim | Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi";}</script>
+<script>const nowaPath=location.pathname.replace(/\/+$/,"")||"/";if(nowaPath==="/"){document.documentElement.classList.add("home-route");}if(nowaPath==="/yonetim"){document.documentElement.classList.add("admin-route");document.title="Yönetim | Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi";}</script>
 <style>
 :root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7;--green:#5bd49a;--red:#f07878}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 32px));margin:auto}.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
@@ -1063,7 +1063,7 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 
 
 
-</style>
+@media(max-width:700px){html.home-route #menuLoginLink{display:none!important}}\n</style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
 <body>
