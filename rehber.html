@@ -822,4 +822,32 @@ setInterval(refreshTopLivePublisherCount,30000);
  window.addEventListener("resize",()=>{if(!desktop())close();},{passive:true});
 })();
 </script>
-<script id="mobile-download-menu-script">(()=>{const init=()=>{const b=document.getElementById("mobileDownloadToggle"),o=document.getElementById("mobileDownloadOptions"),m=document.getElementById("mobileDownloadMenu");if(!b||!o||b.dataset.ready==="1")return;b.dataset.ready="1";b.addEventListener("click",()=>{const open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!open));o.hidden=open;m?.classList.toggle("open",!open);});};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();})();</script></body></html>
+<script id="mobile-download-menu-script">(()=>{const init=()=>{const b=document.getElementById("mobileDownloadToggle"),o=document.getElementById("mobileDownloadOptions"),m=document.getElementById("mobileDownloadMenu");if(!b||!o||b.dataset.ready==="1")return;b.dataset.ready="1";b.addEventListener("click",()=>{const open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!open));o.hidden=open;m?.classList.toggle("open",!open);});};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();})();</script><script id="visitor-counter-failsafe">
+(function(){
+ const run=function(){
+  const node=document.getElementById("visitorCount");
+  if(!node)return;
+  node.textContent="Yükleniyor...";
+  const key="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
+  let id="";
+  try{id=localStorage.getItem("nowa_online_visitor_id")||""}catch(e){}
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)){
+   if(window.crypto&&crypto.randomUUID)id=crypto.randomUUID();
+   else id="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16)});
+   try{localStorage.setItem("nowa_online_visitor_id",id)}catch(e){}
+  }
+  fetch("https://hfmosadynxpwkscvpard.supabase.co/rest/v1/rpc/register_nowa_site_visit",{
+   method:"POST",headers:{"Content-Type":"application/json","apikey":key,"Authorization":"Bearer "+key,"Accept":"application/json"},
+   body:JSON.stringify({p_visitor_id:id}),cache:"no-store"
+  }).then(async response=>{
+   const raw=await response.text();
+   if(!response.ok)throw new Error("HTTP "+response.status+" "+raw);
+   const count=Number(raw);
+   if(!Number.isFinite(count))throw new Error("Invalid count "+raw);
+   node.textContent=count.toLocaleString("tr-TR");
+  }).catch(error=>{console.error("Footer visitor counter:",error);node.textContent="—"});
+ };
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});
+ else run();
+})();
+</script></body></html>
