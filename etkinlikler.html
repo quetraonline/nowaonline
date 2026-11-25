@@ -755,9 +755,10 @@ function specialDayDownloadMarkup(day){
   }else if(selectedDays[section]===null){
    selectedDays[section]=(now.day+defaultOffset+7)%7;
   }
-  const specialDayDelta=(selectedDays.special-now.day+7)%7;
+  // Özel etkinlik filtresi daima içinde bulunulan haftanın tarihini kullanır.
+  // Geçmiş bir gün seçildiğinde modulo ile sonraki haftaya atlatma yapılmaz.
   const effectiveOffset=section==="special"
-   ?(carryoverOffset===-1&&selectedDays.special===(now.day+6)%7?-1:(specialDayDelta===6?-1:specialDayDelta))
+   ?(carryoverOffset===-1&&!manualDaySelection.special&&selectedDays.special===(now.day+6)%7?-1:selectedDays.special-now.day)
    :(selectedDays[section]===((now.day-1+7)%7)&&carryoverOffset===-1?-1:(selectedDays[section]-now.day+7)%7);
   setupDaySelect(section,selectedDays[section]);
   const effectiveDay=selectedDays[section];
