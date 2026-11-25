@@ -1040,6 +1040,19 @@ html.admin-route #modal .admin-event-form-panel #gameEventForm{max-width:860px}
 }
 
 
+/* Mobil yönetim paneli: site ayarları menüsünde de ilk satırı içerik kadar tut; menü dikeyde ortalanıp gereksiz boşluk oluşturmasın. */
+@media(max-width:760px){
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-site-nav-button.is-active){
+  grid-template-rows:max-content 1fr!important;
+  align-content:start!important;
+  min-height:calc(100vh - 61px)!important;
+ }
+ html.admin-route #modal #modalBody:has(.admin-tabs):has(.admin-site-nav-button.is-active)>.admin-tabs{
+  align-self:start!important;
+  height:max-content!important;
+ }
+}
+
 /* Login view: frame only the form area and add balanced inner side spacing. */
 html.admin-route #modal[data-view="login"]{
  align-items:flex-start!important;
