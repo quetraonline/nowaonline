@@ -1388,8 +1388,8 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
  const closeButton=document.getElementById("mobileMenuClose");
  const brand=document.getElementById("menuTrigger");
  const back=document.getElementById("backToTop");
- if(!menu||!toggle||menu.dataset.drawerController==="3")return;
- menu.dataset.drawerController="3";
+ if(!menu||!toggle||menu.dataset.drawerController==="4")return;
+ menu.dataset.drawerController="4";
  // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
  document.body.appendChild(toggle);
  // Hamburger positioning is handled by the shared fixed-position CSS rules. Avoid measuring a sticky header here: iOS Chrome/Safari can report a changing visual viewport during browser-bar transitions.
@@ -1422,16 +1422,20 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
   toggle.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
   brand?.setAttribute("aria-expanded",String(open));
  };
- // Menü açıkken dikey kaydırma hareketi başladığında menüyü kapat.
+ // Menü açıkken her dikey kaydırma hareketi menüyü kapatır.
  let touchStartY=null,touchStartX=null;
- document.addEventListener("touchstart",event=>{if(!opened||!event.touches?.length)return;touchStartY=event.touches[0].clientY;touchStartX=event.touches[0].clientX;},{capture:true,passive:true});
- document.addEventListener("touchmove",event=>{
+ const beginTouch=event=>{if(!opened||!event.touches?.length)return;touchStartY=event.touches[0].clientY;touchStartX=event.touches[0].clientX;};
+ const moveTouch=event=>{
   if(!opened||touchStartY===null||!event.touches?.length)return;
   const dx=Math.abs(event.touches[0].clientX-touchStartX),dy=Math.abs(event.touches[0].clientY-touchStartY);
-  if(dy>10&&dy>dx){setOpen(false);touchStartY=null;touchStartX=null;}
- },{capture:true,passive:true});
+  if(dy>6&&dy>dx){setOpen(false);touchStartY=null;touchStartX=null;}
+ };
+ document.addEventListener("touchstart",beginTouch,{capture:true,passive:true});
+ document.addEventListener("touchmove",moveTouch,{capture:true,passive:true});
+ window.addEventListener("touchmove",moveTouch,{capture:true,passive:true});
  document.addEventListener("touchend",()=>{touchStartY=null;touchStartX=null;},{capture:true,passive:true});
- window.addEventListener("wheel",event=>{if(opened&&Math.abs(event.deltaY)>0)setOpen(false);},{capture:true,passive:true});
+ window.addEventListener("wheel",event=>{if(opened&&(Math.abs(event.deltaY)>0||Math.abs(event.deltaX)>0))setOpen(false);},{capture:true,passive:true});
+ window.addEventListener("scroll",()=>{if(opened)setOpen(false);},{capture:true,passive:true});
  // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
  document.addEventListener("click",event=>{
   const target=event.target instanceof Element?event.target:null;
