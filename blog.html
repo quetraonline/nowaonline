@@ -1197,6 +1197,22 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
  .blog-card p{font-size:14px!important}
  .blog-card .blog-meta{font-size:11px!important}
 }
+/* Blog kategori sekmeleri, istatistikler ve içerik sayacı tipografi eşitlemesi */
+.blog-filters,.blog-filters *,.blog-stats,.blog-stats *,.blog-count-note{
+ font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+}
+.blog-filter{font-size:14px!important;line-height:1.45!important;font-weight:800!important}
+.blog-filter .filter-count{font-size:11px!important;line-height:1.2!important;font-weight:700!important}
+.blog-stat small{font-size:12px!important;line-height:1.4!important;font-weight:800!important;letter-spacing:.02em!important}
+.blog-stat b{font-size:15px!important;line-height:1.45!important;font-weight:800!important}
+.blog-count-note{font-size:13px!important;line-height:1.5!important;font-weight:400!important}
+@media(max-width:700px){
+ .blog-filter{font-size:13px!important}
+ .blog-filter .filter-count{font-size:10px!important}
+ .blog-stat small{font-size:11px!important}
+ .blog-stat b{font-size:14px!important}
+ .blog-count-note{font-size:12px!important}
+}
 /* Blog tipografi: diğer Nowa sayfalarıyla aynı Inter ailesi ve okunabilir ölçüler */
 .blog-shell,.blog-shell *{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
 .blog-shell{font-size:15px;line-height:1.55}
