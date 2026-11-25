@@ -1,18 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/blog",
-      "destination": "/blog.html"
-    },
-    {
-      "source": "/blog/kategori/:slug",
-      "destination": "/blog.html"
-    },
-    {
-      "source": "/blog/:slug",
-      "destination": "/blog-yazi.html"
-    },
-    {
       "source": "/yonetim",
       "destination": "/yonetim.html"
     },
@@ -57,27 +45,19 @@
       "source": "/kullanim-sartlari.html",
       "destination": "/kullanim-sartlari",
       "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:path*",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "headers": [
-    {
-      "source": "/blog",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/blog-yazi.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
-        }
-      ]
-    },
     {
       "source": "/",
       "headers": [
