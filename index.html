@@ -1090,6 +1090,9 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 
 @media(max-width:700px){html.home-route #menuLoginLink{display:none!important}}\n
 .blog-rich-editor{overflow:hidden;border:1px solid #465365;border-radius:12px;background:#0d131c}.blog-rich-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:9px;border-bottom:1px solid #344052;background:#151e2a}.blog-rich-toolbar button,.blog-rich-toolbar select,.rich-color-label{min-height:34px;border:1px solid #3b485a;border-radius:7px;background:#202b39;color:#e9edf5;padding:6px 9px;font-size:12px;font-weight:750}.blog-rich-toolbar button{cursor:pointer}.blog-rich-toolbar button:hover{border-color:#d5a64e;color:#f0c66f}.blog-rich-toolbar select{max-width:135px}.rich-divider{width:1px;height:24px;background:#455164;margin:0 2px}.rich-color-label{display:inline-flex;align-items:center;gap:5px}.rich-color-label input{width:23px;height:23px;padding:0;border:0;background:transparent}.blog-rich-editable{min-height:280px;max-height:65vh;overflow:auto;padding:15px;background:#fff;color:#20242b;font-size:15px;line-height:1.7;outline:none;overflow-wrap:anywhere}.blog-rich-editable:empty:before{content:attr(data-placeholder);color:#8b929c}.blog-rich-editable img{display:block;max-width:100%;height:auto;margin:12px 0;border-radius:7px}.blog-rich-editable a{color:#1769aa;text-decoration:underline}.blog-rich-editable blockquote{margin:12px 0;padding:10px 14px;border-left:4px solid #d5a64e;background:#f3f0e9}.blog-rich-editable h2,.blog-rich-editable h3,.blog-rich-editable h4{color:#171b22;line-height:1.3}.blog-rich-editable ul,.blog-rich-editable ol{padding-left:26px}@media(max-width:600px){.blog-rich-toolbar{gap:5px;padding:7px}.blog-rich-toolbar button,.blog-rich-toolbar select,.rich-color-label{min-height:36px;padding:6px 8px;font-size:12px}.blog-rich-editable{min-height:240px;max-height:60vh;padding:12px;font-size:15px}}
+
+/* Mobile drawer backdrop: tapping the uncovered page area closes the drawer. */
+@media(max-width:700px){body.mobile-menu-open header{z-index:2147482600!important}body.mobile-menu-open::before{content:"";position:fixed;inset:0;z-index:2147482500;background:rgba(0,0,0,.48);pointer-events:auto}body.mobile-menu-open #siteMenu>.menu-dropdown{z-index:2147482601!important}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -2684,8 +2687,8 @@ if(tiktokConnectionStatus){
  const closeButton=document.getElementById("mobileMenuClose");
  const brand=document.getElementById("menuTrigger");
  const back=document.getElementById("backToTop");
- if(!menu||!toggle||menu.dataset.drawerController==="3")return;
- menu.dataset.drawerController="3";
+ if(!menu||!toggle||menu.dataset.drawerController==="4")return;
+ menu.dataset.drawerController="4";
  // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
  document.body.appendChild(toggle);
  // Hamburger positioning is handled by the shared fixed-position CSS rules. Avoid measuring a sticky header here: iOS Chrome/Safari can report a changing visual viewport during browser-bar transitions.
@@ -2728,6 +2731,26 @@ if(tiktokConnectionStatus){
   event.preventDefault();
  },{capture:true,passive:false});
  // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
+ document.addEventListener("pointerdown",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },true);
+ document.addEventListener("touchstart",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },{capture:true,passive:true});
+ let drawerTouchY=null,drawerTouchX=null;
+ document.addEventListener("touchstart",event=>{if(!opened||!event.touches?.length)return;drawerTouchY=event.touches[0].clientY;drawerTouchX=event.touches[0].clientX;},{capture:true,passive:true});
+ document.addEventListener("touchmove",event=>{
+  if(!opened||drawerTouchY===null||!event.touches?.length)return;
+  const dx=Math.abs(event.touches[0].clientX-drawerTouchX),dy=Math.abs(event.touches[0].clientY-drawerTouchY);
+  if(dy>6&&dy>dx){setOpen(false);drawerTouchY=null;drawerTouchX=null;}
+ },{capture:true,passive:true});
+ document.addEventListener("touchend",()=>{drawerTouchY=null;drawerTouchX=null;},{capture:true,passive:true});
  document.addEventListener("click",event=>{
   const target=event.target instanceof Element?event.target:null;
   if(target?.closest("#mobileMenuToggle")){
