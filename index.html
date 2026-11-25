@@ -1828,6 +1828,7 @@ async function blogAdminView(){
  $("modalBody").innerHTML=adminSidebarMarkup("","","blog")+
  '<section class="admin-tab-panel admin-site-workspace admin-blog-workspace">'+
  '<div class="admin-event-form-heading"><h4>BLOG YÖNETİMİ</h4><p>Blog yazılarını bu yönetim panelinden oluşturabilir, düzenleyebilir ve yayınlayabilirsin.</p></div>'+
+ '<section class="admin-event-form-workspace" style="margin:0 0 16px"><div class="admin-event-form-heading"><h4>KATEGORİ YÖNETİMİ</h4><p>Kategorileri buradan ekleyebilir, adlarını değiştirebilir veya silebilirsin.</p></div><form id="blogCategoryForm" class="actions" style="justify-content:flex-start;gap:10px;margin:0 0 12px"><input class="field" id="blogCategoryName" name="name" required maxlength="60" placeholder="Yeni kategori adı" style="max-width:320px"><button class="btn goldbtn" id="blogCategoryAdd" type="submit">+ Kategori ekle</button></form><div id="blogCategoryList" class="adminlist"><div class="notice">Kategoriler yükleniyor...</div></div></section>'+ 
  '<div class="summary" id="blogAdminStats" style="margin:0 0 12px">Yazılar yükleniyor...</div>'+
  '<div class="actions" style="justify-content:flex-start;gap:10px;margin:0 0 12px"><button class="btn goldbtn" id="blogNewPost" type="button">+ Yeni yazı oluştur</button><button class="btn" id="blogRefresh" type="button">↻ Yenile</button></div>'+
  '<div class="notice" id="blogAdminStatus" style="margin:0 0 12px">Blog yazıları yükleniyor...</div><div id="blogAdminPosts" class="adminlist"></div>'+
@@ -1835,7 +1836,7 @@ async function blogAdminView(){
  '<form id="blogPostForm"><input type="hidden" name="id"><div class="formgrid">'+
  '<div class="formfield"><label>Yazı başlığı *</label><input class="field" name="title" required maxlength="180"></div>'+
  '<div class="formfield"><label>URL kısa adı *</label><input class="field" name="slug" required maxlength="180"></div>'+
- '<div class="formfield"><label>Kategori</label><select class="field" name="category"><option>Duyurular</option><option>Güncelleme Notları</option><option>Etkinlikler</option><option>Rehberler</option></select></div>'+
+ '<div class="formfield"><label>Kategori</label><select class="field" name="category" required><option value="">Kategoriler yükleniyor...</option></select></div>'+
  '<div class="formfield"><label>Yazar</label><input class="field" name="author" value="QuetraOnline"></div>'+
  '<div class="formfield" style="grid-column:1/-1"><label>Kısa açıklama</label><textarea class="field" name="excerpt" rows="3" maxlength="400"></textarea></div>'+
  '<div class="formfield" style="grid-column:1/-1"><label>Kapak görseli URL</label><input class="field" name="cover_image" type="url" placeholder="https://..."></div>'+
@@ -1846,7 +1847,23 @@ async function blogAdminView(){
  '<div class="formfield"><label class="checks"><input name="is_featured" type="checkbox"> Öne çıkan yazı</label></div></div>'+
  '<div class="actions" style="margin-top:14px"><button class="btn" id="blogCancel" type="button">Vazgeç</button><button class="btn goldbtn" id="blogSave" type="submit">Kaydet</button></div></form></section></section>';
  bindAdminSidebarNavigation(true);
- let blogPosts=[];
+ let blogPosts=[],blogCategories=[];
+ const renderBlogCategoryOptions=selected=>{
+  const select=$("blogPostForm").elements.category;
+  select.innerHTML=blogCategories.map(c=>'<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>').join("")||'<option value="">Önce kategori ekle</option>';
+  select.disabled=!blogCategories.length;
+  if(selected&&blogCategories.some(c=>c.name===selected))select.value=selected;
+  else if(blogCategories.length)select.value=blogCategories[0].name;
+ };
+ const loadBlogCategories=async()=>{
+  const {data,error}=await db.from("nowa_blog_categories").select("*").order("sort_order",{ascending:true}).order("name",{ascending:true});
+  if(error){$("blogCategoryList").innerHTML='<div class="notice">Kategori yüklenemedi: '+esc(error.message)+'</div>';return false}
+  blogCategories=data||[];
+  $("blogCategoryList").innerHTML=blogCategories.map(c=>'<div class="adminrow"><div><strong>'+esc(c.name)+'</strong></div><div class="adminactions"><button class="btn" type="button" data-blog-category-edit="'+esc(c.id)+'">Düzenle</button><button class="btn" type="button" data-blog-category-delete="'+esc(c.id)+'">Sil</button></div></div>').join("")||'<div class="notice">Henüz kategori yok. Yeni kategori ekleyebilirsin.</div>';
+  const current=$("blogPostForm").elements.category.value;
+  renderBlogCategoryOptions(current);
+  return true;
+ };
  const slugifyBlog=value=>String(value||"").toLocaleLowerCase("tr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
  const loadBlogPosts=async()=>{
   $("blogAdminStatus").textContent="Veritabanından yazılar alınıyor...";
@@ -1860,14 +1877,49 @@ async function blogAdminView(){
  };
  const editBlogPost=p=>{
   const form=$("blogPostForm");form.reset();form.elements.id.value=p?.id||"";
-  for(const key of ["title","slug","category","author","excerpt","cover_image","content","status","seo_title","seo_description"])form.elements[key].value=p?.[key]??(key==="author"?"QuetraOnline":key==="category"?"Duyurular":key==="status"?"draft":"");
+  for(const key of ["title","slug","author","excerpt","cover_image","content","status","seo_title","seo_description"])form.elements[key].value=p?.[key]??(key==="author"?"QuetraOnline":key==="status"?"draft":"");
+  renderBlogCategoryOptions(p?.category||"");
   form.elements.is_featured.checked=!!p?.is_featured;
   $("blogEditorTitle").textContent=p?"BLOG YAZISINI DÜZENLE":"YENİ BLOG YAZISI";
   $("blogAdminEditor").hidden=false;
   $("blogAdminEditor").scrollIntoView({behavior:"smooth",block:"start"});
  };
  $("blogNewPost").onclick=()=>editBlogPost(null);
- $("blogRefresh").onclick=loadBlogPosts;
+ $("blogRefresh").onclick=async()=>{await loadBlogCategories();await loadBlogPosts()};
+ $("blogCategoryForm").onsubmit=async event=>{
+  event.preventDefault();const input=$("blogCategoryName"),name=input.value.trim();
+  if(!name)return;
+  if(blogCategories.some(c=>c.name.toLocaleLowerCase("tr")===name.toLocaleLowerCase("tr"))){toast("Bu kategori zaten mevcut.");return}
+  $("blogCategoryAdd").disabled=true;
+  const {error}=await db.from("nowa_blog_categories").insert({name,sort_order:blogCategories.length+1});
+  $("blogCategoryAdd").disabled=false;
+  if(error){toast("Kategori eklenemedi: "+error.message);return}
+  input.value="";toast("Kategori eklendi.");await loadBlogCategories();
+ };
+ $("blogCategoryList").onclick=async event=>{
+  const edit=event.target.closest("[data-blog-category-edit]"),del=event.target.closest("[data-blog-category-delete]");
+  if(edit){
+   const category=blogCategories.find(c=>c.id===edit.dataset.blogCategoryEdit);if(!category)return;
+   const name=prompt("Yeni kategori adı:",category.name);if(name===null)return;
+   const next=name.trim();if(!next){toast("Kategori adı boş olamaz.");return}
+   if(blogCategories.some(c=>c.id!==category.id&&c.name.toLocaleLowerCase("tr")===next.toLocaleLowerCase("tr"))){toast("Bu kategori zaten mevcut.");return}
+   const renamed=await db.from("nowa_blog_posts").update({category:next,updated_at:new Date().toISOString()}).eq("category",category.name);
+   if(renamed.error){toast("Yazı kategorileri güncellenemedi: "+renamed.error.message);return}
+   const saved=await db.from("nowa_blog_categories").update({name:next,updated_at:new Date().toISOString()}).eq("id",category.id);
+   if(saved.error){toast("Kategori adı kaydedilemedi: "+saved.error.message);return}
+   toast("Kategori güncellendi.");await loadBlogCategories();await loadBlogPosts();return;
+  }
+  if(del){
+   const category=blogCategories.find(c=>c.id===del.dataset.blogCategoryDelete);if(!category)return;
+   const usage=await db.from("nowa_blog_posts").select("id",{count:"exact",head:true}).eq("category",category.name);
+   if(usage.error){toast("Kategori kullanımı kontrol edilemedi: "+usage.error.message);return}
+   if(usage.count){toast("Bu kategori "+usage.count+" blog yazısında kullanılıyor. Önce bu yazıları başka kategoriye taşı.");return}
+   if(!confirm('"'+category.name+'" kategorisi silinsin mi?'))return;
+   const removed=await db.from("nowa_blog_categories").delete().eq("id",category.id);
+   if(removed.error){toast("Kategori silinemedi: "+removed.error.message);return}
+   toast("Kategori silindi.");await loadBlogCategories();
+  }
+ };
  $("blogCancel").onclick=()=>{$("blogAdminEditor").hidden=true};
  $("blogPostForm").elements.title.addEventListener("input",()=>{if(!$("blogPostForm").elements.id.value)$("blogPostForm").elements.slug.value=slugifyBlog($("blogPostForm").elements.title.value)});
  $("blogAdminPosts").onclick=async event=>{
@@ -1885,6 +1937,7 @@ async function blogAdminView(){
   catch(error){toast("Kaydetme hatası: "+error.message)}
   finally{$("blogSave").disabled=false}
  };
+ await loadBlogCategories();
  await loadBlogPosts();
 }
 
