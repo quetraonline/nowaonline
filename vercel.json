@@ -5,6 +5,10 @@
       "destination": "/blog.html"
     },
     {
+      "source": "/blog/kategori/:slug",
+      "destination": "/blog.html"
+    },
+    {
       "source": "/blog/:slug",
       "destination": "/blog-yazi.html"
     },
