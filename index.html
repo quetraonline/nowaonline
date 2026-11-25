@@ -1850,7 +1850,7 @@ async function blogAdminView(activeBlogSection="posts"){
  '<div class="formfield"><label>SEO başlığı</label><input class="field" name="seo_title" maxlength="180"></div>'+
  '<div class="formfield"><label>SEO açıklaması</label><input class="field" name="seo_description" maxlength="300"></div>'+
  '<div class="formfield"><label class="checks"><input name="is_featured" type="checkbox"> Öne çıkan yazı</label></div></div>'+
- '<div class="actions" style="margin-top:14px"><button class="btn" id="blogCancel" type="button">Vazgeç</button><button class="btn goldbtn" id="blogSave" type="submit">Kaydet</button></div></form></section></section>';
+ '<div class="actions" style="margin-top:14px"><button class="btn" id="blogCancel" type="button">Vazgeç</button><button class="btn goldbtn" id="blogSave" type="submit">Kaydet</button></div></form></section></section></section>';
  bindAdminSidebarNavigation(true);
  document.querySelectorAll("[data-blog-section]").forEach(button=>{button.onclick=()=>blogAdminView(button.dataset.blogSection)});
  let blogPosts=[],blogCategories=[];
