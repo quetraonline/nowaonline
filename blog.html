@@ -1271,22 +1271,26 @@ function renderCategoryFilters(categories,posts){
  nav.innerHTML='<button class="blog-filter active" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">'+allCount+'</span></button>'+
  categories.map(c=>'<a class="blog-filter" href="/blog/kategori/'+key(c.name)+'" data-category="'+key(c.name)+'"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>'+String(c.name).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))+' <span class="filter-count">'+posts.filter(p=>p.category===c.name).length+'</span></a>').join('');
  filters=[...nav.querySelectorAll('.blog-filter')];
+ const allTab=nav.querySelector('.blog-filter[data-category="all"]');
+ if(allTab)allTab.addEventListener('click',()=>{location.href='/blog';});
 }
 async function loadPublishedBlog(){
  const featureEl=document.querySelector(".blog-feature"),grid=document.getElementById("blogGrid"),totalStat=document.getElementById("blogTotalStat"),lastStat=document.getElementById("blogLastPublished");
  const moreWrap=document.getElementById("blogMoreWrap");const setEmpty=message=>{featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";moreWrap.hidden=true;count.textContent="";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
  try{
   const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S");
-  const [{data:postsData,error},{data:categoryData,error:categoryError}]=await Promise.all([
-   client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false}),
-   client.from("nowa_blog_categories").select("name,sort_order").order("sort_order",{ascending:true}).order("name",{ascending:true})
-  ]);
-  if(error)throw error;if(categoryError)throw categoryError;
-  const posts=postsData||[],categories=(categoryData&&categoryData.length?categoryData:[
+  // Kategori sekmelerini yazılardan bağımsız yükle: yazı sorgusu hata verse bile sekmeler görünür kalır.
+  const {data:categoryData,error:categoryError}=await client.from("nowa_blog_categories").select("name,sort_order").order("sort_order",{ascending:true}).order("name",{ascending:true});
+  const categories=(!categoryError&&Array.isArray(categoryData)&&categoryData.length?categoryData:[
    {name:"Duyurular",sort_order:1},
    {name:"Güncelleme Notları",sort_order:2},
    {name:"Etkinlikler",sort_order:3}
   ]);
+  renderCategoryFilters(categories,[]);
+  if(categoryError)console.warn("Blog kategorileri veritabanından okunamadı; kayıtlı kategori yedeği gösteriliyor:",categoryError);
+  const {data:postsData,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});
+  if(error)throw error;
+  const posts=postsData||[];
   renderCategoryFilters(categories,posts);
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const catKey=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
