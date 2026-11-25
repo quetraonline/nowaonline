@@ -420,13 +420,27 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 document.getElementById("year").textContent=new Date().getFullYear();
 async function loadVisitorCount(){
  const output=document.getElementById("visitorCount");
+ if(!output)return;
  try{
-  let visitorId=localStorage.getItem("nowa_online_visitor_id");
-  if(!visitorId){visitorId=crypto.randomUUID();localStorage.setItem("nowa_online_visitor_id",visitorId)}
-  const response=await fetch("https://hfmosadynxpwkscvpard.supabase.co/rest/v1/rpc/register_nowa_site_visit",{method:"POST",headers:{"Content-Type":"application/json","apikey":"sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S"},body:JSON.stringify({p_visitor_id:visitorId})});
-  if(!response.ok)throw new Error("Sayaç isteği başarısız");
-  const data=await response.json();output.textContent=Number(data||0).toLocaleString("tr-TR");
- }catch(error){console.warn("Ziyaretçi sayacı yüklenemedi:",error);output.textContent="—"}
+  let visitorId="";
+  try{visitorId=localStorage.getItem("nowa_online_visitor_id")||""}catch(_){}
+  if(!visitorId){
+   visitorId=(window.crypto&&typeof crypto.randomUUID==="function")?crypto.randomUUID():"nowa-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
+   try{localStorage.setItem("nowa_online_visitor_id",visitorId)}catch(_){}
+  }
+  const response=await fetch("https://hfmosadynxpwkscvpard.supabase.co/rest/v1/rpc/register_nowa_site_visit",{
+   method:"POST",
+   headers:{"Content-Type":"application/json","apikey":"sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S"},
+   body:JSON.stringify({p_visitor_id:visitorId}),
+   cache:"no-store"
+  });
+  if(!response.ok)throw new Error("Sayaç isteği başarısız: HTTP "+response.status);
+  const data=await response.json();
+  output.textContent=Number(data||0).toLocaleString("tr-TR");
+ }catch(error){
+  console.warn("Ziyaretçi sayacı yüklenemedi:",error);
+  output.textContent="—";
+ }
 }
 loadVisitorCount();
 document.getElementById("contactForm").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget;const button=f.querySelector('button[type="submit"]');const status=document.getElementById("formStatus");button.disabled=true;button.textContent="Gönderiliyor...";status.textContent="Mesajınız gönderiliyor...";status.style.color="#e8b95c";try{const response=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:f.name.value,email:f.email.value,subject:f.subject.value,message:f.message.value,website:f.website.value})});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.message||"Mesaj gönderilemedi.");status.textContent="Mesajınız başarıyla gönderildi. Teşekkür ederiz.";status.style.color="#72d6a0";f.reset()}catch(error){status.textContent=error.message||"Bir hata oluştu. Lütfen tekrar deneyin.";status.style.color="#ff8585"}finally{button.disabled=false;button.textContent="Mesajı gönder"}});
