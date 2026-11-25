@@ -175,8 +175,8 @@ header .menu-dropdown{z-index:40}
  .mobile-menu-toggle svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
  #siteMenu{position:static}
  #siteMenu>.brand-menu{pointer-events:none;cursor:default}
- #siteMenu>.menu-dropdown{position:fixed;top:0;right:0;bottom:0;left:auto;width:min(88vw,420px);height:100dvh;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px 34px;background:#101116;border:0;border-left:1px solid #34343b;border-radius:0;box-shadow:-18px 0 50px #0009;opacity:0;visibility:hidden;transform:translateX(102%);transition:transform .28s ease,visibility .28s;z-index:10002}
- #siteMenu.open>.menu-dropdown{opacity:1;visibility:visible;transform:translateX(0)}
+ #siteMenu>.menu-dropdown{position:fixed;top:0;right:0;bottom:0;left:auto;width:min(88vw,420px);height:100dvh;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px 34px;background:#101116;border:0;border-left:1px solid #34343b;border-radius:0;box-shadow:-18px 0 50px #0009;opacity:0;visibility:hidden;transform:translateX(102%);transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .28s ease,visibility 0s linear .42s;z-index:10002}
+ #siteMenu.open>.menu-dropdown{opacity:1;visibility:visible;transform:translateX(0);transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .28s ease,visibility 0s}
  #siteMenu.open:after{content:"";position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(2px);z-index:10001}
  .mobile-download-menu{border-bottom:1px solid #ffffff18}
  .mobile-download-trigger{display:flex;align-items:center;gap:13px;width:100%;min-height:56px;padding:7px 4px;border:0;border-radius:0;background:transparent;color:#e8e9ed;text-align:left;font:inherit;font-size:15px;font-weight:800;line-height:1.25;cursor:pointer}
