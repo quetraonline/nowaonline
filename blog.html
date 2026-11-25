@@ -1167,6 +1167,41 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 .blog-stats{gap:7px}
 .blog-stat b{font-size:10px}
 }
+
+/* Blog tipografi: diğer Nowa sayfalarıyla aynı Inter ailesi ve okunabilir ölçüler */
+.blog-shell,.blog-shell *{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.blog-shell{font-size:15px;line-height:1.55}
+.blog-heading .blog-title{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:clamp(32px,5vw,48px)!important;line-height:1.1!important;letter-spacing:-.045em!important;font-weight:900!important}
+.blog-heading .blog-subtitle{font-size:15px!important;line-height:1.75!important}
+.blog-crumb,.blog-breadcrumbs{font-size:13px}
+.blog-stat small{font-size:10px}
+.blog-stat b{font-size:13px;line-height:1.4}
+.blog-filter{font-size:13px;line-height:1.4}
+.blog-filter .filter-count{font-size:10px}
+.blog-search input{font-size:13px}
+.blog-feature h2{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:20px!important;line-height:1.3!important;letter-spacing:-.025em!important;font-weight:900!important}
+.blog-feature p{font-size:14px!important;line-height:1.7!important}
+.blog-tag{font-size:10px}
+.blog-meta{font-size:11px;line-height:1.45}
+.blog-read{font-size:12px}
+.blog-card h3{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:15px!important;line-height:1.4!important;font-weight:850!important;letter-spacing:-.01em!important}
+.blog-card p{font-size:13px!important;line-height:1.65!important}
+.blog-card .blog-meta{font-size:11px}
+.blog-card .blog-read{font-size:12px}
+.blog-article-content h2{font:900 24px/1.3 Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;letter-spacing:-.025em}
+.blog-article-content p{font-size:15px!important;line-height:1.75!important}
+.blog-count-note{font-size:11px}
+@media(max-width:700px){
+ .blog-heading .blog-title{font-size:clamp(27px,7vw,36px)!important}
+ .blog-heading .blog-subtitle{font-size:14px!important;line-height:1.7!important}
+ .blog-filter{font-size:12px}
+ .blog-feature h2{font-size:18px!important}
+ .blog-feature p{font-size:13px!important}
+ .blog-card h3{font-size:14px!important}
+ .blog-article-content{padding:18px}
+ .blog-article-content h2{font-size:21px!important}
+ .blog-article-content p{font-size:14px!important}
+}
 </style></head><body>
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
