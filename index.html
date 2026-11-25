@@ -1834,7 +1834,7 @@ async function blogAdminView(){
  '<div class="actions" style="margin-top:14px"><button class="btn" id="blogCancel" type="button">Vazgeç</button><button class="btn goldbtn" id="blogSave" type="submit">Kaydet</button></div></form></section></section>';
  bindAdminSidebarNavigation(true);
  let blogPosts=[];
- const slugifyBlog=value=>String(value||"").toLocaleLowerCase("tr").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+ const slugifyBlog=value=>String(value||"").toLocaleLowerCase("tr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
  const loadBlogPosts=async()=>{
   $("blogAdminStatus").textContent="Veritabanından yazılar alınıyor...";
   const {data,error}=await db.from("nowa_blog_posts").select("*").order("created_at",{ascending:false});
