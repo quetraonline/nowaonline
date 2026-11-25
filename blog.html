@@ -1245,6 +1245,9 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 .blog-heading .blog-title svg{width:26px;height:26px;flex:0 0 26px;fill:none;stroke:var(--gold,#e8b95c);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .blog-heading .blog-subtitle{font-size:15px!important;line-height:1.55!important;margin:0 0 30px!important;color:var(--muted,#aeb8c5)!important}
 @media(max-width:700px){.blog-shell{padding-top:18px}.blog-heading{gap:0}.blog-heading .blog-breadcrumbs{font-size:13px;gap:8px;margin-bottom:10px}.blog-heading .blog-title{font-size:32px!important;gap:8px;margin:18px 0 10px!important}.blog-heading .blog-title svg{width:23px;height:23px;flex-basis:23px}.blog-heading .blog-subtitle{font-size:14px!important;line-height:1.65!important;margin:0 0 24px!important}}
+
+/* Mobile drawer backdrop: tapping the uncovered page area closes the drawer. */
+@media(max-width:700px){body.mobile-menu-open header{z-index:2147482600!important}body.mobile-menu-open::before{content:"";position:fixed;inset:0;z-index:2147482500;background:rgba(0,0,0,.48);pointer-events:auto}body.mobile-menu-open #siteMenu>.menu-dropdown{z-index:2147482601!important}}
 </style></head><body>
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
@@ -1388,8 +1391,8 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
  const closeButton=document.getElementById("mobileMenuClose");
  const brand=document.getElementById("menuTrigger");
  const back=document.getElementById("backToTop");
- if(!menu||!toggle||menu.dataset.drawerController==="4")return;
- menu.dataset.drawerController="4";
+ if(!menu||!toggle||menu.dataset.drawerController==="5")return;
+ menu.dataset.drawerController="5";
  // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
  document.body.appendChild(toggle);
  // Hamburger positioning is handled by the shared fixed-position CSS rules. Avoid measuring a sticky header here: iOS Chrome/Safari can report a changing visual viewport during browser-bar transitions.
@@ -1437,6 +1440,26 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
  window.addEventListener("wheel",event=>{if(opened&&(Math.abs(event.deltaY)>0||Math.abs(event.deltaX)>0))setOpen(false);},{capture:true,passive:true});
  window.addEventListener("scroll",()=>{if(opened)setOpen(false);},{capture:true,passive:true});
  // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
+ document.addEventListener("pointerdown",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },true);
+ document.addEventListener("touchstart",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },{capture:true,passive:true});
+ let drawerTouchY=null,drawerTouchX=null;
+ document.addEventListener("touchstart",event=>{if(!opened||!event.touches?.length)return;drawerTouchY=event.touches[0].clientY;drawerTouchX=event.touches[0].clientX;},{capture:true,passive:true});
+ document.addEventListener("touchmove",event=>{
+  if(!opened||drawerTouchY===null||!event.touches?.length)return;
+  const dx=Math.abs(event.touches[0].clientX-drawerTouchX),dy=Math.abs(event.touches[0].clientY-drawerTouchY);
+  if(dy>6&&dy>dx){setOpen(false);drawerTouchY=null;drawerTouchX=null;}
+ },{capture:true,passive:true});
+ document.addEventListener("touchend",()=>{drawerTouchY=null;drawerTouchX=null;},{capture:true,passive:true});
  document.addEventListener("click",event=>{
   const target=event.target instanceof Element?event.target:null;
   if(target?.closest("#mobileMenuToggle")){
