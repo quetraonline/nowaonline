@@ -418,25 +418,39 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 </div></div></div></footer>
 <script>
 document.getElementById("year").textContent=new Date().getFullYear();
+function getNowaVisitorUuid(){
+ const valid=value=>/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value||"");
+ let id="";
+ try{id=localStorage.getItem("nowa_online_visitor_id")||""}catch(_){}
+ if(valid(id))return id;
+ if(window.crypto&&typeof crypto.randomUUID==="function")id=crypto.randomUUID();
+ else if(window.crypto&&typeof crypto.getRandomValues==="function"){
+  const bytes=crypto.getRandomValues(new Uint8Array(16));
+  bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;
+  const hex=Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+  id=hex.slice(0,8)+"-"+hex.slice(8,12)+"-"+hex.slice(12,16)+"-"+hex.slice(16,20)+"-"+hex.slice(20);
+ }else{
+  id="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16)});
+ }
+ try{localStorage.setItem("nowa_online_visitor_id",id)}catch(_){}
+ return id;
+}
 async function loadVisitorCount(){
  const output=document.getElementById("visitorCount");
  if(!output)return;
  try{
-  let visitorId="";
-  try{visitorId=localStorage.getItem("nowa_online_visitor_id")||""}catch(_){}
-  if(!visitorId){
-   visitorId=(window.crypto&&typeof crypto.randomUUID==="function")?crypto.randomUUID():"nowa-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
-   try{localStorage.setItem("nowa_online_visitor_id",visitorId)}catch(_){}
-  }
+  const visitorId=getNowaVisitorUuid();
   const response=await fetch("https://hfmosadynxpwkscvpard.supabase.co/rest/v1/rpc/register_nowa_site_visit",{
    method:"POST",
    headers:{"Content-Type":"application/json","apikey":"sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S"},
    body:JSON.stringify({p_visitor_id:visitorId}),
    cache:"no-store"
   });
-  if(!response.ok)throw new Error("Sayaç isteği başarısız: HTTP "+response.status);
+  if(!response.ok){const detail=await response.text();throw new Error("Sayaç isteği başarısız: HTTP "+response.status+" "+detail)}
   const data=await response.json();
-  output.textContent=Number(data||0).toLocaleString("tr-TR");
+  const count=Number(data);
+  if(!Number.isFinite(count))throw new Error("Sayaç yanıtı geçersiz");
+  output.textContent=count.toLocaleString("tr-TR");
  }catch(error){
   console.warn("Ziyaretçi sayacı yüklenemedi:",error);
   output.textContent="—";
