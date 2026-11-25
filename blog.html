@@ -1423,7 +1423,8 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
    event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
    setOpen(false);return;
   }
-  if(opened&&!menu.contains(event.target)&&!toggle.contains(event.target))setOpen(false);
+  // Close when tapping anywhere outside the actual drawer panel, including the empty area beside the hamburger.
+  if(opened&&!(target&&target.closest("#siteMenu>.menu-dropdown"))&&!toggle.contains(event.target))setOpen(false);
  },true);
  document.addEventListener("keydown",event=>{if(event.key==="Escape")setOpen(false);});
  menu.querySelectorAll(".menu-dropdown a").forEach(link=>link.addEventListener("click",()=>setOpen(false)));
