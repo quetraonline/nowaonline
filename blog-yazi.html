@@ -1109,8 +1109,8 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 <style id="blog-article-content-card-and-back-button">
 .article-body{
  display:block!important;
- margin:22px 0 0!important;
- padding:22px 24px!important;
+ margin:18px 0 0!important;
+ padding:12px 24px 14px!important;
  border:1px solid #2a2b34!important;
  border-radius:12px!important;
  background:#111116!important;
@@ -1122,6 +1122,10 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 }
 .article-body p,.article-body li{font-family:inherit!important;font-size:inherit!important;line-height:inherit!important}
 .article-body h2,.article-body h3,.article-body h4{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important}
+.article-body h2:first-child{margin-top:8px!important}
+.article-body>:first-child{margin-top:8px!important}
+.article-body>:last-child{margin-bottom:0!important}
+@media(max-width:560px){.article-body{padding:10px 16px 12px!important}}
 .article-body .article-back{
  display:inline-flex!important;
  align-items:center!important;
