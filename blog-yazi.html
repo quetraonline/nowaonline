@@ -1121,6 +1121,22 @@ body>header .top-info-strip{display:flex!important;visibility:visible!important}
 .breadcrumb-current{display:inline-block;align-self:center;height:20px;margin:0;padding:0;color:#aab2bf;font-size:inherit;font-weight:inherit;line-height:20px;white-space:nowrap;vertical-align:middle;transform:translateY(-.5px)}
 @media(max-width:600px){.breadcrumbs{font-size:13px;gap:8px;margin-bottom:10px}}
 </style>
+
+<style id="blog-top-info-strip-fix">
+.top-info-strip-content{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:8px!important;overflow:hidden!important;white-space:nowrap!important}
+.top-info-strip-content>*{flex:0 0 auto}
+.top-event-group{display:inline-flex!important;align-items:center!important;gap:6px!important;min-width:0}
+.top-event-group .top-next-event-name,.top-event-group .top-special-event-name{max-width:220px}
+.top-event-group .top-next-event-time,.top-event-group .top-special-event-time{flex:0 0 5ch;width:5ch;text-align:center}
+.top-event-group .top-next-event-countdown,.top-event-group .top-special-event-countdown{flex:0 0 8ch;width:8ch;text-align:right}
+@media(max-width:600px){
+ .top-info-strip{overflow:hidden!important}
+ .top-info-strip-content{width:max-content!important;min-width:100%!important;max-width:none!important;margin:0!important;padding:7px 16px!important;overflow-x:auto!important;overflow-y:hidden!important;gap:12px!important;scrollbar-width:none}
+ .top-info-strip-content::-webkit-scrollbar{display:none}
+ .top-event-group{flex:0 0 auto!important;min-width:max-content}
+ .top-event-group .top-next-event-name{max-width:180px}
+}
+</style>
 </head><body><header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
 <div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span class="brand-copy"><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></button><nav class="menu-dropdown" aria-label="Ana menü"><div class="mobile-drawer-head"><div class="mobile-drawer-brand"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt=""><span>NOWA ONLINE WORLD<small>YAYINCI REHBERİ</small></span></div><div class="mobile-drawer-head-actions"><button class="mobile-drawer-close" id="mobileMenuClose" type="button" aria-label="Menüyü kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div></div><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><a href="/rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22m4-15h8m-8 4h8"/></svg><span>Yayıncı Rehberi</span></a><a href="/etkinliktakvimi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3m-3 3h7"/></svg><span>Etkinlik Takvimi</span></a><a href="/blog" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/></svg><span>Blog</span></a><a href="/gizlilik-politikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Gizlilik Politikası</span></a><a href="/kullanim-sartlari"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span>Kullanım Şartları</span></a><a href="/iletisim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>İletişim</span></a></nav></div><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Menüyü aç" aria-controls="siteMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div><div class="top-info-strip" aria-label="Bilgi şeridi"><div class="top-info-strip-content"><span class="top-live-link"><span class="top-live-dot" aria-hidden="true"></span><span class="top-live-prefix">Şu anda </span><b id="topLiveCount">2 yayıncı</b><span class="top-live-suffix"> canlı</span></span><span class="top-info-divider" aria-hidden="true"></span><span class="top-event-group top-weekly-event-group"><svg class="top-event-date-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span class="top-info-extra-label">Etkinlik</span><span class="top-next-event-name" id="topNextEventName">Etkinlikler yükleniyor</span><span class="top-next-event-time" id="topNextEventTime">--:--</span><span class="top-next-event-countdown" id="topNextEventCountdown">--:--:--</span></span><span class="top-info-divider top-next-divider" aria-hidden="true"></span><span class="top-event-group top-special-event-group"><svg class="top-event-date-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span class="top-info-extra-label">Özel Etkinlik</span><span class="top-special-event-name" id="topSpecialEventName">Etkinlikler yükleniyor</span><span class="top-special-event-time" id="topSpecialEventTime">--:--</span><span class="top-special-event-countdown" id="topSpecialEventCountdown">--:--:--</span></span><span class="top-info-divider top-next-divider" aria-hidden="true"></span><span class="top-announcement" id="topAnnouncement" hidden><svg class="top-announcement-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a2 2 0 0 0 2 2h2l9 5V4l-9 5H5a2 2 0 0 0-2 2Z"/><path d="M7 15l1.5 5M19 9l2-2M19 15l2 2"/></svg><span class="top-announcement-label">Duyuru</span><span class="top-announcement-window"><span class="top-announcement-track" id="topAnnouncementText"></span></span></span></div></div>
@@ -1144,6 +1160,40 @@ body>header .top-info-strip{display:flex!important;visibility:visible!important}
 "sunucu-bakim-notlari":{title:"Sunucu Bakım Çalışması ve İyileştirmeler",cat:"Güncelleme Notları",date:"2 Kas 2026",desc:"Bakım sonrası yapılan teknik düzenlemeler ve yenilikler.",img:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1400&q=88"}};
 const slug=decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()||''),post=data[slug],root=document.getElementById('articleRoot');
 const supa=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S");
+
+/* Blog detay sayfası üst bilgi şeridi: etkinlikleri veritabanından yükle ve sayaçları canlı tut. */
+(async()=>{
+ const ids=["topNextEventName","topNextEventTime","topNextEventCountdown","topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown"];
+ const nodes=ids.map(id=>document.getElementById(id));
+ if(nodes.some(x=>!x))return;
+ let events=[];
+ const clock=()=>{const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const v=Object.fromEntries(p.map(x=>[x.type,x.value]));return {day:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(v.weekday),sec:+v.hour*3600+ +v.minute*60+ +v.second};};
+ const seconds=value=>{const m=String(value||"").match(/(\d{1,2}):(\d{2})/);return m?Number(m[1])*3600+Number(m[2])*60:0;};
+ const draw=()=>{
+  const now=clock();
+  for(const [section,offset] of [["weekly",0],["special",3]]){
+   const found=events.filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
+    let left=((Number(e.weekday)-now.day+7)%7)*86400+seconds(e.start_time)-now.sec;
+    if(section==="special"&&seconds(e.start_time)<21600)left-=86400;
+    if(left<=0)left+=604800;
+    return {e,left};
+   }).sort((a,b)=>a.left-b.left)[0];
+   const [name,time,timer]=nodes.slice(offset,offset+3);
+   if(!found){name.textContent="Etkinlik bulunmuyor";time.textContent="--:--";timer.textContent="--:--:--";continue;}
+   name.textContent=found.e.event_title||found.e.event_name||"Etkinlik";
+   time.textContent=String(found.e.start_time).slice(0,5);
+   const h=Math.floor(found.left/3600),m=Math.floor(found.left%3600/60),s=found.left%60;
+   timer.textContent=[h,m,s].map(x=>String(x).padStart(2,"0")).join(":");
+  }
+ };
+ try{
+  const {data,error}=await supa.from("nowa_game_events").select("section,weekday,start_time,event_title,event_name,is_active,sort_order").eq("is_active",true).order("sort_order").order("start_time");
+  if(error)throw error;
+  events=data||[];
+  draw();setInterval(draw,1000);
+ }catch(err){console.warn("Blog üst bilgi etkinlikleri yüklenemedi:",err);nodes[0].textContent="Etkinlik bilgisi yok";nodes[3].textContent="Etkinlik bilgisi yok";nodes[1].textContent=nodes[4].textContent="--:--";nodes[2].textContent=nodes[5].textContent="--:--:--";}
+})();
+
 async function renderDbPost(){const {data,error}=await supa.from("nowa_blog_posts").select("*").eq("slug",slug).eq("status","published").maybeSingle();if(error||!data)return false;const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const rawContent=String(data.content||"");const safeContent=(()=>{if(!/<[a-z][\s\S]*>/i.test(rawContent))return rawContent.split(/\n{2,}/).map(p=>'<p>'+esc(p).replace(/\n/g,"<br>")+'</p>').join("");const doc=new DOMParser().parseFromString(rawContent,"text/html"),allowed=new Set(["P","BR","DIV","SPAN","STRONG","B","EM","I","U","S","UL","OL","LI","H2","H3","H4","BLOCKQUOTE","FONT","A","IMG","HR","PRE","CODE"]);const walk=node=>{[...node.children].forEach(el=>{if(!allowed.has(el.tagName)){el.replaceWith(...el.childNodes);return}[...el.attributes].forEach(attr=>{const name=attr.name.toLowerCase(),value=attr.value;if(name.startsWith("on")||name==="srcdoc"||name==="contenteditable"){el.removeAttribute(attr.name);return}if(name==="style"){const safe=value.split(";").map(rule=>rule.trim()).filter(rule=>/^(color|background-color|font-size|font-weight|font-style|text-decoration|text-align)\s*:\s*[-#(),.%\w\s]+$/i.test(rule)).join(";");if(safe)el.setAttribute("style",safe);else el.removeAttribute("style");return}if(el.tagName==="FONT"&&name==="color")return;if(el.tagName==="A"&&name==="href"){if(!/^(https?:|mailto:|\/)/i.test(value))el.removeAttribute(attr.name);return}if(el.tagName==="IMG"&&["src","alt","width","height"].includes(name)){if(name==="src"&&!/^(https?:|\/)/i.test(value))el.removeAttribute(attr.name);return}if((el.tagName==="IMG"&&name==="loading")||(el.tagName==="A"&&["target","rel"].includes(name)))return;el.removeAttribute(attr.name)});walk(el)})};walk(doc.body);return doc.body.innerHTML})();const date=data.published_at?new Date(data.published_at).toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"}):"";document.title=(data.seo_title||data.title)+" | Nowa Online World";document.querySelector('meta[name="description"]').content=data.seo_description||data.excerpt||"";document.getElementById("crumbTitle").textContent=data.title;root.innerHTML='<div class="article-layout"><article class="article-main"><span class="article-category">'+esc(data.category)+'</span><h1 class="article-title">'+esc(data.title)+'</h1><p class="article-lead">'+esc(data.excerpt||"")+'</p><div class="article-meta"><span>◉ '+esc(data.author||"QuetraOnline")+'</span><span>▦ '+esc(date)+'</span></div>'+(data.cover_image?'<img class="article-cover" src="'+esc(data.cover_image)+'" alt="'+esc(data.title)+'">':"")+'<div class="article-body">'+safeContent+'<a class="article-back" href="/blog">← Tüm duyurulara dön</a></div></article><aside class="article-side"><section class="side-box"><h3>BLOG</h3><a class="side-link" href="/blog"><b>Blog ana sayfasına dön</b><small>Tüm duyurular ve rehberler</small></a></section><section class="side-box"><h3>KATEGORİ</h3><b>'+esc(data.category)+'</b></section></aside></div>';return true}
 if(!post){renderDbPost().then(ok=>{if(!ok){document.title='Konu bulunamadı | Nowa Online World';root.innerHTML='<div class="article-notfound"><h1>Bu konu bulunamadı</h1><p>Aradığın blog yazısı mevcut değil veya kaldırılmış olabilir.</p><a class="article-back" href="/blog">Blog sayfasına dön</a></div>'}});return;}
 document.title=post.title+' | Nowa Online World';document.querySelector('meta[name="description"]').content=post.desc;document.getElementById('crumbTitle').textContent=post.title;
