@@ -1964,7 +1964,8 @@ async function blogAdminView(activeBlogSection="posts"){
   const title=String(fd.get("title")||"").trim(),excerpt=String(fd.get("excerpt")||"").trim();const content=sanitizeBlogEditorHtml($("blogContentEditor").innerHTML);form.elements.content.value=content;
   const plainContent=content.replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
   const payload={title,slug:slugifyBlog(title),category:String(fd.get("category")||"Duyurular"),author:String(fd.get("author")||"QuetraOnline"),excerpt,cover_image:String(fd.get("cover_image")||"").trim()||null,content,status,is_featured:form.elements.is_featured.checked,seo_title:title.slice(0,180)||null,seo_description:(excerpt||plainContent).slice(0,300)||null,updated_at:new Date().toISOString()};
-  const existingPost=id?blogPosts.find(post=>post.id===id):null;\n  if(status==="published"&&!existingPost?.published_at)payload.published_at=new Date().toISOString();
+  const existingPost=id?blogPosts.find(post=>post.id===id):null;
+  if(status==="published"&&!existingPost?.published_at)payload.published_at=new Date().toISOString();
   if(!payload.title||!payload.slug){toast("Başlık ve URL kısa adı gerekli.");return}
   $("blogSave").disabled=true;
   try{
