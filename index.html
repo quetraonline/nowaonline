@@ -1840,11 +1840,12 @@ async function blogAdminView(activeBlogSection="posts"){
  '<section id="blogAdminEditor" class="admin-event-form-workspace" hidden style="margin-top:16px"><div class="admin-event-form-heading"><h4 id="blogEditorTitle">YENİ BLOG YAZISI</h4><p>Yazı bilgilerini doldurup kaydedebilirsin.</p></div>'+
  '<form id="blogPostForm"><input type="hidden" name="id"><div class="formgrid">'+
  '<div class="formfield"><label>Yazı başlığı *</label><input class="field" name="title" required maxlength="180"></div>'+
- '<div class="formfield"><label>URL kısa adı *</label><input class="field" name="slug" required maxlength="180"></div>'+
+ '<div class="formfield"><label>URL kısa adı</label><input class="field" name="slug" maxlength="180" readonly><small class="muted">Başlıktan otomatik oluşturulur.</small></div>'+
  '<div class="formfield"><label>Kategori</label><select class="field" name="category" required><option value="">Kategoriler yükleniyor...</option></select></div>'+
  '<div class="formfield"><label>Yazar</label><input class="field" name="author" value="QuetraOnline"></div>'+
  '<div class="formfield" style="grid-column:1/-1"><label>Kısa açıklama</label><textarea class="field" name="excerpt" rows="3" maxlength="400"></textarea></div>'+
- '<div class="formfield" style="grid-column:1/-1"><label>Kapak görseli URL</label><input class="field" name="cover_image" type="url" placeholder="https://..."></div>'+
+ '<input type="hidden" name="cover_image">'+
+ '<div class="formfield" style="grid-column:1/-1"><label>Kapak görseli yükle</label><input class="field" name="cover_file" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small class="muted">JPG, PNG, WEBP veya GIF · En fazla 8 MB</small><div id="blogCoverPreview" style="margin-top:10px"></div></div>'+
  '<div class="formfield" style="grid-column:1/-1"><label>İçerik</label><textarea class="field" name="content" rows="12" placeholder="Yazının içeriğini buraya gir. Paragraflar için satır boşluğu kullanabilirsin."></textarea></div>'+
  '<div class="formfield"><label>Yayın durumu</label><select class="field" name="status"><option value="draft">Taslak</option><option value="published">Yayınla</option><option value="archived">Arşivle</option></select></div>'+
  '<div class="formfield" style="grid-column:1/-1"><small class="muted">SEO başlığı yazı başlığından, SEO açıklaması kısa açıklamadan otomatik oluşturulur.</small></div>'+
@@ -1883,6 +1884,9 @@ async function blogAdminView(activeBlogSection="posts"){
  const editBlogPost=p=>{
   const form=$("blogPostForm");form.reset();form.elements.id.value=p?.id||"";
   for(const key of ["title","slug","author","excerpt","cover_image","content","status"])form.elements[key].value=p?.[key]??(key==="author"?"QuetraOnline":key==="status"?"draft":"");
+  form.elements.cover_file.value="";
+  $("blogCoverPreview").innerHTML=p?.cover_image?'<img src="'+esc(p.cover_image)+'" alt="Mevcut kapak görseli" style="max-width:220px;max-height:130px;object-fit:cover;border-radius:10px;border:1px solid var(--line)"><button type="button" class="btn" id="blogCoverRemove" style="display:block;margin-top:8px">Görseli kaldır</button>':'';
+  const removeCover=$("blogCoverRemove");if(removeCover)removeCover.onclick=()=>{form.elements.cover_image.value="";$("blogCoverPreview").innerHTML=""};
   renderBlogCategoryOptions(p?.category||"");
   form.elements.is_featured.checked=!!p?.is_featured;
   $("blogEditorTitle").textContent=p?"BLOG YAZISINI DÜZENLE":"YENİ BLOG YAZISI";
@@ -1926,7 +1930,12 @@ async function blogAdminView(activeBlogSection="posts"){
   }
  };
  $("blogCancel").onclick=()=>{$("blogAdminEditor").hidden=true};
- $("blogPostForm").elements.title.addEventListener("input",()=>{if(!$("blogPostForm").elements.id.value)$("blogPostForm").elements.slug.value=slugifyBlog($("blogPostForm").elements.title.value)});
+ $("blogPostForm").elements.title.addEventListener("input",()=>{$("blogPostForm").elements.slug.value=slugifyBlog($("blogPostForm").elements.title.value)});
+ $("blogPostForm").elements.cover_file.addEventListener("change",event=>{
+  const file=event.target.files?.[0];if(!file){$("blogCoverPreview").innerHTML="";return}
+  if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)||file.size>8*1024*1024){toast("JPG, PNG, WEBP veya GIF ve en fazla 8 MB görsel seç.");event.target.value="";return}
+  const url=URL.createObjectURL(file);$("blogCoverPreview").innerHTML='<img src="'+url+'" alt="Yeni kapak görseli önizlemesi" style="max-width:220px;max-height:130px;object-fit:cover;border-radius:10px;border:1px solid var(--line)">';
+ });
  $("blogAdminPosts").onclick=async event=>{
   const edit=event.target.closest("[data-blog-edit]"),del=event.target.closest("[data-blog-delete]");
   if(edit){editBlogPost(blogPosts.find(p=>p.id===edit.dataset.blogEdit));return}
@@ -1936,11 +1945,21 @@ async function blogAdminView(activeBlogSection="posts"){
   event.preventDefault();const form=event.currentTarget,fd=new FormData(form),id=String(fd.get("id")||""),status=String(fd.get("status"));
   const title=String(fd.get("title")||"").trim(),excerpt=String(fd.get("excerpt")||"").trim(),content=String(fd.get("content")||"");
   const plainContent=content.replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
-  const payload={title,slug:slugifyBlog(fd.get("slug")),category:String(fd.get("category")||"Duyurular"),author:String(fd.get("author")||"QuetraOnline"),excerpt,cover_image:String(fd.get("cover_image")||"").trim()||null,content,status,is_featured:form.elements.is_featured.checked,seo_title:title.slice(0,180)||null,seo_description:(excerpt||plainContent).slice(0,300)||null,updated_at:new Date().toISOString()};
+  const payload={title,slug:slugifyBlog(title),category:String(fd.get("category")||"Duyurular"),author:String(fd.get("author")||"QuetraOnline"),excerpt,cover_image:String(fd.get("cover_image")||"").trim()||null,content,status,is_featured:form.elements.is_featured.checked,seo_title:title.slice(0,180)||null,seo_description:(excerpt||plainContent).slice(0,300)||null,updated_at:new Date().toISOString()};
   if(status==="published")payload.published_at=new Date().toISOString();
   if(!payload.title||!payload.slug){toast("Başlık ve URL kısa adı gerekli.");return}
   $("blogSave").disabled=true;
-  try{const result=id?await db.from("nowa_blog_posts").update(payload).eq("id",id):await db.from("nowa_blog_posts").insert(payload);if(result.error)throw result.error;await logAdminActivity(id?"update":"create","Blog",payload.title,payload.title+(id?" blog yazısı güncellendi.":" blog yazısı oluşturuldu."));toast(status==="published"?"Blog yazısı yayınlandı.":"Blog yazısı kaydedildi.");$("blogAdminEditor").hidden=true;await loadBlogPosts()}
+  try{
+   const coverFile=form.elements.cover_file.files?.[0];
+   if(coverFile){
+    if(!["image/jpeg","image/png","image/webp","image/gif"].includes(coverFile.type)||coverFile.size>8*1024*1024)throw new Error("Kapak görseli JPG, PNG, WEBP veya GIF ve en fazla 8 MB olmalı.");
+    const ext=({ "image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"})[coverFile.type];
+    const filePath="blog-covers/"+crypto.randomUUID()+"."+ext;
+    const {data:uploaded,error:uploadError}=await db.storage.from("nowa-game-updates").upload(filePath,coverFile,{cacheControl:"31536000",contentType:coverFile.type,upsert:false});
+    if(uploadError)throw uploadError;
+    payload.cover_image=db.storage.from("nowa-game-updates").getPublicUrl(uploaded.path).data.publicUrl;
+   }
+   const result=id?await db.from("nowa_blog_posts").update(payload).eq("id",id):await db.from("nowa_blog_posts").insert(payload);if(result.error)throw result.error;await logAdminActivity(id?"update":"create","Blog",payload.title,payload.title+(id?" blog yazısı güncellendi.":" blog yazısı oluşturuldu."));toast(status==="published"?"Blog yazısı yayınlandı.":"Blog yazısı kaydedildi.");$("blogAdminEditor").hidden=true;await loadBlogPosts()}
   catch(error){toast("Kaydetme hatası: "+error.message)}
   finally{$("blogSave").disabled=false}
  };
