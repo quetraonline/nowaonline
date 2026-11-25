@@ -1068,6 +1068,38 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 }
 
 
+
+/* Yönetim paneli tipografisini sitenin genel yazı ölçeğiyle eşitle. */
+html.admin-route body,
+html.admin-route #modal,
+html.admin-route #modal button,
+html.admin-route #modal input,
+html.admin-route #modal select,
+html.admin-route #modal textarea{
+ font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+html.admin-route #modal .admin-site-nav-button,
+html.admin-route #modal .admin-event-nav-button{
+ font-size:13px!important;
+ font-weight:750;
+}
+html.admin-route #modal .admin-sidebar-group-title{
+ font-size:10px!important;
+}
+html.admin-route #modal .admin-overview-heading h4{font-size:19px}
+html.admin-route #modal .admin-overview-heading p{font-size:13px}
+html.admin-route #modal .admin-overview-heading>span{font-size:10px}
+html.admin-route #modal .admin-overview-card>span{font-size:12px}
+html.admin-route #modal .admin-overview-card small{font-size:11px}
+html.admin-route #modal .admin-recent-activity-heading h4{font-size:14px}
+html.admin-route #modal .admin-recent-activity-heading p{font-size:13px}
+html.admin-route #modal .admin-activity-copy strong{font-size:13px}
+html.admin-route #modal .admin-activity-copy small{font-size:11px}
+html.admin-route #modal .admin-activity-type{font-size:11px}
+html.admin-route #modal .admin-activity-empty{font-size:13px}
+html.admin-route #modal .admin-stats-heading h4{font-size:15px}
+html.admin-route #modal .admin-stats-heading p{font-size:13px}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
