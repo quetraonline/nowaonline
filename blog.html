@@ -1202,6 +1202,7 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
  .blog-article-content h2{font-size:21px!important}
  .blog-article-content p{font-size:14px!important}
 }
+.blog-feature[hidden]{display:none!important}
 </style></head><body>
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
@@ -1270,4 +1271,58 @@ loadPublishedBlog();
 document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()=>{location.href='/blog/'+c.dataset.slug;}));
 document.querySelector('[data-feature-read]').addEventListener('click',e=>{e.preventDefault();location.href='/blog/'+encodeURIComponent(e.currentTarget.dataset.slug||"kasim-guncelleme-notlari");});
 })();
+
+<script>
+(()=> {
+ const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
+ const SUPABASE_KEY="sb_publishable_1UDqJWj6DAKRX7tfWMs2lA_nW-Ee29S";
+ const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ const $=id=>document.getElementById(id);
+ async function refreshVisitorCount(){
+  const out=$("visitorCount");if(!out)return;
+  try{
+   let id=localStorage.getItem("nowa_online_visitor_id");
+   if(!id){id=crypto.randomUUID();localStorage.setItem("nowa_online_visitor_id",id)}
+   const {data,error}=await client.rpc("register_nowa_site_visit",{p_visitor_id:id});
+   if(error)throw error;
+   out.textContent=Number(data||0).toLocaleString("tr-TR");
+  }catch(e){console.warn("Blog ziyaretçi sayacı:",e);out.textContent="—"}
+ }
+ const parts=()=>{const f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"});const p=Object.fromEntries(f.formatToParts(new Date()).map(x=>[x.type,x.value]));return {weekday:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(p.weekday),hour:+p.hour,minute:+p.minute,second:+p.second}};
+ const clock=v=>String(v).padStart(2,"0");
+ let events=[];
+ function refreshTopEvents(){
+  const now=parts(),nowSec=now.hour*3600+now.minute*60+now.second;
+  const choose=section=>(events||[]).filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
+   const start=String(e.start_time).split(":").slice(0,2).reduce((a,x,i)=>a+(+x)*(i?60:3600),0);
+   let remain=((Number(e.weekday)-now.weekday+7)%7)*86400+start-nowSec;
+   if(section==="special"&&start<21600)remain-=86400;
+   if(remain<=0)remain+=604800;
+   return {e,remain};
+  }).sort((a,b)=>a.remain-b.remain)[0];
+  const draw=(item,nameId,timeId,countId,label)=>{
+   const n=$(nameId),t=$(timeId),d=$(countId);if(!n||!t||!d)return;
+   if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";d.textContent="--:--:--";return}
+   n.textContent=item.e.event_title||item.e.event_name||label;
+   t.textContent=String(item.e.start_time).slice(0,5);
+   const h=Math.floor(item.remain/3600),m=Math.floor(item.remain%3600/60),s=item.remain%60;
+   d.textContent=[h,m,s].map(clock).join(":");
+  };
+  draw(choose("weekly"),"topNextEventName","topNextEventTime","topNextEventCountdown","Haftalık Etkinlik");
+  draw(choose("special"),"topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown","Özel Etkinlik");
+ }
+ async function refreshTopBar(){
+  try{
+   const [{data,error},{data:live,error:liveError}]=await Promise.all([
+    client.from("nowa_game_events").select("section,weekday,event_title,event_name,start_time,is_active,sort_order").eq("is_active",true).order("sort_order").order("start_time"),
+    client.from("nowa_stream_sessions").select("publisher_id").is("ended_at",null)
+   ]);
+   if(error)throw error;events=data||[];refreshTopEvents();
+   if(!liveError&&$("topLiveCount"))$("topLiveCount").textContent=new Set((live||[]).map(x=>x.publisher_id)).size+" yayıncı";
+  }catch(e){console.warn("Blog üst bilgi alanı:",e);["topNextEventName","topSpecialEventName"].forEach(id=>{if($(id))$(id).textContent="Etkinlik bilgisi alınamadı"})}
+ }
+ refreshVisitorCount();refreshTopBar();setInterval(refreshTopEvents,1000);setInterval(refreshTopBar,60000);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden){refreshVisitorCount();refreshTopBar()}});
+})();
+</script>
 </script></body></html>
