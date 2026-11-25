@@ -1245,7 +1245,7 @@ async function loadPublishedBlog(){
  const featureEl=document.querySelector(".blog-feature"),grid=document.getElementById("blogGrid"),totalStat=document.getElementById("blogTotalStat"),lastStat=document.getElementById("blogLastPublished");
  const moreWrap=document.getElementById("blogMoreWrap");const setEmpty=message=>{featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";moreWrap.hidden=true;count.textContent="";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
  try{
-  const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKRX7tfWMs2lA_nW-Ee29S");
+  const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S");
   const {data,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});
   if(error)throw error;const posts=data||[];
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1275,7 +1275,7 @@ document.querySelector('[data-feature-read]').addEventListener('click',e=>{e.pre
 <script>
 (()=> {
  const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
- const SUPABASE_KEY="sb_publishable_1UDqJWj6DAKRX7tfWMs2lA_nW-Ee29S";
+ const SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
  const $=id=>document.getElementById(id);
  async function refreshVisitorCount(){
