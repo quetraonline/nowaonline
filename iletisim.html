@@ -330,6 +330,9 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 @keyframes nowa-live-dot-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(239,70,87,0),0 0 5px rgba(239,70,87,.45)}50%{opacity:.35;box-shadow:0 0 0 4px rgba(239,70,87,.14),0 0 10px rgba(239,70,87,.8)}}
 .top-info-strip-content .top-live-dot{animation:nowa-live-dot-pulse 2s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.top-info-strip-content .top-live-dot{animation:none}}
+
+/* Mobile drawer backdrop: tapping the uncovered page area closes the drawer. */
+@media(max-width:700px){body.mobile-menu-open header{z-index:2147482600!important}body.mobile-menu-open::before{content:"";position:fixed;inset:0;z-index:2147482500;background:rgba(0,0,0,.48);pointer-events:auto}body.mobile-menu-open #siteMenu>.menu-dropdown{z-index:2147482601!important}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -561,8 +564,8 @@ loadTopNextWeeklyEvent();
  const closeButton=document.getElementById("mobileMenuClose");
  const brand=document.getElementById("menuTrigger");
  const back=document.getElementById("backToTop");
- if(!menu||!toggle||menu.dataset.drawerController==="3")return;
- menu.dataset.drawerController="3";
+ if(!menu||!toggle||menu.dataset.drawerController==="4")return;
+ menu.dataset.drawerController="4";
  // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
  document.body.appendChild(toggle);
  const positionHamburger=()=>{const nav=document.querySelector("header .nav");if(!nav)return;const rect=nav.getBoundingClientRect();toggle.style.setProperty("top",`${Math.round(rect.top+(rect.height-toggle.offsetHeight)/2)}px`,"important");};
@@ -607,6 +610,26 @@ loadTopNextWeeklyEvent();
   event.preventDefault();
  },{capture:true,passive:false});
  // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
+ document.addEventListener("pointerdown",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },true);
+ document.addEventListener("touchstart",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },{capture:true,passive:true});
+ let drawerTouchY=null,drawerTouchX=null;
+ document.addEventListener("touchstart",event=>{if(!opened||!event.touches?.length)return;drawerTouchY=event.touches[0].clientY;drawerTouchX=event.touches[0].clientX;},{capture:true,passive:true});
+ document.addEventListener("touchmove",event=>{
+  if(!opened||drawerTouchY===null||!event.touches?.length)return;
+  const dx=Math.abs(event.touches[0].clientX-drawerTouchX),dy=Math.abs(event.touches[0].clientY-drawerTouchY);
+  if(dy>6&&dy>dx){setOpen(false);drawerTouchY=null;drawerTouchX=null;}
+ },{capture:true,passive:true});
+ document.addEventListener("touchend",()=>{drawerTouchY=null;drawerTouchX=null;},{capture:true,passive:true});
  document.addEventListener("click",event=>{
   const target=event.target instanceof Element?event.target:null;
   if(target?.closest("#mobileMenuToggle")){
