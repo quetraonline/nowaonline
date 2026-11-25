@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/blog-yonetim",
-      "destination": "/blog-yonetim.html"
-    },
-    {
       "source": "/blog",
       "destination": "/blog.html"
     },
@@ -60,15 +56,6 @@
     }
   ],
   "headers": [
-    {
-      "source": "/blog-yonetim",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
-        }
-      ]
-    },
     {
       "source": "/blog",
       "headers": [
