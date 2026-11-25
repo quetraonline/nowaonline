@@ -1060,6 +1060,13 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 
 
 
+/* /yonetim: tighten mobile navigation spacing and start panel content directly below it. */
+@media(max-width:760px){
+ html.admin-route #modal .admin-tabs{top:61px!important;padding:5px 9px!important;gap:4px!important;margin:0!important;border-radius:0!important}
+ html.admin-route #modal .admin-tab-button{min-height:35px!important;padding:6px 9px!important}
+ html.admin-route #modal .admin-tab-panel{padding:8px 12px 25px!important;margin:0!important}
+}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 </head>
@@ -2604,11 +2611,3 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
 }
 </script>
 </body></html>
-
-
-/* /yonetim: tighten mobile navigation spacing and start panel content directly below it. */
-@media(max-width:760px){
- html.admin-route #modal .admin-tabs{top:61px!important;padding:5px 9px!important;gap:4px!important;margin:0!important;border-radius:0!important}
- html.admin-route #modal .admin-tab-button{min-height:35px!important;padding:6px 9px!important}
- html.admin-route #modal .admin-tab-panel{padding:8px 12px 25px!important;margin:0!important}
-}
