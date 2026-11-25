@@ -632,11 +632,11 @@ header .menu-dropdown{z-index:40}
  #siteMenu.open>.menu-dropdown{opacity:1;visibility:visible;transform:translateX(0)}
  #siteMenu.open:after{content:"";position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(2px);z-index:10001}
  .mobile-download-menu{border-bottom:1px solid #ffffff18}
- .mobile-download-trigger{display:flex;align-items:center;gap:16px;width:100%;min-height:62px;padding:10px 8px;border:0;background:transparent;color:#e8e9ed;text-align:left;font:800 17px/1.3 inherit;cursor:pointer}
- .mobile-download-trigger>svg:first-child{width:22px;height:22px;flex:0 0 22px;fill:none;stroke:#a6a6b3;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
- .mobile-download-trigger:hover,.mobile-download-menu.open .mobile-download-trigger{color:#e8c36c}
- .mobile-download-trigger:hover>svg:first-child,.mobile-download-menu.open .mobile-download-trigger>svg:first-child{stroke:#e8c36c}
- .mobile-download-chevron{width:17px;height:17px;margin-left:auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+ .mobile-download-trigger{display:flex;align-items:center;gap:13px;width:100%;min-height:62px;padding:10px 4px;border:0;border-radius:0;background:transparent;color:#e8e9ed;text-align:left;font:inherit;font-size:15px;font-weight:800;line-height:1.25;cursor:pointer}
+ .mobile-download-trigger>svg:first-child{width:20px;height:20px;flex:0 0 20px;fill:none;stroke:#a6a6b3;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ .mobile-download-trigger:hover,.mobile-download-trigger:active,.mobile-download-trigger:focus,.mobile-download-menu.open .mobile-download-trigger{background:transparent;color:#e8e9ed;outline:none;box-shadow:none}
+ .mobile-download-trigger:hover>svg:first-child,.mobile-download-trigger:active>svg:first-child,.mobile-download-trigger:focus>svg:first-child,.mobile-download-menu.open .mobile-download-trigger>svg:first-child{stroke:#a6a6b3}
+ .mobile-download-chevron{width:17px;height:17px;margin-left:auto;fill:none;stroke:#a6a6b3;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
  .mobile-download-menu.open .mobile-download-chevron{transform:rotate(180deg)}
  .mobile-download-options{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 8px 16px}
  .mobile-download-options[hidden]{display:none!important}
