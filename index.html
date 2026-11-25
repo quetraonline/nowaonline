@@ -1489,7 +1489,7 @@ function renderPublisherRecoveryList(items){
  }).join("");
  return cards||'<div class="empty"><strong>Bu serverda henüz yayıncı yok.</strong></div>';
 }
-async async function loadPublishers(){
+async function loadPublishers(){
  const requestId=(window.nowaPublishersLoadRequest||0)+1;
  window.nowaPublishersLoadRequest=requestId;
  try{
