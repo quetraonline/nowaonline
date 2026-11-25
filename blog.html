@@ -1066,6 +1066,11 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 .blog-subtitle{font-size:12px;color:#999ba5;margin:7px 0 0}
 .blog-stats{display:flex;gap:9px;flex-shrink:0}
 .blog-stat{min-width:145px;display:flex;align-items:center;gap:10px;padding:10px 13px;background:#111116;border:1px solid #282830;border-radius:11px}
+/* Blog istatistik ve kategori ikonları: tutarlı çizgisel SVG seti */
+.blog-stat-icon svg,.filter-icon svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.filter-icon{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;flex:0 0 21px}
+.blog-stat-icon{display:flex;align-items:center;justify-content:center}
+.blog-stat-icon svg{width:26px;height:26px}
 .blog-stat-icon{width:27px;height:27px;display:grid;place-items:center;border-radius:7px;background:#1c1a20;color:#e8b95c;font-size:14px}
 .blog-stat small{display:block;color:#8c8d98;font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
 .blog-stat b{display:block;color:#e8e8eb;font-size:11px;margin-top:2px}
@@ -1159,14 +1164,14 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 <main class="blog-shell">
   <div class="blog-heading">
     <div><div class="blog-crumb">⌂ Ana Sayfa　›　Blog</div><h1 class="blog-title">DUYURULAR</h1><p class="blog-subtitle">Güncelleme notları, etkinlikler ve Nowa Online World topluluğuna dair tüm haberler.</p></div>
-    <div class="blog-stats"><div class="blog-stat"><span class="blog-stat-icon">♧</span><span><small>TOPLAM</small><b>32 duyuru · 96 rehber</b></span></div><div class="blog-stat"><span class="blog-stat-icon">◷</span><span><small>SON YAYIN</small><b>24 Kas 2026</b></span></div></div>
+    <div class="blog-stats"><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span><small>TOPLAM</small><b>32 duyuru · 96 rehber</b></span></div><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>SON YAYIN</small><b>24 Kas 2026</b></span></div></div>
   </div>
   <nav class="blog-filters" aria-label="Blog kategorileri">
-    <button class="blog-filter active" data-category="all"><span class="filter-icon">▦</span>Tümü <span class="filter-count">32</span></button>
-    <button class="blog-filter" data-category="duyurular"><span class="filter-icon">♥</span>Duyurular <span class="filter-count">11</span></button>
-    <button class="blog-filter" data-category="guncelleme"><span class="filter-icon">♧</span>Güncelleme Notları <span class="filter-count">12</span></button>
-    <button class="blog-filter" data-category="etkinlikler"><span class="filter-icon">⚒</span>Etkinlikler <span class="filter-count">9</span></button>
-    <button class="blog-filter" data-category="rehberler"><span class="filter-icon">▣</span>Rehberler <span class="filter-count">96</span></button>
+    <button class="blog-filter active" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">32</span></button>
+    <button class="blog-filter" data-category="duyurular"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10v4h4l10 5V5L7 10H3Z"/><path d="m7 14 2 6h4l-2-5M20 9l2-2M20 15l2 2"/></svg></span>Duyurular <span class="filter-count">11</span></button>
+    <button class="blog-filter" data-category="guncelleme"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M4.9 17a8 8 0 0 0 13.2 1.5L20 16M4 12a8 8 0 0 1 13.2-6.5L20 8"/></svg></span>Güncelleme Notları <span class="filter-count">12</span></button>
+    <button class="blog-filter" data-category="etkinlikler"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h7"/></svg></span>Etkinlikler <span class="filter-count">9</span></button>
+    <button class="blog-filter" data-category="rehberler"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M16 3v4h4M8 11h8M8 15h8M8 18h5"/></svg></span>Rehberler <span class="filter-count">96</span></button>
   </nav>
   <div class="blog-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="blogSearch" type="search" placeholder="Duyurularda ara..." autocomplete="off"></div>
   <article class="blog-feature">
