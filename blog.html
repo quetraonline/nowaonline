@@ -1266,7 +1266,7 @@ const search=document.getElementById('blogSearch'),empty=document.getElementById
 function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=cards.filter(c=>(category==='all'||c.dataset.category===category)&&(!q||c.innerText.toLocaleLowerCase('tr').includes(q)));cards.forEach(c=>{const idx=filtered.indexOf(c);c.hidden=idx<0||idx>=visible;});filters.forEach(x=>x.classList.toggle('active',x.dataset.category===category));const feature=document.querySelector('.blog-feature');if(feature)feature.hidden=category!=='all';empty.classList.toggle('show',filtered.length===0);more.style.display=filtered.length>visible?'inline-flex':'none';count.textContent=filtered.length?filtered.length+' içerikten '+Math.min(visible,filtered.length)+' tanesi gösteriliyor':'';}
 function renderCategoryFilters(categories,posts){
  const nav=document.getElementById('blogCategoryFilters');
- const key=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ const key=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
  const allCount=posts.length;
  nav.innerHTML='<button type="button" class="blog-filter '+(category==='all'?'active':'')+'" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">'+allCount+'</span></button>'+
  categories.map(c=>'<button type="button" class="blog-filter '+(category===key(c.name)?'active':'')+'" data-category="'+key(c.name)+'"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>'+String(c.name).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))+' <span class="filter-count">'+posts.filter(p=>p.category===c.name).length+'</span></button>').join('');
@@ -1296,7 +1296,7 @@ async function loadPublishedBlog(){
   const posts=postsData||[];
   renderCategoryFilters(categories,posts);
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const catKey=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const catKey=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   const date=v=>v?new Date(v).toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Yeni";
   if(!posts.length){setEmpty("Henüz yayınlanmış blog yazısı bulunmuyor.");return;}
   empty.classList.remove("show");featureEl.hidden=false;moreWrap.hidden=false;
