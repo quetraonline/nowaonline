@@ -1246,10 +1246,7 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
     <div class="blog-stats"><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span><small>TOPLAM</small><b id="blogTotalStat">0 yazı</b></span></div><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>SON YAYIN</small><b id="blogLastPublished">Henüz yayın yok</b></span></div></div>
   </div>
   <nav class="blog-filters" aria-label="Blog kategorileri" id="blogCategoryFilters">
-    <a class="blog-filter active" href="/blog" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">0</span></a>
-    <a class="blog-filter" href="/blog/kategori/duyurular" data-category="duyurular"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>Duyurular <span class="filter-count">0</span></a>
-    <a class="blog-filter" href="/blog/kategori/guncelleme-notlari" data-category="guncelleme-notlari"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>Güncelleme Notları <span class="filter-count">0</span></a>
-    <a class="blog-filter" href="/blog/kategori/etkinlikler" data-category="etkinlikler"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>Etkinlikler <span class="filter-count">0</span></a>
+    <button type="button" class="blog-filter active" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">0</span></button>
   </nav>
   <div class="blog-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="blogSearch" type="search" placeholder="Duyurularda ara..." autocomplete="off"></div>
   <article class="blog-feature" hidden><div class="blog-feature-media"><img src="" alt=""></div><div class="blog-feature-copy"><div class="blog-tags"><span class="blog-tag">★ EN YENİ</span><span class="blog-tag category"></span></div><h2></h2><p></p><div class="blog-meta"></div><a href="#" class="blog-read" data-feature-read>Devamını oku <span>→</span></a></div></article>
@@ -1266,16 +1263,19 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 (()=>{const menu=document.getElementById('siteMenu'),trigger=document.getElementById('menuTrigger'),mobile=document.getElementById('mobileMenuToggle'),close=document.getElementById('mobileMenuClose');const setMenu=v=>{if(!menu)return;menu.classList.toggle('open',v);if(trigger)trigger.setAttribute('aria-expanded',String(v));if(mobile)mobile.setAttribute('aria-expanded',String(v));};trigger?.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));mobile?.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));close?.addEventListener('click',()=>setMenu(false));document.addEventListener('click',e=>{if(menu&&!menu.contains(e.target)&&!mobile?.contains(e.target))setMenu(false);});menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
 let cards=[],filters=[],category='all',visible=9,filtered=[];
 const search=document.getElementById('blogSearch'),empty=document.getElementById('blogEmpty'),more=document.getElementById('blogMore'),count=document.getElementById('blogCount');
-function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=cards.filter(c=>(category==='all'||c.dataset.category===category)&&(!q||c.innerText.toLocaleLowerCase('tr').includes(q)));cards.forEach(c=>{const idx=filtered.indexOf(c);c.hidden=idx<0||idx>=visible;});empty.classList.toggle('show',filtered.length===0);more.style.display=filtered.length>visible?'inline-flex':'none';count.textContent=filtered.length?filtered.length+' içerikten '+Math.min(visible,filtered.length)+' tanesi gösteriliyor':'';}
+function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=cards.filter(c=>(category==='all'||c.dataset.category===category)&&(!q||c.innerText.toLocaleLowerCase('tr').includes(q)));cards.forEach(c=>{const idx=filtered.indexOf(c);c.hidden=idx<0||idx>=visible;});filters.forEach(x=>x.classList.toggle('active',x.dataset.category===category));const feature=document.querySelector('.blog-feature');if(feature)feature.hidden=category!=='all';empty.classList.toggle('show',filtered.length===0);more.style.display=filtered.length>visible?'inline-flex':'none';count.textContent=filtered.length?filtered.length+' içerikten '+Math.min(visible,filtered.length)+' tanesi gösteriliyor':'';}
 function renderCategoryFilters(categories,posts){
  const nav=document.getElementById('blogCategoryFilters');
  const key=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
  const allCount=posts.length;
- nav.innerHTML='<button class="blog-filter active" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">'+allCount+'</span></button>'+
- categories.map(c=>'<a class="blog-filter" href="/blog/kategori/'+key(c.name)+'" data-category="'+key(c.name)+'"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>'+String(c.name).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))+' <span class="filter-count">'+posts.filter(p=>p.category===c.name).length+'</span></a>').join('');
+ nav.innerHTML='<button type="button" class="blog-filter '+(category==='all'?'active':'')+'" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">'+allCount+'</span></button>'+
+ categories.map(c=>'<button type="button" class="blog-filter '+(category===key(c.name)?'active':'')+'" data-category="'+key(c.name)+'"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>'+String(c.name).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))+' <span class="filter-count">'+posts.filter(p=>p.category===c.name).length+'</span></button>').join('');
  filters=[...nav.querySelectorAll('.blog-filter')];
- const allTab=nav.querySelector('.blog-filter[data-category="all"]');
- if(allTab)allTab.addEventListener('click',()=>{location.href='/blog';});
+ filters.forEach(tab=>tab.addEventListener('click',()=>{
+  category=tab.dataset.category||'all';
+  visible=9;
+  apply();
+ }));
 }
 async function loadPublishedBlog(){
  const featureEl=document.querySelector(".blog-feature"),grid=document.getElementById("blogGrid"),totalStat=document.getElementById("blogTotalStat"),lastStat=document.getElementById("blogLastPublished");
@@ -1300,30 +1300,18 @@ async function loadPublishedBlog(){
   const date=v=>v?new Date(v).toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Yeni";
   if(!posts.length){setEmpty("Henüz yayınlanmış blog yazısı bulunmuyor.");return;}
   empty.classList.remove("show");featureEl.hidden=false;moreWrap.hidden=false;
-  const pathMatch=location.pathname.match(/^\\/blog\\/kategori\\/([^/]+)\\/?$/),categorySlug=pathMatch?decodeURIComponent(pathMatch[1]):"";
-  const selectedCategory=categories.find(c=>catKey(c.name)===categorySlug);
-  if(categorySlug&&!selectedCategory){setEmpty("Bu kategori bulunamadı veya artık mevcut değil.");return;}
-  if(selectedCategory){
-   category=categorySlug;featureEl.hidden=true;
-   document.querySelector(".blog-title span").textContent=selectedCategory.name;
-   document.querySelector(".blog-breadcrumb-current").textContent=selectedCategory.name;
-   document.querySelector(".blog-subtitle").textContent=selectedCategory.name+" kategorisindeki yayınlanmış yazılar.";
-   filters.forEach(x=>x.classList.toggle("active",x.dataset.category===categorySlug));
-  }else{
-   const feature=posts.find(x=>x.is_featured)||posts[0],featureImg=feature.cover_image||"";
-   featureEl.hidden=false;
-   featureEl.querySelector(".blog-feature-media img").src=featureImg;featureEl.querySelector(".blog-feature-media img").alt=feature.title;
-   featureEl.querySelector(".blog-feature h2").textContent=feature.title;featureEl.querySelector(".blog-feature p").textContent=feature.excerpt||"";
-   featureEl.querySelector(".blog-feature .blog-tag.category").textContent=feature.category||"";
-   featureEl.querySelector(".blog-feature .blog-meta").innerHTML="<span>"+esc(feature.author||"QuetraOnline")+"</span><span>"+date(feature.published_at)+"</span>";
-   const featureLink=featureEl.querySelector("[data-feature-read]");featureLink.href="/blog/"+encodeURIComponent(feature.slug);featureLink.dataset.slug=feature.slug;
-  }
-  grid.innerHTML=posts.filter(x=>selectedCategory||x.id!==(posts.find(y=>y.is_featured)||posts[0]).id).map(p=>{const cat=catKey(p.category);return '<article class="blog-card" data-category="'+cat+'" data-title="'+esc(p.title.toLocaleLowerCase("tr"))+'" data-slug="'+esc(p.slug)+'"><div class="blog-card-media">'+(p.cover_image?'<img loading="lazy" src="'+esc(p.cover_image)+'" alt="'+esc(p.title)+'">':'')+'<span class="blog-tag '+(cat==="guncelleme"||cat==="rehberler"?"category":"")+'">'+esc(p.category||"Duyurular")+'</span></div><div class="blog-card-body"><h3>'+esc(p.title)+'</h3><p>'+esc(p.excerpt||"")+'</p><div class="blog-meta"><span>'+esc(p.author||"QuetraOnline")+'</span><span>'+date(p.published_at)+'</span></div></div></article>'}).join("");
+  const feature=posts.find(x=>x.is_featured)||posts[0],featureImg=feature.cover_image||"";
+  featureEl.hidden=false;
+  featureEl.querySelector(".blog-feature-media img").src=featureImg;featureEl.querySelector(".blog-feature-media img").alt=feature.title;
+  featureEl.querySelector(".blog-feature h2").textContent=feature.title;featureEl.querySelector(".blog-feature p").textContent=feature.excerpt||"";
+  featureEl.querySelector(".blog-feature .blog-tag.category").textContent=feature.category||"";
+  featureEl.querySelector(".blog-feature .blog-meta").innerHTML="<span>"+esc(feature.author||"QuetraOnline")+"</span><span>"+date(feature.published_at)+"</span>";
+  const featureLink=featureEl.querySelector("[data-feature-read]");featureLink.href="/blog/"+encodeURIComponent(feature.slug);featureLink.dataset.slug=feature.slug;
+  grid.innerHTML=posts.filter(x=>x.id!==(posts.find(y=>y.is_featured)||posts[0]).id).map(p=>{const cat=catKey(p.category);return '<article class="blog-card" data-category="'+cat+'" data-title="'+esc(p.title.toLocaleLowerCase("tr"))+'" data-slug="'+esc(p.slug)+'"><div class="blog-card-media">'+(p.cover_image?'<img loading="lazy" src="'+esc(p.cover_image)+'" alt="'+esc(p.title)+'">':'')+'<span class="blog-tag '+(cat==="guncelleme"||cat==="rehberler"?"category":"")+'">'+esc(p.category||"Duyurular")+'</span></div><div class="blog-card-body"><h3>'+esc(p.title)+'</h3><p>'+esc(p.excerpt||"")+'</p><div class="blog-meta"><span>'+esc(p.author||"QuetraOnline")+'</span><span>'+date(p.published_at)+'</span></div></div></article>'}).join("");
   cards.splice(0,cards.length,...grid.querySelectorAll(".blog-card"));
 
-  const visiblePosts=selectedCategory?posts.filter(p=>p.category===selectedCategory.name):posts;
-  if(totalStat)totalStat.textContent=visiblePosts.length+" yazı";if(lastStat)lastStat.textContent=visiblePosts.length?date(visiblePosts[0].published_at):"Henüz yayın yok";
-  visible=9;apply();if(selectedCategory&&visiblePosts.length===0)setEmpty("Bu kategoride henüz yayınlanmış yazı bulunmuyor.");grid.querySelectorAll(".blog-card").forEach(card=>card.addEventListener("click",()=>{location.href="/blog/"+encodeURIComponent(card.dataset.slug)}));
+  if(totalStat)totalStat.textContent=posts.length+" yazı";if(lastStat)lastStat.textContent=posts.length?date(posts[0].published_at):"Henüz yayın yok";
+  visible=9;apply();grid.querySelectorAll(".blog-card").forEach(card=>card.addEventListener("click",()=>{location.href="/blog/"+encodeURIComponent(card.dataset.slug)}));
  }catch(e){console.error("Blog içerikleri yüklenemedi:",e);setEmpty("Blog yazıları şu anda yüklenemedi. Lütfen daha sonra tekrar dene.");}
 }
 loadPublishedBlog();
