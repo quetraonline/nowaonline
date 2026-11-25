@@ -1306,7 +1306,9 @@ async function loadPublishedBlog(){
    {name:"Etkinlikler",sort_order:3}
   ]);
   const categoryKey=name=>String(name||"").toLocaleLowerCase("tr").replace(/ğ/g,"g").replace(/ü/g,"u").replace(/ş/g,"s").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ç/g,"c").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  if(category==="gncleme-notlari")category="guncelleme-notlari";
   if(category!=="all"&&!categories.some(item=>categoryKey(item.name)===category))category="all";
+  if(category!=="all")history.replaceState(null,"","/blog?category="+encodeURIComponent(category));
   renderCategoryFilters(categories,[]);
   if(categoryError)console.warn("Blog kategorileri veritabanından okunamadı; kayıtlı kategori yedeği gösteriliyor:",categoryError);
   const {data:postsData,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});
