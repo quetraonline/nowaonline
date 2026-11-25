@@ -1282,7 +1282,11 @@ async function loadPublishedBlog(){
    client.from("nowa_blog_categories").select("name,sort_order").order("sort_order",{ascending:true}).order("name",{ascending:true})
   ]);
   if(error)throw error;if(categoryError)throw categoryError;
-  const posts=postsData||[],categories=categoryData||[];
+  const posts=postsData||[],categories=(categoryData&&categoryData.length?categoryData:[
+   {name:"Duyurular",sort_order:1},
+   {name:"Güncelleme Notları",sort_order:2},
+   {name:"Etkinlikler",sort_order:3}
+  ]);
   renderCategoryFilters(categories,posts);
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const catKey=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
