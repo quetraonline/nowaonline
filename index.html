@@ -1847,8 +1847,7 @@ async function blogAdminView(activeBlogSection="posts"){
  '<div class="formfield" style="grid-column:1/-1"><label>Kapak görseli URL</label><input class="field" name="cover_image" type="url" placeholder="https://..."></div>'+
  '<div class="formfield" style="grid-column:1/-1"><label>İçerik</label><textarea class="field" name="content" rows="12" placeholder="Yazının içeriğini buraya gir. Paragraflar için satır boşluğu kullanabilirsin."></textarea></div>'+
  '<div class="formfield"><label>Yayın durumu</label><select class="field" name="status"><option value="draft">Taslak</option><option value="published">Yayınla</option><option value="archived">Arşivle</option></select></div>'+
- '<div class="formfield"><label>SEO başlığı</label><input class="field" name="seo_title" maxlength="180"></div>'+
- '<div class="formfield"><label>SEO açıklaması</label><input class="field" name="seo_description" maxlength="300"></div>'+
+ '<div class="formfield" style="grid-column:1/-1"><small class="muted">SEO başlığı yazı başlığından, SEO açıklaması kısa açıklamadan otomatik oluşturulur.</small></div>'+
  '<div class="formfield"><label class="checks"><input name="is_featured" type="checkbox"> Öne çıkan yazı</label></div></div>'+
  '<div class="actions" style="margin-top:14px"><button class="btn" id="blogCancel" type="button">Vazgeç</button><button class="btn goldbtn" id="blogSave" type="submit">Kaydet</button></div></form></section></section></section>';
  bindAdminSidebarNavigation(true);
@@ -1883,7 +1882,7 @@ async function blogAdminView(activeBlogSection="posts"){
  };
  const editBlogPost=p=>{
   const form=$("blogPostForm");form.reset();form.elements.id.value=p?.id||"";
-  for(const key of ["title","slug","author","excerpt","cover_image","content","status","seo_title","seo_description"])form.elements[key].value=p?.[key]??(key==="author"?"QuetraOnline":key==="status"?"draft":"");
+  for(const key of ["title","slug","author","excerpt","cover_image","content","status"])form.elements[key].value=p?.[key]??(key==="author"?"QuetraOnline":key==="status"?"draft":"");
   renderBlogCategoryOptions(p?.category||"");
   form.elements.is_featured.checked=!!p?.is_featured;
   $("blogEditorTitle").textContent=p?"BLOG YAZISINI DÜZENLE":"YENİ BLOG YAZISI";
@@ -1935,7 +1934,9 @@ async function blogAdminView(activeBlogSection="posts"){
  };
  $("blogPostForm").onsubmit=async event=>{
   event.preventDefault();const form=event.currentTarget,fd=new FormData(form),id=String(fd.get("id")||""),status=String(fd.get("status"));
-  const payload={title:String(fd.get("title")||"").trim(),slug:slugifyBlog(fd.get("slug")),category:String(fd.get("category")||"Duyurular"),author:String(fd.get("author")||"QuetraOnline"),excerpt:String(fd.get("excerpt")||""),cover_image:String(fd.get("cover_image")||"").trim()||null,content:String(fd.get("content")||""),status,is_featured:form.elements.is_featured.checked,seo_title:String(fd.get("seo_title")||"").trim()||null,seo_description:String(fd.get("seo_description")||"").trim()||null,updated_at:new Date().toISOString()};
+  const title=String(fd.get("title")||"").trim(),excerpt=String(fd.get("excerpt")||"").trim(),content=String(fd.get("content")||"");
+  const plainContent=content.replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
+  const payload={title,slug:slugifyBlog(fd.get("slug")),category:String(fd.get("category")||"Duyurular"),author:String(fd.get("author")||"QuetraOnline"),excerpt,cover_image:String(fd.get("cover_image")||"").trim()||null,content,status,is_featured:form.elements.is_featured.checked,seo_title:title.slice(0,180)||null,seo_description:(excerpt||plainContent).slice(0,300)||null,updated_at:new Date().toISOString()};
   if(status==="published")payload.published_at=new Date().toISOString();
   if(!payload.title||!payload.slug){toast("Başlık ve URL kısa adı gerekli.");return}
   $("blogSave").disabled=true;
