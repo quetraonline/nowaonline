@@ -1277,7 +1277,7 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 <a href="/kullanim-sartlari" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4Z"/><path d="M16 3v5h5M8 12h8M8 16h8"/></svg>Kullanım Şartları</a>
 </div></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script><script>
-(()=>{let cards=[],filters=[],category='all',visible=9,filtered=[];
+(()=>{let cards=[],filters=[],category=new URLSearchParams(location.search).get('category')||'all',visible=9,filtered=[];
 const search=document.getElementById('blogSearch'),empty=document.getElementById('blogEmpty'),more=document.getElementById('blogMore'),count=document.getElementById('blogCount');
 function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=cards.filter(c=>(category==='all'||c.dataset.category===category)&&(!q||c.innerText.toLocaleLowerCase('tr').includes(q)));cards.forEach(c=>{const idx=filtered.indexOf(c);c.hidden=idx<0||idx>=visible;});filters.forEach(x=>x.classList.toggle('active',x.dataset.category===category));const feature=document.querySelector('.blog-feature');if(feature)feature.hidden=category!=='all';empty.classList.toggle('show',filtered.length===0);more.style.display=filtered.length>visible?'inline-flex':'none';count.textContent=filtered.length?filtered.length+' içerikten '+Math.min(visible,filtered.length)+' tanesi gösteriliyor':'';}
 function renderCategoryFilters(categories,posts){
@@ -1305,6 +1305,8 @@ async function loadPublishedBlog(){
    {name:"Güncelleme Notları",sort_order:2},
    {name:"Etkinlikler",sort_order:3}
   ]);
+  const categoryKey=name=>String(name||"").toLocaleLowerCase("tr").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  if(category!=="all"&&!categories.some(item=>categoryKey(item.name)===category))category="all";
   renderCategoryFilters(categories,[]);
   if(categoryError)console.warn("Blog kategorileri veritabanından okunamadı; kayıtlı kategori yedeği gösteriliyor:",categoryError);
   const {data:postsData,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});
