@@ -1249,7 +1249,6 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
     <button type="button" class="blog-filter active" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">0</span></button>
   </nav>
   <div class="blog-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="blogSearch" type="search" placeholder="Duyurularda ara..." autocomplete="off"></div>
-  <article class="blog-feature" hidden><div class="blog-feature-media"><img src="" alt=""></div><div class="blog-feature-copy"><div class="blog-tags"><span class="blog-tag">★ EN YENİ</span><span class="blog-tag category"></span></div><h2></h2><p></p><div class="blog-meta"></div><a href="#" class="blog-read" data-feature-read>Devamını oku <span>→</span></a></div></article>
   <section class="blog-grid" id="blogGrid" aria-label="Blog yazıları"></section>
 
   <div class="blog-empty" id="blogEmpty">Aramanla eşleşen bir içerik bulunamadı.</div>
@@ -1279,7 +1278,7 @@ function renderCategoryFilters(categories,posts){
 }
 async function loadPublishedBlog(){
  const featureEl=document.querySelector(".blog-feature"),grid=document.getElementById("blogGrid"),totalStat=document.getElementById("blogTotalStat"),lastStat=document.getElementById("blogLastPublished");
- const moreWrap=document.getElementById("blogMoreWrap");const setEmpty=message=>{featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";moreWrap.hidden=true;count.textContent="";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
+ const moreWrap=document.getElementById("blogMoreWrap");const setEmpty=message=>{if(featureEl)featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";moreWrap.hidden=true;count.textContent="";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
  try{
   const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S");
   // Kategori sekmelerini yazılardan bağımsız yükle: yazı sorgusu hata verse bile sekmeler görünür kalır.
@@ -1299,15 +1298,8 @@ async function loadPublishedBlog(){
   const catKey=name=>String(name||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   const date=v=>v?new Date(v).toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Yeni";
   if(!posts.length){setEmpty("Henüz yayınlanmış blog yazısı bulunmuyor.");return;}
-  empty.classList.remove("show");featureEl.hidden=false;moreWrap.hidden=false;
-  const feature=posts.find(x=>x.is_featured)||posts[0],featureImg=feature.cover_image||"";
-  featureEl.hidden=false;
-  featureEl.querySelector(".blog-feature-media img").src=featureImg;featureEl.querySelector(".blog-feature-media img").alt=feature.title;
-  featureEl.querySelector(".blog-feature h2").textContent=feature.title;featureEl.querySelector(".blog-feature p").textContent=feature.excerpt||"";
-  featureEl.querySelector(".blog-feature .blog-tag.category").textContent=feature.category||"";
-  featureEl.querySelector(".blog-feature .blog-meta").innerHTML="<span>"+esc(feature.author||"QuetraOnline")+"</span><span>"+date(feature.published_at)+"</span>";
-  const featureLink=featureEl.querySelector("[data-feature-read]");featureLink.href="/blog/"+encodeURIComponent(feature.slug);featureLink.dataset.slug=feature.slug;
-  grid.innerHTML=posts.filter(x=>x.id!==(posts.find(y=>y.is_featured)||posts[0]).id).map(p=>{const cat=catKey(p.category);return '<article class="blog-card" data-category="'+cat+'" data-title="'+esc(p.title.toLocaleLowerCase("tr"))+'" data-slug="'+esc(p.slug)+'"><div class="blog-card-media">'+(p.cover_image?'<img loading="lazy" src="'+esc(p.cover_image)+'" alt="'+esc(p.title)+'">':'')+'<span class="blog-tag '+(cat==="guncelleme"||cat==="rehberler"?"category":"")+'">'+esc(p.category||"Duyurular")+'</span></div><div class="blog-card-body"><h3>'+esc(p.title)+'</h3><p>'+esc(p.excerpt||"")+'</p><div class="blog-meta"><span>'+esc(p.author||"QuetraOnline")+'</span><span>'+date(p.published_at)+'</span></div></div></article>'}).join("");
+   empty.classList.remove("show");moreWrap.hidden=false;
+  grid.innerHTML=posts.map(p=>{const cat=catKey(p.category);return '<article class="blog-card" data-category="'+cat+'" data-title="'+esc(p.title.toLocaleLowerCase("tr"))+'" data-slug="'+esc(p.slug)+'"><div class="blog-card-media">'+(p.cover_image?'<img loading="lazy" src="'+esc(p.cover_image)+'" alt="'+esc(p.title)+'">':'')+'<span class="blog-tag '+(cat==="guncelleme"||cat==="rehberler"?"category":"")+'">'+esc(p.category||"Duyurular")+'</span></div><div class="blog-card-body"><h3>'+esc(p.title)+'</h3><p>'+esc(p.excerpt||"")+'</p><div class="blog-meta"><span>'+esc(p.author||"QuetraOnline")+'</span><span>'+date(p.published_at)+'</span></div></div></article>'}).join("");
   cards.splice(0,cards.length,...grid.querySelectorAll(".blog-card"));
 
   if(totalStat)totalStat.textContent=posts.length+" yazı";if(lastStat)lastStat.textContent=posts.length?date(posts[0].published_at):"Henüz yayın yok";
@@ -1316,7 +1308,6 @@ async function loadPublishedBlog(){
 }
 loadPublishedBlog();
 document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()=>{location.href='/blog/'+c.dataset.slug;}));
-document.querySelector('[data-feature-read]').addEventListener('click',e=>{e.preventDefault();location.href='/blog/'+encodeURIComponent(e.currentTarget.dataset.slug||"kasim-guncelleme-notlari");});
 })();
 </script>
 <script>
