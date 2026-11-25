@@ -1786,7 +1786,9 @@ function adminSidebarMarkup(activeTab="home",activeEvent="",activeSetting=""){
   siteButton("announcement","Duyuru",'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>')+
   siteButton("social","Sosyal Medya",'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r="1"/>')+
   siteButton("stats","İstatistikler",'<path d="M3 3v18h18"/><path d="M8 16V9M13 16V5M18 16v-4"/>')+
-  siteButton("blog","Blog Yönetimi",'<path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/>')+
+  '<div class="admin-sidebar-group-title">BLOG YÖNETİMİ</div>'+
+  siteButton("blog","Blog Ekle",'<path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/>')+
+  siteButton("blogCategories","Kategori Yönetimi",'<path d="M4 5h16M4 12h16M4 19h16"/>')+
   '<div class="admin-sidebar-group-title admin-event-sidebar-title">ETKİNLİKLER</div>'+
   eventButton("weekly","Haftalık Etkinlikler",'<rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 9.5h18M8 13h3M8 17h6"/>')+
   eventButton("special","Özel Etkinlikler",'<path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3L2.9 9.4l6.3-.9z"/>')+
@@ -1809,7 +1811,8 @@ function bindAdminSidebarNavigation(routeMainTabs=false){
    if(section==="announcement")announcementAdminView();
    else if(section==="social")socialAdminView();
    else if(section==="stats")adminStatsView();
-   else if(section==="blog")blogAdminView();
+   else if(section==="blog")blogAdminView("posts");
+   else if(section==="blogCategories")blogAdminView("categories");
   };
  });
  if(routeMainTabs){
@@ -1820,15 +1823,17 @@ function bindAdminSidebarNavigation(routeMainTabs=false){
 }
 
 
-async function blogAdminView(){
+async function blogAdminView(activeBlogSection="posts"){
  $("modal").dataset.view="admin";
  window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  if(!isAdmin){const {data}=await db.auth.getUser();if(!await checkAdmin(data.user)){loginView();return}}
  $("modalTitle").textContent="YÖNETİM PANELİ";
- $("modalBody").innerHTML=adminSidebarMarkup("","","blog")+
+ $("modalBody").innerHTML=adminSidebarMarkup("","",activeBlogSection==="categories"?"blogCategories":"blog")+
  '<section class="admin-tab-panel admin-site-workspace admin-blog-workspace">'+
- '<div class="admin-event-form-heading"><h4>BLOG YÖNETİMİ</h4><p>Blog yazılarını bu yönetim panelinden oluşturabilir, düzenleyebilir ve yayınlayabilirsin.</p></div>'+
- '<section class="admin-event-form-workspace" style="margin:0 0 16px"><div class="admin-event-form-heading"><h4>KATEGORİ YÖNETİMİ</h4><p>Kategorileri buradan ekleyebilir, adlarını değiştirebilir veya silebilirsin.</p></div><form id="blogCategoryForm" class="actions" style="justify-content:flex-start;gap:10px;margin:0 0 12px"><input class="field" id="blogCategoryName" name="name" required maxlength="60" placeholder="Yeni kategori adı" style="max-width:320px"><button class="btn goldbtn" id="blogCategoryAdd" type="submit">+ Kategori ekle</button></form><div id="blogCategoryList" class="adminlist"><div class="notice">Kategoriler yükleniyor...</div></div></section>'+ 
+ '<div class="admin-event-form-heading"><h4>BLOG YÖNETİMİ</h4><p>Blog ekleme ve kategori işlemlerini bu bölümden yönetebilirsin.</p></div>'+
+ '<div class="actions" style="justify-content:flex-start;gap:10px;margin:0 0 16px"><button class="btn '+(activeBlogSection==="posts"?"goldbtn":"")+'" type="button" data-blog-section="posts">Blog Ekle</button><button class="btn '+(activeBlogSection==="categories"?"goldbtn":"")+'" type="button" data-blog-section="categories">Kategori Yönetimi</button></div>'+
+ '<section id="blogCategoriesPanel" class="admin-event-form-workspace" style="margin:0 0 16px" '+(activeBlogSection==="categories"?"":"hidden")+'><div class="admin-event-form-heading"><h4>KATEGORİ YÖNETİMİ</h4><p>Kategorileri buradan ekleyebilir, adlarını değiştirebilir veya silebilirsin.</p></div><form id="blogCategoryForm" class="actions" style="justify-content:flex-start;gap:10px;margin:0 0 12px"><input class="field" id="blogCategoryName" name="name" required maxlength="60" placeholder="Yeni kategori adı" style="max-width:320px"><button class="btn goldbtn" id="blogCategoryAdd" type="submit">+ Kategori ekle</button></form><div id="blogCategoryList" class="adminlist"><div class="notice">Kategoriler yükleniyor...</div></div></section>'+
+ '<section id="blogPostsPanel" '+(activeBlogSection==="posts"?"":"hidden")+'>'+
  '<div class="summary" id="blogAdminStats" style="margin:0 0 12px">Yazılar yükleniyor...</div>'+
  '<div class="actions" style="justify-content:flex-start;gap:10px;margin:0 0 12px"><button class="btn goldbtn" id="blogNewPost" type="button">+ Yeni yazı oluştur</button><button class="btn" id="blogRefresh" type="button">↻ Yenile</button></div>'+
  '<div class="notice" id="blogAdminStatus" style="margin:0 0 12px">Blog yazıları yükleniyor...</div><div id="blogAdminPosts" class="adminlist"></div>'+
@@ -1847,6 +1852,7 @@ async function blogAdminView(){
  '<div class="formfield"><label class="checks"><input name="is_featured" type="checkbox"> Öne çıkan yazı</label></div></div>'+
  '<div class="actions" style="margin-top:14px"><button class="btn" id="blogCancel" type="button">Vazgeç</button><button class="btn goldbtn" id="blogSave" type="submit">Kaydet</button></div></form></section></section>';
  bindAdminSidebarNavigation(true);
+ document.querySelectorAll("[data-blog-section]").forEach(button=>{button.onclick=()=>blogAdminView(button.dataset.blogSection)});
  let blogPosts=[],blogCategories=[];
  const renderBlogCategoryOptions=selected=>{
   const select=$("blogPostForm").elements.category;
