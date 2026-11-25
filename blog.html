@@ -1230,7 +1230,7 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
   <section class="blog-grid" id="blogGrid" aria-label="Blog yazıları"></section>
 
   <div class="blog-empty" id="blogEmpty">Aramanla eşleşen bir içerik bulunamadı.</div>
-  <div class="blog-more-wrap"><button class="blog-more" id="blogMore">⌄　Daha fazla göster</button><small class="blog-count-note" id="blogCount">32 yazıdan 12 tanesi gösteriliyor</small></div>
+  <div class="blog-more-wrap" id="blogMoreWrap" hidden><button class="blog-more" id="blogMore">⌄　Daha fazla göster</button><small class="blog-count-note" id="blogCount"></small></div>
 </main>
 <footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div class="visitor-counter"><span class="visitor-icon" aria-hidden="true">👥</span><span>Bu siteyi <strong id="visitorCount">...</strong> kişi ziyaret etti</span></div><div>© 2024 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div class="footer-legal-links" style="margin-top:5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
 <a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>Gizlilik Politikası</a>
@@ -1243,7 +1243,7 @@ function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=car
 filters.forEach(btn=>btn.addEventListener('click',()=>{category=btn.dataset.category;filters.forEach(x=>x.classList.toggle('active',x===btn));visible=9;apply();}));search.addEventListener('input',()=>{visible=9;apply();});more.addEventListener('click',()=>{visible+=6;apply();});apply();
 async function loadPublishedBlog(){
  const featureEl=document.querySelector(".blog-feature"),grid=document.getElementById("blogGrid"),totalStat=document.getElementById("blogTotalStat"),lastStat=document.getElementById("blogLastPublished");
- const setEmpty=message=>{featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";count.textContent="0 içerik";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
+ const moreWrap=document.getElementById("blogMoreWrap");const setEmpty=message=>{featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";moreWrap.hidden=true;count.textContent="";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
  try{
   const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKRX7tfWMs2lA_nW-Ee29S");
   const {data,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});
@@ -1252,7 +1252,7 @@ async function loadPublishedBlog(){
   const catKey={"Duyurular":"duyurular","Güncelleme Notları":"guncelleme","Etkinlikler":"etkinlikler","Rehberler":"rehberler"};
   const date=v=>v?new Date(v).toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Yeni";
   if(!posts.length){setEmpty("Henüz yayınlanmış blog yazısı bulunmuyor.");return;}
-  empty.classList.remove("show");featureEl.hidden=false;
+  empty.classList.remove("show");featureEl.hidden=false;moreWrap.hidden=false;
   const feature=posts.find(x=>x.is_featured)||posts[0],featureImg=feature.cover_image||"";
   featureEl.querySelector(".blog-feature-media img").src=featureImg;featureEl.querySelector(".blog-feature-media img").alt=feature.title;
   featureEl.querySelector(".blog-feature h2").textContent=feature.title;featureEl.querySelector(".blog-feature p").textContent=feature.excerpt||"";
@@ -1263,7 +1263,7 @@ async function loadPublishedBlog(){
   cards.splice(0,cards.length,...grid.querySelectorAll(".blog-card"));
   const counts={all:posts.length,duyurular:0,guncelleme:0,etkinlikler:0,rehberler:0};posts.forEach(p=>{const k=catKey[p.category];if(k)counts[k]++});
   filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent=counts[x.dataset.category]??0});
-  if(totalStat)totalStat.textContent=posts.length+" yayın";if(lastStat)lastStat.textContent=date(posts[0].published_at);
+  if(totalStat)totalStat.textContent=posts.length+" yazı";if(lastStat)lastStat.textContent=date(posts[0].published_at);
   visible=9;apply();grid.querySelectorAll(".blog-card").forEach(card=>card.addEventListener("click",()=>{location.href="/blog/"+encodeURIComponent(card.dataset.slug)}));
  }catch(e){console.error("Blog içerikleri yüklenemedi:",e);setEmpty("Blog yazıları şu anda yüklenemedi. Lütfen daha sonra tekrar dene.");}
 }
@@ -1271,7 +1271,7 @@ loadPublishedBlog();
 document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()=>{location.href='/blog/'+c.dataset.slug;}));
 document.querySelector('[data-feature-read]').addEventListener('click',e=>{e.preventDefault();location.href='/blog/'+encodeURIComponent(e.currentTarget.dataset.slug||"kasim-guncelleme-notlari");});
 })();
-
+</script>
 <script>
 (()=> {
  const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
@@ -1324,5 +1324,4 @@ document.querySelector('[data-feature-read]').addEventListener('click',e=>{e.pre
  refreshVisitorCount();refreshTopBar();setInterval(refreshTopEvents,1000);setInterval(refreshTopBar,60000);
  document.addEventListener("visibilitychange",()=>{if(!document.hidden){refreshVisitorCount();refreshTopBar()}});
 })();
-</script>
 </script></body></html>
