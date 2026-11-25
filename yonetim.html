@@ -2604,3 +2604,11 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
 }
 </script>
 </body></html>
+
+
+/* /yonetim: tighten mobile navigation spacing and start panel content directly below it. */
+@media(max-width:760px){
+ html.admin-route #modal .admin-tabs{top:61px!important;padding:5px 9px!important;gap:4px!important;margin:0!important;border-radius:0!important}
+ html.admin-route #modal .admin-tab-button{min-height:35px!important;padding:6px 9px!important}
+ html.admin-route #modal .admin-tab-panel{padding:8px 12px 25px!important;margin:0!important}
+}
