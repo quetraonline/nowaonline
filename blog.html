@@ -1230,6 +1230,21 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
  .mobile-download-options a:active{border-color:#c9a24a;background:#202735}
  .mobile-download-options img{display:block;width:100%;max-width:148px;height:auto;object-fit:contain}
  }
+
+/* Blog başlık alanı: diğer sayfalardaki ortak breadcrumb ve H1 tipografisiyle birebir uyum */
+.blog-shell{padding-top:18px}
+.blog-heading .blog-breadcrumbs{display:flex;align-items:center;gap:10px;height:20px;min-height:20px;margin:0 0 12px;color:#9aa5b4;font-size:14px;font-weight:500;line-height:20px}
+.blog-heading .blog-breadcrumbs a{display:inline-flex;align-items:center;gap:8px;height:20px;color:#9aa5b4;text-decoration:none;line-height:20px;white-space:nowrap;transition:color .18s}
+.blog-heading .blog-breadcrumbs a>span{display:inline-block;line-height:20px}
+.blog-heading .blog-breadcrumbs a:hover{color:#e8b95c}
+.blog-heading .blog-breadcrumbs svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.blog-heading .blog-breadcrumb-separator{display:inline-flex;align-items:center;justify-content:center;flex:0 0 13px;width:13px;height:20px;color:#687383;line-height:20px}
+.blog-heading .blog-breadcrumb-separator svg{width:13px;height:13px;flex:0 0 13px;stroke-width:2}
+.blog-heading .blog-breadcrumb-current{display:inline-block;align-self:center;height:20px;margin:0;padding:0;color:#aab2bf;font-size:inherit;font-weight:inherit;line-height:20px;white-space:nowrap;vertical-align:middle;transform:translateY(-.5px)}
+.blog-heading .blog-title{display:flex;align-items:center;gap:10px;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:clamp(32px,5vw,48px)!important;font-weight:700!important;letter-spacing:-.045em!important;line-height:1.1!important;margin:18px 0 10px!important;color:#f3f5f8!important}
+.blog-heading .blog-title svg{width:26px;height:26px;flex:0 0 26px;fill:none;stroke:var(--gold,#e8b95c);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.blog-heading .blog-subtitle{font-size:15px!important;line-height:1.55!important;margin:0 0 30px!important;color:var(--muted,#aeb8c5)!important}
+@media(max-width:700px){.blog-shell{padding-top:18px}.blog-heading{gap:0}.blog-heading .blog-breadcrumbs{font-size:13px;gap:8px;margin-bottom:10px}.blog-heading .blog-title{font-size:32px!important;gap:8px;margin:18px 0 10px!important}.blog-heading .blog-title svg{width:23px;height:23px;flex-basis:23px}.blog-heading .blog-subtitle{font-size:14px!important;line-height:1.65!important;margin:0 0 24px!important}}
 </style></head><body>
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
