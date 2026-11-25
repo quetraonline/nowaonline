@@ -1359,7 +1359,7 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
    if(!liveError&&$("topLiveCount"))$("topLiveCount").textContent=new Set((live||[]).map(x=>x.publisher_id)).size+" yayıncı";
   }catch(e){console.warn("Blog üst bilgi alanı:",e);["topNextEventName","topSpecialEventName"].forEach(id=>{if($(id))$(id).textContent="Etkinlik bilgisi alınamadı"})}
  }
- refreshVisitorCount();refreshTopBar();setInterval(refreshTopEvents,1000);setInterval(refreshTopBar,60000);
+ refreshVisitorCount();refreshTopBar();setInterval(refreshVisitorCount,30000);setInterval(refreshTopEvents,1000);setInterval(refreshTopBar,60000);
  document.addEventListener("visibilitychange",()=>{if(!document.hidden){refreshVisitorCount();refreshTopBar()}});
 })();
 </script><script id="nowa-mobile-drawer-controller">
