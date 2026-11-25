@@ -1060,6 +1060,18 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 <style>
 /* Blog sayfası: referans görseldeki editoryal düzen */
 .blog-shell{width:min(1160px,calc(100% - 32px));margin:0 auto;padding:25px 0 76px}
+.blog-heading-copy{min-width:0;flex:1}
+.blog-breadcrumbs{display:flex;align-items:center;gap:9px;margin:0 0 12px;color:#aab2bf;font-size:13px;line-height:20px}
+.blog-breadcrumbs a{display:inline-flex;align-items:center;gap:7px;color:#9aa5b4;text-decoration:none;white-space:nowrap}
+.blog-breadcrumbs a:hover{color:#e8b95c}
+.blog-breadcrumbs svg{display:block;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.blog-breadcrumb-separator{display:inline-flex;align-items:center;color:#687383}
+.blog-breadcrumb-separator svg{width:13px;height:13px;stroke-width:2}
+.blog-breadcrumb-current{color:#aab2bf;white-space:nowrap}
+.blog-heading .blog-title{display:flex;align-items:center;gap:10px;font-family:inherit!important;font-size:clamp(27px,4.6vw,48px)!important;line-height:1.1!important;letter-spacing:-.045em!important;font-weight:900!important;margin:0!important;color:#f3f5f8!important}
+.blog-heading .blog-title svg{width:26px;height:26px;flex:0 0 26px;fill:none;stroke:#e8b95c;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.blog-heading .blog-subtitle{font-size:15px;line-height:1.8;color:var(--muted,#aeb8c5);margin:14px 0 0}
+@media(max-width:700px){.blog-heading{align-items:flex-start;flex-direction:column;gap:16px}.blog-heading .blog-title{font-size:clamp(25px,7vw,34px)!important}.blog-heading .blog-title svg{width:23px;height:23px;flex-basis:23px}.blog-heading .blog-subtitle{font-size:14px;line-height:1.65;margin-top:10px}.blog-breadcrumbs{font-size:13px;margin-bottom:10px}}
 .blog-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:0 0 18px;border-bottom:1px solid #24252d}
 .blog-crumb{font-size:11px;color:#777e8b;margin-bottom:8px}
 .blog-title{font-family:Georgia,'Times New Roman',serif;font-size:34px;line-height:1.05;letter-spacing:.015em;margin:0;color:#f5f2f4;font-weight:900}
@@ -1163,7 +1175,11 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 </header>
 <main class="blog-shell">
   <div class="blog-heading">
-    <div><div class="blog-crumb">⌂ Ana Sayfa　›　Blog</div><h1 class="blog-title">DUYURULAR</h1><p class="blog-subtitle">Güncelleme notları, etkinlikler ve Nowa Online World topluluğuna dair tüm haberler.</p></div>
+    <div class="blog-heading-copy">
+    <nav class="blog-breadcrumbs" aria-label="Sayfa konumu"><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><span class="blog-breadcrumb-separator" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span><span class="blog-breadcrumb-current" aria-current="page">Blog</span></nav>
+    <h1 class="blog-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M16 3v4h4M8 11h8M8 15h8M8 18h5"/></svg><span>DUYURULAR</span></h1>
+    <p class="blog-subtitle">Güncelleme notları, etkinlikler ve Nowa Online World topluluğuna dair tüm haberler.</p>
+  </div>
     <div class="blog-stats"><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span><small>TOPLAM</small><b>32 duyuru · 96 rehber</b></span></div><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>SON YAYIN</small><b>24 Kas 2026</b></span></div></div>
   </div>
   <nav class="blog-filters" aria-label="Blog kategorileri">
