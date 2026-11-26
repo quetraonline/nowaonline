@@ -1854,14 +1854,20 @@ async function monthlySpecialEventsAdminView(){
  $("modalBody").innerHTML=adminSidebarMarkup("","","monthly")+
  '<section class="admin-tab-panel admin-event-workspace">'+
  '<div class="admin-event-workspace-head"><div><h4>AYLIK ÖZEL ETKİNLİKLER</h4><p>Aylık olarak düzenlenecek özel etkinlikleri buradan ekleyebilir ve düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn goldbtn" type="button" id="newMonthlySpecialEvent">+ Etkinlik ekle</button></div></div>'+
- '<div class="formfield" style="max-width:360px;margin:18px 0"><label for="monthlyEventMonthFilter">Etkinlik ayı ve yılı</label><input id="monthlyEventMonthFilter" type="month" aria-label="Etkinlik ayı ve yılı"></div>'+
+ '<div class="monthly-event-filters" style="max-width:360px;margin:18px 0;display:grid;grid-template-columns:1fr;gap:12px">'+
+ '<div class="formfield"><label for="monthlyEventMonthSelect">Ay</label><select id="monthlyEventMonthSelect"><option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option><option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option><option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option><option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option></select></div>'+
+ '<div class="formfield"><label for="monthlyEventYearSelect">Yıl</label><select id="monthlyEventYearSelect"></select></div></div>'+
  '<div id="monthlySpecialEventsList" class="game-events-admin-list">Etkinlikler yükleniyor...</div></section>';
  bindAdminSidebarNavigation(true);
- const monthFilter=$("monthlyEventMonthFilter");
  const nowParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit"}).formatToParts(new Date());
  const currentMonth=nowParts.find(x=>x.type==="year").value+"-"+nowParts.find(x=>x.type==="month").value;
- monthFilter.value=window.nowaMonthlyEventFilter||currentMonth;
- monthFilter.onchange=()=>{window.nowaMonthlyEventFilter=monthFilter.value;renderMonthlySpecialEventsList()};
+ window.nowaMonthlyEventFilter=window.nowaMonthlyEventFilter||currentMonth;
+ const [initialYear,initialMonth]=window.nowaMonthlyEventFilter.split("-");
+ $("monthlyEventMonthSelect").value=initialMonth;
+ populateMonthlyEventYearOptions(initialYear);
+ const applyMonthFilter=()=>{window.nowaMonthlyEventFilter=$("monthlyEventYearSelect").value+"-"+$("monthlyEventMonthSelect").value;renderMonthlySpecialEventsList()};
+ $("monthlyEventMonthSelect").onchange=applyMonthFilter;
+ $("monthlyEventYearSelect").onchange=applyMonthFilter;
  $("newMonthlySpecialEvent").onclick=()=>monthlySpecialEventForm(null);
  await refreshMonthlySpecialEventsList();
 }
@@ -1921,13 +1927,25 @@ async function refreshMonthlySpecialEventsList(){
  const {data,error}=await db.from("nowa_monthly_special_events").select("*").order("event_date").order("event_time");
  if(error){root.textContent="Etkinlikler alınamadı: "+error.message;return}
  window.nowaMonthlySpecialEventsCache=data||[];
+ const selectedYear=(window.nowaMonthlyEventFilter||"").slice(0,4);
+ populateMonthlyEventYearOptions(selectedYear);
  renderMonthlySpecialEventsList();
+}
+function populateMonthlyEventYearOptions(selectedYear){
+ const select=$("monthlyEventYearSelect");if(!select)return;
+ const currentYear=Number(new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Istanbul",year:"numeric"}).format(new Date()));
+ const years=new Set();
+ for(let year=currentYear-5;year<=currentYear+5;year++)years.add(year);
+ for(const item of window.nowaMonthlySpecialEventsCache||[]){const year=Number(String(item.event_date||"").slice(0,4));if(year)years.add(year)}
+ if(selectedYear&&/^\\d{4}$/.test(selectedYear))years.add(Number(selectedYear));
+ select.innerHTML=[...years].sort((a,b)=>b-a).map(year=>'<option value="'+year+'">'+year+'</option>').join("");
+ select.value=String(selectedYear||currentYear);
 }
 function renderMonthlySpecialEventsList(){
  const root=$("monthlySpecialEventsList");if(!root)return;
- const filter=$("monthlyEventMonthFilter");
- const selectedMonth=filter?.value||window.nowaMonthlyEventFilter||"";
- if(filter)window.nowaMonthlyEventFilter=selectedMonth;
+ const monthSelect=$("monthlyEventMonthSelect"),yearSelect=$("monthlyEventYearSelect");
+ const selectedMonth=yearSelect&&monthSelect?yearSelect.value+"-"+monthSelect.value:window.nowaMonthlyEventFilter||"";
+ window.nowaMonthlyEventFilter=selectedMonth;
  const data=(window.nowaMonthlySpecialEventsCache||[]).filter(item=>!selectedMonth||String(item.event_date||"").slice(0,7)===selectedMonth);
  if(!data.length){
   const label=selectedMonth?new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(selectedMonth+"-01T12:00:00Z")):"seçilen dönem";
