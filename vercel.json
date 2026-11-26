@@ -23,6 +23,10 @@
     {
       "source": "/etkinlikler",
       "destination": "/etkinlikler.html"
+    },
+    {
+      "source": "/etkinliktakvimi",
+      "destination": "/etkinliktakvimi.html"
     }
   ],
   "redirects": [
@@ -86,6 +90,15 @@
     },
     {
       "source": "/yonetim",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/etkinliktakvimi",
       "headers": [
         {
           "key": "Cache-Control",
