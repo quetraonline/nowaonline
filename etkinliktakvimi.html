@@ -360,6 +360,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    <label class="monthly-filter"><span>Ay</span><select id="monthlyMonthFilter" aria-label="Ay filtresi"><option value="">Yükleniyor...</option></select></label>
   </div>
  </div>
+ <h2 id="monthlyEventsHeading" class="monthly-events-heading">Etkinlik Takvimi</h2>
  <div class="monthly-gold-rule" aria-hidden="true"></div>
  <div id="monthlyEventsResults" class="monthly-events-results" aria-live="polite"><div class="monthly-events-state">Etkinlikler yükleniyor...</div></div>
 </section>
@@ -374,7 +375,8 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-filter-wrap{display:flex;align-items:center;justify-content:flex-end;gap:10px}
 .monthly-filter{display:flex;align-items:center;gap:8px;color:#cbd2dc;font-size:12px;font-weight:800}
 .monthly-filter select{height:42px;min-width:140px;padding:0 32px 0 11px;border:1px solid #354052;border-radius:9px;background:#090d14;color:var(--text);outline:none}
-.monthly-gold-rule{height:2px;margin:18px 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
+.monthly-events-heading{margin:20px 0 12px;color:#e8a04b;font-size:clamp(24px,3vw,34px);font-weight:900;line-height:1.15;letter-spacing:-.025em;text-align:left}
+.monthly-gold-rule{height:2px;margin:0 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
 .monthly-events-results{display:flex;flex-direction:column;gap:0}
 .monthly-date-group{display:flex;flex-direction:column;gap:9px;margin:0 0 9px;padding-bottom:8px;border-bottom:1px dashed #e8b95c;box-shadow:0 3px 6px -8px #e8b95c}
 .monthly-date-group:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0;box-shadow:none}
@@ -520,14 +522,16 @@ setInterval(updateTopNextWeeklyEvent,1000);
 <script id="monthly-events-browser-script">
 (()=> {
  const db=typeof subpageDb!=="undefined"?subpageDb:null;
- const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults");
+ const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults"),heading=document.getElementById("monthlyEventsHeading");
  if(!search||!serverSelect||!monthSelect||!results)return;
  let allEvents=[];
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
  const monthLabel=key=>{const [y,m]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric"}).format(new Date(y,m-1,1));};
  const dateLabel=key=>{const [y,m,d]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long"}).format(new Date(y,m-1,d));};
+ const updateHeading=()=>{if(!heading||!monthSelect.value)return;const [y,m]=monthSelect.value.split("-").map(Number);const monthName=new Intl.DateTimeFormat("tr-TR",{month:"long"}).format(new Date(y,m-1,1));heading.textContent=monthName.charAt(0).toLocaleUpperCase("tr-TR")+monthName.slice(1)+" ayı Etkinlik Takvimi";};
  const timeLabel=value=>String(value||"").slice(0,5);
  const render=()=>{
+  updateHeading();
   const month=monthSelect.value,server=serverSelect.value,term=search.value.trim().toLocaleLowerCase("tr-TR");
   const filtered=allEvents.filter(e=>String(e.event_date||"").slice(0,7)===month&&(!server||e.server===server)&&(!term||String(e.event_name||"").toLocaleLowerCase("tr-TR").includes(term)||String(e.server||"").toLocaleLowerCase("tr-TR").includes(term)));
   if(!filtered.length){results.innerHTML='<div class="monthly-events-state monthly-events-empty">Bu filtrelere uygun etkinlik bulunamadı.</div>';return;}
