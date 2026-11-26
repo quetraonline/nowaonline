@@ -374,7 +374,9 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-filter{display:flex;align-items:center;gap:8px;color:#cbd2dc;font-size:12px;font-weight:800}
 .monthly-filter select{height:42px;min-width:140px;padding:0 32px 0 11px;border:1px solid #354052;border-radius:9px;background:#090d14;color:var(--text);outline:none}
 .monthly-gold-rule{height:2px;margin:18px 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
-.monthly-events-results{display:flex;flex-direction:column;gap:9px}
+.monthly-events-results{display:flex;flex-direction:column;gap:0}
+.monthly-date-group{display:flex;flex-direction:column;gap:9px;margin:0 0 16px}
+.monthly-date-group:last-child{margin-bottom:0}
 .monthly-day-group{display:flex;align-items:stretch;gap:0;min-height:74px;padding:12px 14px;border:1px solid #ffffff10;border-radius:10px;background:#0b1018}
 .monthly-day-date{flex:0 0 118px;display:flex;flex-direction:column;justify-content:center;padding-right:14px}
 .monthly-day-date strong{font-size:15px;color:#f4f5f7;font-weight:900;white-space:nowrap}
@@ -529,7 +531,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
   if(!filtered.length){results.innerHTML='<div class="monthly-events-state monthly-events-empty">Bu filtrelere uygun etkinlik bulunamadı.</div>';return;}
   const days=new Map();
   filtered.forEach(e=>{if(!days.has(e.event_date))days.set(e.event_date,[]);days.get(e.event_date).push(e);});
-  results.innerHTML=[...days.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([date,events])=>events.sort((a,b)=>timeLabel(a.event_time).localeCompare(timeLabel(b.event_time))).map(e=>'<article class="monthly-day-group"><div class="monthly-day-date"><strong>'+escapeHtml(dateLabel(date))+'</strong><span>'+escapeHtml(e.event_weekday||"")+'</span></div><div class="monthly-day-divider" aria-hidden="true"></div><div class="monthly-day-time">'+escapeHtml(timeLabel(e.event_time))+'</div><div class="monthly-day-divider" aria-hidden="true"></div><div class="monthly-event-info"><div class="monthly-event-name">'+escapeHtml(e.event_name)+'</div><div class="monthly-event-server">'+escapeHtml(e.server)+'</div></div></article>').join("")).join("");
+  results.innerHTML=[...days.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([date,events])=>'<div class="monthly-date-group">'+events.sort((a,b)=>timeLabel(a.event_time).localeCompare(timeLabel(b.event_time))).map(e=>'<article class="monthly-day-group"><div class="monthly-day-date"><strong>'+escapeHtml(dateLabel(date))+'</strong><span>'+escapeHtml(e.event_weekday||"")+'</span></div><div class="monthly-day-divider" aria-hidden="true"></div><div class="monthly-day-time">'+escapeHtml(timeLabel(e.event_time))+'</div><div class="monthly-day-divider" aria-hidden="true"></div><div class="monthly-event-info"><div class="monthly-event-name">'+escapeHtml(e.event_name)+'</div><div class="monthly-event-server">'+escapeHtml(e.server)+'</div></div></article>').join("")+'</div>').join("");
  };
  const load=async()=>{
   results.innerHTML='<div class="monthly-events-state">Etkinlikler yükleniyor...</div>';
