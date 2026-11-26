@@ -2692,6 +2692,12 @@ if(tiktokConnectionStatus){
  menu.dataset.drawerController="4";
  // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
  document.body.appendChild(toggle);
+ const positionHamburger=()=>{const nav=document.querySelector("header .nav");if(!nav)return;const rect=nav.getBoundingClientRect();toggle.style.setProperty("top",`${Math.round(rect.top+(rect.height-toggle.offsetHeight)/2)}px`,"important");};
+ positionHamburger();
+ window.addEventListener("resize",positionHamburger,{passive:true});
+ window.addEventListener("pageshow",positionHamburger,{passive:true});
+ window.addEventListener("orientationchange",()=>requestAnimationFrame(positionHamburger),{passive:true});
+ if(document.fonts?.ready)document.fonts.ready.then(positionHamburger);
  // Hamburger positioning is handled by the shared fixed-position CSS rules. Avoid measuring a sticky header here: iOS Chrome/Safari can report a changing visual viewport during browser-bar transitions.
  let opened=false,savedY=0,savedBody={},savedHtmlOverflow="";
  const root=()=>document.scrollingElement||document.documentElement;
