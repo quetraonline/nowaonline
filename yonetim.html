@@ -1947,7 +1947,7 @@ async function monthlyEventDescriptionForm(){
  '<section class="admin-tab-panel admin-event-form-panel">'+
  '<div class="admin-event-form-heading"><div><h4>Aylık etkinlik açıklaması</h4><p>Bu açıklama seçilen ayın etkinlik sayfasında yalnızca bir kez gösterilecek.</p></div><button class="btn" type="button" id="backMonthlyDescription">GERİ</button></div>'+
  '<form id="monthlyEventDescriptionForm">'+
- '<div class="formfield"><label for="monthlyDescriptionYear">Yıl</label><select id="monthlyDescriptionYear" required></select></div>'+
+ '<div class="formfield"><label for="monthlyDescriptionYear">Yıl</label><input id="monthlyDescriptionYear" type="number" min="2000" max="2100" value="'+esc(selectedYear)+'" required></div>'+
  '<div class="formfield"><label for="monthlyDescriptionMonth">Ay</label><select id="monthlyDescriptionMonth">'+["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"].map((name,i)=>'<option value="'+String(i+1).padStart(2,"0")+'" '+(selectedMonth===String(i+1).padStart(2,"0")?"selected":"")+'>'+name+'</option>').join("")+'</select></div>'+
  `<div class="formfield"><label>Açıklama</label>
  <div class="monthly-description-editor-wrap">
@@ -1972,36 +1972,12 @@ async function monthlyEventDescriptionForm(){
  $("backMonthlyDescription").onclick=()=>monthlySpecialEventsAdminView();
  const load=async()=>{
   const y=$("monthlyDescriptionYear").value,m=$("monthlyDescriptionMonth").value;
-  if(!y||!m){$("monthlyDescriptionEditor").innerHTML="";return}
   const {data,error}=await db.from("nowa_monthly_event_descriptions").select("description").eq("event_year",Number(y)).eq("event_month",Number(m)).maybeSingle();
   if(error){toast("Aylık açıklama alınamadı: "+error.message);return}
   $("monthlyDescriptionEditor").innerHTML=data?.description||"";
  };
- const monthNames=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
- const {data:eventsData,error:eventsError}=await db.from("nowa_monthly_special_events").select("event_date");
- if(eventsError){
-  toast("Mevcut etkinlik tarihleri alınamadı: "+eventsError.message);
-  return;
- }
- const {data:descriptionsData,error:descriptionsError}=await db.from("nowa_monthly_event_descriptions").select("event_year,event_month");
- if(descriptionsError)console.warn("Açıklama ayları alınamadı; etkinlik tarihlerinden filtre oluşturulacak:",descriptionsError);
- const monthKeys=[
-  ...(eventsData||[]).map(item=>String(item.event_date||"").slice(0,7)),
-  ...(!descriptionsError?(descriptionsData||[]).map(item=>String(item.event_year)+"-"+String(item.event_month).padStart(2,"0")):[])
- ].filter(value=>/^\\d{4}-(0[1-9]|1[0-2])$/.test(value));
- const availableYears=[...new Set(monthKeys.map(value=>value.slice(0,4)))].sort((a,b)=>Number(b)-Number(a));
- const yearSelect=$("monthlyDescriptionYear"),monthSelect=$("monthlyDescriptionMonth");
- yearSelect.innerHTML=availableYears.length?availableYears.map(value=>'<option value="'+value+'">'+value+'</option>').join(""):'<option value="">Kayıtlı yıl bulunamadı</option>';
- const initialYear=availableYears.includes(String(selectedYear))?String(selectedYear):(availableYears[0]||"");
- yearSelect.value=initialYear;
- const populateDescriptionMonths=preferredMonth=>{
-  const months=[...new Set(monthKeys.filter(value=>value.slice(0,4)===yearSelect.value).map(value=>value.slice(5,7)))].sort();
-  monthSelect.innerHTML=months.length?months.map(value=>'<option value="'+value+'">'+monthNames[Number(value)-1]+'</option>').join(""):'<option value="">Kayıtlı ay bulunamadı</option>';
-  monthSelect.value=months.includes(preferredMonth)?preferredMonth:(months[months.length-1]||"");
- };
- populateDescriptionMonths(selectedMonth);
- yearSelect.onchange=()=>{populateDescriptionMonths("");load();};
- monthSelect.onchange=load;
+ $("monthlyDescriptionYear").onchange=load;
+ $("monthlyDescriptionMonth").onchange=load;
  const editor=$("monthlyDescriptionEditor"),imageInput=$("monthlyDescriptionImageFile");
  const runEditorCommand=(command,value=null)=>{editor.focus();document.execCommand(command,false,value);};
  $("monthlyDescriptionEditor").closest(".formfield").querySelectorAll("[data-cmd]").forEach(button=>button.onclick=()=>runEditorCommand(button.dataset.cmd));
