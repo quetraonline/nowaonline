@@ -363,8 +363,8 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
  <div class="monthly-gold-rule" aria-hidden="true"></div>
  <h2 id="monthlyEventsHeading" class="monthly-events-heading">Etkinlik Takvimi</h2>
  <div class="monthly-tabs" role="tablist" aria-label="Etkinlik içeriği">
-  <button type="button" class="monthly-tab is-active" id="monthlyEventsTab" role="tab" aria-selected="true" aria-controls="monthlyEventsPanel">Etkinlikler</button>
-  <button type="button" class="monthly-tab" id="monthlyDetailsTab" role="tab" aria-selected="false" aria-controls="monthlyDetailsPanel">Etkinlik Detayları</button>
+  <button type="button" class="monthly-tab is-active" id="monthlyEventsTab" role="tab" aria-selected="true" aria-controls="monthlyEventsPanel"><svg class="monthly-tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M7.5 3v4M16.5 3v4M3.5 10h17M8 14h2m4 0h2M8 17h2m4 0h2"/></svg><span>Etkinlikler</span></button>
+  <button type="button" class="monthly-tab" id="monthlyDetailsTab" role="tab" aria-selected="false" aria-controls="monthlyDetailsPanel"><svg class="monthly-tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l5 5V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V5a1.5 1.5 0 0 1 2-1.5Z"/><path d="M14 3.5V9h5M8.5 13h7M8.5 16h4"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="M17.5 16v.1m0 1.4v1"/></svg><span>Etkinlik Detayları</span></button>
  </div>
 
  <section id="monthlyEventsPanel" class="monthly-tab-panel" role="tabpanel" aria-labelledby="monthlyEventsTab">
@@ -388,7 +388,8 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-events-heading{margin:16px 0 16px;color:#e8b95c;font-size:clamp(18px,1.9vw,22px);font-weight:900;line-height:1.2;letter-spacing:-.02em;text-align:center}
 .monthly-gold-rule{height:2px;margin:18px 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
 .monthly-tabs{display:inline-flex;align-items:center;gap:4px;margin:0 0 14px;padding:4px;border:1px solid #303039;border-radius:14px;background:#101015;box-shadow:0 3px 12px #0003;width:max-content;max-width:100%}
-.monthly-tab{appearance:none;border:1px solid transparent;border-radius:9px;padding:9px 16px;background:transparent;color:#aeb0ba;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer;transition:background .18s,color .18s,border-color .18s,box-shadow .18s}
+.monthly-tab{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:9px;padding:9px 16px;background:transparent;color:#aeb0ba;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer;transition:background .18s,color .18s,border-color .18s,box-shadow .18s}
+.monthly-tab-icon{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .monthly-tab.is-active{background:#1c1c24;color:#f2f2f4;border-color:#484852;box-shadow:0 1px 3px #0005}
 .monthly-tab-panel[hidden]{display:none!important}
 .monthly-event-description{padding:18px 20px;border:1px solid #ffffff12;border-radius:0 10px 10px 10px;background:#0b1018;color:#d6dbe3;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
