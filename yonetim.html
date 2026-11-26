@@ -1851,19 +1851,35 @@ async function monthlySpecialEventsAdminView(){
   if(error||!await checkAdmin(data?.user)){loginView();return}
  }
  $("modalTitle").textContent="YÖNETİM PANELİ";
- const weekdays=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
  $("modalBody").innerHTML=adminSidebarMarkup("","","monthly")+
  '<section class="admin-tab-panel admin-event-workspace">'+
- '<div class="admin-event-workspace-head"><div><h4>AYLIK ÖZEL ETKİNLİKLER</h4><p>Aylık olarak düzenlenecek özel etkinlikleri buradan ekleyebilirsin.</p></div></div>'+
- '<form id="monthlySpecialEventForm" class="admin-event-form">'+
- '<div class="formfield"><label for="monthlyEventName">Etkinlik ismi</label><input id="monthlyEventName" name="event_name" type="text" maxlength="160" required placeholder="Etkinlik adını yaz"></div>'+
- '<div class="formgrid"><div class="formfield"><label for="monthlyEventDate">Etkinlik tarihi</label><input id="monthlyEventDate" name="event_date" type="date" required></div>'+
- '<div class="formfield"><label for="monthlyEventWeekday">Etkinlik günü</label><select id="monthlyEventWeekday" name="event_weekday" required>'+weekdays.map(d=>'<option value="'+d+'">'+d+'</option>').join("")+'</select></div></div>'+
- '<div class="formgrid"><div class="formfield"><label for="monthlyEventServer">Server</label><select id="monthlyEventServer" name="server" required><option value="Ares">Ares</option><option value="Atlas">Atlas</option><option value="Ultimate">Ultimate</option><option value="All Servers">All Servers</option></select></div>'+
- '<div class="formfield"><label for="monthlyEventTime">Etkinlik saati</label><input id="monthlyEventTime" name="event_time" type="time" required></div></div>'+
- '<input type="hidden" name="monthly_event_id" id="monthlyEventId" value=""><div class="actions"><button class="btn goldbtn" id="saveMonthlyEvent" type="submit">Etkinlik ekle</button><button class="btn" id="cancelMonthlyEventEdit" type="button" hidden>Vazgeç</button></div></form>'+
- '<div class="admin-event-form-heading" style="margin-top:28px"><h4>EKLENEN AYLIK ETKİNLİKLER</h4></div><div id="monthlySpecialEventsList" class="game-events-admin-list">Etkinlikler yükleniyor...</div></section>';
+ '<div class="admin-event-workspace-head"><div><h4>AYLIK ÖZEL ETKİNLİKLER</h4><p>Aylık olarak düzenlenecek özel etkinlikleri buradan ekleyebilir ve düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn goldbtn" type="button" id="newMonthlySpecialEvent">+ Etkinlik ekle</button></div></div>'+
+ '<div id="monthlySpecialEventsList" class="game-events-admin-list">Etkinlikler yükleniyor...</div></section>';
  bindAdminSidebarNavigation(true);
+ $("newMonthlySpecialEvent").onclick=()=>monthlySpecialEventForm(null);
+ await refreshMonthlySpecialEventsList();
+}
+function monthlySpecialEventForm(item=null){
+ $("modal").dataset.view="monthly-special-event-form";
+ window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
+ $("modalTitle").textContent="YÖNETİM PANELİ";
+ const weekdays=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+ const dateValue=item?.event_date||"";
+ const weekdayValue=item?.event_weekday||"Pazar";
+ const serverValue=item?.server||"Ares";
+ const timeValue=String(item?.event_time||"").slice(0,5);
+ $("modalBody").innerHTML=adminSidebarMarkup("","","monthly")+
+ '<section class="admin-tab-panel admin-event-form-panel">'+
+ '<div class="admin-event-form-heading"><div><h4>'+ (item?"Aylık etkinliği düzenle":"Yeni aylık etkinlik ekle")+'</h4><p>Etkinlik bilgilerini gir ve kaydet.</p></div><button class="btn" type="button" id="backMonthlyEvents">GERİ</button></div>'+
+ '<form id="monthlySpecialEventForm">'+
+ '<div class="formfield"><label for="monthlyEventName">Etkinlik ismi</label><input id="monthlyEventName" name="event_name" type="text" maxlength="160" required placeholder="Etkinlik adını yaz" value="'+esc(item?.event_name||"")+'"></div>'+
+ '<div class="formfield"><label for="monthlyEventDate">Etkinlik tarihi</label><input id="monthlyEventDate" name="event_date" type="date" required value="'+esc(dateValue)+'"></div>'+
+ '<div class="formfield"><label for="monthlyEventWeekday">Etkinlik günü</label><select id="monthlyEventWeekday" name="event_weekday" required>'+weekdays.map(d=>'<option value="'+d+'" '+(weekdayValue===d?"selected":"")+'>'+d+'</option>').join("")+'</select></div>'+
+ '<div class="formfield"><label for="monthlyEventServer">Server</label><select id="monthlyEventServer" name="server" required><option value="Ares" '+(serverValue==="Ares"?"selected":"")+'>Ares</option><option value="Atlas" '+(serverValue==="Atlas"?"selected":"")+'>Atlas</option><option value="Ultimate" '+(serverValue==="Ultimate"?"selected":"")+'>Ultimate</option><option value="All Servers" '+(serverValue==="All Servers"?"selected":"")+'>All Servers</option></select></div>'+
+ '<div class="formfield"><label for="monthlyEventTime">Etkinlik saati</label><input id="monthlyEventTime" name="event_time" type="time" required value="'+esc(timeValue)+'"></div>'+
+ '<div class="actions"><button class="btn goldbtn" id="saveMonthlyEvent" type="submit">'+(item?"Değişiklikleri kaydet":"Etkinlik ekle")+'</button></div></form></section>';
+ bindAdminSidebarNavigation(true);
+ $("backMonthlyEvents").onclick=()=>monthlySpecialEventsAdminView();
  const dateInput=$("monthlyEventDate"),daySelect=$("monthlyEventWeekday");
  dateInput.addEventListener("change",()=>{
   if(!dateInput.value)return;
@@ -1878,28 +1894,19 @@ async function monthlySpecialEventsAdminView(){
   if(!values.event_name.trim()||!values.event_date||!values.event_weekday||!values.server||!values.event_time){toast("Lütfen tüm etkinlik bilgilerini doldur.");return}
   button.disabled=true;button.textContent="Kaydediliyor...";
   try{
-   const payload={
-    event_name:values.event_name.trim(),event_date:values.event_date,
-    event_weekday:values.event_weekday,server:values.server,event_time:values.event_time
-   };
-   const editingId=values.monthly_event_id;
-   const result=editingId
-    ?await db.from("nowa_monthly_special_events").update(payload).eq("id",editingId)
+   const payload={event_name:values.event_name.trim(),event_date:values.event_date,event_weekday:values.event_weekday,server:values.server,event_time:values.event_time};
+   const result=item
+    ?await db.from("nowa_monthly_special_events").update(payload).eq("id",item.id)
     :await db.from("nowa_monthly_special_events").insert(payload);
    if(result.error)throw result.error;
-   form.reset();daySelect.value="Pazar";$("monthlyEventId").value="";
-   button.textContent="Etkinlik ekle";$("cancelMonthlyEventEdit").hidden=true;
-   toast(editingId?"Aylık özel etkinlik güncellendi.":"Aylık özel etkinlik eklendi.");
-   await refreshMonthlySpecialEventsList();
-  }catch(error){console.error("Aylık özel etkinlik kaydedilemedi:",error);toast("Etkinlik kaydedilemedi: "+(error.message||"Bilinmeyen hata"))}
-  finally{button.disabled=false;button.textContent="Etkinlik ekle"}
+   toast(item?"Aylık özel etkinlik güncellendi.":"Aylık özel etkinlik eklendi.");
+   await monthlySpecialEventsAdminView();
+  }catch(error){
+   console.error("Aylık özel etkinlik kaydedilemedi:",error);
+   toast("Etkinlik kaydedilemedi: "+(error.message||"Bilinmeyen hata"));
+   button.disabled=false;button.textContent=item?"Değişiklikleri kaydet":"Etkinlik ekle";
+  }
  });
- $("cancelMonthlyEventEdit").onclick=()=>{
-  $("monthlySpecialEventForm").reset();$("monthlyEventId").value="";
-  daySelect.value="Pazar";$("saveMonthlyEvent").textContent="Etkinlik ekle";
-  $("cancelMonthlyEventEdit").hidden=true;
- };
- await refreshMonthlySpecialEventsList();
 }
 async function refreshMonthlySpecialEventsList(){
  const root=$("monthlySpecialEventsList");if(!root)return;
@@ -1911,24 +1918,13 @@ async function refreshMonthlySpecialEventsList(){
  const fmt=new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
  root.innerHTML=data.map(item=>{
   const date=fmt.format(new Date(item.event_date+"T12:00:00Z"));
-  return '<article class="game-events-admin-row"><div><strong>'+esc(item.event_name)+'</strong><small>'+esc(date)+' · '+esc(item.event_weekday)+' · '+esc(item.server)+' · '+esc(String(item.event_time).slice(0,5))+'</small></div><div class="adminactions"><button class="btn" type="button" data-edit-monthly-event="'+esc(item.id)+'">Düzenle</button><button class="btn" type="button" data-delete-monthly-event="'+esc(item.id)+'">Sil</button></div></article>';
+  return '<article class="game-events-admin-row"><div><strong>'+esc(item.event_name)+'</strong><small>'+esc(date)+' · '+esc(item.event_weekday)+' · '+esc(item.server)+' · '+esc(String(item.event_time).slice(0,5))+'</small></div><div class="game-events-admin-actions"><button class="btn" type="button" data-edit-monthly-event="'+esc(item.id)+'">Düzenle</button><button class="btn" type="button" data-delete-monthly-event="'+esc(item.id)+'">Sil</button></div></article>';
  }).join("");
  root.onclick=async e=>{
   const edit=e.target.closest("[data-edit-monthly-event]");
   if(edit){
    const item=(window.nowaMonthlySpecialEventsCache||[]).find(x=>x.id===edit.dataset.editMonthlyEvent);
-   if(!item)return;
-   const form=$("monthlySpecialEventForm");
-   form.elements.event_name.value=item.event_name||"";
-   form.elements.event_date.value=item.event_date||"";
-   form.elements.event_weekday.value=item.event_weekday||"Pazar";
-   form.elements.server.value=item.server||"Ares";
-   form.elements.event_time.value=String(item.event_time||"").slice(0,5);
-   $("monthlyEventId").value=item.id;
-   $("saveMonthlyEvent").textContent="Değişiklikleri kaydet";
-   $("cancelMonthlyEventEdit").hidden=false;
-   form.scrollIntoView({behavior:"smooth",block:"start"});
-   $("monthlyEventName").focus({preventScroll:true});
+   if(item)monthlySpecialEventForm(item);
    return;
   }
   const button=e.target.closest("[data-delete-monthly-event]");if(!button)return;
