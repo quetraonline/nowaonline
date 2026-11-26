@@ -1936,7 +1936,7 @@ async function refreshMonthlySpecialEventsList(){
 }
 function populateMonthlyEventYearOptions(selectedYear){
  const select=$("monthlyEventYearSelect");if(!select)return;
- const years=[...new Set((window.nowaMonthlySpecialEventsCache||[]).map(item=>String(item.event_date||"").slice(0,4)).filter(year=>/^\\d{4}$/.test(year)))].sort((a,b)=>Number(b)-Number(a));
+ const years=[...new Set((window.nowaMonthlySpecialEventsCache||[]).map(item=>String(item.event_date||"").slice(0,4)).filter(year=>/^\d{4}$/.test(year)))].sort((a,b)=>Number(b)-Number(a));
  select.innerHTML=years.map(year=>'<option value="'+year+'">'+year+'</option>').join("");
  const chosen=years.includes(String(selectedYear))?String(selectedYear):(years[0]||"");
  select.value=chosen;
@@ -1945,7 +1945,7 @@ function populateMonthlyEventYearOptions(selectedYear){
 function populateMonthlyEventMonthOptions(selectedYear){
  const select=$("monthlyEventMonthSelect");if(!select)return;
  const monthNames=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
- const months=[...new Set((window.nowaMonthlySpecialEventsCache||[]).filter(item=>String(item.event_date||"").slice(0,4)===String(selectedYear)).map(item=>String(item.event_date||"").slice(5,7)).filter(month=>/^\\d{2}$/.test(month)))].sort();
+ const months=[...new Set((window.nowaMonthlySpecialEventsCache||[]).filter(item=>String(item.event_date||"").slice(0,4)===String(selectedYear)).map(item=>String(item.event_date||"").slice(5,7)).filter(month=>/^\d{2}$/.test(month)))].sort();
  const previous=select.value;
  select.innerHTML=months.map(month=>'<option value="'+month+'">'+monthNames[Number(month)-1]+'</option>').join("");
  select.value=months.includes(previous)?previous:(months[months.length-1]||"");
