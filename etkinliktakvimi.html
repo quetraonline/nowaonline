@@ -543,12 +543,19 @@ setInterval(updateTopNextWeeklyEvent,1000);
  if(!search||!serverSelect||!monthSelect||!results)return;
  let allEvents=[];let monthlyDescriptions=[];
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ const sanitizeDescription=html=>{
+  const doc=new DOMParser().parseFromString(String(html||""),"text/html");
+  const allowed=new Set(["P","BR","DIV","SPAN","STRONG","B","EM","I","U","S","UL","OL","LI","A","IMG","H1","H2","H3","H4","BLOCKQUOTE","TABLE","THEAD","TBODY","TR","TD","TH","HR"]);
+  const safeStyle=value=>String(value||"").split(";").map(part=>{const n=part.indexOf(":");if(n<1)return "";const key=part.slice(0,n).trim().toLowerCase(),val=part.slice(n+1).trim();if(!["color","background-color","font-size","font-weight","font-style","text-decoration","text-align","width","height","max-width","vertical-align","border","border-color","border-width","border-style","padding"].includes(key)||/url\\s*\\(|expression|javascript/i.test(val))return "";return key+":"+val;}).filter(Boolean).join(";");
+  const clean=node=>{[...node.childNodes].forEach(child=>{if(child.nodeType===1){if(!allowed.has(child.tagName)){clean(child);child.replaceWith(...child.childNodes);return;}const tag=child.tagName;[...child.attributes].forEach(attr=>{const name=attr.name.toLowerCase();if(tag==="A"&&["href","title"].includes(name))return;if(tag==="IMG"&&["src","alt","title","width","height"].includes(name))return;if(name==="style"){const value=safeStyle(attr.value);if(value)child.setAttribute("style",value);else child.removeAttribute("style");return;}child.removeAttribute(attr.name);});if(tag==="A"){const href=child.getAttribute("href")||"";if(!/^(https?:|mailto:)/i.test(href))child.removeAttribute("href");else{child.setAttribute("target","_blank");child.setAttribute("rel","noopener noreferrer");}}if(tag==="IMG"){const src=child.getAttribute("src")||"";if(!src.startsWith("https://")&&!src.startsWith("http://")){child.remove();return;}child.setAttribute("loading","lazy");child.setAttribute("referrerpolicy","no-referrer");}clean(child);}else if(child.nodeType!==3){child.remove();}});};
+  clean(doc.body);return doc.body.innerHTML;
+ };
  const monthLabel=key=>{const [y,m]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric"}).format(new Date(y,m-1,1));};
  const dateLabel=key=>{const [y,m,d]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long"}).format(new Date(y,m-1,d));};
  const updateHeading=()=>{if(!heading||!monthSelect.value)return;const [y,m]=monthSelect.value.split("-").map(Number);const monthName=new Intl.DateTimeFormat("tr-TR",{month:"long"}).format(new Date(y,m-1,1));heading.textContent=monthName.charAt(0).toLocaleUpperCase("tr-TR")+monthName.slice(1)+" ayı Etkinlik Takvimi";};
  const timeLabel=value=>String(value||"").slice(0,5);
  const activateTab=tab=>{const details=tab==="details";eventsTab.classList.toggle("is-active",!details);detailsTab.classList.toggle("is-active",details);eventsTab.setAttribute("aria-selected",String(!details));detailsTab.setAttribute("aria-selected",String(details));eventsPanel.hidden=details;detailsPanel.hidden=!details;};
- const renderDescription=()=>{if(!descriptionBox)return;const [year,month]=monthSelect.value.split("-").map(Number);const item=monthlyDescriptions.find(d=>Number(d.event_year)===year&&Number(d.event_month)===month);descriptionBox.textContent=item?.description||"Bu ay için henüz etkinlik açıklaması eklenmemiş.";};
+ const renderDescription=()=>{if(!descriptionBox)return;const [year,month]=monthSelect.value.split("-").map(Number);const item=monthlyDescriptions.find(d=>Number(d.event_year)===year&&Number(d.event_month)===month);descriptionBox.innerHTML=item?.description?sanitizeDescription(item.description):"Bu ay için henüz etkinlik açıklaması eklenmemiş.";};
  const render=()=>{
   updateHeading();renderDescription();
   const month=monthSelect.value,server=serverSelect.value,term=search.value.trim().toLocaleLowerCase("tr-TR");
