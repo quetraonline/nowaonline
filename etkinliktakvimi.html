@@ -366,7 +366,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
   <button type="button" class="monthly-tab is-active" id="monthlyEventsTab" role="tab" aria-selected="true" aria-controls="monthlyEventsPanel">Etkinlikler</button>
   <button type="button" class="monthly-tab" id="monthlyDetailsTab" role="tab" aria-selected="false" aria-controls="monthlyDetailsPanel">Etkinlik Detayları</button>
  </div>
- <div class="monthly-gold-rule monthly-tabs-rule" aria-hidden="true"></div>
+
  <section id="monthlyEventsPanel" class="monthly-tab-panel" role="tabpanel" aria-labelledby="monthlyEventsTab">
   <div id="monthlyEventsResults" class="monthly-events-results" aria-live="polite"><div class="monthly-events-state">Etkinlikler yükleniyor...</div></div>
  </section>
@@ -390,7 +390,6 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-tabs{display:flex;align-items:center;gap:8px;margin:0 0 0;border-bottom:0}
 .monthly-tab{appearance:none;border:1px solid #354052;border-bottom:0;border-radius:9px 9px 0 0;padding:10px 20px;background:#0b1018;color:#b9c2cf;font-size:13px;font-weight:800;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
 .monthly-tab.is-active{background:#1a1d25;color:#e8b95c;border-color:#b88b3b;box-shadow:inset 0 2px 0 #e8b95c}
-.monthly-tabs-rule{margin:0 0 16px}
 .monthly-tab-panel[hidden]{display:none!important}
 .monthly-event-description{padding:18px 20px;border:1px solid #ffffff12;border-radius:0 10px 10px 10px;background:#0b1018;color:#d6dbe3;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:700px){.monthly-tab{flex:1;padding:10px 8px;font-size:12px}.monthly-event-description{padding:14px;font-size:13px}}
