@@ -1622,7 +1622,45 @@ async function openPublisherDetails(p,silentRefresh=false,skipLiveRefresh=false)
 }
 
 async function checkAdmin(user){if(!user){isAdmin=false;return false}const {data,error}=await db.from("nowa_admins").select("user_id").eq("user_id",user.id).maybeSingle();isAdmin=!!data&&!error;return isAdmin}
-function loginView(){$("modal").dataset.view="login";window.nowaModalViewToken=(window.nowaModalViewToken||0)+1; $("modalTitle").textContent="Kullanıcı Girişi";$("modalBody").innerHTML='<p class="notice"></p><form id="loginForm"><div class="formfield"><label>E-posta</label><input name="email" type="email" autocomplete="username" required placeholder="E-posta adresin"></div><div class="formfield"><label>Şifre</label><input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></div><div class="actions"><button class="btn goldbtn" type="submit">Giriş yap</button></div></form>'; $("modal").classList.add("open");$("loginForm").onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const {data,error}=await db.auth.signInWithPassword({email:f.get("email"),password:f.get("password")});if(error){toast("Giriş başarısız: "+error.message);return}if(!await checkAdmin(data.user)){await db.auth.signOut();toast("Bu hesap yönetici yetkisine sahip değil.");return}adminView()}}
+function loginView(){
+ $("modal").dataset.view="login";
+ window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
+ $("modalTitle").textContent="Kullanıcı Girişi";
+ $("modalBody").innerHTML='<p class="notice" id="loginStatus" role="status" aria-live="polite"></p><form id="loginForm" novalidate><div class="formfield"><label>E-posta</label><input name="email" type="email" autocomplete="username" required placeholder="E-posta adresin"></div><div class="formfield"><label>Şifre</label><input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></div><div class="actions"><button class="btn goldbtn" id="loginSubmit" type="submit">Giriş yap</button></div></form>';
+ $("modal").classList.add("open");
+ const form=$("loginForm"),button=$("loginSubmit"),status=$("loginStatus");
+ const showStatus=(message,isError=false)=>{status.textContent=message;status.style.display=message?"block":"none";status.style.color=isError?"#ff8585":"#e8b95c";status.style.margin="0 0 14px";status.style.padding=message?"10px 12px":"0";status.style.border=message?"1px solid "+(isError?"#8b3940":"#80612f"):"0";status.style.borderRadius="9px";status.style.background=message?(isError?"rgba(180,50,60,.12)":"rgba(232,185,92,.08)"):"transparent";};
+ form.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(button.disabled)return;
+  const email=String(form.elements.email.value||"").trim();
+  const password=String(form.elements.password.value||"");
+  if(!email||!password){showStatus("Lütfen e-posta ve şifrenizi girin.",true);return;}
+  button.disabled=true;button.textContent="Giriş yapılıyor…";button.style.opacity=".7";
+  showStatus("Supabase hesabınız doğrulanıyor…");
+  try{
+   const result=await Promise.race([
+    db.auth.signInWithPassword({email,password}),
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error("Bağlantı zaman aşımına uğradı. İnternet bağlantınızı kontrol edip tekrar deneyin.")),20000))
+   ]);
+   const {data,error}=result;
+   if(error)throw error;
+   if(!data?.user)throw new Error("Giriş yanıtı alındı ancak kullanıcı bilgisi dönmedi. Lütfen tekrar deneyin.");
+   showStatus("Hesap doğrulandı. Yönetici yetkisi kontrol ediliyor…");
+   if(!await checkAdmin(data.user)){
+    await db.auth.signOut();
+    throw new Error("Bu hesap yönetici yetkisine sahip değil.");
+   }
+   showStatus("Giriş başarılı. Yönetim paneli açılıyor…");
+   await adminView();
+  }catch(error){
+   console.error("Yönetici girişi hatası:",error);
+   const message=error?.message||"Beklenmeyen bir giriş hatası oluştu.";
+   showStatus("Giriş yapılamadı: "+message,true);
+   button.disabled=false;button.textContent="Tekrar dene";button.style.opacity="1";
+  }
+ });
+}
 async function buildAdminStatsSnapshot(){
  const [{data:rows,error:pubError},{data:liveRows,error:liveError}]=await Promise.all([
   db.from("nowa_publishers").select("id,name,platform,platforms,is_published,server"),
