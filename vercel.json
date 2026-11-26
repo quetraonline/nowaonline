@@ -21,7 +21,7 @@
       "destination": "/kullanim-sartlari.html"
     },
     {
-      "source": "/etkinliktakvimi",
+      "source": "/etkinlikler",
       "destination": "/etkinlikler.html"
     }
   ],
@@ -44,6 +44,11 @@
     {
       "source": "/kullanim-sartlari.html",
       "destination": "/kullanim-sartlari",
+      "permanent": true
+    },
+    {
+      "source": "/etkinliktakvimi",
+      "destination": "/etkinlikler",
       "permanent": true
     }
   ],
