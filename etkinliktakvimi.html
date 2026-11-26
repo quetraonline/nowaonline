@@ -346,7 +346,11 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 <nav class="breadcrumbs" aria-label="Gezinme yolu"><a href="/" class="breadcrumb-home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><span class="breadcrumb-separator" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="breadcrumb-current" aria-current="page">Etkinlik Takvimi</span></nav>
 <h1 class="page-title-with-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span>Etkinlik Takvimi</span></h1>
 <p class="lead">Nowa Online World özel etkinliklerini aylara göre inceleyebilir, tek bir yerde görüntüleyebilirsin.</p>
-<div class="panel" style="display:flex;align-items:center;justify-content:center;min-height:110px;margin-top:18px;text-align:center"><strong style="color:var(--gold);font-size:clamp(20px,3vw,26px);letter-spacing:.04em">Çok Yakında</strong></div>
+<section class="monthly-calendar panel" aria-label="Aylık özel etkinlik takvimi">
+ <div class="monthly-calendar-head"><div><h2>AYLIK ÖZEL ETKİNLİKLER</h2><p>Yönetim panelinden eklenen etkinlikler burada listelenir.</p></div><label class="monthly-month-picker" for="publicMonthlyMonth">Ay seç <select id="publicMonthlyMonth" aria-label="Etkinlik ayı"><option value="">Yükleniyor...</option></select></label></div>
+ <div id="publicMonthlyDescription" class="monthly-description" hidden></div>
+ <div id="publicMonthlyEvents" class="monthly-events-list" aria-live="polite"><div class="notice">Aylık etkinlikler yükleniyor...</div></div>
+</section>
 </main>
 <footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div class="visitor-counter"><span class="visitor-icon" aria-hidden="true">👥</span><span>Bu siteyi <strong id="visitorCount">...</strong> kişi ziyaret etti</span></div><div>© 2024 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div class="footer-legal-links" style="margin-top:5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
 <a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>Gizlilik Politikası</a>
@@ -776,5 +780,72 @@ setInterval(refreshTopLivePublisherCount,30000);
  };
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});
  else run();
+})();
+</script><style>
+.monthly-calendar{margin-top:18px;padding:24px}
+.monthly-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:17px;border-bottom:1px solid #ffffff16}
+.monthly-calendar-head h2{margin:0;color:#e8b95c;font-size:17px;letter-spacing:.04em}
+.monthly-calendar-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.monthly-month-picker{display:flex;align-items:center;gap:9px;color:#cbd3dd;font-size:12px;font-weight:800;white-space:nowrap}
+.monthly-month-picker select{min-width:150px;max-width:100%;padding:10px 12px;border:1px solid #66502e;border-radius:9px;background:#0b1017;color:#f4f5f7;outline:none}
+.monthly-description{margin:17px 0;padding:15px 17px;border:1px solid #8d6a3655;border-radius:11px;background:#b8873b0d;color:#d6dce4;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.monthly-events-list{display:grid;gap:10px;padding-top:17px}
+.monthly-event-item{display:grid;grid-template-columns:100px minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px 15px;border:1px solid #303b4b;border-radius:11px;background:linear-gradient(110deg,#111923,#0d131b)}
+.monthly-event-date{color:#e8b95c;font-size:12px;font-weight:850;line-height:1.45}
+.monthly-event-date span{display:block;color:#9aa5b4;font-size:10px;font-weight:650}
+.monthly-event-name{min-width:0;color:#f4f5f7;font-size:13px;font-weight:800;overflow-wrap:anywhere}
+.monthly-event-server{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border:1px solid #8d6a3655;border-radius:7px;background:#b8873b12;color:#e8c77f;font-size:10px;font-weight:850;white-space:nowrap}
+.monthly-event-time{color:#f4f5f7;font-size:13px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.monthly-empty{padding:22px 14px;border:1px dashed #3a4656;border-radius:11px;color:#9aa5b4;text-align:center;font-size:13px}
+@media(max-width:600px){.monthly-calendar{padding:17px}.monthly-calendar-head{align-items:stretch;flex-direction:column}.monthly-month-picker{justify-content:space-between}.monthly-month-picker select{flex:1;min-width:0}.monthly-event-item{grid-template-columns:76px minmax(0,1fr);gap:8px 11px;padding:12px}.monthly-event-server{grid-column:2;justify-self:start}.monthly-event-time{grid-column:1;grid-row:2}.monthly-event-date{grid-row:1}.monthly-event-name{grid-column:2;grid-row:1}}
+</style><script id="public-monthly-special-events">
+(async()=>{
+ const monthSelect=document.getElementById("publicMonthlyMonth");
+ const eventsRoot=document.getElementById("publicMonthlyEvents");
+ const descriptionRoot=document.getElementById("publicMonthlyDescription");
+ if(!monthSelect||!eventsRoot||!descriptionRoot||!window.supabase)return;
+ const monthNames=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+ const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ const currentParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit"}).formatToParts(new Date());
+ const currentKey=currentParts.find(x=>x.type==="year").value+"-"+currentParts.find(x=>x.type==="month").value;
+ try{
+  const [eventResult,descriptionResult]=await Promise.all([
+   subpageDb.from("nowa_monthly_special_events").select("id,event_name,event_date,event_weekday,server,event_time").gte("event_date",currentKey+"-01").order("event_date").order("event_time"),
+   subpageDb.from("nowa_monthly_event_descriptions").select("event_year,event_month,description").gte("event_year",Number(currentKey.slice(0,4))).order("event_year").order("event_month")
+  ]);
+  if(eventResult.error)throw eventResult.error;
+  if(descriptionResult.error)throw descriptionResult.error;
+  const events=eventResult.data||[],descriptions=descriptionResult.data||[];
+  const eventMonths=events.map(x=>String(x.event_date).slice(0,7));
+  const descriptionMonths=descriptions.map(x=>String(x.event_year)+"-"+String(x.event_month).padStart(2,"0"));
+  const months=[...new Set([...eventMonths,...descriptionMonths])].filter(x=>x>=currentKey).sort();
+  if(!months.length){
+   monthSelect.innerHTML='<option value="">Etkinlik bulunmuyor</option>';
+   eventsRoot.innerHTML='<div class="monthly-empty">Henüz aylık özel etkinlik eklenmedi.</div>';
+   return;
+  }
+  monthSelect.innerHTML=months.map(key=>{const [y,m]=key.split("-");return '<option value="'+key+'">'+monthNames[Number(m)-1]+" "+y+"</option>"}).join("");
+  monthSelect.value=months.includes(currentKey)?currentKey:months[0];
+  const render=()=>{
+   const key=monthSelect.value;
+   const monthEvents=events.filter(x=>String(x.event_date).slice(0,7)===key);
+   const [year,month]=key.split("-").map(Number);
+   const description=descriptions.find(x=>Number(x.event_year)===year&&Number(x.event_month)===month)?.description||"";
+   if(description.trim()){descriptionRoot.textContent=description;descriptionRoot.hidden=false}else{descriptionRoot.textContent="";descriptionRoot.hidden=true}
+   if(!monthEvents.length){eventsRoot.innerHTML='<div class="monthly-empty">Bu ay için henüz etkinlik eklenmedi.</div>';return}
+   const dateFmt=new Intl.DateTimeFormat("tr-TR",{day:"2-digit",month:"long",year:"numeric",timeZone:"UTC"});
+   eventsRoot.innerHTML=monthEvents.map(item=>{
+    const date=dateFmt.format(new Date(String(item.event_date)+"T12:00:00Z"));
+    const time=String(item.event_time||"").slice(0,5);
+    return '<article class="monthly-event-item"><div class="monthly-event-date">'+escapeHtml(date)+'<span>'+escapeHtml(item.event_weekday||"")+'</span></div><div class="monthly-event-name">'+escapeHtml(item.event_name)+'</div><span class="monthly-event-server">'+escapeHtml(item.server)+'</span><time class="monthly-event-time">'+escapeHtml(time)+'</time></article>';
+   }).join("");
+  };
+  monthSelect.addEventListener("change",render);
+  render();
+ }catch(error){
+  console.error("Aylık özel etkinlikler yüklenemedi:",error);
+  monthSelect.innerHTML='<option value="">Yüklenemedi</option>';
+  eventsRoot.innerHTML='<div class="monthly-empty">Aylık etkinlikler şu anda yüklenemiyor. Lütfen daha sonra tekrar deneyin.</div>';
+ }
 })();
 </script></body></html>
