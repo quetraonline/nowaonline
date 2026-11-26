@@ -1986,7 +1986,7 @@ async function monthlyEventDescriptionForm(){
   toast("Mevcut ay ve yıllar alınamadı: "+(eventsResult.error||descriptionsResult.error).message);
   return;
  }
- const monthKeys=[...(eventsResult.data||[]).map(item=>String(item.event_date||"").slice(0,7)),...(descriptionsResult.data||[]).map(item=>String(item.event_year)+"-"+String(item.event_month).padStart(2,"0"))].filter(value=>/^\\d{4}-(0[1-9]|1[0-2])$/.test(value));
+ const monthKeys=[...(eventsResult.data||[]).map(item=>String(item.event_date||"").slice(0,7)),...(descriptionsResult.data||[]).map(item=>String(item.event_year)+"-"+String(item.event_month).padStart(2,"0"))].filter(value=>/^\d{4}-(0[1-9]|1[0-2])$/.test(value));
  const availableYears=[...new Set(monthKeys.map(value=>value.slice(0,4)))].sort((a,b)=>Number(b)-Number(a));
  const yearSelect=$("monthlyDescriptionYear"),monthSelect=$("monthlyDescriptionMonth");
  yearSelect.innerHTML=availableYears.map(value=>'<option value="'+value+'">'+value+'</option>').join("");
