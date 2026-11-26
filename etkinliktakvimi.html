@@ -810,22 +810,22 @@ setInterval(refreshTopLivePublisherCount,30000);
  const currentKey=currentParts.find(x=>x.type==="year").value+"-"+currentParts.find(x=>x.type==="month").value;
  try{
   const [eventResult,descriptionResult]=await Promise.all([
-   subpageDb.from("nowa_monthly_special_events").select("id,event_name,event_date,event_weekday,server,event_time").gte("event_date",currentKey+"-01").order("event_date").order("event_time"),
-   subpageDb.from("nowa_monthly_event_descriptions").select("event_year,event_month,description").gte("event_year",Number(currentKey.slice(0,4))).order("event_year").order("event_month")
+   subpageDb.from("nowa_monthly_special_events").select("id,event_name,event_date,event_weekday,server,event_time").order("event_date").order("event_time"),
+   subpageDb.from("nowa_monthly_event_descriptions").select("event_year,event_month,description").order("event_year").order("event_month")
   ]);
   if(eventResult.error)throw eventResult.error;
   if(descriptionResult.error)throw descriptionResult.error;
   const events=eventResult.data||[],descriptions=descriptionResult.data||[];
   const eventMonths=events.map(x=>String(x.event_date).slice(0,7));
   const descriptionMonths=descriptions.map(x=>String(x.event_year)+"-"+String(x.event_month).padStart(2,"0"));
-  const months=[...new Set([...eventMonths,...descriptionMonths])].filter(x=>x>=currentKey).sort();
+  const months=[...new Set([...eventMonths,...descriptionMonths])].sort();
   if(!months.length){
    monthSelect.innerHTML='<option value="">Etkinlik bulunmuyor</option>';
    eventsRoot.innerHTML='<div class="monthly-empty">Henüz aylık özel etkinlik eklenmedi.</div>';
    return;
   }
   monthSelect.innerHTML=months.map(key=>{const [y,m]=key.split("-");return '<option value="'+key+'">'+monthNames[Number(m)-1]+" "+y+"</option>"}).join("");
-  monthSelect.value=months.includes(currentKey)?currentKey:months[0];
+  monthSelect.value=months.includes(currentKey)?currentKey:months[months.length-1];
   const render=()=>{
    const key=monthSelect.value;
    const monthEvents=events.filter(x=>String(x.event_date).slice(0,7)===key);
