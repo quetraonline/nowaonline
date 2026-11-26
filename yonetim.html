@@ -1823,6 +1823,38 @@ async function loadAdminOverview(){
 }
 
 
+async function bindAdminShowSettings(){
+ const ids=["flagVisibleToggle","logoFlagVisibleToggle","liveChannelsVisibleToggle","youtubeSectionVisibleToggle","weeklyEventsVisibleToggle","specialEventsVisibleToggle","instagramSectionVisibleToggle"];
+ const toggles=Object.fromEntries(ids.map(id=>[id,$(id)]));
+ const [flag,logoFlag,live,content,events]=await Promise.all([loadFlagVisibility(),loadLogoFlagVisibility(),loadLiveChannelsVisibility(),loadContentSectionVisibility(),loadGameEventsSectionVisibility()]);
+ if(!toggles.flagVisibleToggle)return;
+ toggles.flagVisibleToggle.checked=flag;
+ toggles.logoFlagVisibleToggle.checked=logoFlag;
+ toggles.liveChannelsVisibleToggle.checked=live;
+ toggles.youtubeSectionVisibleToggle.checked=content.youtube;
+ toggles.instagramSectionVisibleToggle.checked=content.instagram;
+ toggles.weeklyEventsVisibleToggle.checked=events.weekly;
+ toggles.specialEventsVisibleToggle.checked=events.special;
+ const save=async(toggle,column,cacheKey,apply,label)=>{
+  const visible=toggle.checked;toggle.disabled=true;
+  try{
+   const {data:userData}=await db.auth.getUser();
+   const {error}=await db.from("nowa_site_settings").update({[column]:visible,updated_at:new Date().toISOString(),updated_by:userData.user?.id||null}).eq("id",true);
+   if(error)throw error;
+   try{localStorage.setItem(cacheKey,String(visible))}catch{}
+   apply(visible);toast(label+(visible?" gösterilecek.":" gizlendi."));
+  }catch(error){toggle.checked=!visible;toast("Gösterim ayarı kaydedilemedi: "+error.message)}
+  finally{toggle.disabled=false}
+ };
+ toggles.flagVisibleToggle.onchange=()=>save(toggles.flagVisibleToggle,"flag_visible","nowa_flag_visible",applyFlagVisibility,"Türk bayrağı");
+ toggles.logoFlagVisibleToggle.onchange=()=>save(toggles.logoFlagVisibleToggle,"logo_flag_visible","nowa_logo_flag_visible",applyLogoFlagVisibility,"Logo yanı bayrak");
+ toggles.liveChannelsVisibleToggle.onchange=()=>save(toggles.liveChannelsVisibleToggle,"live_channels_visible","nowa_live_channels_visible",applyLiveChannelsVisibility,"Canlı yayıncılar kutusu");
+ toggles.youtubeSectionVisibleToggle.onchange=()=>save(toggles.youtubeSectionVisibleToggle,"youtube_section_visible","nowa_youtube_section_visible",applyYoutubeSectionVisibility,"YouTube videoları");
+ toggles.instagramSectionVisibleToggle.onchange=()=>save(toggles.instagramSectionVisibleToggle,"instagram_section_visible","nowa_instagram_section_visible",applyInstagramSectionVisibility,"Instagram bölümü");
+ const saveEvent=(section,toggle)=>save(toggle,section==="weekly"?"weekly_events_visible":"special_events_visible",section==="weekly"?"nowa_weekly_events_visible":"nowa_special_events_visible",visible=>applyGameEventsSectionVisibility(section,visible),section==="weekly"?"Yaklaşan etkinlikler":"Özel etkinlikler");
+ toggles.weeklyEventsVisibleToggle.onchange=()=>saveEvent("weekly",toggles.weeklyEventsVisibleToggle);
+ toggles.specialEventsVisibleToggle.onchange=()=>saveEvent("special",toggles.specialEventsVisibleToggle);
+}
 async function adminView(tab="home"){
  $("modal").dataset.view="admin";
  $("modal").dataset.adminTab=tab;
@@ -1842,10 +1874,19 @@ async function adminView(tab="home"){
  }else if(tab==="update"){
   panel='<section class="admin-tab-panel admin-site-workspace"><div class="admin-event-form-heading"><h4>GÜNCELLEME İŞLEMLERİ</h4><p>Platform verilerini ve yayın kayıtlarını yönet.</p></div><div class="admin-update-options"><button class="btn" type="button" onclick="toast(\'Bu işlem bu ekranda kullanıma açık değil.\')">Twitch VOD Düzelt</button><button class="btn" type="button" onclick="toast(\'Bu işlem bu ekranda kullanıma açık değil.\')">Twitch Güncelle</button><button class="btn" type="button" onclick="toast(\'Bu işlem bu ekranda kullanıma açık değil.\')">Instagram Güncelle</button><button class="btn" type="button" onclick="toast(\'Bu işlem bu ekranda kullanıma açık değil.\')">TikTok Güncelle</button><button class="btn" type="button" onclick="toast(\'Bu işlem bu ekranda kullanıma açık değil.\')">Kick VOD Düzelt</button></div></section>';
  }else{
-  panel='<section class="admin-tab-panel admin-site-workspace"><div class="admin-event-form-heading"><h4>GÖSTERİM AYARLARI</h4><p>Site üzerinde gösterilen alanları ve etkinlikleri yönet.</p></div><div class="admin-show-options"><button class="btn" type="button" onclick="announcementAdminView()">Duyuru</button><button class="btn" type="button" onclick="socialAdminView()">Sosyal Medya</button><button class="btn" type="button" onclick="adminStatsView()">İstatistikler</button><button class="btn" type="button" onclick="gameEventsAdminView(\'weekly\')">Haftalık Etkinlikler</button><button class="btn" type="button" onclick="gameEventsAdminView(\'special\')">Özel Etkinlikler</button></div></section>';
+  panel='<section class="admin-tab-panel admin-site-workspace"><div class="admin-event-form-heading"><h4>GÖSTERİM AYARLARI</h4><p>Site üzerinde gösterilen alanları ve etkinlikleri yönet.</p></div><div class="admin-show-options">'+
+  '<label for="flagVisibleToggle"><input type="checkbox" id="flagVisibleToggle"> Bayrak Göster</label>'+
+  '<label for="logoFlagVisibleToggle"><input type="checkbox" id="logoFlagVisibleToggle"> Logo Yanı Bayrak</label>'+
+  '<label for="liveChannelsVisibleToggle"><input type="checkbox" id="liveChannelsVisibleToggle"> Canlı Yayıncılar Kutusu</label>'+
+  '<label for="youtubeSectionVisibleToggle"><input type="checkbox" id="youtubeSectionVisibleToggle"> YouTube Videoları</label>'+
+  '<label for="weeklyEventsVisibleToggle"><input type="checkbox" id="weeklyEventsVisibleToggle"> Yaklaşan Etkinlikler</label>'+
+  '<label for="specialEventsVisibleToggle"><input type="checkbox" id="specialEventsVisibleToggle"> Özel Etkinlikler</label>'+
+  '<label for="instagramSectionVisibleToggle"><input type="checkbox" id="instagramSectionVisibleToggle"> Instagram</label>'+
+  '</div></section>';
  }
  $("modalBody").innerHTML=adminSidebarMarkup(tab)+panel;
  bindAdminSidebarNavigation(true);
+ if(tab==="show")bindAdminShowSettings();
  if(tab==="home"){loadAdminOverview();loadAdminActivity()}
  if(tab==="publish"){
   const {data,error}=await db.from("nowa_publishers").select("*").order("sort_order").order("name");
