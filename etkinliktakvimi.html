@@ -573,7 +573,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
    if(error)throw error;if(descriptionError)throw descriptionError;
    allEvents=data||[];monthlyDescriptions=descriptionData||[];
    if(!allEvents.length){serverSelect.innerHTML='<option value="">Tüm serverlar</option>';monthSelect.innerHTML='<option value="">Etkinlik bulunamadı</option>';results.innerHTML='<div class="monthly-events-state">Henüz aylık özel etkinlik eklenmemiş.</div>';return;}
-   const servers=[...new Set(allEvents.map(e=>e.server).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"tr"));
+   const preferredServers=["All Servers","Ares","Atlas","A_U Server","Ultimate"];const servers=[...new Set([...preferredServers,...allEvents.map(e=>e.server).filter(Boolean)])];
    serverSelect.innerHTML='<option value="">Tüm serverlar</option>'+servers.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>').join("");
    const months=[...new Set(allEvents.map(e=>String(e.event_date||"").slice(0,7)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
    monthSelect.innerHTML=months.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(monthLabel(v))+'</option>').join("");
