@@ -552,7 +552,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
  };
  const monthLabel=key=>{const [y,m]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric"}).format(new Date(y,m-1,1));};
  const dateLabel=key=>{const [y,m,d]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long"}).format(new Date(y,m-1,d));};
- const updateHeading=()=>{if(!heading||!monthSelect.value)return;const [y,m]=monthSelect.value.split("-").map(Number);const monthName=new Intl.DateTimeFormat("tr-TR",{month:"long"}).format(new Date(y,m-1,1));heading.textContent=monthName.charAt(0).toLocaleUpperCase("tr-TR")+monthName.slice(1)+" ayı Etkinlik Takvimi";};
+ const updateHeading=()=>{if(!heading||!monthSelect.value)return;const [y,m]=monthSelect.value.split("-").map(Number);const monthName=new Intl.DateTimeFormat("tr-TR",{month:"long"}).format(new Date(y,m-1,1));heading.textContent=y+" "+monthName.charAt(0).toLocaleUpperCase("tr-TR")+monthName.slice(1)+" ayı Etkinlik Takvimi";};
  const timeLabel=value=>String(value||"").slice(0,5);
  const activateTab=tab=>{const details=tab==="details";eventsTab.classList.toggle("is-active",!details);detailsTab.classList.toggle("is-active",details);eventsTab.setAttribute("aria-selected",String(!details));detailsTab.setAttribute("aria-selected",String(details));eventsPanel.hidden=details;detailsPanel.hidden=!details;};
  const renderDescription=()=>{if(!descriptionBox)return;const [year,month]=monthSelect.value.split("-").map(Number);const item=monthlyDescriptions.find(d=>Number(d.event_year)===year&&Number(d.event_month)===month);descriptionBox.innerHTML=item?.description?sanitizeDescription(item.description):"Bu ay için henüz etkinlik açıklaması eklenmemiş.";};
