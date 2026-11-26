@@ -1825,6 +1825,7 @@ async function loadAdminOverview(){
 
 async function adminView(tab="home"){
  $("modal").dataset.view="admin";
+ $("modal").dataset.adminTab=tab;
  window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  if(!isAdmin){
   const {data,error}=await db.auth.getUser();
@@ -2914,6 +2915,41 @@ if(tiktokConnectionStatus){
  window.addEventListener("resize",()=>{if(!isDesktop())close();},{passive:true});
 })();
 
+// Keep the current administration page across browser refreshes.
+const adminPageStorageKey="nowa-admin-current-page-v1";
+(()=>{
+ const modal=document.getElementById("modal");
+ if(!modal)return;
+ const save=()=>{
+  const view=modal.dataset.view||"";
+  if(!view||view==="login")return;
+  const state={view,tab:modal.dataset.adminTab||"home",gameSection:modal.dataset.gameEventSection||"weekly",monthlyFilter:window.nowaMonthlyEventFilter||"",monthlyDay:window.nowaMonthlyEventDayFilter||"all"};
+  try{sessionStorage.setItem(adminPageStorageKey,JSON.stringify(state));}catch(_){}
+ };
+ new MutationObserver(save).observe(modal,{attributes:true,attributeFilter:["data-view","data-admin-tab","data-game-event-section"]});
+ window.addEventListener("beforeunload",save);
+ window.nowaRestoreAdminPage=async()=>{
+  let state;try{state=JSON.parse(sessionStorage.getItem(adminPageStorageKey)||"null");}catch(_){}
+  if(!state)return false;
+  window.nowaMonthlyEventFilter=state.monthlyFilter||"";
+  window.nowaMonthlyEventDayFilter=state.monthlyDay||"all";
+  switch(state.view){
+   case "admin": await adminView(state.tab||"home");break;
+   case "admin-stats": await adminStatsView();break;
+   case "monthly-special-events-admin": await monthlySpecialEventsAdminView();break;
+   case "monthly-event-description-form": await monthlySpecialEventsAdminView();await monthlyEventDescriptionForm();break;
+   case "monthly-special-event-form": await monthlySpecialEventsAdminView();monthlySpecialEventForm();break;
+   case "announcement-admin": await announcementAdminView();break;
+   case "game-events-admin": await gameEventsAdminView(state.gameSection||"weekly");break;
+   case "game-event-form": await gameEventsAdminView(state.gameSection||"weekly");gameEventForm(null,state.gameSection||"weekly");break;
+   case "social-admin": await socialAdminView();break;
+   case "social-form": await socialAdminView();break;
+   case "publisher-form": case "publisher-details": await adminView("publish");break;
+   default: await adminView("home");
+  }
+  return true;
+ };
+})(); 
 if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdminRouteBooted){
  window.nowaAdminRouteBooted=true;
  document.body.classList.add("admin-page");
@@ -2924,8 +2960,10 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
    const {data,error}=await db.auth.getSession();
    if(error)throw error;
    const user=data.session?.user||null;
-   if(await checkAdmin(user))await adminView();
-   else loginView();
+   if(await checkAdmin(user)){
+    const restored=await window.nowaRestoreAdminPage?.();
+    if(!restored)await adminView();
+   }else loginView();
   }catch(error){
    console.error("Yönetim paneli açılış kontrolü:",error);
    loginView();
