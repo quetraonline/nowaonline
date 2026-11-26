@@ -1855,19 +1855,18 @@ async function monthlySpecialEventsAdminView(){
  '<section class="admin-tab-panel admin-event-workspace">'+
  '<div class="admin-event-workspace-head"><div><h4>AYLIK ÖZEL ETKİNLİKLER</h4><p>Aylık olarak düzenlenecek özel etkinlikleri buradan ekleyebilir ve düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn goldbtn" type="button" id="newMonthlySpecialEvent">+ Etkinlik ekle</button></div></div>'+
  '<div class="monthly-event-filters" style="max-width:360px;margin:18px 0;display:grid;grid-template-columns:1fr;gap:12px">'+
- '<div class="formfield"><label for="monthlyEventMonthSelect">Ay</label><select id="monthlyEventMonthSelect"><option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option><option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option><option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option><option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option></select></div>'+
+ '<div class="formfield"><label for="monthlyEventDaySelect">Gün</label><select id="monthlyEventDaySelect"><option value="all">Tüm günler</option>'+Array.from({length:31},(_,i)=>'<option value="'+String(i+1).padStart(2,"0")+'">'+(i+1)+'</option>').join("")+'</select></div>'+
+ '<div class="formfield"><label for="monthlyEventMonthSelect">Ay</label><select id="monthlyEventMonthSelect"></select></div>'+
  '<div class="formfield"><label for="monthlyEventYearSelect">Yıl</label><select id="monthlyEventYearSelect"></select></div></div>'+
  '<div id="monthlySpecialEventsList" class="game-events-admin-list">Etkinlikler yükleniyor...</div></section>';
  bindAdminSidebarNavigation(true);
- const nowParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit"}).formatToParts(new Date());
- const currentMonth=nowParts.find(x=>x.type==="year").value+"-"+nowParts.find(x=>x.type==="month").value;
- window.nowaMonthlyEventFilter=window.nowaMonthlyEventFilter||currentMonth;
- const [initialYear,initialMonth]=window.nowaMonthlyEventFilter.split("-");
- $("monthlyEventMonthSelect").value=initialMonth;
- populateMonthlyEventYearOptions(initialYear);
- const applyMonthFilter=()=>{window.nowaMonthlyEventFilter=$("monthlyEventYearSelect").value+"-"+$("monthlyEventMonthSelect").value;renderMonthlySpecialEventsList()};
- $("monthlyEventMonthSelect").onchange=applyMonthFilter;
- $("monthlyEventYearSelect").onchange=applyMonthFilter;
+ window.nowaMonthlyEventDayFilter=window.nowaMonthlyEventDayFilter||"all";
+ $("monthlyEventYearSelect").onchange=()=>{
+  populateMonthlyEventMonthOptions($("monthlyEventYearSelect").value);
+  applyMonthlyEventFilters();
+ };
+ $("monthlyEventMonthSelect").onchange=applyMonthlyEventFilters;
+ $("monthlyEventDaySelect").onchange=applyMonthlyEventFilters;
  $("newMonthlySpecialEvent").onclick=()=>monthlySpecialEventForm(null);
  await refreshMonthlySpecialEventsList();
 }
@@ -1912,6 +1911,7 @@ function monthlySpecialEventForm(item=null){
     :await db.from("nowa_monthly_special_events").insert(payload);
    if(result.error)throw result.error;
    window.nowaMonthlyEventFilter=values.event_date.slice(0,7);
+   window.nowaMonthlyEventDayFilter=values.event_date.slice(8,10);
    toast(item?"Aylık özel etkinlik güncellendi.":"Aylık özel etkinlik eklendi.");
    await monthlySpecialEventsAdminView();
   }catch(error){
@@ -1929,24 +1929,45 @@ async function refreshMonthlySpecialEventsList(){
  window.nowaMonthlySpecialEventsCache=data||[];
  const selectedYear=(window.nowaMonthlyEventFilter||"").slice(0,4);
  populateMonthlyEventYearOptions(selectedYear);
+ const [year,month]=String(window.nowaMonthlyEventFilter||"").split("-");
+ if(year&&month&&$("monthlyEventYearSelect").value===year&&[...$("monthlyEventMonthSelect").options].some(option=>option.value===month))$("monthlyEventMonthSelect").value=month;
+ $("monthlyEventDaySelect").value=window.nowaMonthlyEventDayFilter||"all";
  renderMonthlySpecialEventsList();
 }
 function populateMonthlyEventYearOptions(selectedYear){
  const select=$("monthlyEventYearSelect");if(!select)return;
- const currentYear=Number(new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Istanbul",year:"numeric"}).format(new Date()));
- const years=new Set();
- for(let year=currentYear-5;year<=currentYear+5;year++)years.add(year);
- for(const item of window.nowaMonthlySpecialEventsCache||[]){const year=Number(String(item.event_date||"").slice(0,4));if(year)years.add(year)}
- if(selectedYear&&/^\\d{4}$/.test(selectedYear))years.add(Number(selectedYear));
- select.innerHTML=[...years].sort((a,b)=>b-a).map(year=>'<option value="'+year+'">'+year+'</option>').join("");
- select.value=String(selectedYear||currentYear);
+ const years=[...new Set((window.nowaMonthlySpecialEventsCache||[]).map(item=>String(item.event_date||"").slice(0,4)).filter(year=>/^\\d{4}$/.test(year)))].sort((a,b)=>Number(b)-Number(a));
+ select.innerHTML=years.map(year=>'<option value="'+year+'">'+year+'</option>').join("");
+ const chosen=years.includes(String(selectedYear))?String(selectedYear):(years[0]||"");
+ select.value=chosen;
+ populateMonthlyEventMonthOptions(chosen);
+}
+function populateMonthlyEventMonthOptions(selectedYear){
+ const select=$("monthlyEventMonthSelect");if(!select)return;
+ const monthNames=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+ const months=[...new Set((window.nowaMonthlySpecialEventsCache||[]).filter(item=>String(item.event_date||"").slice(0,4)===String(selectedYear)).map(item=>String(item.event_date||"").slice(5,7)).filter(month=>/^\\d{2}$/.test(month)))].sort();
+ const previous=select.value;
+ select.innerHTML=months.map(month=>'<option value="'+month+'">'+monthNames[Number(month)-1]+'</option>').join("");
+ select.value=months.includes(previous)?previous:(months[months.length-1]||"");
+}
+function applyMonthlyEventFilters(){
+ const year=$("monthlyEventYearSelect")?.value||"";
+ const month=$("monthlyEventMonthSelect")?.value||"";
+ window.nowaMonthlyEventFilter=year&&month?year+"-"+month:"";
+ window.nowaMonthlyEventDayFilter=$("monthlyEventDaySelect")?.value||"all";
+ renderMonthlySpecialEventsList();
 }
 function renderMonthlySpecialEventsList(){
  const root=$("monthlySpecialEventsList");if(!root)return;
- const monthSelect=$("monthlyEventMonthSelect"),yearSelect=$("monthlyEventYearSelect");
- const selectedMonth=yearSelect&&monthSelect?yearSelect.value+"-"+monthSelect.value:window.nowaMonthlyEventFilter||"";
+ const monthSelect=$("monthlyEventMonthSelect"),yearSelect=$("monthlyEventYearSelect"),daySelect=$("monthlyEventDaySelect");
+ const selectedMonth=yearSelect&&monthSelect&&yearSelect.value&&monthSelect.value?yearSelect.value+"-"+monthSelect.value:window.nowaMonthlyEventFilter||"";
+ const selectedDay=daySelect?.value||window.nowaMonthlyEventDayFilter||"all";
  window.nowaMonthlyEventFilter=selectedMonth;
- const data=(window.nowaMonthlySpecialEventsCache||[]).filter(item=>!selectedMonth||String(item.event_date||"").slice(0,7)===selectedMonth);
+ window.nowaMonthlyEventDayFilter=selectedDay;
+ const data=(window.nowaMonthlySpecialEventsCache||[]).filter(item=>
+  (!selectedMonth||String(item.event_date||"").slice(0,7)===selectedMonth)&&
+  (selectedDay==="all"||String(item.event_date||"").slice(8,10)===selectedDay)
+ );
  if(!data.length){
   const label=selectedMonth?new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(selectedMonth+"-01T12:00:00Z")):"seçilen dönem";
   root.innerHTML='<div class="notice">'+esc(label)+' için henüz etkinlik eklenmedi.</div>';
