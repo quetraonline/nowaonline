@@ -2016,7 +2016,7 @@ function renderMonthlySpecialEventsList(){
  const fmt=new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
  root.innerHTML=data.map(item=>{
   const date=fmt.format(new Date(item.event_date+"T12:00:00Z"));
-  return '<article class="game-events-admin-row"><div><strong>'+esc(item.event_name)+'</strong><small>'+esc(date)+' · '+esc(item.event_weekday)+' · '+esc(item.server)+' · '+esc(String(item.event_time).slice(0,5))+'</small>''</div><div class="game-events-admin-actions"><button class="btn" type="button" data-edit-monthly-event="'+esc(item.id)+'">Düzenle</button><button class="btn" type="button" data-delete-monthly-event="'+esc(item.id)+'">Sil</button></div></article>';
+  return '<article class="game-events-admin-row"><div><strong>'+esc(item.event_name)+'</strong><small>'+esc(date)+' · '+esc(item.event_weekday)+' · '+esc(item.server)+' · '+esc(String(item.event_time).slice(0,5))+'</small></div><div class="game-events-admin-actions"><button class="btn" type="button" data-edit-monthly-event="'+esc(item.id)+'">Düzenle</button><button class="btn" type="button" data-delete-monthly-event="'+esc(item.id)+'">Sil</button></div></article>';
  }).join("");
  root.onclick=async e=>{
   const edit=e.target.closest("[data-edit-monthly-event]");
