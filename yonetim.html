@@ -2021,16 +2021,9 @@ async function monthlyEventDescriptionForm(){
 async function refreshMonthlySpecialEventsList(){
  const root=$("monthlySpecialEventsList");if(!root)return;
  root.textContent="Etkinlikler yükleniyor...";
- const [eventsResult,descriptionsResult]=await Promise.all([
-  db.from("nowa_monthly_special_events").select("*").order("event_date").order("event_time"),
-  db.from("nowa_monthly_event_descriptions").select("event_year,event_month")
- ]);
- if(eventsResult.error){root.textContent="Etkinlikler alınamadı: "+eventsResult.error.message;return}
- if(descriptionsResult.error){root.textContent="Aylık kayıtlar alınamadı: "+descriptionsResult.error.message;return}
- window.nowaMonthlySpecialEventsCache=eventsResult.data||[];
- window.nowaMonthlyEventDescriptionMonths=(descriptionsResult.data||[]).map(item=>({
-  year:String(item.event_year),month:String(item.event_month).padStart(2,"0")
- }));
+ const {data,error}=await db.from("nowa_monthly_special_events").select("*").order("event_date").order("event_time");
+ if(error){root.textContent="Etkinlikler alınamadı: "+error.message;return}
+ window.nowaMonthlySpecialEventsCache=data||[];
  const selectedYear=(window.nowaMonthlyEventFilter||"").slice(0,4);
  populateMonthlyEventYearOptions(selectedYear);
  const [year,month]=String(window.nowaMonthlyEventFilter||"").split("-");
@@ -2040,9 +2033,7 @@ async function refreshMonthlySpecialEventsList(){
 }
 function populateMonthlyEventYearOptions(selectedYear){
  const select=$("monthlyEventYearSelect");if(!select)return;
- const eventYears=(window.nowaMonthlySpecialEventsCache||[]).map(item=>String(item.event_date||"").slice(0,4));
- const descriptionYears=(window.nowaMonthlyEventDescriptionMonths||[]).map(item=>item.year);
- const years=[...new Set([...eventYears,...descriptionYears].filter(year=>/^\\d{4}$/.test(year)))].sort((a,b)=>Number(b)-Number(a));
+ const years=[...new Set((window.nowaMonthlySpecialEventsCache||[]).map(item=>String(item.event_date||"").slice(0,4)).filter(year=>/^\d{4}$/.test(year)))].sort((a,b)=>Number(b)-Number(a));
  select.innerHTML=years.map(year=>'<option value="'+year+'">'+year+'</option>').join("");
  const chosen=years.includes(String(selectedYear))?String(selectedYear):(years[0]||"");
  select.value=chosen;
@@ -2051,9 +2042,7 @@ function populateMonthlyEventYearOptions(selectedYear){
 function populateMonthlyEventMonthOptions(selectedYear){
  const select=$("monthlyEventMonthSelect");if(!select)return;
  const monthNames=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
- const eventMonths=(window.nowaMonthlySpecialEventsCache||[]).filter(item=>String(item.event_date||"").slice(0,4)===String(selectedYear)).map(item=>String(item.event_date||"").slice(5,7));
- const descriptionMonths=(window.nowaMonthlyEventDescriptionMonths||[]).filter(item=>item.year===String(selectedYear)).map(item=>item.month);
- const months=[...new Set([...eventMonths,...descriptionMonths].filter(month=>/^\\d{2}$/.test(month)&&Number(month)>=1&&Number(month)<=12))].sort();
+ const months=[...new Set((window.nowaMonthlySpecialEventsCache||[]).filter(item=>String(item.event_date||"").slice(0,4)===String(selectedYear)).map(item=>String(item.event_date||"").slice(5,7)).filter(month=>/^\d{2}$/.test(month)))].sort();
  const previous=select.value;
  select.innerHTML=months.map(month=>'<option value="'+month+'">'+monthNames[Number(month)-1]+'</option>').join("");
  select.value=months.includes(previous)?previous:(months[months.length-1]||"");
