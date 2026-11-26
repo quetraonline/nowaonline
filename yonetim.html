@@ -2614,7 +2614,8 @@ if(tiktokConnectionStatus){
  document.addEventListener("keydown",event=>{if(event.key==="Escape")setOpen(false);});
  menu.querySelectorAll(".menu-dropdown a").forEach(link=>link.addEventListener("click",()=>setOpen(false)));
  if(brand)brand.addEventListener("click",event=>{
-  if(window.matchMedia("(max-width:700px)").matches){event.preventDefault();return;}
+  if(window.matchMedia("(max-width:700px)").matches)return;
+  event.preventDefault();
   menu.classList.toggle("open");
  });
  window.addEventListener("pagehide",()=>{if(opened)setOpen(false);});
