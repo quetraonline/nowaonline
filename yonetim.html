@@ -1949,7 +1949,7 @@ async function monthlyEventDescriptionForm(){
  '<form id="monthlyEventDescriptionForm">'+
  '<div class="formfield"><label for="monthlyDescriptionYear">Yıl</label><input id="monthlyDescriptionYear" type="number" min="2000" max="2100" value="'+esc(selectedYear)+'" required></div>'+
  '<div class="formfield"><label for="monthlyDescriptionMonth">Ay</label><select id="monthlyDescriptionMonth">'+["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"].map((name,i)=>'<option value="'+String(i+1).padStart(2,"0")+'" '+(selectedMonth===String(i+1).padStart(2,"0")?"selected":"")+'>'+name+'</option>').join("")+'</select></div>'+
- '<div class="formfield"><label>Açıklama</label>
+ `<div class="formfield"><label>Açıklama</label>
  <div class="monthly-description-editor-wrap">
   <div class="monthly-description-toolbar" role="toolbar" aria-label="Açıklama biçimlendirme araçları">
    <button type="button" data-cmd="bold" title="Kalın"><b>B</b></button><button type="button" data-cmd="italic" title="İtalik"><i>I</i></button><button type="button" data-cmd="underline" title="Altı çizili"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Üstü çizili"><s>S</s></button>
@@ -1966,7 +1966,7 @@ async function monthlyEventDescriptionForm(){
   </div>
   <div id="monthlyDescriptionEditor" class="monthly-description-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Forumdan metin veya görsel yapıştırabilir ya da yukarıdaki araçlarla içerik hazırlayabilirsin..."></div>
   <div class="monthly-editor-hint">Forumdan kopyaladığın biçimli yazıları doğrudan buraya yapıştırabilirsin. Görseller panodan veya Görsel düğmesinden eklenir.</div>
- </div></div>'+
+ </div></div>`+
  '<div class="actions"><button class="btn goldbtn" id="saveMonthlyDescription" type="submit">Açıklamayı kaydet</button></div></form></section>';
  bindAdminSidebarNavigation(true);
  $("backMonthlyDescription").onclick=()=>monthlySpecialEventsAdminView();
