@@ -1540,4 +1540,4 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
  window.addEventListener("resize",()=>{if(!desktop())close();},{passive:true});
 })();
 </script>
-</body></html>
+<script id="mobile-download-menu-script">(()=>{const init=()=>{const b=document.getElementById("mobileDownloadToggle"),o=document.getElementById("mobileDownloadOptions"),m=document.getElementById("mobileDownloadMenu");if(!b||!o||b.dataset.ready==="1")return;b.dataset.ready="1";b.addEventListener("click",()=>{const open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",String(!open));o.hidden=open;m?.classList.toggle("open",!open);});};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();})();</script></body></html>
