@@ -1888,6 +1888,7 @@ function monthlySpecialEventForm(item=null){
  '<div class="formfield"><label for="monthlyEventWeekday">Etkinlik günü</label><select id="monthlyEventWeekday" name="event_weekday" required>'+weekdays.map(d=>'<option value="'+d+'" '+(weekdayValue===d?"selected":"")+'>'+d+'</option>').join("")+'</select></div>'+
  '<div class="formfield"><label for="monthlyEventServer">Server</label><select id="monthlyEventServer" name="server" required><option value="Ares" '+(serverValue==="Ares"?"selected":"")+'>Ares</option><option value="Atlas" '+(serverValue==="Atlas"?"selected":"")+'>Atlas</option><option value="Ultimate" '+(serverValue==="Ultimate"?"selected":"")+'>Ultimate</option><option value="All Servers" '+(serverValue==="All Servers"?"selected":"")+'>All Servers</option></select></div>'+
  '<div class="formfield"><label for="monthlyEventTime">Etkinlik saati</label><input id="monthlyEventTime" name="event_time" type="time" required value="'+esc(timeValue)+'"></div>'+
+ '<div class="formfield"><label for="monthlyEventDescription">Açıklama</label><textarea id="monthlyEventDescription" name="event_description" rows="7" maxlength="5000" placeholder="Etkinlik hakkında açıklama yaz...">'+esc(item?.event_description||"")+'</textarea></div>'+
  '<div class="actions"><button class="btn goldbtn" id="saveMonthlyEvent" type="submit">'+(item?"Değişiklikleri kaydet":"Etkinlik ekle")+'</button></div></form></section>';
  bindAdminSidebarNavigation(true);
  $("backMonthlyEvents").onclick=()=>monthlySpecialEventsAdminView();
@@ -1905,7 +1906,7 @@ function monthlySpecialEventForm(item=null){
   if(!values.event_name.trim()||!values.event_date||!values.event_weekday||!values.server||!values.event_time){toast("Lütfen tüm etkinlik bilgilerini doldur.");return}
   button.disabled=true;button.textContent="Kaydediliyor...";
   try{
-   const payload={event_name:values.event_name.trim(),event_date:values.event_date,event_weekday:values.event_weekday,server:values.server,event_time:values.event_time};
+   const payload={event_name:values.event_name.trim(),event_date:values.event_date,event_weekday:values.event_weekday,server:values.server,event_time:values.event_time,event_description:(values.event_description||"").trim()};
    const result=item
     ?await db.from("nowa_monthly_special_events").update(payload).eq("id",item.id)
     :await db.from("nowa_monthly_special_events").insert(payload);
@@ -1976,7 +1977,7 @@ function renderMonthlySpecialEventsList(){
  const fmt=new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
  root.innerHTML=data.map(item=>{
   const date=fmt.format(new Date(item.event_date+"T12:00:00Z"));
-  return '<article class="game-events-admin-row"><div><strong>'+esc(item.event_name)+'</strong><small>'+esc(date)+' · '+esc(item.event_weekday)+' · '+esc(item.server)+' · '+esc(String(item.event_time).slice(0,5))+'</small></div><div class="game-events-admin-actions"><button class="btn" type="button" data-edit-monthly-event="'+esc(item.id)+'">Düzenle</button><button class="btn" type="button" data-delete-monthly-event="'+esc(item.id)+'">Sil</button></div></article>';
+  return '<article class="game-events-admin-row"><div><strong>'+esc(item.event_name)+'</strong><small>'+esc(date)+' · '+esc(item.event_weekday)+' · '+esc(item.server)+' · '+esc(String(item.event_time).slice(0,5))+'</small>'+(item.event_description?'<p style="white-space:pre-wrap;margin:8px 0 0">'+esc(item.event_description)+'</p>':'')+'</div><div class="game-events-admin-actions"><button class="btn" type="button" data-edit-monthly-event="'+esc(item.id)+'">Düzenle</button><button class="btn" type="button" data-delete-monthly-event="'+esc(item.id)+'">Sil</button></div></article>';
  }).join("");
  root.onclick=async e=>{
   const edit=e.target.closest("[data-edit-monthly-event]");
