@@ -1069,6 +1069,20 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 
 
 
+
+.monthly-description-editor-wrap{border:1px solid #354052;border-radius:10px;overflow:hidden;background:#0b1018}
+.monthly-description-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:9px;background:#151c27;border-bottom:1px solid #354052}
+.monthly-description-toolbar button,.monthly-description-toolbar select,.monthly-editor-color{height:34px;min-width:34px;padding:0 9px;border:1px solid #3a4658;border-radius:6px;background:#0b111a;color:#e6eaf0;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.monthly-description-toolbar button:hover{border-color:var(--gold);color:var(--gold)}
+.monthly-description-toolbar select{min-width:90px}
+.monthly-editor-color{position:relative;cursor:pointer;font-weight:900;color:#fff}
+.monthly-editor-color input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.monthly-editor-sep{height:22px;border-left:1px solid #3a4658;margin:0 3px}
+.monthly-description-editor{min-height:300px;max-height:65vh;overflow:auto;padding:16px;background:#fff;color:#20242b;font:15px/1.65 Inter,Arial,sans-serif;outline:none}
+.monthly-description-editor:empty:before{content:attr(data-placeholder);color:#8b929c}
+.monthly-description-editor img{max-width:100%;height:auto}
+.monthly-editor-hint{padding:8px 12px;background:#121a25;color:#aeb8c6;font-size:12px}
+@media(max-width:700px){.monthly-description-editor{min-height:240px}.monthly-description-toolbar{gap:4px;padding:7px}.monthly-description-toolbar button,.monthly-description-toolbar select,.monthly-editor-color{height:32px;min-width:32px;padding:0 7px}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 <style id="shared-mobile-hamburger-alignment">@media(max-width:700px){.mobile-menu-toggle{display:grid!important;place-items:center!important;box-sizing:border-box!important;position:fixed!important;top:10px!important;right:14px!important;left:auto!important;bottom:auto!important;transform:none!important;align-self:auto!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;padding:0!important;margin:0!important;border:1px solid #39414e!important;border-radius:12px!important;background:#171b23!important;color:#e8b95c!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;}.mobile-menu-toggle svg{display:block!important;width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;}body.mobile-menu-open .mobile-menu-toggle{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}}
@@ -1935,7 +1949,24 @@ async function monthlyEventDescriptionForm(){
  '<form id="monthlyEventDescriptionForm">'+
  '<div class="formfield"><label for="monthlyDescriptionYear">Yıl</label><input id="monthlyDescriptionYear" type="number" min="2000" max="2100" value="'+esc(selectedYear)+'" required></div>'+
  '<div class="formfield"><label for="monthlyDescriptionMonth">Ay</label><select id="monthlyDescriptionMonth">'+["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"].map((name,i)=>'<option value="'+String(i+1).padStart(2,"0")+'" '+(selectedMonth===String(i+1).padStart(2,"0")?"selected":"")+'>'+name+'</option>').join("")+'</select></div>'+
- '<div class="formfield"><label for="monthlyDescriptionText">Açıklama</label><textarea id="monthlyDescriptionText" rows="12" maxlength="12000" placeholder="Bu aya ait genel etkinlik açıklamalarını buraya yaz..."></textarea></div>'+
+ '<div class="formfield"><label>Açıklama</label>
+ <div class="monthly-description-editor-wrap">
+  <div class="monthly-description-toolbar" role="toolbar" aria-label="Açıklama biçimlendirme araçları">
+   <button type="button" data-cmd="bold" title="Kalın"><b>B</b></button><button type="button" data-cmd="italic" title="İtalik"><i>I</i></button><button type="button" data-cmd="underline" title="Altı çizili"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Üstü çizili"><s>S</s></button>
+   <span class="monthly-editor-sep"></span>
+   <label class="monthly-editor-color" title="Yazı rengi">A<input type="color" id="monthlyTextColor" value="#222222" aria-label="Yazı rengi"></label>
+   <label class="monthly-editor-color monthly-editor-highlight" title="Vurgu rengi">▰<input type="color" id="monthlyHighlightColor" value="#fff2a8" aria-label="Metin arka plan rengi"></label>
+   <select id="monthlyFontSize" aria-label="Yazı boyutu"><option value="2">Küçük</option><option value="3" selected>Normal</option><option value="4">Büyük</option><option value="5">Çok büyük</option></select>
+   <span class="monthly-editor-sep"></span>
+   <button type="button" data-cmd="justifyLeft" title="Sola hizala">☰</button><button type="button" data-cmd="justifyCenter" title="Ortala">≡</button><button type="button" data-cmd="justifyRight" title="Sağa hizala">☷</button>
+   <button type="button" data-cmd="insertUnorderedList" title="Madde işaretli liste">• Liste</button><button type="button" data-cmd="insertOrderedList" title="Numaralı liste">1. Liste</button>
+   <button type="button" id="monthlyInsertLink" title="Bağlantı ekle">🔗</button><button type="button" id="monthlyInsertImage" title="Görsel ekle">▧ Görsel</button>
+   <button type="button" data-cmd="removeFormat" title="Biçimlendirmeyi temizle">Biçimi temizle</button>
+   <input type="file" id="monthlyDescriptionImageFile" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+  </div>
+  <div id="monthlyDescriptionEditor" class="monthly-description-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Forumdan metin veya görsel yapıştırabilir ya da yukarıdaki araçlarla içerik hazırlayabilirsin..."></div>
+  <div class="monthly-editor-hint">Forumdan kopyaladığın biçimli yazıları doğrudan buraya yapıştırabilirsin. Görseller panodan veya Görsel düğmesinden eklenir.</div>
+ </div></div>'+
  '<div class="actions"><button class="btn goldbtn" id="saveMonthlyDescription" type="submit">Açıklamayı kaydet</button></div></form></section>';
  bindAdminSidebarNavigation(true);
  $("backMonthlyDescription").onclick=()=>monthlySpecialEventsAdminView();
@@ -1943,16 +1974,42 @@ async function monthlyEventDescriptionForm(){
   const y=$("monthlyDescriptionYear").value,m=$("monthlyDescriptionMonth").value;
   const {data,error}=await db.from("nowa_monthly_event_descriptions").select("description").eq("event_year",Number(y)).eq("event_month",Number(m)).maybeSingle();
   if(error){toast("Aylık açıklama alınamadı: "+error.message);return}
-  $("monthlyDescriptionText").value=data?.description||"";
+  $("monthlyDescriptionEditor").innerHTML=data?.description||"";
  };
  $("monthlyDescriptionYear").onchange=load;
  $("monthlyDescriptionMonth").onchange=load;
+ const editor=$("monthlyDescriptionEditor"),imageInput=$("monthlyDescriptionImageFile");
+ const runEditorCommand=(command,value=null)=>{editor.focus();document.execCommand(command,false,value);};
+ $("monthlyDescriptionEditor").closest(".formfield").querySelectorAll("[data-cmd]").forEach(button=>button.onclick=()=>runEditorCommand(button.dataset.cmd));
+ $("monthlyTextColor").oninput=e=>runEditorCommand("foreColor",e.target.value);
+ $("monthlyHighlightColor").oninput=e=>runEditorCommand("hiliteColor",e.target.value);
+ $("monthlyFontSize").onchange=e=>runEditorCommand("fontSize",e.target.value);
+ $("monthlyInsertLink").onclick=()=>{const url=prompt("Bağlantı adresini gir:");if(url&&/^https?:\\/\\//i.test(url))runEditorCommand("createLink",url);else if(url)toast("Bağlantı http:// veya https:// ile başlamalı.");};
+ $("monthlyInsertImage").onclick=()=>imageInput.click();
+ const uploadDescriptionImage=async file=>{
+  if(!file||!/^image\\/(jpeg|png|webp|gif)$/.test(file.type)){toast("Yalnızca JPG, PNG, WEBP veya GIF görsel ekleyebilirsin.");return}
+  if(file.size>10*1024*1024){toast("Görsel en fazla 10 MB olabilir.");return}
+  const ext=({"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"})[file.type];
+  const path=new Date().getFullYear()+"/"+String(new Date().getMonth()+1).padStart(2,"0")+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
+  toast("Görsel yükleniyor...");
+  const {error}=await db.storage.from("monthly-event-descriptions").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+  if(error){toast("Görsel yüklenemedi: "+error.message);return}
+  const {data}=db.storage.from("monthly-event-descriptions").getPublicUrl(path);
+  editor.focus();document.execCommand("insertHTML",false,'<p><img src="'+esc(data.publicUrl)+'" alt="Etkinlik görseli" style="max-width:100%;height:auto"></p>');
+  toast("Görsel eklendi.");
+ };
+ imageInput.onchange=async()=>{for(const file of imageInput.files||[])await uploadDescriptionImage(file);imageInput.value="";};
+ editor.addEventListener("paste",async event=>{
+  const files=[...(event.clipboardData?.items||[])].map(item=>item.kind==="file"?item.getAsFile():null).filter(Boolean);
+  if(!files.length)return;
+  event.preventDefault();for(const file of files)await uploadDescriptionImage(file);
+ });
  await load();
  $("monthlyEventDescriptionForm").onsubmit=async e=>{
   e.preventDefault();
   const button=$("saveMonthlyDescription");
-  const y=Number($("monthlyDescriptionYear").value),m=Number($("monthlyDescriptionMonth").value),description=$("monthlyDescriptionText").value.trim();
-  if(!Number.isInteger(y)||y<2000||y>2100||!Number.isInteger(m)||m<1||m>12){toast("Geçerli bir ay ve yıl seç.");return}
+  const y=Number($("monthlyDescriptionYear").value),m=Number($("monthlyDescriptionMonth").value),description=$("monthlyDescriptionEditor").innerHTML.trim();
+  if(!Number.isInteger(y)||y<2000||y>2100||!Number.isInteger(m)||m<1||m>12){toast("Geçerli bir ay ve yıl seç.");return}if(!$("monthlyDescriptionEditor").textContent.trim()&&!$("monthlyDescriptionEditor").querySelector("img")){toast("Açıklama alanı boş.");return}
   button.disabled=true;button.textContent="Kaydediliyor...";
   const {error}=await db.from("nowa_monthly_event_descriptions").upsert({event_year:y,event_month:m,description,updated_at:new Date().toISOString()},{onConflict:"event_year,event_month"});
   if(error){toast("Aylık açıklama kaydedilemedi: "+error.message);button.disabled=false;button.textContent="Açıklamayı kaydet";return}
