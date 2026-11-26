@@ -1984,10 +1984,10 @@ async function monthlyEventDescriptionForm(){
  $("monthlyTextColor").oninput=e=>runEditorCommand("foreColor",e.target.value);
  $("monthlyHighlightColor").oninput=e=>runEditorCommand("hiliteColor",e.target.value);
  $("monthlyFontSize").onchange=e=>runEditorCommand("fontSize",e.target.value);
- $("monthlyInsertLink").onclick=()=>{const url=prompt("Bağlantı adresini gir:");if(url&&/^https?:\\/\\//i.test(url))runEditorCommand("createLink",url);else if(url)toast("Bağlantı http:// veya https:// ile başlamalı.");};
+ $("monthlyInsertLink").onclick=()=>{const url=prompt("Bağlantı adresini gir:");if(url&&(url.startsWith("https://")||url.startsWith("http://")))runEditorCommand("createLink",url);else if(url)toast("Bağlantı http:// veya https:// ile başlamalı.");};
  $("monthlyInsertImage").onclick=()=>imageInput.click();
  const uploadDescriptionImage=async file=>{
-  if(!file||!/^image\\/(jpeg|png|webp|gif)$/.test(file.type)){toast("Yalnızca JPG, PNG, WEBP veya GIF görsel ekleyebilirsin.");return}
+  if(!file||!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)){toast("Yalnızca JPG, PNG, WEBP veya GIF görsel ekleyebilirsin.");return}
   if(file.size>10*1024*1024){toast("Görsel en fazla 10 MB olabilir.");return}
   const ext=({"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"})[file.type];
   const path=new Date().getFullYear()+"/"+String(new Date().getMonth()+1).padStart(2,"0")+"/"+Date.now()+"-"+Math.random().toString(36).slice(2)+"."+ext;
