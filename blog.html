@@ -3,7 +3,7 @@
 <link rel="icon" type="image/png" href="/img/favicon.png"><link rel="shortcut icon" href="/img/favicon.png">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090b10">
 <meta name="description" content="Nowa Online World duyuruları, güncelleme notları, etkinlikleri ve oyun rehberleri.">
-<title>Blog & Duyurular | Nowa Online World</title>
+<title>Blog | Nowa Online World</title>
 <style>
 :root{--bg:#090b10;--panel:#121720;--panel2:#19212c;--line:#2b3544;--gold:#e8b95c;--muted:#9aa5b4;--text:#f4f5f7;--green:#5bd49a;--red:#f07878}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -18%,#49351c 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 32px));margin:auto}.topline{height:3px;background:linear-gradient(90deg,transparent,var(--gold),#fff0b0,var(--gold),transparent)}
@@ -624,9 +624,21 @@ header .menu-dropdown{z-index:40}
  .mobile-menu-toggle svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
  #siteMenu{position:static}
  #siteMenu>.brand-menu{pointer-events:none;cursor:default}
- #siteMenu>.menu-dropdown{position:fixed;top:0;right:0;bottom:0;left:auto;width:min(88vw,420px);height:100dvh;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px 34px;background:#101116;border:0;border-left:1px solid #34343b;border-radius:0;box-shadow:-18px 0 50px #0009;opacity:0;visibility:hidden;transform:translateX(102%);transition:transform .28s ease,visibility .28s;z-index:10002}
- #siteMenu.open>.menu-dropdown{opacity:1;visibility:visible;transform:translateX(0)}
+ #siteMenu>.menu-dropdown{position:fixed;top:0;right:0;bottom:0;left:auto;width:min(88vw,420px);height:100dvh;max-height:100dvh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px 34px;background:#101116;border:0;border-left:1px solid #34343b;border-radius:0;box-shadow:-18px 0 50px #0009;opacity:0;visibility:hidden;transform:translateX(102%);transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .28s ease,visibility 0s linear .42s;z-index:10002}
+ #siteMenu.open>.menu-dropdown{opacity:1;visibility:visible;transform:translateX(0);transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .28s ease,visibility 0s}
  #siteMenu.open:after{content:"";position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(2px);z-index:10001}
+ .mobile-download-menu{border-bottom:1px solid #ffffff18}
+ .mobile-download-trigger{display:flex;align-items:center;gap:13px;width:100%;min-height:56px;padding:7px 4px;border:0;border-radius:0;background:transparent;color:#e8e9ed;text-align:left;font:inherit;font-size:15px;font-weight:800;line-height:1.25;cursor:pointer}
+ .mobile-download-trigger>svg:first-child{width:20px;height:20px;flex:0 0 20px;fill:none;stroke:#a6a6b3;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ .mobile-download-trigger:hover,.mobile-download-trigger:active,.mobile-download-trigger:focus,.mobile-download-menu.open .mobile-download-trigger{background:transparent;color:#e8e9ed;outline:none;box-shadow:none}
+ .mobile-download-trigger:hover>svg:first-child,.mobile-download-trigger:active>svg:first-child,.mobile-download-trigger:focus>svg:first-child,.mobile-download-menu.open .mobile-download-trigger>svg:first-child{stroke:#a6a6b3}
+ .mobile-download-chevron{width:17px;height:17px;margin-left:auto;fill:none;stroke:#a6a6b3;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+ .mobile-download-menu.open .mobile-download-chevron{transform:rotate(180deg)}
+ .mobile-download-options{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 8px 16px}
+ .mobile-download-options[hidden]{display:none!important}
+ .mobile-download-options a{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:58px;padding:7px 9px;border:1px solid #ffffff1c;border-radius:10px;background:#171c25}
+ .mobile-download-options a:active{border-color:#c9a24a;background:#202735}
+ .mobile-download-options img{display:block;width:100%;max-width:148px;height:auto;object-fit:contain}
  .mobile-drawer-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -22px 18px;padding:20px 22px;background:#101116;border-bottom:1px solid #ffffff16}
  .mobile-drawer-brand{display:flex;align-items:center;gap:10px;min-width:0;color:#f3f4f6;font-size:13px;font-weight:950;letter-spacing:.1em}
  .mobile-drawer-brand img{width:38px;height:38px;object-fit:contain;border:1px solid #c9a24a;border-radius:10px;padding:3px}
@@ -1060,12 +1072,29 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 <style>
 /* Blog sayfası: referans görseldeki editoryal düzen */
 .blog-shell{width:min(1160px,calc(100% - 32px));margin:0 auto;padding:25px 0 76px}
+.blog-heading-copy{min-width:0;flex:1}
+.blog-breadcrumbs{display:flex;align-items:center;gap:9px;margin:0 0 12px;color:#aab2bf;font-size:13px;line-height:20px}
+.blog-breadcrumbs a{display:inline-flex;align-items:center;gap:7px;color:#9aa5b4;text-decoration:none;white-space:nowrap}
+.blog-breadcrumbs a:hover{color:#e8b95c}
+.blog-breadcrumbs svg{display:block;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.blog-breadcrumb-separator{display:inline-flex;align-items:center;color:#687383}
+.blog-breadcrumb-separator svg{width:13px;height:13px;stroke-width:2}
+.blog-breadcrumb-current{color:#aab2bf;white-space:nowrap}
+.blog-heading .blog-title{display:flex;align-items:center;gap:10px;font-family:inherit!important;font-size:clamp(27px,4.6vw,48px)!important;line-height:1.1!important;letter-spacing:-.045em!important;font-weight:900!important;margin:0!important;color:#f3f5f8!important}
+.blog-heading .blog-title svg{width:26px;height:26px;flex:0 0 26px;fill:none;stroke:#e8b95c;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.blog-heading .blog-subtitle{font-size:15px;line-height:1.8;color:var(--muted,#aeb8c5);margin:14px 0 0}
+@media(max-width:700px){.blog-heading{align-items:flex-start;flex-direction:column;gap:16px}.blog-heading .blog-title{font-size:clamp(25px,7vw,34px)!important}.blog-heading .blog-title svg{width:23px;height:23px;flex-basis:23px}.blog-heading .blog-subtitle{font-size:14px;line-height:1.65;margin-top:10px}.blog-breadcrumbs{font-size:13px;margin-bottom:10px}}
 .blog-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:0 0 18px;border-bottom:1px solid #24252d}
 .blog-crumb{font-size:11px;color:#777e8b;margin-bottom:8px}
 .blog-title{font-family:Georgia,'Times New Roman',serif;font-size:34px;line-height:1.05;letter-spacing:.015em;margin:0;color:#f5f2f4;font-weight:900}
 .blog-subtitle{font-size:12px;color:#999ba5;margin:7px 0 0}
 .blog-stats{display:flex;gap:9px;flex-shrink:0}
 .blog-stat{min-width:145px;display:flex;align-items:center;gap:10px;padding:10px 13px;background:#111116;border:1px solid #282830;border-radius:11px}
+/* Blog istatistik ve kategori ikonları: tutarlı çizgisel SVG seti */
+.blog-stat-icon svg,.filter-icon svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.filter-icon{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;flex:0 0 21px}
+.blog-stat-icon{display:flex;align-items:center;justify-content:center}
+.blog-stat-icon svg{width:26px;height:26px}
 .blog-stat-icon{width:27px;height:27px;display:grid;place-items:center;border-radius:7px;background:#1c1a20;color:#e8b95c;font-size:14px}
 .blog-stat small{display:block;color:#8c8d98;font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
 .blog-stat b{display:block;color:#e8e8eb;font-size:11px;margin-top:2px}
@@ -1150,58 +1179,368 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 .blog-stats{gap:7px}
 .blog-stat b{font-size:10px}
 }
+
+/* Blog kartı yazar ve tarih ikonları */
+.blog-card .blog-meta span{display:inline-flex;align-items:center;gap:6px}
+.blog-card .blog-meta svg{width:14px;height:14px;flex:0 0 14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+/* Blog kartları: site genelindeki okunabilir tipografi ölçeği */
+.blog-card,.blog-card *{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important}
+.blog-card-media .blog-tag{font-size:11px!important;line-height:1.35!important;font-weight:800!important;padding:4px 9px!important;letter-spacing:0!important}
+.blog-card-body{padding:16px 14px 15px!important}
+.blog-card h3{font-size:18px!important;line-height:1.4!important;font-weight:800!important;letter-spacing:-.02em!important;min-height:0!important;margin:0 0 10px!important}
+.blog-card p{font-size:15px!important;line-height:1.65!important;font-weight:400!important;margin:0 0 12px!important}
+.blog-card .blog-meta{font-size:12px!important;line-height:1.5!important;font-weight:400!important;gap:12px!important}
+@media(max-width:700px){
+ .blog-card-media .blog-tag{font-size:10px!important}
+ .blog-card-body{padding:14px 13px!important}
+ .blog-card h3{font-size:16px!important}
+ .blog-card p{font-size:14px!important}
+ .blog-card .blog-meta{font-size:11px!important}
+}
+/* Blog kategori sekmeleri, istatistikler ve içerik sayacı tipografi eşitlemesi */
+.blog-filters,.blog-filters *,.blog-stats,.blog-stats *,.blog-count-note{
+ font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+}
+.blog-filter{font-size:14px!important;line-height:1.45!important;font-weight:800!important}
+.blog-filter .filter-count{font-size:11px!important;line-height:1.2!important;font-weight:700!important}
+.blog-stat small{font-size:12px!important;line-height:1.4!important;font-weight:800!important;letter-spacing:.02em!important}
+.blog-stat b{font-size:15px!important;line-height:1.45!important;font-weight:800!important}
+.blog-count-note{font-size:13px!important;line-height:1.5!important;font-weight:400!important}
+@media(max-width:700px){
+ .blog-filter{font-size:13px!important}
+ .blog-filter .filter-count{font-size:10px!important}
+ .blog-stat small{font-size:11px!important}
+ .blog-stat b{font-size:14px!important}
+ .blog-count-note{font-size:12px!important}
+}
+/* Blog tipografi: diğer Nowa sayfalarıyla aynı Inter ailesi ve okunabilir ölçüler */
+.blog-shell,.blog-shell *{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.blog-shell{font-size:15px;line-height:1.55}
+.blog-heading .blog-title{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:clamp(32px,5vw,48px)!important;line-height:1.1!important;letter-spacing:-.045em!important;font-weight:900!important}
+.blog-heading .blog-subtitle{font-size:15px!important;line-height:1.75!important}
+.blog-crumb,.blog-breadcrumbs{font-size:13px}
+.blog-stat small{font-size:10px}
+.blog-stat b{font-size:13px;line-height:1.4}
+.blog-filter{font-size:13px;line-height:1.4}
+.blog-filter .filter-count{font-size:10px}
+.blog-search input{font-size:13px}
+.blog-feature h2{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:20px!important;line-height:1.3!important;letter-spacing:-.025em!important;font-weight:900!important}
+.blog-feature p{font-size:14px!important;line-height:1.7!important}
+.blog-tag{font-size:10px}
+.blog-meta{font-size:11px;line-height:1.45}
+.blog-read{font-size:12px}
+.blog-card h3{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:15px!important;line-height:1.4!important;font-weight:850!important;letter-spacing:-.01em!important}
+.blog-card p{font-size:13px!important;line-height:1.65!important}
+.blog-card .blog-meta{font-size:11px}
+.blog-card .blog-read{font-size:12px}
+.blog-article-content h2{font:900 24px/1.3 Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;letter-spacing:-.025em}
+.blog-article-content p{font-size:15px!important;line-height:1.75!important}
+.blog-count-note{font-size:11px}
+@media(max-width:700px){
+ .blog-heading .blog-title{font-size:clamp(27px,7vw,36px)!important}
+ .blog-heading .blog-subtitle{font-size:14px!important;line-height:1.7!important}
+ .blog-filter{font-size:12px}
+ .blog-feature h2{font-size:18px!important}
+ .blog-feature p{font-size:13px!important}
+ .blog-card h3{font-size:14px!important}
+ .blog-article-content{padding:18px}
+ .blog-article-content h2{font-size:21px!important}
+ .blog-article-content p{font-size:14px!important}
+}
+.blog-feature[hidden]{display:none!important}
+
+@media(max-width:700px){
+.mobile-download-menu{border-bottom:1px solid #ffffff18}
+ .mobile-download-trigger{display:flex;align-items:center;gap:13px;width:100%;min-height:56px;padding:7px 4px;border:0;border-radius:0;background:transparent;color:#e8e9ed;text-align:left;font:inherit;font-size:15px;font-weight:800;line-height:1.25;cursor:pointer}
+ .mobile-download-trigger>svg:first-child{width:20px;height:20px;flex:0 0 20px;fill:none;stroke:#a6a6b3;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ .mobile-download-trigger:hover,.mobile-download-trigger:active,.mobile-download-trigger:focus,.mobile-download-menu.open .mobile-download-trigger{background:transparent;color:#e8e9ed;outline:none;box-shadow:none}
+ .mobile-download-trigger:hover>svg:first-child,.mobile-download-trigger:active>svg:first-child,.mobile-download-trigger:focus>svg:first-child,.mobile-download-menu.open .mobile-download-trigger>svg:first-child{stroke:#a6a6b3}
+ .mobile-download-chevron{width:17px;height:17px;margin-left:auto;fill:none;stroke:#a6a6b3;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+ .mobile-download-menu.open .mobile-download-chevron{transform:rotate(180deg)}
+ .mobile-download-options{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 8px 16px}
+ .mobile-download-options[hidden]{display:none!important}
+ .mobile-download-options a{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:58px;padding:7px 9px;border:1px solid #ffffff1c;border-radius:10px;background:#171c25}
+ .mobile-download-options a:active{border-color:#c9a24a;background:#202735}
+ .mobile-download-options img{display:block;width:100%;max-width:148px;height:auto;object-fit:contain}
+ }
+
+/* Blog başlık alanı: diğer sayfalardaki ortak breadcrumb ve H1 tipografisiyle birebir uyum */
+.blog-shell{padding-top:18px}
+.blog-heading .blog-breadcrumbs{display:flex;align-items:center;gap:10px;height:20px;min-height:20px;margin:0 0 12px;color:#9aa5b4;font-size:14px;font-weight:500;line-height:20px}
+.blog-heading .blog-breadcrumbs a{display:inline-flex;align-items:center;gap:8px;height:20px;color:#9aa5b4;text-decoration:none;line-height:20px;white-space:nowrap;transition:color .18s}
+.blog-heading .blog-breadcrumbs a>span{display:inline-block;line-height:20px}
+.blog-heading .blog-breadcrumbs a:hover{color:#e8b95c}
+.blog-heading .blog-breadcrumbs svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.blog-heading .blog-breadcrumb-separator{display:inline-flex;align-items:center;justify-content:center;flex:0 0 13px;width:13px;height:20px;color:#687383;line-height:20px}
+.blog-heading .blog-breadcrumb-separator svg{width:13px;height:13px;flex:0 0 13px;stroke-width:2}
+.blog-heading .blog-breadcrumb-current{display:inline-block;align-self:center;height:20px;margin:0;padding:0;color:#aab2bf;font-size:inherit;font-weight:inherit;line-height:20px;white-space:nowrap;vertical-align:middle;transform:translateY(-.5px)}
+.blog-heading .blog-title{display:flex;align-items:center;gap:10px;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:clamp(32px,5vw,48px)!important;font-weight:700!important;letter-spacing:-.045em!important;line-height:1.1!important;margin:18px 0 10px!important;color:#f3f5f8!important}
+.blog-heading .blog-title svg{width:26px;height:26px;flex:0 0 26px;fill:none;stroke:var(--gold,#e8b95c);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.blog-heading .blog-subtitle{font-size:15px!important;line-height:1.55!important;margin:0 0 30px!important;color:var(--muted,#aeb8c5)!important}
+@media(max-width:700px){.blog-shell{padding-top:18px}.blog-heading{gap:0}.blog-heading .blog-breadcrumbs{font-size:13px;gap:8px;margin-bottom:10px}.blog-heading .blog-title{font-size:32px!important;gap:8px;margin:18px 0 10px!important}.blog-heading .blog-title svg{width:23px;height:23px;flex-basis:23px}.blog-heading .blog-subtitle{font-size:14px!important;line-height:1.65!important;margin:0 0 24px!important}}
+
+/* Mobile drawer backdrop: tapping the uncovered page area closes the drawer. */
+@media(max-width:700px){body.mobile-menu-open header{z-index:2147482600!important}body.mobile-menu-open::before{content:"";position:fixed;inset:0;z-index:2147482500;background:rgba(0,0,0,.48);pointer-events:auto}body.mobile-menu-open #siteMenu>.menu-dropdown{z-index:2147482601!important}}
 </style></head><body>
 <div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
-<div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span class="brand-copy"><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></button><nav class="menu-dropdown" aria-label="Ana menü"><div class="mobile-drawer-head"><div class="mobile-drawer-brand"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt=""><span>NOWA ONLINE WORLD<small>YAYINCI REHBERİ</small></span></div><div class="mobile-drawer-head-actions"><a href="/yonetim" class="menu-login-icon" id="menuLoginLink" aria-label="Giriş Yap" title="Giriş Yap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a><button class="mobile-drawer-close" id="mobileMenuClose" type="button" aria-label="Menüyü kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div></div><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><a href="/rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22m4-15h8m-8 4h8"/></svg><span>Yayıncı Rehberi</span></a><a href="/etkinliktakvimi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3m-3 3h7"/></svg><span>Etkinlik Takvimi</span></a><a href="/iletisim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>İletişim</span></a><a href="/gizlilik-politikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Gizlilik Politikası</span></a><a href="/kullanim-sartlari"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span>Kullanım Şartları</span></a></nav></div><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Menüyü aç" aria-controls="siteMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><div class="nav-right"><button class="btn goldbtn" id="adminOpen" type="button" aria-label="Giriş Yap" title="Giriş Yap"><svg class="admin-button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg></button></div>
+<div class="menu" id="siteMenu"><button class="brand brand-menu" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><span class="brand-copy"><strong>NOWA ONLINE WORLD</strong><small>YAYINCI REHBERİ</small></span><img class="site-ataturk-flag-gif" src="/img/ataturkbayrak.gif" alt="" aria-hidden="true"></button><nav class="menu-dropdown" aria-label="Ana menü"><div class="mobile-drawer-head"><div class="mobile-drawer-brand"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt=""><span>NOWA ONLINE WORLD<small>YAYINCI REHBERİ</small></span></div><div class="mobile-drawer-head-actions"><button class="mobile-drawer-close" id="mobileMenuClose" type="button" aria-label="Menüyü kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div></div><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><a href="/rehber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22zM4 5.5V22m4-15h8m-8 4h8"/></svg><span>Yayıncı Rehberi</span></a><a href="/etkinliktakvimi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3m-3 3h7"/></svg><span>Etkinlik Takvimi</span></a><a href="/blog" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/></svg><span>Blog</span></a><a href="/gizlilik-politikasi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Gizlilik Politikası</span></a><a href="/kullanim-sartlari"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span>Kullanım Şartları</span></a><a href="/iletisim"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>İletişim</span></a></nav></div><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Menüyü aç" aria-controls="siteMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div><div class="top-info-strip" aria-label="Bilgi şeridi"><div class="top-info-strip-content"><span class="top-live-link"><span class="top-live-dot" aria-hidden="true"></span><span class="top-live-prefix">Şu anda </span><b id="topLiveCount">2 yayıncı</b><span class="top-live-suffix"> canlı</span></span><span class="top-info-divider" aria-hidden="true"></span><span class="top-event-group top-weekly-event-group"><svg class="top-event-date-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span class="top-info-extra-label">Etkinlik</span><span class="top-next-event-name" id="topNextEventName">Etkinlikler yükleniyor</span><span class="top-next-event-time" id="topNextEventTime">--:--</span><span class="top-next-event-countdown" id="topNextEventCountdown">--:--:--</span></span><span class="top-info-divider top-next-divider" aria-hidden="true"></span><span class="top-event-group top-special-event-group"><svg class="top-event-date-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><span class="top-info-extra-label">Özel Etkinlik</span><span class="top-special-event-name" id="topSpecialEventName">Etkinlikler yükleniyor</span><span class="top-special-event-time" id="topSpecialEventTime">--:--</span><span class="top-special-event-countdown" id="topSpecialEventCountdown">--:--:--</span></span><span class="top-info-divider top-next-divider" aria-hidden="true"></span><span class="top-announcement" id="topAnnouncement" hidden><svg class="top-announcement-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a2 2 0 0 0 2 2h2l9 5V4l-9 5H5a2 2 0 0 0-2 2Z"/><path d="M7 15l1.5 5M19 9l2-2M19 15l2 2"/></svg><span class="top-announcement-label">Duyuru</span><span class="top-announcement-window"><span class="top-announcement-track" id="topAnnouncementText"></span></span></span></div></div>
 </header>
 <main class="blog-shell">
   <div class="blog-heading">
-    <div><div class="blog-crumb">⌂ Ana Sayfa　›　Blog</div><h1 class="blog-title">DUYURULAR</h1><p class="blog-subtitle">Güncelleme notları, etkinlikler ve Nowa Online World topluluğuna dair tüm haberler.</p></div>
-    <div class="blog-stats"><div class="blog-stat"><span class="blog-stat-icon">♧</span><span><small>TOPLAM</small><b>32 duyuru · 96 rehber</b></span></div><div class="blog-stat"><span class="blog-stat-icon">◷</span><span><small>SON YAYIN</small><b>24 Kas 2026</b></span></div></div>
+    <div class="blog-heading-copy">
+    <nav class="blog-breadcrumbs" aria-label="Sayfa konumu"><a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><span class="blog-breadcrumb-separator" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><a class="blog-breadcrumb-current" href="/blog">Blog</a><span class="blog-breadcrumb-separator" id="blogCategoryCrumbSeparator" aria-hidden="true" hidden><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="blog-breadcrumb-current" id="blogCategoryCrumb" aria-current="page" hidden></span></nav>
+    <h1 class="blog-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M16 3v4h4M8 11h8M8 15h8M8 18h5"/></svg><span id="blogPageHeading" style="opacity:0"></span></h1><script id="blog-initial-category-heading">(()=>{const node=document.getElementById("blogPageHeading");if(!node)return;const slug=new URLSearchParams(location.search).get("category")||"all";const labels={"all":"Blog","duyurular":"Duyurular","guncelleme-notlari":"Güncelleme Notları","gncleme-notlari":"Güncelleme Notları","etkinlikler":"Etkinlikler","rehberler":"Rehberler"};const label=labels[slug]||slug.split("-").filter(Boolean).map(x=>x.charAt(0).toLocaleUpperCase("tr")+x.slice(1)).join(" ");node.textContent=label;document.title=(slug==="all"?"Blog":label)+" | Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi";node.style.opacity="1";})();</script>
+    <p class="blog-subtitle">Güncelleme notları, etkinlikler ve Nowa Online World topluluğuna dair tüm haberler.</p>
   </div>
-  <nav class="blog-filters" aria-label="Blog kategorileri">
-    <button class="blog-filter active" data-category="all"><span class="filter-icon">▦</span>Tümü <span class="filter-count">32</span></button>
-    <button class="blog-filter" data-category="duyurular"><span class="filter-icon">♥</span>Duyurular <span class="filter-count">11</span></button>
-    <button class="blog-filter" data-category="guncelleme"><span class="filter-icon">♧</span>Güncelleme Notları <span class="filter-count">12</span></button>
-    <button class="blog-filter" data-category="etkinlikler"><span class="filter-icon">⚒</span>Etkinlikler <span class="filter-count">9</span></button>
-    <button class="blog-filter" data-category="rehberler"><span class="filter-icon">▣</span>Rehberler <span class="filter-count">96</span></button>
+    <div class="blog-stats"><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span><small>TOPLAM</small><b id="blogTotalStat">0 yazı</b></span></div><div class="blog-stat"><span class="blog-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>SON YAYIN</small><b id="blogLastPublished">Henüz yayın yok</b></span></div></div>
+  </div>
+  <nav class="blog-filters" aria-label="Blog kategorileri" id="blogCategoryFilters">
+    <button type="button" class="blog-filter active" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">0</span></button>
   </nav>
   <div class="blog-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="blogSearch" type="search" placeholder="Duyurularda ara..." autocomplete="off"></div>
-  <article class="blog-feature">
-    <div class="blog-feature-media"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=88" alt="Fantastik savaş alanı"></div>
-    <div class="blog-feature-copy"><div class="blog-tags"><span class="blog-tag">★ EN YENİ</span><span class="blog-tag category">Güncelleme Notları</span></div><h2>NOWA ONLINE WORLD | KASIM GÜNCELLEME NOTLARI</h2><p>Nowa Online World'de yeni dönem başlıyor. Oyun deneyimini geliştiren yenilikler, düzenlemeler ve yaklaşan içeriklerle ilgili tüm ayrıntılar.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 24 Kas 2026</span></div><a href="#" class="blog-read" data-feature-read>Devamını oku <span>→</span></a></div>
-  </article>
-  <section class="blog-grid" id="blogGrid" aria-label="Blog yazıları">
-    <article class="blog-card" data-category="duyurular" data-title="ARES ve ATLAS sunucularında yeni dönem başlıyor" data-slug="ares-atlas-yeni-donem"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=85" alt="Fantastik savaş ve oyun dünyası"><span class="blog-tag">Duyurular</span></div><div class="blog-card-body"><h3>ARES ve ATLAS Sunucularında Yeni Dönem Başlıyor</h3><p>Sunucularımızdaki yenilikleri, düzenlemeleri ve oyuncularımızı bekleyen gelişmeleri keşfedin.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 23 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="duyurular" data-title="haftalık etkinlik takvimi yayında" data-slug="haftalik-etkinlik-takvimi"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=85" alt="Oyun dünyası"><span class="blog-tag">Duyurular</span></div><div class="blog-card-body"><h3>Haftalık Etkinlik Takvimi Yayında!</h3><p>Bu haftanın etkinliklerini, başlangıç saatlerini ve ödülleri tek sayfada inceleyin.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 22 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="duyurular" data-title="büyük sunucu birleşimi ares atlas" data-slug="buyuk-sunucu-birlesimi"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85" alt="Fantastik MMORPG manzarası"><span class="blog-tag">Duyurular</span></div><div class="blog-card-body"><h3>ARES × ATLAS Büyük Sunucu Birleşimi</h3><p>Birleşim süreci, karakterler ve oyun dünyası için planlanan önemli yenilikler.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 20 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="etkinlikler" data-title="nemesis academy sıralama ve top1000 ödül kazananları" data-slug="nemesis-academy-top1000-odulleri"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=85" alt="Savaş arenası"><span class="blog-tag">Etkinlikler</span></div><div class="blog-card-body"><h3>Nemesis Academy Sıralama ve Top1000 Ödül Kazananları</h3><p>Etkinlik sonuçları, derece ödülleri ve kazanan oyuncuların listesi.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 18 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="duyurular" data-title="nemesis academy 2 ekim açılışı" data-slug="nemesis-academy-acilis"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=85" alt="Fantastik oyun karakteri"><span class="blog-tag">Duyurular</span></div><div class="blog-card-body"><h3>Nemesis Academy 2 Açılış Tarihi Açıklandı</h3><p>Yeni sezon, oyuncu kayıtları ve açılış günü etkinlikleri hakkında detaylar.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 16 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="etkinlikler" data-title="480 bin point ödüllü knocout4fun turnuvası" data-slug="topluluk-turnuvasi"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=85" alt="Fantastik gece manzarası"><span class="blog-tag">Etkinlikler</span></div><div class="blog-card-body"><h3>480.000 Point Ödüllü Topluluk Turnuvası</h3><p>Katılım koşulları, ödül havuzu ve turnuva takvimi açıklandı.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 14 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="etkinlikler" data-title="nemesis academy sıralama ödülleri" data-slug="nemesis-siralama-odulleri"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=85" alt="Oyun turnuvası"><span class="blog-tag">Etkinlikler</span></div><div class="blog-card-body"><h3>Nemesis Academy Sıralama Ödülleri</h3><p>Haftalık sıralama sonuçları ve oyunculara verilen özel ödüller.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 12 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="guncelleme" data-title="nowa online world güncelleme notları" data-slug="eylul-guncelleme-notlari"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85" alt="Fantastik güncelleme görseli"><span class="blog-tag category">Güncelleme Notları</span></div><div class="blog-card-body"><h3>Nowa Online World | 14 Eylül Güncelleme Notları</h3><p>Yeni içerikler, denge düzenlemeleri ve performans iyileştirmeleri.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 10 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="guncelleme" data-title="mobil oyun istemcisi güncellemesi" data-slug="mobil-istemci-guncellemesi"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=85" alt="Gece gökyüzü"><span class="blog-tag category">Güncelleme Notları</span></div><div class="blog-card-body"><h3>Mobil Oyun İstemcisi Güncellemesi</h3><p>Mobil istemcide yapılan yenilikler ve indirilebilir yeni sürüm bilgileri.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 8 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="rehberler" data-title="yeni başlayanlar için başlangıç rehberi" data-slug="baslangic-rehberi"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=85" alt="Oyun dünyası rehberi"><span class="blog-tag category">Rehberler</span></div><div class="blog-card-body"><h3>Yeni Başlayanlar İçin Başlangıç Rehberi</h3><p>Karakter gelişimi, temel görevler ve ilk adımlar için bilmen gerekenler.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 6 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="rehberler" data-title="ekipman geliştirme ve yükseltme rehberi" data-slug="ekipman-yukseltme-rehberi"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=85" alt="Fantastik ekipman rehberi"><span class="blog-tag category">Rehberler</span></div><div class="blog-card-body"><h3>Ekipman Geliştirme ve Yükseltme Rehberi</h3><p>Ekipmanını güçlendirirken dikkat etmen gereken önemli noktalar.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 4 Kas 2026</span></div></div></article>
-    <article class="blog-card" data-category="guncelleme" data-title="sunucu bakım çalışması ve iyileştirmeler" data-slug="sunucu-bakim-notlari"><div class="blog-card-media"><img loading="lazy" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85" alt="Fantastik manzara"><span class="blog-tag category">Güncelleme Notları</span></div><div class="blog-card-body"><h3>Sunucu Bakım Çalışması ve İyileştirmeler</h3><p>Bakım sonrası yapılan teknik düzenlemeler ve yenilikler.</p><div class="blog-meta"><span>◉ QuetraOnline</span><span>▦ 2 Kas 2026</span></div></div></article>
-  </section>
+  <section class="blog-grid" id="blogGrid" aria-label="Blog yazıları"></section>
+
   <div class="blog-empty" id="blogEmpty">Aramanla eşleşen bir içerik bulunamadı.</div>
-  <div class="blog-more-wrap"><button class="blog-more" id="blogMore">⌄　Daha fazla göster</button><small class="blog-count-note" id="blogCount">32 yazıdan 12 tanesi gösteriliyor</small></div>
+  <div class="blog-more-wrap" id="blogMoreWrap" hidden><button class="blog-more" id="blogMore">⌄　Daha fazla göster</button><small class="blog-count-note" id="blogCount"></small></div>
 </main>
 <footer><div class="wrap foot"><div class="footer-brand"><span class="mark"><img src="https://a.favicon.im/nowaonlineworld.com?larger=true" alt="Nowa Online World favicon"></span><div><b>NOWA ONLINE WORLD</b><div>Nowa Online topluluğunun yayıncıları.</div></div></div><div class="visitor-counter"><span class="visitor-icon" aria-hidden="true">👥</span><span>Bu siteyi <strong id="visitorCount">...</strong> kişi ziyaret etti</span></div><div>© 2024 NowaOnlineWorld.tv - Tüm hakları saklıdır.<div class="footer-legal-links" style="margin-top:5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
 <a href="/gizlilik-politikasi" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>Gizlilik Politikası</a>
 <a href="/kullanim-sartlari" style="color:#e8b95c;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4Z"/><path d="M16 3v5h5M8 12h8M8 16h8"/></svg>Kullanım Şartları</a>
 </div></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script><script>
-(()=>{const menu=document.getElementById('siteMenu'),trigger=document.getElementById('menuTrigger'),mobile=document.getElementById('mobileMenuToggle'),close=document.getElementById('mobileMenuClose');const setMenu=v=>{if(!menu)return;menu.classList.toggle('open',v);if(trigger)trigger.setAttribute('aria-expanded',String(v));if(mobile)mobile.setAttribute('aria-expanded',String(v));};trigger?.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));mobile?.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));close?.addEventListener('click',()=>setMenu(false));document.addEventListener('click',e=>{if(menu&&!menu.contains(e.target)&&!mobile?.contains(e.target))setMenu(false);});menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
-const cards=[...document.querySelectorAll('.blog-card')],filters=[...document.querySelectorAll('.blog-filter')],search=document.getElementById('blogSearch'),empty=document.getElementById('blogEmpty'),more=document.getElementById('blogMore'),count=document.getElementById('blogCount');let category='all',visible=9,filtered=[];
-function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=cards.filter(c=>(category==='all'||c.dataset.category===category)&&(!q||c.innerText.toLocaleLowerCase('tr').includes(q)));cards.forEach(c=>{const idx=filtered.indexOf(c);c.hidden=idx<0||idx>=visible;});empty.classList.toggle('show',filtered.length===0);more.style.display=filtered.length>visible?'inline-flex':'none';count.textContent=filtered.length+' içerikten '+Math.min(visible,filtered.length)+' tanesi gösteriliyor';}
-filters.forEach(btn=>btn.addEventListener('click',()=>{category=btn.dataset.category;filters.forEach(x=>x.classList.toggle('active',x===btn));visible=9;apply();}));search.addEventListener('input',()=>{visible=9;apply();});more.addEventListener('click',()=>{visible+=6;apply();});apply();
-async function loadPublishedBlog(){try{const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S");const {data,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});if(error)throw error;if(!data||!data.length)return;const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const catKey={"Duyurular":"duyurular","Güncelleme Notları":"guncelleme","Etkinlikler":"etkinlikler","Rehberler":"rehberler"};const date=v=>v?new Date(v).toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Yeni";const feature=data.find(x=>x.is_featured)||data[0];const featureImg=feature.cover_image||"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=85";document.querySelector(".blog-feature-media img").src=featureImg;document.querySelector(".blog-feature-media img").alt=feature.title;document.querySelector(".blog-feature h2").textContent=feature.title;document.querySelector(".blog-feature p").textContent=feature.excerpt||"";document.querySelector(".blog-feature .blog-tag.category").textContent=feature.category;document.querySelector(".blog-feature .blog-meta").innerHTML="<span>◉ "+esc(feature.author||"QuetraOnline")+"</span><span>▦ "+date(feature.published_at)+"</span>";document.querySelector("[data-feature-read]").href="/blog/"+encodeURIComponent(feature.slug);document.querySelector("[data-feature-read]").dataset.slug=feature.slug;const grid=document.getElementById("blogGrid");grid.innerHTML=data.filter(x=>x.id!==feature.id).map(p=>{const c=catKey[p.category]||"duyurular";return '<article class="blog-card" data-category="'+c+'" data-title="'+esc(p.title.toLocaleLowerCase("tr"))+'" data-slug="'+esc(p.slug)+'"><div class="blog-card-media"><img loading="lazy" src="'+esc(p.cover_image||featureImg)+'" alt="'+esc(p.title)+'"><span class="blog-tag '+(c==="guncelleme"||c==="rehberler"?"category":"")+'">'+esc(p.category)+'</span></div><div class="blog-card-body"><h3>'+esc(p.title)+'</h3><p>'+esc(p.excerpt||"")+'</p><div class="blog-meta"><span>◉ '+esc(p.author||"QuetraOnline")+'</span><span>▦ '+date(p.published_at)+'</span></div></div></article>'}).join("");const dynamicCards=[...grid.querySelectorAll(".blog-card")];cards.splice(0,cards.length,...dynamicCards);visible=9;apply();dynamicCards.forEach(c=>c.addEventListener("click",()=>{location.href="/blog/"+encodeURIComponent(c.dataset.slug)}));}catch(e){console.error("Blog içerikleri yüklenemedi:",e)}}
+(()=>{let cards=[],filters=[],category=new URLSearchParams(location.search).get('category')||'all',visible=9,filtered=[];
+const search=document.getElementById('blogSearch'),empty=document.getElementById('blogEmpty'),more=document.getElementById('blogMore'),count=document.getElementById('blogCount');
+function apply(){const q=(search.value||'').toLocaleLowerCase('tr');filtered=cards.filter(c=>(category==='all'||c.dataset.category===category)&&(!q||c.innerText.toLocaleLowerCase('tr').includes(q)));cards.forEach(c=>{const idx=filtered.indexOf(c);c.hidden=idx<0||idx>=visible;});filters.forEach(x=>x.classList.toggle('active',x.dataset.category===category));const feature=document.querySelector('.blog-feature');if(feature)feature.hidden=category!=='all';const selected=filters.find(x=>x.dataset.category===category);const selectedName=category==='all'?'':(selected?.childNodes[1]?.textContent||'').trim();const heading=document.getElementById('blogPageHeading'),crumb=document.getElementById('blogCategoryCrumb'),crumbSep=document.getElementById('blogCategoryCrumbSeparator');if(heading)heading.textContent=selectedName||'Blog';document.title=(category==='all'?'Blog':(selectedName||'Blog'))+' | Nowa Online World - Yayıncı ve İçerik Üreticisi Rehberi';const pageUrl=new URL(location.href);if(category==='all')pageUrl.searchParams.delete('category');else pageUrl.searchParams.set('category',category);history.replaceState(null,'',pageUrl.pathname+pageUrl.search+pageUrl.hash);if(crumb&&crumbSep){crumb.textContent=selectedName;crumb.hidden=!selectedName;crumbSep.hidden=!selectedName;}empty.classList.toggle('show',filtered.length===0);more.style.display=filtered.length>visible?'inline-flex':'none';count.textContent=filtered.length?filtered.length+' içerikten '+Math.min(visible,filtered.length)+' tanesi gösteriliyor':'';}
+function renderCategoryFilters(categories,posts){
+ const nav=document.getElementById('blogCategoryFilters');
+ const key=name=>String(name||'').toLocaleLowerCase('tr').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ const allCount=posts.length;
+ nav.innerHTML='<button type="button" class="blog-filter '+(category==='all'?'active':'')+'" data-category="all"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>Tümü <span class="filter-count">'+allCount+'</span></button>'+
+ categories.map(c=>'<button type="button" class="blog-filter '+(category===key(c.name)?'active':'')+'" data-category="'+key(c.name)+'"><span class="filter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 11h8M8 15h8"/></svg></span>'+String(c.name).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))+' <span class="filter-count">'+posts.filter(p=>p.category===c.name).length+'</span></button>').join('');
+ filters=[...nav.querySelectorAll('.blog-filter')];
+ filters.forEach(tab=>tab.addEventListener('click',()=>{
+  category=tab.dataset.category||'all';
+  visible=9;
+  apply();
+ }));
+}
+async function loadPublishedBlog(){
+ const featureEl=document.querySelector(".blog-feature"),grid=document.getElementById("blogGrid"),totalStat=document.getElementById("blogTotalStat"),lastStat=document.getElementById("blogLastPublished");
+ const moreWrap=document.getElementById("blogMoreWrap");const setEmpty=message=>{if(featureEl)featureEl.hidden=true;grid.innerHTML="";empty.textContent=message;empty.classList.add("show");more.style.display="none";moreWrap.hidden=true;count.textContent="";cards.splice(0,cards.length);filters.forEach(x=>{const n=x.querySelector(".filter-count");if(n)n.textContent="0"});if(totalStat)totalStat.textContent="0 yazı";if(lastStat)lastStat.textContent="Henüz yayın yok";};
+ try{
+  const client=window.supabase.createClient("https://hfmosadynxpwkscvpard.supabase.co","sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S");
+  // Kategori sekmelerini yazılardan bağımsız yükle: yazı sorgusu hata verse bile sekmeler görünür kalır.
+  const {data:categoryData,error:categoryError}=await client.from("nowa_blog_categories").select("name,sort_order").order("sort_order",{ascending:true}).order("name",{ascending:true});
+  const categories=(!categoryError&&Array.isArray(categoryData)&&categoryData.length?categoryData:[
+   {name:"Duyurular",sort_order:1},
+   {name:"Güncelleme Notları",sort_order:2},
+   {name:"Etkinlikler",sort_order:3}
+  ]);
+  const categoryKey=name=>String(name||"").toLocaleLowerCase("tr").replace(/ğ/g,"g").replace(/ü/g,"u").replace(/ş/g,"s").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ç/g,"c").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  if(category==="gncleme-notlari")category="guncelleme-notlari";
+  if(category!=="all"&&!categories.some(item=>categoryKey(item.name)===category))category="all";
+  if(category!=="all")history.replaceState(null,"","/blog?category="+encodeURIComponent(category));
+  renderCategoryFilters(categories,[]);
+  if(categoryError)console.warn("Blog kategorileri veritabanından okunamadı; kayıtlı kategori yedeği gösteriliyor:",categoryError);
+  const {data:postsData,error}=await client.from("nowa_blog_posts").select("id,title,slug,category,excerpt,cover_image,author,published_at,is_featured").eq("status","published").order("published_at",{ascending:false});
+  if(error)throw error;
+  const posts=postsData||[];
+  renderCategoryFilters(categories,posts);
+  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const catKey=name=>String(name||'').toLocaleLowerCase('tr').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const date=v=>v?new Date(v).toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Yeni";
+  if(!posts.length){setEmpty("Henüz yayınlanmış blog yazısı bulunmuyor.");return;}
+   empty.classList.remove("show");moreWrap.hidden=false;
+  grid.innerHTML=posts.map(p=>{const cat=catKey(p.category);return '<article class="blog-card" data-category="'+cat+'" data-title="'+esc(p.title.toLocaleLowerCase("tr"))+'" data-slug="'+esc(p.slug)+'"><div class="blog-card-media">'+(p.cover_image?'<img loading="lazy" src="'+esc(p.cover_image)+'" alt="'+esc(p.title)+'">':'')+'<span class="blog-tag '+(cat==="guncelleme"||cat==="rehberler"?"category":"")+'">'+esc(p.category||"Duyurular")+'</span></div><div class="blog-card-body"><h3>'+esc(p.title)+'</h3><p>'+esc(p.excerpt||"")+'</p><div class="blog-meta"><span class="blog-meta-author"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>'+esc(p.author||"QuetraOnline")+'</span><span class="blog-meta-date"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>'+date(p.published_at)+'</span></div></div></article>'}).join("");
+  cards.splice(0,cards.length,...grid.querySelectorAll(".blog-card"));
+
+  if(totalStat)totalStat.textContent=posts.length+" yazı";if(lastStat)lastStat.textContent=posts.length?date(posts[0].published_at):"Henüz yayın yok";
+  visible=9;apply();grid.querySelectorAll(".blog-card").forEach(card=>card.addEventListener("click",()=>{location.href="/blog/"+encodeURIComponent(card.dataset.slug)}));
+ }catch(e){console.error("Blog içerikleri yüklenemedi:",e);setEmpty("Blog yazıları şu anda yüklenemedi. Lütfen daha sonra tekrar dene.");}
+}
 loadPublishedBlog();
 document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()=>{location.href='/blog/'+c.dataset.slug;}));
-document.querySelector('[data-feature-read]').addEventListener('click',e=>{e.preventDefault();location.href='/blog/'+encodeURIComponent(e.currentTarget.dataset.slug||"kasim-guncelleme-notlari");});
 })();
-</script></body></html>
+</script>
+<script>
+(()=> {
+ const SUPABASE_URL="https://hfmosadynxpwkscvpard.supabase.co";
+ const SUPABASE_KEY="sb_publishable_1UDqJWj6DAKrx7tfWMs2lA_nW-Ee29S";
+ const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ const $=id=>document.getElementById(id);
+ async function refreshVisitorCount(){
+  const out=$("visitorCount");if(!out)return;
+  try{
+   let id=localStorage.getItem("nowa_online_visitor_id");
+   if(!id){id=crypto.randomUUID();localStorage.setItem("nowa_online_visitor_id",id)}
+   const {data,error}=await client.rpc("register_nowa_site_visit",{p_visitor_id:id});
+   if(error)throw error;
+   out.textContent=Number(data||0).toLocaleString("tr-TR");
+  }catch(e){console.warn("Blog ziyaretçi sayacı:",e);out.textContent="—"}
+ }
+ const parts=()=>{const f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"});const p=Object.fromEntries(f.formatToParts(new Date()).map(x=>[x.type,x.value]));return {weekday:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(p.weekday),hour:+p.hour,minute:+p.minute,second:+p.second}};
+ const clock=v=>String(v).padStart(2,"0");
+ let events=[];
+ function refreshTopEvents(){
+  const now=parts(),nowSec=now.hour*3600+now.minute*60+now.second;
+  const choose=section=>(events||[]).filter(e=>e.section===section&&e.is_active!==false&&e.start_time).map(e=>{
+   const start=String(e.start_time).split(":").slice(0,2).reduce((a,x,i)=>a+(+x)*(i?60:3600),0);
+   let remain=((Number(e.weekday)-now.weekday+7)%7)*86400+start-nowSec;
+   if(section==="special"&&start<21600)remain-=86400;
+   if(remain<=0)remain+=604800;
+   return {e,remain};
+  }).sort((a,b)=>a.remain-b.remain)[0];
+  const draw=(item,nameId,timeId,countId,label)=>{
+   const n=$(nameId),t=$(timeId),d=$(countId);if(!n||!t||!d)return;
+   if(!item){n.textContent="Etkinlik bulunmuyor";t.textContent="--:--";d.textContent="--:--:--";return}
+   n.textContent=item.e.event_title||item.e.event_name||label;
+   t.textContent=String(item.e.start_time).slice(0,5);
+   const h=Math.floor(item.remain/3600),m=Math.floor(item.remain%3600/60),s=item.remain%60;
+   d.textContent=[h,m,s].map(clock).join(":");
+  };
+  draw(choose("weekly"),"topNextEventName","topNextEventTime","topNextEventCountdown","Haftalık Etkinlik");
+  draw(choose("special"),"topSpecialEventName","topSpecialEventTime","topSpecialEventCountdown","Özel Etkinlik");
+ }
+ async function refreshTopBar(){
+  try{
+   const [{data,error},{data:live,error:liveError}]=await Promise.all([
+    client.from("nowa_game_events").select("section,weekday,event_title,event_name,start_time,is_active,sort_order").eq("is_active",true).order("sort_order").order("start_time"),
+    client.from("nowa_stream_sessions").select("publisher_id").is("ended_at",null)
+   ]);
+   if(error)throw error;events=data||[];refreshTopEvents();
+   if(!liveError&&$("topLiveCount"))$("topLiveCount").textContent=new Set((live||[]).map(x=>x.publisher_id)).size+" yayıncı";
+  }catch(e){console.warn("Blog üst bilgi alanı:",e);["topNextEventName","topSpecialEventName"].forEach(id=>{if($(id))$(id).textContent="Etkinlik bilgisi alınamadı"})}
+ }
+ async function refreshTopAnnouncement(){
+  const box=$("topAnnouncement"),textNode=$("topAnnouncementText");if(!box||!textNode)return;
+  try{const {data,error}=await client.from("nowa_announcements").select("body,is_visible").eq("id",1).eq("is_visible",true).maybeSingle();if(error)throw error;const temp=document.createElement("div");temp.innerHTML=String(data?.body||"");const message=(temp.textContent||temp.innerText||"").replace(/\s+/g," ").trim();if(!data||!message){box.hidden=true;return}textNode.textContent=message;box.hidden=false}catch(e){box.hidden=true;console.warn("Blog üst duyurusu yüklenemedi:",e)}
+ }
+ const adminButton=$("adminOpen");if(adminButton)adminButton.addEventListener("click",()=>{location.href="/yonetim"});
+ refreshVisitorCount();refreshTopBar();refreshTopAnnouncement();setInterval(refreshVisitorCount,30000);setInterval(refreshTopEvents,1000);setInterval(refreshTopBar,60000);setInterval(refreshTopAnnouncement,60000);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden){refreshVisitorCount();refreshTopBar();refreshTopAnnouncement()}});
+})();
+</script><script id="nowa-mobile-drawer-controller">
+(()=>{
+ const menu=document.getElementById("siteMenu");
+ const toggle=document.getElementById("mobileMenuToggle");
+ const closeButton=document.getElementById("mobileMenuClose");
+ const brand=document.getElementById("menuTrigger");
+ const back=document.getElementById("backToTop");
+ if(!menu||!toggle||menu.dataset.drawerController==="5")return;
+ menu.dataset.drawerController="5";
+ // Keep the hamburger outside the sticky/backdrop-filter header so it remains clickable at every scroll position.
+ document.body.appendChild(toggle);
+ // Hamburger positioning is handled by the shared fixed-position CSS rules. Avoid measuring a sticky header here: iOS Chrome/Safari can report a changing visual viewport during browser-bar transitions.
+ let opened=false,savedY=0,savedBody={},savedHtmlOverflow="";
+ const root=()=>document.scrollingElement||document.documentElement;
+ const setOpen=open=>{
+  if(open===opened)return;
+  opened=open;
+  if(open){
+   savedY=window.scrollY||root().scrollTop||document.documentElement.scrollTop||0;
+   savedHtmlOverflow=document.documentElement.style.overflow;
+   savedBody={overflow:document.body.style.overflow,overflowY:document.body.style.overflowY};
+   document.documentElement.style.overflow="hidden";
+   document.body.style.overflow="hidden";
+   document.documentElement.classList.add("mobile-menu-open");
+   document.body.classList.add("mobile-menu-open");
+   menu.classList.add("open");
+   if(back){back.classList.remove("visible");back.style.setProperty("display","none","important");}
+  }else{
+   menu.classList.remove("open");
+   document.documentElement.classList.remove("mobile-menu-open");
+   document.body.classList.remove("mobile-menu-open");
+   document.body.style.overflow=savedBody.overflow||"";
+   document.body.style.overflowY=savedBody.overflowY||"";
+   document.documentElement.style.overflow=savedHtmlOverflow;
+   if(back)back.style.removeProperty("display");
+   window.dispatchEvent(new Event("scroll"));
+  }
+  toggle.setAttribute("aria-expanded",String(open));
+  toggle.setAttribute("aria-label",open?"Menüyü kapat":"Menüyü aç");
+  brand?.setAttribute("aria-expanded",String(open));
+ };
+ // Menü açıkken her dikey kaydırma hareketi menüyü kapatır.
+ let touchStartY=null,touchStartX=null;
+ const beginTouch=event=>{if(!opened||!event.touches?.length)return;touchStartY=event.touches[0].clientY;touchStartX=event.touches[0].clientX;};
+ const moveTouch=event=>{
+  if(!opened||touchStartY===null||!event.touches?.length)return;
+  const dx=Math.abs(event.touches[0].clientX-touchStartX),dy=Math.abs(event.touches[0].clientY-touchStartY);
+  if(dy>6&&dy>dx){setOpen(false);touchStartY=null;touchStartX=null;}
+ };
+ document.addEventListener("touchstart",beginTouch,{capture:true,passive:true});
+ document.addEventListener("touchmove",moveTouch,{capture:true,passive:true});
+ window.addEventListener("touchmove",moveTouch,{capture:true,passive:true});
+ document.addEventListener("touchend",()=>{touchStartY=null;touchStartX=null;},{capture:true,passive:true});
+ window.addEventListener("wheel",event=>{if(opened&&(Math.abs(event.deltaY)>0||Math.abs(event.deltaX)>0))setOpen(false);},{capture:true,passive:true});
+ window.addEventListener("scroll",()=>{if(opened)setOpen(false);},{capture:true,passive:true});
+ // One capture-phase handler prevents duplicate legacy listeners and guarantees the tap reaches the drawer controller.
+ document.addEventListener("pointerdown",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },true);
+ document.addEventListener("touchstart",event=>{
+  if(!opened)return;
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")||target?.closest("#siteMenu>.menu-dropdown"))return;
+  setOpen(false);
+ },{capture:true,passive:true});
+ let drawerTouchY=null,drawerTouchX=null;
+ document.addEventListener("touchstart",event=>{if(!opened||!event.touches?.length)return;drawerTouchY=event.touches[0].clientY;drawerTouchX=event.touches[0].clientX;},{capture:true,passive:true});
+ document.addEventListener("touchmove",event=>{
+  if(!opened||drawerTouchY===null||!event.touches?.length)return;
+  const dx=Math.abs(event.touches[0].clientX-drawerTouchX),dy=Math.abs(event.touches[0].clientY-drawerTouchY);
+  if(dy>6&&dy>dx){setOpen(false);drawerTouchY=null;drawerTouchX=null;}
+ },{capture:true,passive:true});
+ document.addEventListener("touchend",()=>{drawerTouchY=null;drawerTouchX=null;},{capture:true,passive:true});
+ document.addEventListener("click",event=>{
+  const target=event.target instanceof Element?event.target:null;
+  if(target?.closest("#mobileMenuToggle")){
+   event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+   setOpen(!opened);return;
+  }
+  if(target?.closest("#mobileMenuClose")){
+   event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+   setOpen(false);return;
+  }
+  // Menü açıkken hamburger dışında yapılan her tıklama menüyü kapatır.
+  if(opened&&!toggle.contains(event.target))setOpen(false);
+ },true);
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")setOpen(false);});
+ menu.querySelectorAll(".menu-dropdown a").forEach(link=>link.addEventListener("click",()=>setOpen(false)));
+ if(brand)brand.addEventListener("click",event=>{
+  if(window.matchMedia("(max-width:700px)").matches){event.preventDefault();return;}
+  menu.classList.toggle("open");
+ });
+ window.addEventListener("pagehide",()=>{if(opened)setOpen(false);});
+})();
+</script>
+
+<script id="nowa-desktop-menu-dismiss-v2">
+(()=>{
+ const menu=document.getElementById("siteMenu");
+ if(!menu||menu.dataset.desktopDismissV2==="1")return;
+ menu.dataset.desktopDismissV2="1";
+ const desktop=()=>window.matchMedia("(min-width:701px)").matches;
+ const close=()=>{if(desktop()&&menu.classList.contains("open"))menu.classList.remove("open");};
+ const outside=event=>{
+  if(!desktop()||!menu.classList.contains("open"))return;
+  const target=event.target instanceof Element?event.target:null;
+  if(!target)return;
+  if(target.closest("#siteMenu .menu-dropdown a")){close();return;}
+  if(!menu.contains(target))close();
+ };
+ document.addEventListener("pointerdown",outside,true);
+ document.addEventListener("mousedown",outside,true);
+ document.addEventListener("click",outside,true);
+ document.addEventListener("wheel",event=>{if(desktop()&&menu.classList.contains("open")&&(Math.abs(event.deltaY)>0||Math.abs(event.deltaX)>0))close();},{capture:true,passive:true});
+ window.addEventListener("scroll",close,{capture:true,passive:true});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")close();},true);
+ window.addEventListener("resize",()=>{if(!desktop())close();},{passive:true});
+})();
+</script>
+</body></html>
