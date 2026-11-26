@@ -515,9 +515,9 @@ setInterval(updateTopNextWeeklyEvent,1000);
 </script>
 <script id="monthly-events-browser-script">
 (()=> {
- const db=window.subpageDb||null;
+ const db=typeof subpageDb!=="undefined"?subpageDb:null;
  const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults");
- if(!db||!search||!serverSelect||!monthSelect||!results)return;
+ if(!search||!serverSelect||!monthSelect||!results)return;
  let allEvents=[];
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
  const monthLabel=key=>{const [y,m]=key.split("-").map(Number);return new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric"}).format(new Date(y,m-1,1));};
@@ -533,17 +533,20 @@ setInterval(updateTopNextWeeklyEvent,1000);
  };
  const load=async()=>{
   results.innerHTML='<div class="monthly-events-state">Etkinlikler yükleniyor...</div>';
-  const {data,error}=await db.from("nowa_monthly_special_events").select("id,event_name,event_date,event_weekday,server,event_time").order("event_date",{ascending:false}).order("event_time",{ascending:true});
-  if(error){console.error("Aylık etkinlikler yüklenemedi:",error);results.innerHTML='<div class="monthly-events-state">Etkinlikler şu anda yüklenemiyor. Lütfen daha sonra tekrar deneyin.</div>';return;}
-  allEvents=data||[];
-  if(!allEvents.length){serverSelect.innerHTML='<option value="">Tüm serverlar</option>';monthSelect.innerHTML='<option value="">Etkinlik bulunamadı</option>';results.innerHTML='<div class="monthly-events-state">Henüz aylık özel etkinlik eklenmemiş.</div>';return;}
-  const servers=[...new Set(allEvents.map(e=>e.server).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"tr"));
-  serverSelect.innerHTML='<option value="">Tüm serverlar</option>'+servers.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>').join("");
-  const months=[...new Set(allEvents.map(e=>String(e.event_date||"").slice(0,7)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
-  monthSelect.innerHTML=months.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(monthLabel(v))+'</option>').join("");
-  const now=new Date(),current=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
-  monthSelect.value=months.includes(current)?current:months[0];
-  render();
+  if(!db){results.innerHTML='<div class="monthly-events-state">Etkinlik bağlantısı başlatılamadı. Sayfayı yenileyin.</div>';return;}
+  try{
+   const {data,error}=await db.from("nowa_monthly_special_events").select("id,event_name,event_date,event_weekday,server,event_time").order("event_date",{ascending:false}).order("event_time",{ascending:true});
+   if(error)throw error;
+   allEvents=data||[];
+   if(!allEvents.length){serverSelect.innerHTML='<option value="">Tüm serverlar</option>';monthSelect.innerHTML='<option value="">Etkinlik bulunamadı</option>';results.innerHTML='<div class="monthly-events-state">Henüz aylık özel etkinlik eklenmemiş.</div>';return;}
+   const servers=[...new Set(allEvents.map(e=>e.server).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"tr"));
+   serverSelect.innerHTML='<option value="">Tüm serverlar</option>'+servers.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>').join("");
+   const months=[...new Set(allEvents.map(e=>String(e.event_date||"").slice(0,7)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+   monthSelect.innerHTML=months.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(monthLabel(v))+'</option>').join("");
+   const now=new Date(),current=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+   monthSelect.value=months.includes(current)?current:months[0];
+   render();
+  }catch(error){console.error("Aylık etkinlikler yüklenemedi:",error);serverSelect.innerHTML='<option value="">Server yüklenemedi</option>';monthSelect.innerHTML='<option value="">Ay yüklenemedi</option>';results.innerHTML='<div class="monthly-events-state">Etkinlikler yüklenemedi. Bağlantıyı kontrol edip sayfayı yenileyin.</div>';}
  };
  search.addEventListener("input",render);serverSelect.addEventListener("change",render);monthSelect.addEventListener("change",render);
  load();
