@@ -360,8 +360,9 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    <label class="monthly-filter"><span>Ay</span><select id="monthlyMonthFilter" aria-label="Ay filtresi"><option value="">Yükleniyor...</option></select></label>
   </div>
  </div>
- <h2 id="monthlyEventsHeading" class="monthly-events-heading">Etkinlik Takvimi</h2>
  <div class="monthly-gold-rule" aria-hidden="true"></div>
+ <h2 id="monthlyEventsHeading" class="monthly-events-heading">Etkinlik Takvimi</h2>
+ <div class="monthly-heading-dash-rule" aria-hidden="true"></div>
  <div id="monthlyEventsResults" class="monthly-events-results" aria-live="polite"><div class="monthly-events-state">Etkinlikler yükleniyor...</div></div>
 </section>
 <style id="monthly-events-browser-style">
@@ -376,7 +377,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-filter{display:flex;align-items:center;gap:8px;color:#cbd2dc;font-size:12px;font-weight:800}
 .monthly-filter select{height:42px;min-width:140px;padding:0 32px 0 11px;border:1px solid #354052;border-radius:9px;background:#090d14;color:var(--text);outline:none}
 .monthly-events-heading{margin:16px 0 16px;color:#e8b95c;font-size:clamp(18px,1.9vw,22px);font-weight:900;line-height:1.2;letter-spacing:-.02em;text-align:center}
-.monthly-events-heading::before{content:"";display:block;width:100%;margin:0 0 16px;border-top:1px dashed #e8b95c;opacity:.9}
+.monthly-heading-dash-rule{width:100%;margin:0 0 16px;border-top:1px dashed #e8b95c;opacity:.9}
 .monthly-gold-rule{height:2px;margin:0 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
 .monthly-events-results{display:flex;flex-direction:column;gap:0}
 .monthly-date-group{display:flex;flex-direction:column;gap:9px;margin:0 0 9px;padding-bottom:8px;border-bottom:1px dashed #e8b95c;box-shadow:0 3px 6px -8px #e8b95c}
