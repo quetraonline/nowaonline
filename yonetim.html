@@ -1854,8 +1854,14 @@ async function monthlySpecialEventsAdminView(){
  $("modalBody").innerHTML=adminSidebarMarkup("","","monthly")+
  '<section class="admin-tab-panel admin-event-workspace">'+
  '<div class="admin-event-workspace-head"><div><h4>AYLIK ÖZEL ETKİNLİKLER</h4><p>Aylık olarak düzenlenecek özel etkinlikleri buradan ekleyebilir ve düzenleyebilirsin.</p></div><div class="admin-event-workspace-actions"><button class="btn goldbtn" type="button" id="newMonthlySpecialEvent">+ Etkinlik ekle</button></div></div>'+
+ '<div class="formfield" style="max-width:360px;margin:18px 0"><label for="monthlyEventMonthFilter">Etkinlik ayı ve yılı</label><input id="monthlyEventMonthFilter" type="month" aria-label="Etkinlik ayı ve yılı"></div>'+
  '<div id="monthlySpecialEventsList" class="game-events-admin-list">Etkinlikler yükleniyor...</div></section>';
  bindAdminSidebarNavigation(true);
+ const monthFilter=$("monthlyEventMonthFilter");
+ const nowParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit"}).formatToParts(new Date());
+ const currentMonth=nowParts.find(x=>x.type==="year").value+"-"+nowParts.find(x=>x.type==="month").value;
+ monthFilter.value=window.nowaMonthlyEventFilter||currentMonth;
+ monthFilter.onchange=()=>{window.nowaMonthlyEventFilter=monthFilter.value;renderMonthlySpecialEventsList()};
  $("newMonthlySpecialEvent").onclick=()=>monthlySpecialEventForm(null);
  await refreshMonthlySpecialEventsList();
 }
@@ -1899,6 +1905,7 @@ function monthlySpecialEventForm(item=null){
     ?await db.from("nowa_monthly_special_events").update(payload).eq("id",item.id)
     :await db.from("nowa_monthly_special_events").insert(payload);
    if(result.error)throw result.error;
+   window.nowaMonthlyEventFilter=values.event_date.slice(0,7);
    toast(item?"Aylık özel etkinlik güncellendi.":"Aylık özel etkinlik eklendi.");
    await monthlySpecialEventsAdminView();
   }catch(error){
@@ -1914,7 +1921,19 @@ async function refreshMonthlySpecialEventsList(){
  const {data,error}=await db.from("nowa_monthly_special_events").select("*").order("event_date").order("event_time");
  if(error){root.textContent="Etkinlikler alınamadı: "+error.message;return}
  window.nowaMonthlySpecialEventsCache=data||[];
- if(!data?.length){root.innerHTML='<div class="notice">Henüz aylık özel etkinlik eklenmedi.</div>';return}
+ renderMonthlySpecialEventsList();
+}
+function renderMonthlySpecialEventsList(){
+ const root=$("monthlySpecialEventsList");if(!root)return;
+ const filter=$("monthlyEventMonthFilter");
+ const selectedMonth=filter?.value||window.nowaMonthlyEventFilter||"";
+ if(filter)window.nowaMonthlyEventFilter=selectedMonth;
+ const data=(window.nowaMonthlySpecialEventsCache||[]).filter(item=>!selectedMonth||String(item.event_date||"").slice(0,7)===selectedMonth);
+ if(!data.length){
+  const label=selectedMonth?new Intl.DateTimeFormat("tr-TR",{month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(selectedMonth+"-01T12:00:00Z")):"seçilen dönem";
+  root.innerHTML='<div class="notice">'+esc(label)+' için henüz etkinlik eklenmedi.</div>';
+  return;
+ }
  const fmt=new Intl.DateTimeFormat("tr-TR",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
  root.innerHTML=data.map(item=>{
   const date=fmt.format(new Date(item.event_date+"T12:00:00Z"));
@@ -1935,6 +1954,7 @@ async function refreshMonthlySpecialEventsList(){
   toast("Etkinlik silindi.");await refreshMonthlySpecialEventsList();
  };
 }
+
 function adminSidebarMarkup(activeTab="home",activeEvent="",activeSetting=""){
  const mainTabs=[
   ["home","Ana Sayfa"],["publish","Yayın"],["update","Güncelle"],["show","Göster"]
