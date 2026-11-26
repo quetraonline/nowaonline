@@ -1978,23 +1978,25 @@ async function monthlyEventDescriptionForm(){
   $("monthlyDescriptionEditor").innerHTML=data?.description||"";
  };
  const monthNames=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
- const [eventsResult,descriptionsResult]=await Promise.all([
-  db.from("nowa_monthly_special_events").select("event_date"),
-  db.from("nowa_monthly_event_descriptions").select("event_year,event_month")
- ]);
- if(eventsResult.error||descriptionsResult.error){
-  toast("Mevcut ay ve yıllar alınamadı: "+(eventsResult.error||descriptionsResult.error).message);
+ const {data:eventsData,error:eventsError}=await db.from("nowa_monthly_special_events").select("event_date");
+ if(eventsError){
+  toast("Mevcut etkinlik tarihleri alınamadı: "+eventsError.message);
   return;
  }
- const monthKeys=[...(eventsResult.data||[]).map(item=>String(item.event_date||"").slice(0,7)),...(descriptionsResult.data||[]).map(item=>String(item.event_year)+"-"+String(item.event_month).padStart(2,"0"))].filter(value=>/^\d{4}-(0[1-9]|1[0-2])$/.test(value));
+ const {data:descriptionsData,error:descriptionsError}=await db.from("nowa_monthly_event_descriptions").select("event_year,event_month");
+ if(descriptionsError)console.warn("Açıklama ayları alınamadı; etkinlik tarihlerinden filtre oluşturulacak:",descriptionsError);
+ const monthKeys=[
+  ...(eventsData||[]).map(item=>String(item.event_date||"").slice(0,7)),
+  ...(!descriptionsError?(descriptionsData||[]).map(item=>String(item.event_year)+"-"+String(item.event_month).padStart(2,"0")):[])
+ ].filter(value=>/^\\d{4}-(0[1-9]|1[0-2])$/.test(value));
  const availableYears=[...new Set(monthKeys.map(value=>value.slice(0,4)))].sort((a,b)=>Number(b)-Number(a));
  const yearSelect=$("monthlyDescriptionYear"),monthSelect=$("monthlyDescriptionMonth");
- yearSelect.innerHTML=availableYears.map(value=>'<option value="'+value+'">'+value+'</option>').join("");
+ yearSelect.innerHTML=availableYears.length?availableYears.map(value=>'<option value="'+value+'">'+value+'</option>').join(""):'<option value="">Kayıtlı yıl bulunamadı</option>';
  const initialYear=availableYears.includes(String(selectedYear))?String(selectedYear):(availableYears[0]||"");
  yearSelect.value=initialYear;
  const populateDescriptionMonths=preferredMonth=>{
   const months=[...new Set(monthKeys.filter(value=>value.slice(0,4)===yearSelect.value).map(value=>value.slice(5,7)))].sort();
-  monthSelect.innerHTML=months.map(value=>'<option value="'+value+'">'+monthNames[Number(value)-1]+'</option>').join("");
+  monthSelect.innerHTML=months.length?months.map(value=>'<option value="'+value+'">'+monthNames[Number(value)-1]+'</option>').join(""):'<option value="">Kayıtlı ay bulunamadı</option>';
   monthSelect.value=months.includes(preferredMonth)?preferredMonth:(months[months.length-1]||"");
  };
  populateDescriptionMonths(selectedMonth);
