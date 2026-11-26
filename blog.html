@@ -1508,7 +1508,7 @@ document.querySelectorAll('.blog-card').forEach(c=>c.addEventListener('click',()
    setOpen(false);return;
   }
   // Menü açıkken hamburger dışında yapılan her tıklama menüyü kapatır.
-  if(opened&&!toggle.contains(event.target))setOpen(false);
+  if(opened&&!toggle.contains(event.target)&&!(target&&target.closest("#mobileDownloadMenu")))setOpen(false);
  },true);
  document.addEventListener("keydown",event=>{if(event.key==="Escape")setOpen(false);});
  menu.querySelectorAll(".menu-dropdown a").forEach(link=>link.addEventListener("click",()=>setOpen(false)));
