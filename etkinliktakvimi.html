@@ -568,7 +568,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
  };
  const syncMonthPicker=()=>syncPicker(monthSelect,monthCurrent,monthOptions,"Ay seçin");
  const syncServerPicker=()=>syncPicker(serverSelect,serverCurrent,serverOptions,"Server seçin");
- const openPicker=(picker,options,trigger,sync)=>{if(options.hidden){sync();const rect=trigger.getBoundingClientRect(),width=Math.min(Math.max(rect.width,280),window.innerWidth-24),left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));options.style.left=left+"px";options.style.top=(rect.bottom+7)+"px";options.style.width=width+"px";options.removeAttribute("hidden");picker.classList.add("is-open");trigger.setAttribute("aria-expanded","true");}else closePicker(picker,options,trigger);};
+ const openPicker=(picker,options,trigger,sync)=>{if(options.hidden){sync();const rect=trigger.getBoundingClientRect(),width=Math.min(200,window.innerWidth-24),left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));options.style.left=left+"px";options.style.top=(rect.bottom+7)+"px";options.style.width=width+"px";options.removeAttribute("hidden");picker.classList.add("is-open");trigger.setAttribute("aria-expanded","true");}else closePicker(picker,options,trigger);};
  monthTrigger?.addEventListener("click",()=>openPicker(monthPicker,monthOptions,monthTrigger,syncMonthPicker));
  serverTrigger?.addEventListener("click",()=>openPicker(serverPicker,serverOptions,serverTrigger,syncServerPicker));
  monthOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;monthSelect.value=option.dataset.value;monthSelect.dispatchEvent(new Event("change",{bubbles:true}));syncMonthPicker();closePicker(monthPicker,monthOptions,monthTrigger);});
