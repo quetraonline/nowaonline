@@ -1853,11 +1853,15 @@ const mobileSearchParams=new URLSearchParams(location.search);if(mobileSearchPar
 
 $("closeModal").onclick=closeModal;$("modal").addEventListener("click",e=>{if(e.target===$("modal")&&!document.documentElement.classList.contains("admin-route"))closeModal()});
 const platformSelect=$("platform"),platformPicker=$("platformFilterPicker"),platformTrigger=$("platformFilterTrigger"),platformCurrent=$("platformFilterCurrent"),platformOptions=$("platformFilterOptions");
+// Açılır listeyi body katmanına taşı: transform/overflow içeren bölümlerden ayır.
+if(platformOptions&&platformOptions.parentElement!==document.body)document.body.appendChild(platformOptions);
 function syncPlatformPicker(){if(!platformSelect||!platformCurrent||!platformOptions)return;platformCurrent.textContent=platformSelect.options[platformSelect.selectedIndex]?.textContent||"Tüm platformlar";platformOptions.innerHTML=[...platformSelect.options].map(o=>'<button type="button" class="platform-filter-option" role="option" data-value="'+esc(o.value)+'" aria-selected="'+String(o.value===platformSelect.value)+'">'+esc(o.textContent)+'</button>').join("")}
 function closePlatformPicker(){platformPicker?.classList.remove("is-open");platformOptions?.setAttribute("hidden","");platformTrigger?.setAttribute("aria-expanded","false")}
 platformTrigger?.addEventListener("click",()=>{if(platformOptions.hidden){syncPlatformPicker();const rect=platformTrigger.getBoundingClientRect(),width=Math.min(200,window.innerWidth-24),left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));platformOptions.style.left=left+"px";platformOptions.style.top=Math.min(rect.bottom+7,window.innerHeight-180)+"px";platformOptions.style.width=width+"px";platformOptions.removeAttribute("hidden");platformPicker.classList.add("is-open");platformTrigger.setAttribute("aria-expanded","true")}else closePlatformPicker()});
 platformOptions?.addEventListener("click",event=>{const option=event.target.closest(".platform-filter-option");if(!option)return;platformSelect.value=option.dataset.value;platformSelect.dispatchEvent(new Event("change",{bubbles:true}));syncPlatformPicker();closePlatformPicker()});
-document.addEventListener("click",event=>{if(platformPicker&&!platformPicker.contains(event.target))closePlatformPicker()});
+document.addEventListener("click",event=>{if(platformPicker&&!platformPicker.contains(event.target)&&!platformOptions?.contains(event.target))closePlatformPicker()});
+// Sayfa kaydırılınca menüyü kapat; açılır listenin kendi iç kaydırması serbesttir.
+document.addEventListener("scroll",event=>{if(platformOptions&&!platformOptions.hidden&&!platformOptions.contains(event.target))closePlatformPicker()},{capture:true,passive:true});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&platformOptions&&!platformOptions.hidden){closePlatformPicker();platformTrigger?.focus()}});
 syncPlatformPicker();
 $("search").oninput=render;$("platform").onchange=render;$("liveOnlyFilter").onchange=render;$("mobileRefreshBtn").onclick=()=>window.location.reload();const yearElement=$("year");if(yearElement)yearElement.textContent=new Date().getFullYear();
