@@ -2059,10 +2059,10 @@ async function monthlyEventDescriptionForm(){
  const [filterYear,filterMonth]=String(window.nowaMonthlyEventFilter||"").split("-");
  const {data:descriptionRows,error:descriptionYearsError}=await db.from("nowa_monthly_event_descriptions").select("event_year,event_month");
  if(descriptionYearsError)console.warn("Aylık açıklama yılları alınamadı:",descriptionYearsError);
- const savedYears=[...new Set((descriptionRows||[]).map(row=>String(row.event_year)).filter(value=>/^\\d{4}$/.test(value)))];
+ const savedYears=[...new Set((descriptionRows||[]).map(row=>String(row.event_year)).filter(value=>/^\d{4}$/.test(value)))];
  const years=[...new Set([currentYear,...savedYears])].sort((a,b)=>Number(b)-Number(a));
  const selectedYear=years.includes(filterYear)?filterYear:currentYear;
- const selectedMonth=/^(0[1-9]|1[0-2)$/.test(filterMonth||"")?filterMonth:currentMonth;
+ const selectedMonth=Number(filterMonth)>=1&&Number(filterMonth)<=12?String(filterMonth).padStart(2,"0"):currentMonth;
  $("modal").dataset.view="monthly-event-description-form";
  window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  $("modalTitle").textContent="YÖNETİM PANELİ";
