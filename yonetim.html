@@ -3128,7 +3128,9 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
   const current=document.createElement("span");trigger.append(current);
   trigger.insertAdjacentHTML("beforeend",'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>');
   const options=document.createElement("span");options.className="admin-filter-options";options.setAttribute("role","listbox");options.setAttribute("aria-label",select.getAttribute("aria-label")||select.closest(".formfield")?.querySelector("label")?.textContent||"Filtre seçenekleri");options.hidden=true;
-  picker.append(trigger,options);select.insertAdjacentElement("afterend",picker);
+  picker.append(trigger);select.insertAdjacentElement("afterend",picker);
+  // Menüleri body altında tutarak modal/transform katmanlarının kaydırma davranışından ayır.
+  document.body.append(options);
   const ref={select,picker,trigger,current,options};refs.set(select,ref);
   trigger.addEventListener("click",()=>{
    if(!options.hidden){close(ref);return;}
@@ -3151,7 +3153,9 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
   if(root.matches?.("select"))init(root);
   root.querySelectorAll?.("select").forEach(init);
  }
- document.addEventListener("click",event=>{for(const ref of refs.values())if(!ref.picker.contains(event.target))close(ref);});
+ document.addEventListener("click",event=>{for(const ref of refs.values())if(!ref.picker.contains(event.target)&&!ref.options.contains(event.target))close(ref);});
+ // Sayfa kaydırması açılır listeyi tetikleyiciden koparmasın; liste içi kaydırma etkilenmez.
+ document.addEventListener("scroll",event=>{for(const ref of refs.values())if(!ref.options.hidden&&!ref.options.contains(event.target))close(ref);},{capture:true,passive:true});
  document.addEventListener("keydown",event=>{if(event.key==="Escape")for(const ref of refs.values())if(!ref.options.hidden){close(ref);ref.trigger.focus();}});
  scan();
  new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)scan(node);}))).observe(document.body,{childList:true,subtree:true});
