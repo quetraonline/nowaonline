@@ -351,7 +351,9 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-languages{display:flex;gap:7px;flex-wrap:wrap;margin:17px 0 22px}
 .launcher-languages span{min-width:38px;text-align:center;padding:6px 8px;border:1px solid #ffffff20;border-radius:9px;background:rgba(25,26,32,.88);font-size:11px;font-weight:800;color:#d5d5dc}
 .launcher-languages span.selected{border-color:#ef5148;color:#fff}
-.launcher-download-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.launcher-download-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px}
+.launcher-store-logos{display:flex;align-items:center;max-width:420px;width:100%}
+.launcher-store-logos img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
 .launcher-download-button{min-height:56px;padding:0 23px;border:0;border-radius:13px;background:linear-gradient(180deg,#ff554c,#ed302d);box-shadow:0 8px 22px #ed302d44;color:#fff;font-size:15px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:10px;opacity:1;cursor:not-allowed}
 .launcher-download-button svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
 .launcher-file-info{display:flex;flex-direction:column;gap:5px;font-size:12px}
@@ -372,7 +374,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-update-note{display:flex;align-items:center;gap:8px;margin-top:14px;color:#43ce70;font-size:11px;line-height:1.4}
 .launcher-update-note i{width:8px;height:8px;border-radius:50%;background:#40d76f;flex:none;box-shadow:0 0 8px #40d76f80}
 @media(max-width:850px){.download-placeholder-panel{padding:20px}.launcher-showcase{grid-template-columns:1fr;gap:24px}.launcher-preview{justify-content:flex-start}.launcher-window{max-width:480px}}
-@media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-download-button{width:100%;min-height:52px}.launcher-file-info{padding:0 2px}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
+@media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-store-logos{max-width:100%}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
 
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
@@ -406,8 +408,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    </div>
    <div class="launcher-languages" aria-label="Desteklenen diller"><span>EN</span><span class="selected">TR</span><span>ES</span></div>
    <div class="launcher-download-row">
-    <button class="launcher-download-button" type="button" disabled aria-label="x64 Launcher indirme bağlantısı henüz eklenmedi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>x64 Launcher İndir</button>
-    <div class="launcher-file-info"><b>107 MB · .exe</b><span>Sürüm V2504 · 64 bit Windows</span></div>
+    <div class="launcher-store-logos" aria-label="Google Play ve App Store logoları"><img src="/img/store-logos.png" alt="Google Play ve App Store'dan indirin" loading="lazy" decoding="async"></div>
    </div>
   </div>
   <div class="launcher-preview" aria-label="Launcher örnek ekranı">
