@@ -2026,7 +2026,7 @@ function renderGameEvents(){
    const hasLiveOvernightEvent=gameEventsCache.some(e=>{
     if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previousWeekday||!e.end_time)return false;
     const rawStart=gameEventRawStartSeconds(e);
-    const rawEnd=specialEventEndSeconds(e,specialEventStartSeconds(e));
+    const rawEnd=gameEventEndSeconds(e,rawStart);
     return rawEnd>86400&&nowSec<rawEnd-86400;
    });
    const displayOffset=hasLiveOvernightEvent?-1:0;
@@ -2036,11 +2036,13 @@ function renderGameEvents(){
     const hasExplicitEndDay=e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="";
     const rawStart=gameEventRawStartSeconds(e);
     const startDayOffset=hasExplicitEndDay?(displayWeekday-Number(e.weekday)+7)%7:0;
-    const endOffset=hasExplicitEndDay?(Number(e.end_weekday)-Number(e.weekday)+7)%7:((e.end_time&&Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60<rawStart)?1:0);
+    let endOffset=hasExplicitEndDay?(Number(e.end_weekday)-Number(e.weekday)+7)%7:0;
+    const rawEndClock=e.end_time?Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60:null;
+    if(hasExplicitEndDay&&endOffset===0&&rawEndClock!==null&&rawEndClock<=rawStart)endOffset=7;
     if(hasExplicitEndDay&&startDayOffset>endOffset)return null;
     if(!hasExplicitEndDay&&Number(e.weekday)!==displayWeekday)return null;
     let start=rawStart-startDayOffset*86400;
-    let end=specialEventEndSeconds(e,specialEventStartSeconds(e))-startDayOffset*86400;
+    let end=gameEventEndSeconds(e,rawStart)-startDayOffset*86400;
     const current=scheduleNow;
     if(rawStart<21600){start+=86400;end+=86400;}
     return {...e,_start:start,_end:end,_current:current,_startDayOffset:startDayOffset,_dayOffset:displayOffset-startDayOffset,_live:current>=start&&current<end,_done:current>=end,_next:current<start,_remaining:Math.max(0,start-current),_left:Math.max(0,end-current)};
