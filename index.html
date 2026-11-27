@@ -1113,7 +1113,40 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
 
 <style id="desktop-logo-menu-click-fix">@media(min-width:701px){#siteMenu>.brand-menu{pointer-events:auto!important;cursor:pointer!important;position:relative!important;z-index:41!important}#siteMenu>.menu-dropdown{z-index:40!important}#siteMenu.open>.menu-dropdown{opacity:1!important;visibility:visible!important;transform:translateY(0)!important;pointer-events:auto!important}}</style>
 
-<style id="desktop-hide-download-menu">@media(min-width:701px){#siteMenu>.menu-dropdown>.mobile-download-menu{display:none!important}}</style>
+<style id="desktop-hide-download-menu">@media(min-width:701px){#siteMenu>.menu-dropdown>.mobile-download-menu{display:none!important}}
+/* Masaüstü özel filtre scrollbar'ı: altın sarısı tutamak */
+@media (min-width: 701px){
+ .platform-filter-options,
+ .admin-filter-options,
+ .event-day-options,
+ .monthly-month-options{
+  scrollbar-width:thin;
+  scrollbar-color:#d9ad54 #252b34;
+ }
+ .platform-filter-options::-webkit-scrollbar,
+ .admin-filter-options::-webkit-scrollbar,
+ .event-day-options::-webkit-scrollbar,
+ .monthly-month-options::-webkit-scrollbar{width:9px;height:9px}
+ .platform-filter-options::-webkit-scrollbar-track,
+ .admin-filter-options::-webkit-scrollbar-track,
+ .event-day-options::-webkit-scrollbar-track,
+ .monthly-month-options::-webkit-scrollbar-track{
+  background:#252b34;border-radius:999px;margin:5px
+ }
+ .platform-filter-options::-webkit-scrollbar-thumb,
+ .admin-filter-options::-webkit-scrollbar-thumb,
+ .event-day-options::-webkit-scrollbar-thumb,
+ .monthly-month-options::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#edc66f 0%,#c4933e 100%);
+  border:2px solid #141b25;border-radius:999px;min-height:34px
+ }
+ .platform-filter-options::-webkit-scrollbar-thumb:hover,
+ .admin-filter-options::-webkit-scrollbar-thumb:hover,
+ .event-day-options::-webkit-scrollbar-thumb:hover,
+ .monthly-month-options::-webkit-scrollbar-thumb:hover{background:#f3d58d}
+}
+
+</style>
 </head>
 <body>
 <div class="topline"></div>
