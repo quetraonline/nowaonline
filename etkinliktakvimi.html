@@ -368,6 +368,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
  </div>
 
  <section id="monthlyEventsPanel" class="monthly-tab-panel" role="tabpanel" aria-labelledby="monthlyEventsTab">
+  <div id="monthlyTodayEvents" class="monthly-today-events" aria-live="polite" hidden></div>
   <div class="monthly-events-notice" role="note" aria-label="Etkinlik saatleri hakkında bilgilendirme"><svg class="monthly-notice-bulb" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 14.2a7 7 0 1 1 7.6 0c-.9.6-1.3 1.4-1.5 2.3H9.7c-.2-.9-.6-1.7-1.5-2.3Z"/><path d="M9.5 19h5m-4.2 2h3.4M10 16.5h4"/></svg><span><strong>Not:</strong> Oyun içi etkinliklere bağlı olarak belirtilen etkinlik saatlerinde ufak değişiklikler olabilir. Lütfen günlük olarak kontrol ediniz.</span></div>
   <div id="monthlyEventsResults" class="monthly-events-results" aria-live="polite"><div class="monthly-events-state">Etkinlikler yükleniyor...</div></div>
  </section>
@@ -411,6 +412,17 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-tab-panel[hidden]{display:none!important}
 .monthly-event-description{padding:18px 20px;border:1px solid #ffffff12;border-radius:0 10px 10px 10px;background:#0b1018;color:#d6dbe3;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:700px){.monthly-tab{flex:1;padding:10px 8px;font-size:12px}.monthly-event-description{padding:14px;font-size:13px}}
+.monthly-today-events{margin:0 0 16px;padding:14px;border:1px solid #d9ad54;border-left:4px solid #e8b95c;border-radius:11px;background:linear-gradient(125deg,rgba(184,135,59,.18),#111923 72%);box-shadow:0 8px 22px #0003}
+.monthly-today-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 11px;color:#f0c66f;font-size:15px;font-weight:950}
+.monthly-today-heading span{color:#cbd2dc;font-size:11px;font-weight:750;white-space:nowrap}
+.monthly-today-list{display:flex;flex-direction:column;gap:8px}
+.monthly-today-item{display:flex;align-items:center;gap:12px;padding:10px 11px;border:1px solid #ffffff14;border-radius:8px;background:#090e16}
+.monthly-today-time{flex:0 0 64px;color:#f0c66f;font-size:13px;font-weight:950;font-variant-numeric:tabular-nums}
+.monthly-today-info{min-width:0;flex:1}
+.monthly-today-name{color:#f5f6f8;font-size:13px;font-weight:850;line-height:1.4;overflow-wrap:anywhere}
+.monthly-today-server{margin-top:3px;color:#aeb8c6;font-size:11px;font-weight:700}
+.monthly-today-empty{padding:10px 12px;border-radius:8px;background:#090e16;color:#cbd2dc;font-size:12px;font-weight:650}
+@media(max-width:600px){.monthly-today-events{padding:11px;margin-bottom:13px}.monthly-today-heading{font-size:14px}.monthly-today-heading span{font-size:10px}.monthly-today-item{gap:9px;padding:9px}.monthly-today-time{flex-basis:56px;font-size:12px}.monthly-today-name{font-size:12px}}
 .monthly-events-results{display:flex;flex-direction:column;gap:0}
 .monthly-date-group{display:flex;flex-direction:column;gap:9px;margin:0 0 9px;padding-bottom:8px;border-bottom:1px dashed #e8b95c;box-shadow:0 3px 6px -8px #e8b95c}
 .monthly-date-group:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0;box-shadow:none}
@@ -604,7 +616,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
 <script id="monthly-events-browser-script">
 (()=> {
  const db=typeof subpageDb!=="undefined"?subpageDb:null;
- const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults"),heading=document.getElementById("monthlyEventsHeading"),eventsTab=document.getElementById("monthlyEventsTab"),detailsTab=document.getElementById("monthlyDetailsTab"),eventsPanel=document.getElementById("monthlyEventsPanel"),detailsPanel=document.getElementById("monthlyDetailsPanel"),descriptionBox=document.getElementById("monthlyEventDescription");
+ const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults"),todayResults=document.getElementById("monthlyTodayEvents"),heading=document.getElementById("monthlyEventsHeading"),eventsTab=document.getElementById("monthlyEventsTab"),detailsTab=document.getElementById("monthlyDetailsTab"),eventsPanel=document.getElementById("monthlyEventsPanel"),detailsPanel=document.getElementById("monthlyDetailsPanel"),descriptionBox=document.getElementById("monthlyEventDescription");
  if(!search||!serverSelect||!monthSelect||!results)return;
  const monthPicker=document.getElementById("monthlyMonthTrigger")?.parentElement,monthTrigger=document.getElementById("monthlyMonthTrigger"),monthCurrent=document.getElementById("monthlyMonthCurrent"),monthOptions=document.getElementById("monthlyMonthOptions");
  const serverPicker=document.getElementById("monthlyServerPicker"),serverTrigger=document.getElementById("monthlyServerTrigger"),serverCurrent=document.getElementById("monthlyServerCurrent"),serverOptions=document.getElementById("monthlyServerOptions");
@@ -641,9 +653,26 @@ setInterval(updateTopNextWeeklyEvent,1000);
  const timeLabel=value=>String(value||"").slice(0,5);
  const activateTab=tab=>{const details=tab==="details";eventsTab.classList.toggle("is-active",!details);detailsTab.classList.toggle("is-active",details);eventsTab.setAttribute("aria-selected",String(!details));detailsTab.setAttribute("aria-selected",String(details));eventsPanel.hidden=details;detailsPanel.hidden=!details;};
  const renderDescription=()=>{if(!descriptionBox)return;const [year,month]=monthSelect.value.split("-").map(Number);const item=monthlyDescriptions.find(d=>Number(d.event_year)===year&&Number(d.event_month)===month);descriptionBox.innerHTML=item?.description?sanitizeDescription(item.description):"Bu ay için henüz etkinlik açıklaması eklenmemiş.";};
+ const turkeyTodayKey=()=>{
+  const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+  const get=type=>parts.find(part=>part.type===type)?.value||"";
+  return get("year")+"-"+get("month")+"-"+get("day");
+ };
+ const renderTodayEvents=(selectedYear,server,term)=>{
+  if(!todayResults)return;
+  const today=turkeyTodayKey(),currentYear=Number(today.slice(0,4));
+  // Yalnızca seçili ayın yılı kontrol edilir; seçili ayın kendisi dikkate alınmaz.
+  if(Number(selectedYear)!==currentYear){todayResults.hidden=true;todayResults.innerHTML="";return;}
+  todayResults.hidden=false;
+  const todayEvents=allEvents.filter(e=>String(e.event_date||"").slice(0,10)===today&&(!server||e.server===server)&&(!term||String(e.event_name||"").toLocaleLowerCase("tr-TR").includes(term)||String(e.server||"").toLocaleLowerCase("tr-TR").includes(term))).sort((a,b)=>timeLabel(a.event_time).localeCompare(timeLabel(b.event_time)));
+  const todayLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",year:"numeric",weekday:"long"}).format(new Date());
+  todayResults.innerHTML='<h3 class="monthly-today-heading">BUGÜNÜN ETKİNLİKLERİ <span>'+escapeHtml(todayLabel)+'</span></h3>'+(todayEvents.length?'<div class="monthly-today-list">'+todayEvents.map(e=>'<article class="monthly-today-item"><div class="monthly-today-time">'+escapeHtml(timeLabel(e.event_time))+'</div><div class="monthly-today-info"><div class="monthly-today-name">'+escapeHtml(e.event_name)+'</div><div class="monthly-today-server">'+escapeHtml(e.server)+'</div></div></article>').join("")+'</div>':'<div class="monthly-today-empty">Bugün için seçili filtrelere uygun etkinlik bulunamadı.</div>');
+ };
  const render=()=>{
   updateHeading();renderDescription();
   const month=monthSelect.value,server=serverSelect.value,term=search.value.trim().toLocaleLowerCase("tr-TR");
+  const selectedYear=month?Number(month.split("-")[0]):0;
+  renderTodayEvents(selectedYear,server,term);
   const filtered=allEvents.filter(e=>String(e.event_date||"").slice(0,7)===month&&(!server||e.server===server)&&(!term||String(e.event_name||"").toLocaleLowerCase("tr-TR").includes(term)||String(e.server||"").toLocaleLowerCase("tr-TR").includes(term)));
   if(!filtered.length){results.innerHTML='<div class="monthly-events-state monthly-events-empty">Bu filtrelere uygun etkinlik bulunamadı.</div>';return;}
   const days=new Map();
@@ -671,6 +700,8 @@ setInterval(updateTopNextWeeklyEvent,1000);
  };
  search.addEventListener("input",render);serverSelect.addEventListener("change",render);monthSelect.addEventListener("change",render);eventsTab.addEventListener("click",()=>activateTab("events"));detailsTab.addEventListener("click",()=>activateTab("details"));
  activateTab("events");load();
+ // Sayfa açık kaldığında Türkiye saatine göre gün değişimini en geç bir dakika içinde yansıt.
+ setInterval(()=>{if(monthSelect.value)render();},60000);
 })();
 </script>
 <script id="nowa-gold-cursor">
