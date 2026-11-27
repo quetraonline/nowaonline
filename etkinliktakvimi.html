@@ -560,6 +560,8 @@ setInterval(updateTopNextWeeklyEvent,1000);
  if(!search||!serverSelect||!monthSelect||!results)return;
  const monthPicker=document.getElementById("monthlyMonthTrigger")?.parentElement,monthTrigger=document.getElementById("monthlyMonthTrigger"),monthCurrent=document.getElementById("monthlyMonthCurrent"),monthOptions=document.getElementById("monthlyMonthOptions");
  const serverPicker=document.getElementById("monthlyServerPicker"),serverTrigger=document.getElementById("monthlyServerTrigger"),serverCurrent=document.getElementById("monthlyServerCurrent"),serverOptions=document.getElementById("monthlyServerOptions");
+ // Takvim filtre listelerini body katmanına al; fixed konumları sayfa kapsayıcılarından etkilenmesin.
+ [monthOptions,serverOptions].forEach(options=>{if(options&&options.parentElement!==document.body)document.body.appendChild(options);});
  const closePicker=(picker,options,trigger)=>{picker?.classList.remove("is-open");options?.setAttribute("hidden","");trigger?.setAttribute("aria-expanded","false");};
  const syncPicker=(select,current,options,emptyLabel)=>{
   if(!options||!current)return;
@@ -573,7 +575,8 @@ setInterval(updateTopNextWeeklyEvent,1000);
  serverTrigger?.addEventListener("click",()=>openPicker(serverPicker,serverOptions,serverTrigger,syncServerPicker));
  monthOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;monthSelect.value=option.dataset.value;monthSelect.dispatchEvent(new Event("change",{bubbles:true}));syncMonthPicker();closePicker(monthPicker,monthOptions,monthTrigger);});
  serverOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;serverSelect.value=option.dataset.value;serverSelect.dispatchEvent(new Event("change",{bubbles:true}));syncServerPicker();closePicker(serverPicker,serverOptions,serverTrigger);});
- document.addEventListener("click",event=>{if(monthPicker&&!monthPicker.contains(event.target))closePicker(monthPicker,monthOptions,monthTrigger);if(serverPicker&&!serverPicker.contains(event.target))closePicker(serverPicker,serverOptions,serverTrigger);});
+ document.addEventListener("click",event=>{if(monthPicker&&!monthPicker.contains(event.target)&&!monthOptions?.contains(event.target))closePicker(monthPicker,monthOptions,monthTrigger);if(serverPicker&&!serverPicker.contains(event.target)&&!serverOptions?.contains(event.target))closePicker(serverPicker,serverOptions,serverTrigger);});
+ document.addEventListener("scroll",event=>{if(monthOptions&&!monthOptions.hidden&&!monthOptions.contains(event.target))closePicker(monthPicker,monthOptions,monthTrigger);if(serverOptions&&!serverOptions.hidden&&!serverOptions.contains(event.target))closePicker(serverPicker,serverOptions,serverTrigger);},{capture:true,passive:true});
  document.addEventListener("keydown",event=>{if(event.key==="Escape"){if(!monthOptions?.hidden){closePicker(monthPicker,monthOptions,monthTrigger);monthTrigger?.focus();}if(!serverOptions?.hidden){closePicker(serverPicker,serverOptions,serverTrigger);serverTrigger?.focus();}}});
  let allEvents=[];let monthlyDescriptions=[];
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
