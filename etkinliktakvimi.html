@@ -394,13 +394,13 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-month-trigger:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .monthly-month-trigger svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:#cbd2dc;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
 .monthly-month-picker.is-open .monthly-month-trigger svg{transform:rotate(180deg)}
-.monthly-month-options{position:absolute;z-index:50;top:calc(100% + 7px);right:0;width:min(260px,calc(100vw - 54px));max-height:min(280px,45vh);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid #465365;border-radius:11px;background:#141b25;box-shadow:0 14px 35px #000b}
+.monthly-month-options{position:fixed;z-index:9999;top:0;left:12px;width:min(250px,calc(100vw - 24px));max-height:min(260px,45vh);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid #465365;border-radius:11px;background:#141b25;box-shadow:0 14px 35px #000b;box-sizing:border-box}
 .monthly-month-options[hidden]{display:none}
 .monthly-month-option{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:40px;padding:9px 11px;border:0;border-radius:7px;background:transparent;color:#e8edf4;font:inherit;font-size:13px;font-weight:650;text-align:left;cursor:pointer}
 .monthly-month-option:hover,.monthly-month-option:focus-visible{background:#252f3c;outline:none}
 .monthly-month-option[aria-selected="true"]{background:#b8873b22;color:#f0c66f}
 .monthly-month-option[aria-selected="true"]::after{content:"✓";font-weight:900;color:#f0c66f}
-@media(max-width:600px){.monthly-month-trigger{min-width:0;width:100%;max-width:none}.monthly-month-options{right:0;left:auto;width:min(250px,calc(100vw - 54px));max-height:260px}}
+@media(max-width:600px){.monthly-month-trigger{min-width:0;width:100%;max-width:none}.monthly-month-options{width:min(250px,calc(100vw - 24px));max-height:260px}}
 
 .monthly-events-heading{margin:16px 0 16px;color:#e8b95c;font-size:clamp(18px,1.9vw,22px);font-weight:900;line-height:1.2;letter-spacing:-.02em;text-align:center}
 .monthly-gold-rule{height:2px;margin:18px 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
@@ -568,7 +568,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
  };
  const syncMonthPicker=()=>syncPicker(monthSelect,monthCurrent,monthOptions,"Ay seçin");
  const syncServerPicker=()=>syncPicker(serverSelect,serverCurrent,serverOptions,"Server seçin");
- const openPicker=(picker,options,trigger,sync)=>{if(options.hidden){sync();options.removeAttribute("hidden");picker.classList.add("is-open");trigger.setAttribute("aria-expanded","true");}else closePicker(picker,options,trigger);};
+ const openPicker=(picker,options,trigger,sync)=>{if(options.hidden){sync();const rect=trigger.getBoundingClientRect(),width=Math.min(250,window.innerWidth-24),left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));options.style.left=left+"px";options.style.top=(rect.bottom+7)+"px";options.style.width=width+"px";options.removeAttribute("hidden");picker.classList.add("is-open");trigger.setAttribute("aria-expanded","true");}else closePicker(picker,options,trigger);};
  monthTrigger?.addEventListener("click",()=>openPicker(monthPicker,monthOptions,monthTrigger,syncMonthPicker));
  serverTrigger?.addEventListener("click",()=>openPicker(serverPicker,serverOptions,serverTrigger,syncServerPicker));
  monthOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;monthSelect.value=option.dataset.value;monthSelect.dispatchEvent(new Event("change",{bubbles:true}));syncMonthPicker();closePicker(monthPicker,monthOptions,monthTrigger);});
