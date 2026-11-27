@@ -357,7 +357,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
   <div class="monthly-search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg><input id="monthlyEventSearch" type="search" placeholder="Etkinlik ara..." aria-label="Etkinlik ara"></div>
   <div class="monthly-filter-wrap">
    <label class="monthly-filter"><span>Server</span><select id="monthlyServerFilter" aria-label="Server filtresi"><option value="">Yükleniyor...</option></select></label>
-   <label class="monthly-filter"><span>Ay</span><select id="monthlyMonthFilter" aria-label="Ay filtresi"><option value="">Yükleniyor...</option></select></label>
+   <label class="monthly-filter monthly-month-filter"><span>Ay</span><select id="monthlyMonthFilter" aria-label="Ay filtresi"><option value="">Yükleniyor...</option></select><span class="monthly-month-picker"><button type="button" class="monthly-month-trigger" id="monthlyMonthTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="monthlyMonthOptions"><span id="monthlyMonthCurrent">Yükleniyor...</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><span class="monthly-month-options" id="monthlyMonthOptions" role="listbox" aria-label="Ay seçimi" hidden></span></span></label>
   </div>
  </div>
  <div class="monthly-gold-rule" aria-hidden="true"></div>
@@ -387,6 +387,21 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-filter-wrap{display:flex;align-items:center;justify-content:flex-end;gap:10px}
 .monthly-filter{display:flex;align-items:center;gap:8px;color:#cbd2dc;font-size:12px;font-weight:800}
 .monthly-filter select{height:42px;min-width:140px;padding:0 32px 0 11px;border:1px solid #354052;border-radius:9px;background:#090d14;color:var(--text);outline:none}
+.monthly-month-filter{position:relative}
+.monthly-month-filter>select{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.monthly-month-picker{position:relative;display:block}
+.monthly-month-trigger{height:42px;min-width:170px;max-width:220px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 12px;border:1px solid #354052;border-radius:9px;background:#090d14;color:var(--text);font:inherit;font-weight:600;cursor:pointer;text-align:left}
+.monthly-month-trigger:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.monthly-month-trigger svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:#cbd2dc;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+.monthly-month-picker.is-open .monthly-month-trigger svg{transform:rotate(180deg)}
+.monthly-month-options{position:absolute;z-index:50;top:calc(100% + 7px);right:0;width:min(260px,calc(100vw - 54px));max-height:min(280px,45vh);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid #465365;border-radius:11px;background:#141b25;box-shadow:0 14px 35px #000b}
+.monthly-month-options[hidden]{display:none}
+.monthly-month-option{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:40px;padding:9px 11px;border:0;border-radius:7px;background:transparent;color:#e8edf4;font:inherit;font-size:13px;font-weight:650;text-align:left;cursor:pointer}
+.monthly-month-option:hover,.monthly-month-option:focus-visible{background:#252f3c;outline:none}
+.monthly-month-option[aria-selected="true"]{background:#b8873b22;color:#f0c66f}
+.monthly-month-option[aria-selected="true"]::after{content:"✓";font-weight:900;color:#f0c66f}
+@media(max-width:600px){.monthly-month-trigger{min-width:0;width:100%;max-width:none}.monthly-month-options{right:0;left:auto;width:min(250px,calc(100vw - 54px));max-height:260px}}
+
 .monthly-events-heading{margin:16px 0 16px;color:#e8b95c;font-size:clamp(18px,1.9vw,22px);font-weight:900;line-height:1.2;letter-spacing:-.02em;text-align:center}
 .monthly-gold-rule{height:2px;margin:18px 0 16px;background:linear-gradient(90deg,transparent,var(--gold) 5%,var(--gold) 95%,transparent);box-shadow:0 0 9px #e8b95c40}
 .monthly-tabs{display:inline-flex;align-items:center;gap:3px;margin:0 0 12px;padding:3px;border:1px solid #3a3a45;border-radius:12px;background:transparent;box-shadow:none;width:max-content;max-width:100%}
@@ -543,6 +558,17 @@ setInterval(updateTopNextWeeklyEvent,1000);
  const db=typeof subpageDb!=="undefined"?subpageDb:null;
  const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults"),heading=document.getElementById("monthlyEventsHeading"),eventsTab=document.getElementById("monthlyEventsTab"),detailsTab=document.getElementById("monthlyDetailsTab"),eventsPanel=document.getElementById("monthlyEventsPanel"),detailsPanel=document.getElementById("monthlyDetailsPanel"),descriptionBox=document.getElementById("monthlyEventDescription");
  if(!search||!serverSelect||!monthSelect||!results)return;
+ const monthPicker=document.querySelector(".monthly-month-picker"),monthTrigger=document.getElementById("monthlyMonthTrigger"),monthCurrent=document.getElementById("monthlyMonthCurrent"),monthOptions=document.getElementById("monthlyMonthOptions");
+ const closeMonthPicker=()=>{monthPicker?.classList.remove("is-open");monthOptions?.setAttribute("hidden","");monthTrigger?.setAttribute("aria-expanded","false");};
+ const syncMonthPicker=()=>{
+  if(!monthOptions||!monthCurrent)return;
+  monthOptions.innerHTML=[...monthSelect.options].map(option=>'<button type="button" class="monthly-month-option" role="option" data-value="'+escapeHtml(option.value)+'" aria-selected="'+String(option.value===monthSelect.value)+'">'+escapeHtml(option.textContent)+'</button>').join("");
+  const selected=monthSelect.options[monthSelect.selectedIndex];monthCurrent.textContent=selected?.textContent||"Ay seçin";
+ };
+ monthTrigger?.addEventListener("click",()=>{if(monthOptions.hidden){syncMonthPicker();monthOptions.removeAttribute("hidden");monthPicker.classList.add("is-open");monthTrigger.setAttribute("aria-expanded","true");}else closeMonthPicker();});
+ monthOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;monthSelect.value=option.dataset.value;monthSelect.dispatchEvent(new Event("change",{bubbles:true}));syncMonthPicker();closeMonthPicker();});
+ document.addEventListener("click",event=>{if(monthPicker&&!monthPicker.contains(event.target))closeMonthPicker();});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!monthOptions?.hidden){closeMonthPicker();monthTrigger?.focus();}});
  let allEvents=[];let monthlyDescriptions=[];
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
  const sanitizeDescription=html=>{
@@ -581,6 +607,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
    monthSelect.innerHTML=months.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(monthLabel(v))+'</option>').join("");
    const now=new Date(),current=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
    monthSelect.value=months.includes(current)?current:months[0];
+   syncMonthPicker();
    render();
   }catch(error){console.error("Aylık etkinlikler yüklenemedi:",error);serverSelect.innerHTML='<option value="">Server yüklenemedi</option>';monthSelect.innerHTML='<option value="">Ay yüklenemedi</option>';results.innerHTML='<div class="monthly-events-state">Etkinlikler yüklenemedi. Bağlantıyı kontrol edip sayfayı yenileyin.</div>';}
  };
