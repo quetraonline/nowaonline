@@ -352,10 +352,10 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-languages span{min-width:38px;text-align:center;padding:6px 8px;border:1px solid #ffffff20;border-radius:9px;background:rgba(25,26,32,.88);font-size:11px;font-weight:800;color:#d5d5dc}
 .launcher-languages span.selected{border-color:#ef5148;color:#fff}
 .launcher-download-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px}
-.launcher-store-logos{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:460px;width:100%}
-.store-badge-link{display:block;flex:0 1 205px;line-height:0;transition:transform .18s ease,opacity .18s ease}
-.store-badge-link:hover{transform:translateY(-2px);opacity:.88}
-.store-badge-link img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
+.launcher-store-logos{display:flex;align-items:center;justify-content:flex-start;gap:14px;flex-wrap:wrap;max-width:460px;width:100%}
+.launcher-store-logos a{display:block;line-height:0;transition:transform .2s ease}
+.launcher-store-logos a:hover{transform:translateY(-3px)}
+.launcher-store-logos img{display:block;width:160px;max-width:40vw;height:auto;object-fit:contain}
 .launcher-download-button{min-height:56px;padding:0 23px;border:0;border-radius:13px;background:linear-gradient(180deg,#ff554c,#ed302d);box-shadow:0 8px 22px #ed302d44;color:#fff;font-size:15px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:10px;opacity:1;cursor:not-allowed}
 .launcher-download-button svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
 .launcher-file-info{display:flex;flex-direction:column;gap:5px;font-size:12px}
@@ -376,7 +376,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-update-note{display:flex;align-items:center;gap:8px;margin-top:14px;color:#43ce70;font-size:11px;line-height:1.4}
 .launcher-update-note i{width:8px;height:8px;border-radius:50%;background:#40d76f;flex:none;box-shadow:0 0 8px #40d76f80}
 @media(max-width:850px){.download-placeholder-panel{padding:20px}.launcher-showcase{grid-template-columns:1fr;gap:24px}.launcher-preview{justify-content:flex-start}.launcher-window{max-width:480px}}
-@media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-store-logos{max-width:100%;gap:8px}.store-badge-link{flex:1 1 145px;max-width:205px}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
+@media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-store-logos{max-width:100%;gap:10px}.launcher-store-logos img{width:min(148px,41vw)}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
 
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
@@ -410,7 +410,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    </div>
    <div class="launcher-languages" aria-label="Desteklenen diller"><span>EN</span><span class="selected">TR</span><span>ES</span></div>
    <div class="launcher-download-row">
-    <div class="launcher-store-logos" aria-label="Uygulamayı mağazalardan indirin"><a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.NOWAGames.NOWAOnlineWorldA" target="_blank" rel="noopener noreferrer" aria-label="Google Play üzerinden indir"><img src="/img/google-play-badge.svg" alt="Google Play'den indirin"></a><a class="store-badge-link" href="https://apps.apple.com/tr/app/nowa-online-world/id6698880492" target="_blank" rel="noopener noreferrer" aria-label="App Store üzerinden indir"><img src="/img/app-store-badge.svg" alt="App Store'dan indirin"></a></div>
+    <div class="launcher-store-logos" aria-label="Nowa Online World mobil uygulamaları"><a href="https://play.google.com/store/apps/details?id=com.NOWAGames.NOWAOnlineWorldA" target="_blank" rel="noopener noreferrer" aria-label="Google Play üzerinden indir"><img src="/img/google-play.webp" alt="Google Play'den indir"></a><a href="https://apps.apple.com/us/app/nowa-online-world/id6698880492" target="_blank" rel="noopener noreferrer" aria-label="App Store üzerinden indir"><img src="/img/appstore.webp" alt="App Store'dan indir"></a></div>
    </div>
   </div>
   <div class="launcher-preview" aria-label="Launcher örnek ekranı">
