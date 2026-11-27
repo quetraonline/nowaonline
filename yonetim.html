@@ -1128,7 +1128,7 @@ html.admin-route #modal .admin-update-social-icon.tiktok{color:#f4f5f7}
 html.admin-route #modal .admin-update-social-icon.kick{color:#53e18b}
 
 /* Yönetim paneli filtreleri: ortak kompakt özel açılır menü */
-.admin-filter-native{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;pointer-events:none!important}
+.admin-filter-native{display:none!important;position:absolute!important;width:0!important;height:0!important;padding:0!important;margin:0!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;pointer-events:none!important;visibility:hidden!important}
 .admin-filter-picker{position:relative;display:block;width:100%;min-width:0}
 .filters>.admin-filter-picker{flex:0 0 175px;width:175px;max-width:175px}
 .admin-filter-trigger{box-sizing:border-box;width:100%;height:42px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px;border:1px solid #414958;border-radius:9px;background:#10151d;color:#f2f4f7;font:600 13px Inter,system-ui,sans-serif;text-align:left;cursor:pointer;box-shadow:none}
@@ -3098,6 +3098,7 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
   if(!filterIds.has(select.id)||select.dataset.adminFilterReady==="1")return;
   select.dataset.adminFilterReady="1";
   select.classList.add("admin-filter-native");
+  select.style.setProperty("display","none","important");
   select.tabIndex=-1;
   select.setAttribute("aria-hidden","true");
   const picker=document.createElement("span");
