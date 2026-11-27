@@ -394,11 +394,11 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .mod-link-divider{width:1px;align-self:stretch;min-height:28px;background:#c9a24a;flex:0 0 1px;box-shadow:0 0 5px rgba(201,162,74,.28)}
 .mod-short-link{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e8b95c;font-size:11px;text-decoration:none}
 .mod-short-link:hover{text-decoration:underline}
-.mod-copy-button{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:1px solid #ffffff25;border-radius:8px;background:#20202a;color:#e8b95c;cursor:pointer}
+.mod-copy-button{display:flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 34px;padding:0!important;margin:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;line-height:0;font-size:0;border:1px solid #ffffff25;border-radius:8px;background:#20202a;color:#e8b95c;cursor:pointer;text-align:center}
 .mod-copy-button:hover{border-color:#c9a24a;background:#2b2932}
-.mod-copy-button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mod-copy-button svg{display:block;width:17px;height:17px;flex:0 0 17px;margin:0;padding:0;position:static;transform:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .mod-copy-button.copied{color:#48d17a;border-color:#48d17a}
-@media(max-width:600px){.mod-link-row{gap:7px}.mod-platform{width:70px;flex-basis:70px;font-size:11px}.mod-platform-icon{width:21px;height:21px;flex-basis:21px}.mod-short-link{font-size:10px}.mod-copy-button{width:32px;height:32px;flex-basis:32px}}
+@media(max-width:600px){.mod-link-row{gap:7px}.mod-platform{width:70px;flex-basis:70px;font-size:11px}.mod-platform-icon{width:21px;height:21px;flex-basis:21px}.mod-short-link{font-size:10px}.mod-copy-button{width:32px;height:32px;flex-basis:32px;padding:0!important}}
 .launcher-status-row{display:flex;align-items:center;gap:11px;min-height:29px;color:#f1eff2;font-size:12px}
 .launcher-status-row b{font-size:12px}
 .launcher-status-row.muted{margin-top:9px;color:#aaa8b1}
