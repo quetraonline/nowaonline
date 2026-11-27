@@ -334,6 +334,8 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 /* Mobile drawer backdrop: tapping the uncovered page area closes the drawer. */
 @media(max-width:700px){body.mobile-menu-open header{z-index:2147482600!important}body.mobile-menu-open::before{content:"";position:fixed;inset:0;z-index:2147482500;background:rgba(0,0,0,.48);pointer-events:auto}body.mobile-menu-open #siteMenu>.menu-dropdown{z-index:2147482601!important}}
 
+.download-intro{margin:10px 0 18px;color:#b8c0cc;font-size:15px;line-height:1.75;font-weight:600;max-width:900px}
+@media(max-width:600px){.download-intro{margin:8px 0 14px;font-size:14px;line-height:1.65}}
 .download-placeholder-panel{margin:22px 0 38px;padding:24px;border:1px solid #303b4b;border-radius:16px;background:linear-gradient(145deg,#19212c,#10151d);box-shadow:0 18px 45px #0003;min-height:150px;display:flex;align-items:center;justify-content:center}
 .download-placeholder-content{width:100%;min-height:100px;display:flex;align-items:center;justify-content:center;border:1px solid #d9ad5480;border-radius:12px;background:linear-gradient(120deg,rgba(184,135,59,.12),rgba(9,14,22,.92) 65%);color:#f0c66f;font-size:24px;font-weight:900;letter-spacing:.04em}
 @media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:14px;min-height:125px}.download-placeholder-content{min-height:95px;font-size:22px}}
@@ -355,6 +357,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 <main class="wrap">
 <nav class="breadcrumbs" aria-label="Gezinme yolu"><a href="/" class="breadcrumb-home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Ana Sayfa</span></a><span class="breadcrumb-separator" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span class="breadcrumb-current" aria-current="page">Oyunu İndir</span></nav>
 <h1 class="page-title-with-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v3h16v-3"/></svg><span>Oyunu İndir</span></h1>
+<p class="download-intro">Nowa Online World güncel indirme linkleri için aşağıda yer alan butonlardan cihazınıza göre indirmeleri sağlayabilirsiniz.</p>
 <section class="download-placeholder-panel" aria-label="Oyunu İndir">
  <div class="download-placeholder-content">eee</div>
 </section>
