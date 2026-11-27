@@ -164,6 +164,19 @@ header .menu-dropdown{z-index:40}
 .event-filter-bar input{flex:1;width:100%}
 .event-filter-bar input::placeholder{color:#929eae}
 .event-filter-bar select{flex:0 0 145px;cursor:pointer}
+.event-filter-bar select{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;pointer-events:none!important}
+.event-day-picker{position:relative;display:block;flex:0 0 145px;min-width:0}
+.event-day-trigger{height:38px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 11px;border:1px solid #d4ad43;border-radius:8px;background:#10151d;color:#f2f4f7;font:600 12px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 0 0 2px #d4ad4315}
+.event-day-trigger:focus-visible{outline:2px solid #e8b95c;outline-offset:2px}
+.event-day-trigger svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:#d4ad43;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+.event-day-picker.is-open .event-day-trigger svg{transform:rotate(180deg)}
+.event-day-options{position:fixed;z-index:9999;top:0;left:12px;width:min(200px,calc(100vw - 24px));max-height:min(260px,45vh);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid #465365;border-radius:11px;background:#141b25;box-shadow:0 14px 35px #000b;box-sizing:border-box}
+.event-day-options[hidden]{display:none!important}
+.event-day-option{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:10px 13px;border:0;border-radius:7px;background:transparent;color:#e8edf4;font:650 14px Inter,system-ui,sans-serif;text-align:left;white-space:nowrap;cursor:pointer}
+.event-day-option:hover,.event-day-option:focus-visible{background:#252f3c;outline:none}
+.event-day-option[aria-selected="true"]{background:#b8873b22;color:#f0c66f}
+.event-day-option[aria-selected="true"]::after{content:"✓";font-weight:900;color:#f0c66f}
+
 .event-filter-bar input:focus,.event-filter-bar select:focus{border-color:#d4ad43;box-shadow:0 0 0 2px #d4ad4322}
 .event-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;padding:0 0 9px;border-bottom:2px solid #d4ad43}
 .event-panel-head h2{display:flex;align-items:center;gap:8px;margin:0;color:#f5f6f8;font-size:15px;font-weight:950;letter-spacing:.35px}
@@ -187,7 +200,7 @@ header .menu-dropdown{z-index:40}
 .event-progress{position:absolute;z-index:2;left:14px;right:14px;bottom:7px;height:4px;overflow:hidden;border-radius:5px;background:#565562}
 .event-progress i{display:block;height:100%;border-radius:5px;background:#35f58a}
 .event-empty{padding:24px 12px;border:1px dashed #394657;border-radius:12px;color:#9aa5b4;font-size:12px;text-align:center}
-@media(max-width:760px){.event-filter-bar select{flex-basis:130px}.event-filter-bar{gap:7px}}
+@media(max-width:760px){.event-day-picker{flex-basis:130px}.event-filter-bar{gap:7px}}
 @media(max-width:760px){.event-columns{grid-template-columns:1fr;gap:14px}.event-day-tabs{gap:6px}.event-day-tab{padding:7px 9px;font-size:10px;border-radius:7px}.event-card{gap:8px;padding:12px 10px}.event-card-image{width:52px;height:52px;flex-basis:52px}.event-card-info strong{font-size:13px}.event-card-status{padding:6px 7px;font-size:9px}.event-card-countdown{padding:6px 7px;font-size:10px}.event-progress{left:10px;right:10px;bottom:6px}}
 @media(max-width:390px){.event-day-tabs{gap:5px}.event-day-tab{font-size:10px;padding:6px 8px}.event-card-image{width:46px;height:46px;flex-basis:46px}.event-card-image{width:46px;height:46px;flex-basis:46px}.event-card-info strong{font-size:12px}.event-card-time{font-size:11px}.event-card-status{max-width:86px}}
 
@@ -450,7 +463,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
   <section class="event-panel weekly-events-panel" aria-label="Yaklaşan etkinlikler">
    <div class="event-filter-bar">
     <input id="weeklyEventSearch" type="search" placeholder="Etkinlik ara..." aria-label="Yaklaşan etkinliklerde ara">
-    <select id="weeklyEventDaySelect" aria-label="Yaklaşan etkinlik gününü seç"></select>
+    <select id="weeklyEventDaySelect" aria-label="Yaklaşan etkinlik gününü seç" tabindex="-1" aria-hidden="true"></select><span class="event-day-picker" id="weeklyDayPicker"><button type="button" class="event-day-trigger" id="weeklyDayTrigger" aria-haspopup="listbox" aria-expanded="false"><span id="weeklyDayCurrent">Gün seçin</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><span class="event-day-options" id="weeklyDayOptions" role="listbox" aria-label="Yaklaşan etkinlik günü" hidden></span></span>
    </div>
    <div class="event-panel-head"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>YAKLAŞAN ETKİNLİKLER</h2><span class="game-events-day" id="weeklyEventsDay"></span></div>
    <div class="event-list" id="weeklyEventsList"><div class="event-empty">Etkinlikler yükleniyor...</div></div>
@@ -458,7 +471,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
   <section class="event-panel special-events-panel" aria-label="Özel etkinlikler">
    <div class="event-filter-bar">
     <input id="specialEventSearch" type="search" placeholder="Etkinlik ara..." aria-label="Özel etkinliklerde ara">
-    <select id="specialEventDaySelect" aria-label="Özel etkinlik gününü seç"></select>
+    <select id="specialEventDaySelect" aria-label="Özel etkinlik gününü seç" tabindex="-1" aria-hidden="true"></select><span class="event-day-picker" id="specialDayPicker"><button type="button" class="event-day-trigger" id="specialDayTrigger" aria-haspopup="listbox" aria-expanded="false"><span id="specialDayCurrent">Gün seçin</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><span class="event-day-options" id="specialDayOptions" role="listbox" aria-label="Özel etkinlik günü" hidden></span></span>
    </div>
    <div class="event-panel-head"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 16M20 4 4 20M8 3l2 2m6 14 2 2M3 8l2 2m14 4 2 2"/></svg>ÖZEL ETKİNLİKLER</h2><span class="game-events-day" id="specialEventsDay"></span></div>
    <div class="event-list" id="specialEventsList"><div class="event-empty">Etkinlikler yükleniyor...</div></div>
@@ -697,6 +710,13 @@ special:[
  let events=[],refreshTimer=null,lastRenderedDay=turkeyDay();
  const selectedDays={weekly:null,special:null},manualDaySelection={weekly:false,special:false},searchTerms={weekly:"",special:""};
  const dayNames=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+ const dayPickerRefs={weekly:{picker:document.getElementById("weeklyDayPicker"),trigger:document.getElementById("weeklyDayTrigger"),current:document.getElementById("weeklyDayCurrent"),options:document.getElementById("weeklyDayOptions"),select:document.getElementById("weeklyEventDaySelect")},special:{picker:document.getElementById("specialDayPicker"),trigger:document.getElementById("specialDayTrigger"),current:document.getElementById("specialDayCurrent"),options:document.getElementById("specialDayOptions"),select:document.getElementById("specialEventDaySelect")}};
+ function syncDayPicker(section){const r=dayPickerRefs[section];if(!r?.select||!r.current||!r.options)return;r.current.textContent=r.select.options[r.select.selectedIndex]?.textContent||"Gün seçin";r.options.innerHTML=[...r.select.options].map(o=>'<button type="button" class="event-day-option" role="option" data-value="'+esc(o.value)+'" aria-selected="'+String(o.value===r.select.value)+'">'+esc(o.textContent)+'</button>').join("");}
+ function closeDayPicker(section){const r=dayPickerRefs[section];r?.picker?.classList.remove("is-open");r?.options?.setAttribute("hidden","");r?.trigger?.setAttribute("aria-expanded","false");}
+ ["weekly","special"].forEach(section=>{const r=dayPickerRefs[section];r?.trigger?.addEventListener("click",()=>{if(r.options.hidden){syncDayPicker(section);const rect=r.trigger.getBoundingClientRect(),width=Math.min(200,window.innerWidth-24),left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));r.options.style.left=left+"px";r.options.style.top=(rect.bottom+7)+"px";r.options.style.width=width+"px";r.options.removeAttribute("hidden");r.picker.classList.add("is-open");r.trigger.setAttribute("aria-expanded","true");}else closeDayPicker(section);});r?.options?.addEventListener("click",event=>{const option=event.target.closest(".event-day-option");if(!option)return;r.select.value=option.dataset.value;r.select.dispatchEvent(new Event("change",{bubbles:true}));syncDayPicker(section);closeDayPicker(section);});});
+ document.addEventListener("click",event=>{["weekly","special"].forEach(section=>{const r=dayPickerRefs[section];if(r?.picker&&!r.picker.contains(event.target))closeDayPicker(section);});});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")["weekly","special"].forEach(section=>{const r=dayPickerRefs[section];if(r?.options&&!r.options.hidden){closeDayPicker(section);r.trigger?.focus();}});});
+
  function setupDaySelect(section,firstDay){
   const select=document.getElementById(section==="weekly"?"weeklyEventDaySelect":"specialEventDaySelect");
   if(!select)return;
@@ -708,6 +728,7 @@ special:[
    });
   }
   select.value=String(preferred);
+  syncDayPicker(section);
  }
  function turkeyDay(){const p=new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Istanbul",weekday:"short"}).format(new Date());return ({Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,Sun:0})[p]}
  function turkeyParts(){const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Istanbul",weekday:"short",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const get=k=>p.find(x=>x.type===k)?.value||"00";return {day:({Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,Sun:0})[get("weekday")],year:Number(get("year")),month:Number(get("month")),date:Number(get("day")),seconds:Number(get("hour"))*3600+Number(get("minute"))*60+Number(get("second"))}}
