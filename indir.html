@@ -377,6 +377,17 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-window-top{height:42px;display:flex;align-items:center;gap:8px;padding:0 13px;border-bottom:1px solid #ffffff18;color:#aaa9b2;font-size:12px}
 .window-dot{width:10px;height:10px;border-radius:50%;background:#38343d}.window-dot.red{background:#ef3838}.launcher-window-top>span:last-child{margin-left:8px}
 .launcher-window-body{padding:17px 16px 18px}
+.unofficial-mods-intro{margin:0 0 15px;color:#f5f5f7;font-size:14px;font-weight:800}
+.mod-link-row{display:flex;align-items:center;gap:10px;min-width:0;padding:11px 0;border-top:1px solid #ffffff20}
+.mod-platform{width:54px;flex:0 0 54px;color:#f2f2f5;font-size:12px;font-weight:900}
+.mod-link-divider{width:1px;align-self:stretch;min-height:28px;background:#77727f;flex:0 0 1px}
+.mod-short-link{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e8b95c;font-size:11px;text-decoration:none}
+.mod-short-link:hover{text-decoration:underline}
+.mod-copy-button{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:1px solid #ffffff25;border-radius:8px;background:#20202a;color:#e8b95c;cursor:pointer}
+.mod-copy-button:hover{border-color:#c9a24a;background:#2b2932}
+.mod-copy-button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mod-copy-button.copied{color:#48d17a;border-color:#48d17a}
+@media(max-width:600px){.mod-link-row{gap:7px}.mod-platform{width:46px;flex-basis:46px;font-size:11px}.mod-short-link{font-size:10px}.mod-copy-button{width:32px;height:32px;flex-basis:32px}}
 .launcher-status-row{display:flex;align-items:center;gap:11px;min-height:29px;color:#f1eff2;font-size:12px}
 .launcher-status-row b{font-size:12px}
 .launcher-status-row.muted{margin-top:9px;color:#aaa8b1}
@@ -425,13 +436,11 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
   </div>
   <div class="launcher-preview" aria-label="Launcher örnek ekranı">
    <div class="launcher-window">
-    <div class="launcher-window-top"><span class="window-dot red"></span><span class="window-dot"></span><span class="window-dot"></span><span>KO4FUN Launcher</span></div>
+    <div class="launcher-window-top"><span class="window-dot red"></span><span class="window-dot"></span><span class="window-dot"></span><span>Resmi Olmayan Modlar</span></div>
     <div class="launcher-window-body">
-     <div class="launcher-status-row"><span class="status-icon success">✓</span><b>KO4FUN_Setup_V2504.exe</b></div>
-     <div class="launcher-status-row muted"><span class="status-icon download">⇩</span><span>Oyun dosyaları indiriliyor</span></div>
-     <div class="launcher-progress"><span></span></div>
-     <div class="launcher-status-row muted play"><span class="status-icon play-icon">▷</span><span>Oyna</span></div>
-     <div class="launcher-update-note"><i></i>Launcher açılınca oyun kendiliğinden güncellenir</div>
+     <div class="unofficial-mods-intro">ee</div>
+     <div class="mod-link-row"><span class="mod-platform">Android</span><span class="mod-link-divider" aria-hidden="true"></span><a class="mod-short-link" href="https://dlcmods.store/dlc/games/nowaonlineworld/android/FD0E2EE28C1768BA164B0E44DD10F6F8.n" target="_blank" rel="noopener noreferrer">dlcmods.store/.../android/FD0E2EE2...</a><button class="mod-copy-button" type="button" data-copy-url="https://dlcmods.store/dlc/games/nowaonlineworld/android/FD0E2EE28C1768BA164B0E44DD10F6F8.n" aria-label="Android bağlantısını kopyala" title="Bağlantıyı kopyala"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div>
+     <div class="mod-link-row"><span class="mod-platform">İOS</span><span class="mod-link-divider" aria-hidden="true"></span><a class="mod-short-link" href="https://dlcmods.store/dlc/games/nowaonlineworld/ios/FD0E2EE28C1768BA164B0E44DD10F6F8.n" target="_blank" rel="noopener noreferrer">dlcmods.store/.../ios/FD0E2EE2...</a><button class="mod-copy-button" type="button" data-copy-url="https://dlcmods.store/dlc/games/nowaonlineworld/ios/FD0E2EE28C1768BA164B0E44DD10F6F8.n" aria-label="İOS bağlantısını kopyala" title="Bağlantıyı kopyala"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div>
     </div>
    </div>
   </div>
@@ -869,4 +878,15 @@ setInterval(refreshTopLivePublisherCount,30000);
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});
  else run();
 })();
+</script><script id="unofficial-mods-copy">
+document.addEventListener("click",async event=>{
+ const button=event.target.closest(".mod-copy-button");if(!button)return;
+ const value=button.getAttribute("data-copy-url");
+ try{
+  if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(value);
+  else{const field=document.createElement("textarea");field.value=value;field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();const ok=document.execCommand("copy");field.remove();if(!ok)throw new Error("copy failed");}
+  button.classList.add("copied");button.title="Kopyalandı";button.setAttribute("aria-label","Bağlantı kopyalandı");
+  setTimeout(()=>{button.classList.remove("copied");button.title="Bağlantıyı kopyala";button.setAttribute("aria-label","Bağlantıyı kopyala")},1600);
+ }catch(error){console.error("Bağlantı kopyalanamadı:",error);button.title="Kopyalanamadı";}
+});
 </script></body></html>
