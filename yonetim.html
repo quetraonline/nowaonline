@@ -2087,20 +2087,27 @@ async function monthlyEventDescriptionForm(){
    <button type="button" data-cmd="removeFormat" title="Biçimlendirmeyi temizle">Biçimi temizle</button>
    <input type="file" id="monthlyDescriptionImageFile" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
   </div>
+  <p id="monthlyDescriptionLoadStatus" role="status" style="margin:0;padding:9px 12px;background:#101722;color:#aab5c4;font-size:12px;border-top:1px solid #303b4b">Açıklama yükleniyor...</p>
   <div id="monthlyDescriptionEditor" class="monthly-description-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Forumdan metin veya görsel yapıştırabilir ya da yukarıdaki araçlarla içerik hazırlayabilirsin..."></div>
   <div class="monthly-editor-hint">Forumdan kopyaladığın biçimli yazıları doğrudan buraya yapıştırabilirsin. Görseller panodan veya Görsel düğmesinden eklenir.</div>
  </div></div>`+
  '<div class="actions"><button class="btn goldbtn" id="saveMonthlyDescription" type="submit">Açıklamayı kaydet</button></div></form></section>';
  bindAdminSidebarNavigation(true);
  $("backMonthlyDescription").onclick=()=>monthlySpecialEventsAdminView();
+ let descriptionLoadVersion=0;
  const load=async()=>{
-  const y=$("monthlyDescriptionYear").value,m=$("monthlyDescriptionMonth").value;
-  const {data,error}=await db.from("nowa_monthly_event_descriptions").select("description").eq("event_year",Number(y)).eq("event_month",Number(m)).maybeSingle();
-  if(error){toast("Aylık açıklama alınamadı: "+error.message);return}
-  $("monthlyDescriptionEditor").innerHTML=data?.description||"";
+  const version=++descriptionLoadVersion;
+  const y=Number($("monthlyDescriptionYear").value),m=Number($("monthlyDescriptionMonth").value);
+  const status=$("monthlyDescriptionLoadStatus"),target=$("monthlyDescriptionEditor");
+  status.textContent="Seçilen ayın açıklaması yükleniyor...";
+  const {data,error}=await db.from("nowa_monthly_event_descriptions").select("description").eq("event_year",y).eq("event_month",m).maybeSingle();
+  if(version!==descriptionLoadVersion)return;
+  if(error){status.textContent="Açıklama yüklenemedi: "+error.message;toast("Aylık açıklama alınamadı: "+error.message);return}
+  target.innerHTML=data?.description||"";
+  status.textContent=data?.description?"Kayıtlı açıklama yüklendi.":y+" "+$("monthlyDescriptionMonth").selectedOptions[0]?.textContent+" için kayıtlı açıklama bulunamadı. Yeni açıklama ekleyebilirsin.";
  };
- $("monthlyDescriptionYear").onchange=load;
- $("monthlyDescriptionMonth").onchange=load;
+ $("monthlyDescriptionYear").addEventListener("change",load);
+ $("monthlyDescriptionMonth").addEventListener("change",load);
  const editor=$("monthlyDescriptionEditor"),imageInput=$("monthlyDescriptionImageFile");
  const runEditorCommand=(command,value=null)=>{editor.focus();document.execCommand(command,false,value);};
  $("monthlyDescriptionEditor").closest(".formfield").querySelectorAll("[data-cmd]").forEach(button=>button.onclick=()=>runEditorCommand(button.dataset.cmd));
