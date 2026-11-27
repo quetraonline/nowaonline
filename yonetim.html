@@ -2053,9 +2053,16 @@ function monthlySpecialEventForm(item=null){
  });
 }
 async function monthlyEventDescriptionForm(){
- const [year,month]=String(window.nowaMonthlyEventFilter||"").split("-");
- const selectedYear=year||String(new Date().getFullYear());
- const selectedMonth=month||String(new Date().getMonth()+1).padStart(2,"0");
+ const now=new Date();
+ const currentYear=String(now.getFullYear());
+ const currentMonth=String(now.getMonth()+1).padStart(2,"0");
+ const [filterYear,filterMonth]=String(window.nowaMonthlyEventFilter||"").split("-");
+ const {data:descriptionRows,error:descriptionYearsError}=await db.from("nowa_monthly_event_descriptions").select("event_year,event_month");
+ if(descriptionYearsError)console.warn("Aylık açıklama yılları alınamadı:",descriptionYearsError);
+ const savedYears=[...new Set((descriptionRows||[]).map(row=>String(row.event_year)).filter(value=>/^\\d{4}$/.test(value)))];
+ const years=[...new Set([currentYear,...savedYears])].sort((a,b)=>Number(b)-Number(a));
+ const selectedYear=years.includes(filterYear)?filterYear:currentYear;
+ const selectedMonth=/^(0[1-9]|1[0-2)$/.test(filterMonth||"")?filterMonth:currentMonth;
  $("modal").dataset.view="monthly-event-description-form";
  window.nowaModalViewToken=(window.nowaModalViewToken||0)+1;
  $("modalTitle").textContent="YÖNETİM PANELİ";
@@ -2063,7 +2070,7 @@ async function monthlyEventDescriptionForm(){
  '<section class="admin-tab-panel admin-event-form-panel">'+
  '<div class="admin-event-form-heading"><div><h4>Aylık etkinlik açıklaması</h4><p>Bu açıklama seçilen ayın etkinlik sayfasında yalnızca bir kez gösterilecek.</p></div><button class="btn" type="button" id="backMonthlyDescription">GERİ</button></div>'+
  '<form id="monthlyEventDescriptionForm">'+
- '<div class="formfield"><label for="monthlyDescriptionYear">Yıl</label><select id="monthlyDescriptionYear" required>'+Array.from({length:101},(_,i)=>2100-i).map(y=>'<option value="'+y+'" '+(String(y)===String(selectedYear)?"selected":"")+'">'+y+'</option>').join("")+'</select></div>'+
+ '<div class="formfield"><label for="monthlyDescriptionYear">Yıl</label><select id="monthlyDescriptionYear" required>'+years.map(y=>'<option value="'+y+'" '+(y===selectedYear?'selected':'')+'>'+y+'</option>').join("")+'</select></div>'+
  '<div class="formfield"><label for="monthlyDescriptionMonth">Ay</label><select id="monthlyDescriptionMonth">'+["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"].map((name,i)=>'<option value="'+String(i+1).padStart(2,"0")+'" '+(selectedMonth===String(i+1).padStart(2,"0")?"selected":"")+'>'+name+'</option>').join("")+'</select></div>'+
  `<div class="formfield"><label>Açıklama</label>
  <div class="monthly-description-editor-wrap">
