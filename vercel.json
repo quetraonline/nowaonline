@@ -27,6 +27,10 @@
     {
       "source": "/etkinliktakvimi",
       "destination": "/etkinliktakvimi.html"
+    },
+    {
+      "source": "/indir",
+      "destination": "/indir.html"
     }
   ],
   "redirects": [
@@ -48,6 +52,11 @@
     {
       "source": "/kullanim-sartlari.html",
       "destination": "/kullanim-sartlari",
+      "permanent": true
+    },
+    {
+      "source": "/indir.html",
+      "destination": "/indir",
       "permanent": true
     }
   ],
@@ -99,6 +108,15 @@
     },
     {
       "source": "/etkinliktakvimi",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/indir",
       "headers": [
         {
           "key": "Cache-Control",
