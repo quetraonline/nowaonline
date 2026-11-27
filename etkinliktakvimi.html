@@ -417,7 +417,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .monthly-today-heading span{color:#cbd2dc;font-size:11px;font-weight:750;white-space:nowrap}
 .monthly-today-list{display:flex;flex-direction:column;gap:9px}
 .monthly-today-item{margin:0}
-.monthly-today-date strong{color:#e8b95c}
+.monthly-today-item .monthly-today-date strong{color:#e8b95c!important}
 .monthly-today-empty{padding:10px 12px;border-radius:8px;background:#090e16;color:#cbd2dc;font-size:12px;font-weight:650}
 @media(max-width:700px){.monthly-today-events{padding:0;margin-bottom:13px}.monthly-today-heading{font-size:14px}.monthly-today-heading span{font-size:10px}}
 .monthly-events-results{display:flex;flex-direction:column;gap:0}
@@ -655,11 +655,11 @@ setInterval(updateTopNextWeeklyEvent,1000);
   const get=type=>parts.find(part=>part.type===type)?.value||"";
   return get("year")+"-"+get("month")+"-"+get("day");
  };
- const renderTodayEvents=(selectedYear,server,term)=>{
+ const renderTodayEvents=(selectedMonth,server,term)=>{
   if(!todayResults)return;
-  const today=turkeyTodayKey(),currentYear=Number(today.slice(0,4));
-  // Yalnızca seçili ayın yılı kontrol edilir; seçili ayın kendisi dikkate alınmaz.
-  if(Number(selectedYear)!==currentYear){todayResults.hidden=true;todayResults.innerHTML="";return;}
+  const today=turkeyTodayKey(),currentMonth=today.slice(0,7);
+  // Bugünün özeti yalnızca hem yıl hem ay güncel takvim dönemiyle eşleştiğinde gösterilir.
+  if(selectedMonth!==currentMonth){todayResults.hidden=true;todayResults.innerHTML="";return;}
   todayResults.hidden=false;
   const todayEvents=allEvents.filter(e=>String(e.event_date||"").slice(0,10)===today&&(!server||e.server===server)&&(!term||String(e.event_name||"").toLocaleLowerCase("tr-TR").includes(term)||String(e.server||"").toLocaleLowerCase("tr-TR").includes(term))).sort((a,b)=>timeLabel(a.event_time).localeCompare(timeLabel(b.event_time)));
   const todayLabel=new Intl.DateTimeFormat("tr-TR",{timeZone:"Europe/Istanbul",day:"numeric",month:"long",year:"numeric"}).format(new Date());
@@ -669,8 +669,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
  const render=()=>{
   updateHeading();renderDescription();
   const month=monthSelect.value,server=serverSelect.value,term=search.value.trim().toLocaleLowerCase("tr-TR");
-  const selectedYear=month?Number(month.split("-")[0]):0;
-  renderTodayEvents(selectedYear,server,term);
+  renderTodayEvents(month,server,term);
   const filtered=allEvents.filter(e=>String(e.event_date||"").slice(0,7)===month&&(!server||e.server===server)&&(!term||String(e.event_name||"").toLocaleLowerCase("tr-TR").includes(term)||String(e.server||"").toLocaleLowerCase("tr-TR").includes(term)));
   if(!filtered.length){results.innerHTML='<div class="monthly-events-state monthly-events-empty">Bu filtrelere uygun etkinlik bulunamadı.</div>';return;}
   const days=new Map();
