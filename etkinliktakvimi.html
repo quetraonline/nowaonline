@@ -356,7 +356,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
  <div class="monthly-events-toolbar">
   <div class="monthly-search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg><input id="monthlyEventSearch" type="search" placeholder="Etkinlik ara..." aria-label="Etkinlik ara"></div>
   <div class="monthly-filter-wrap">
-   <label class="monthly-filter"><span>Server</span><select id="monthlyServerFilter" aria-label="Server filtresi"><option value="">Yükleniyor...</option></select></label>
+   <label class="monthly-filter monthly-month-filter"><span>Server</span><select id="monthlyServerFilter" aria-label="Server filtresi"><option value="">Yükleniyor...</option></select><span class="monthly-month-picker" id="monthlyServerPicker"><button type="button" class="monthly-month-trigger" id="monthlyServerTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="monthlyServerOptions"><span id="monthlyServerCurrent">Yükleniyor...</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><span class="monthly-month-options" id="monthlyServerOptions" role="listbox" aria-label="Server seçimi" hidden></span></span></label>
    <label class="monthly-filter monthly-month-filter"><span>Ay</span><select id="monthlyMonthFilter" aria-label="Ay filtresi"><option value="">Yükleniyor...</option></select><span class="monthly-month-picker"><button type="button" class="monthly-month-trigger" id="monthlyMonthTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="monthlyMonthOptions"><span id="monthlyMonthCurrent">Yükleniyor...</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><span class="monthly-month-options" id="monthlyMonthOptions" role="listbox" aria-label="Ay seçimi" hidden></span></span></label>
   </div>
  </div>
@@ -558,17 +558,23 @@ setInterval(updateTopNextWeeklyEvent,1000);
  const db=typeof subpageDb!=="undefined"?subpageDb:null;
  const search=document.getElementById("monthlyEventSearch"),serverSelect=document.getElementById("monthlyServerFilter"),monthSelect=document.getElementById("monthlyMonthFilter"),results=document.getElementById("monthlyEventsResults"),heading=document.getElementById("monthlyEventsHeading"),eventsTab=document.getElementById("monthlyEventsTab"),detailsTab=document.getElementById("monthlyDetailsTab"),eventsPanel=document.getElementById("monthlyEventsPanel"),detailsPanel=document.getElementById("monthlyDetailsPanel"),descriptionBox=document.getElementById("monthlyEventDescription");
  if(!search||!serverSelect||!monthSelect||!results)return;
- const monthPicker=document.querySelector(".monthly-month-picker"),monthTrigger=document.getElementById("monthlyMonthTrigger"),monthCurrent=document.getElementById("monthlyMonthCurrent"),monthOptions=document.getElementById("monthlyMonthOptions");
- const closeMonthPicker=()=>{monthPicker?.classList.remove("is-open");monthOptions?.setAttribute("hidden","");monthTrigger?.setAttribute("aria-expanded","false");};
- const syncMonthPicker=()=>{
-  if(!monthOptions||!monthCurrent)return;
-  monthOptions.innerHTML=[...monthSelect.options].map(option=>'<button type="button" class="monthly-month-option" role="option" data-value="'+escapeHtml(option.value)+'" aria-selected="'+String(option.value===monthSelect.value)+'">'+escapeHtml(option.textContent)+'</button>').join("");
-  const selected=monthSelect.options[monthSelect.selectedIndex];monthCurrent.textContent=selected?.textContent||"Ay seçin";
+ const monthPicker=document.getElementById("monthlyMonthTrigger")?.parentElement,monthTrigger=document.getElementById("monthlyMonthTrigger"),monthCurrent=document.getElementById("monthlyMonthCurrent"),monthOptions=document.getElementById("monthlyMonthOptions");
+ const serverPicker=document.getElementById("monthlyServerPicker"),serverTrigger=document.getElementById("monthlyServerTrigger"),serverCurrent=document.getElementById("monthlyServerCurrent"),serverOptions=document.getElementById("monthlyServerOptions");
+ const closePicker=(picker,options,trigger)=>{picker?.classList.remove("is-open");options?.setAttribute("hidden","");trigger?.setAttribute("aria-expanded","false");};
+ const syncPicker=(select,current,options,emptyLabel)=>{
+  if(!options||!current)return;
+  options.innerHTML=[...select.options].map(option=>'<button type="button" class="monthly-month-option" role="option" data-value="'+escapeHtml(option.value)+'" aria-selected="'+String(option.value===select.value)+'">'+escapeHtml(option.textContent)+'</button>').join("");
+  const selected=select.options[select.selectedIndex];current.textContent=selected?.textContent||emptyLabel;
  };
- monthTrigger?.addEventListener("click",()=>{if(monthOptions.hidden){syncMonthPicker();monthOptions.removeAttribute("hidden");monthPicker.classList.add("is-open");monthTrigger.setAttribute("aria-expanded","true");}else closeMonthPicker();});
- monthOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;monthSelect.value=option.dataset.value;monthSelect.dispatchEvent(new Event("change",{bubbles:true}));syncMonthPicker();closeMonthPicker();});
- document.addEventListener("click",event=>{if(monthPicker&&!monthPicker.contains(event.target))closeMonthPicker();});
- document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!monthOptions?.hidden){closeMonthPicker();monthTrigger?.focus();}});
+ const syncMonthPicker=()=>syncPicker(monthSelect,monthCurrent,monthOptions,"Ay seçin");
+ const syncServerPicker=()=>syncPicker(serverSelect,serverCurrent,serverOptions,"Server seçin");
+ const openPicker=(picker,options,trigger,sync)=>{if(options.hidden){sync();options.removeAttribute("hidden");picker.classList.add("is-open");trigger.setAttribute("aria-expanded","true");}else closePicker(picker,options,trigger);};
+ monthTrigger?.addEventListener("click",()=>openPicker(monthPicker,monthOptions,monthTrigger,syncMonthPicker));
+ serverTrigger?.addEventListener("click",()=>openPicker(serverPicker,serverOptions,serverTrigger,syncServerPicker));
+ monthOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;monthSelect.value=option.dataset.value;monthSelect.dispatchEvent(new Event("change",{bubbles:true}));syncMonthPicker();closePicker(monthPicker,monthOptions,monthTrigger);});
+ serverOptions?.addEventListener("click",event=>{const option=event.target.closest(".monthly-month-option");if(!option)return;serverSelect.value=option.dataset.value;serverSelect.dispatchEvent(new Event("change",{bubbles:true}));syncServerPicker();closePicker(serverPicker,serverOptions,serverTrigger);});
+ document.addEventListener("click",event=>{if(monthPicker&&!monthPicker.contains(event.target))closePicker(monthPicker,monthOptions,monthTrigger);if(serverPicker&&!serverPicker.contains(event.target))closePicker(serverPicker,serverOptions,serverTrigger);});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape"){if(!monthOptions?.hidden){closePicker(monthPicker,monthOptions,monthTrigger);monthTrigger?.focus();}if(!serverOptions?.hidden){closePicker(serverPicker,serverOptions,serverTrigger);serverTrigger?.focus();}}});
  let allEvents=[];let monthlyDescriptions=[];
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
  const sanitizeDescription=html=>{
@@ -603,6 +609,7 @@ setInterval(updateTopNextWeeklyEvent,1000);
    if(!allEvents.length){serverSelect.innerHTML='<option value="">Tüm serverlar</option>';monthSelect.innerHTML='<option value="">Etkinlik bulunamadı</option>';results.innerHTML='<div class="monthly-events-state">Henüz aylık özel etkinlik eklenmemiş.</div>';return;}
    const preferredServers=["All Servers","Ares","Atlas","A_U Server","Ultimate"];const servers=[...new Set([...preferredServers,...allEvents.map(e=>e.server).filter(Boolean)])];
    serverSelect.innerHTML='<option value="">Tüm serverlar</option>'+servers.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>').join("");
+   syncServerPicker();
    const months=[...new Set(allEvents.map(e=>String(e.event_date||"").slice(0,7)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
    monthSelect.innerHTML=months.map(v=>'<option value="'+escapeHtml(v)+'">'+escapeHtml(monthLabel(v))+'</option>').join("");
    const now=new Date(),current=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
