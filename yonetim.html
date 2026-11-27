@@ -1126,6 +1126,24 @@ html.admin-route #modal .admin-update-social-icon.twitch{color:#a970ff}
 html.admin-route #modal .admin-update-social-icon.instagram{color:#e66aa8}
 html.admin-route #modal .admin-update-social-icon.tiktok{color:#f4f5f7}
 html.admin-route #modal .admin-update-social-icon.kick{color:#53e18b}
+
+/* Yönetim paneli filtreleri: ortak kompakt özel açılır menü */
+.admin-filter-native{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;pointer-events:none!important}
+.admin-filter-picker{position:relative;display:block;width:100%;min-width:0}
+.filters>.admin-filter-picker{flex:0 0 175px;width:175px;max-width:175px}
+.admin-filter-trigger{box-sizing:border-box;width:100%;height:42px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px;border:1px solid #414958;border-radius:9px;background:#10151d;color:#f2f4f7;font:600 13px Inter,system-ui,sans-serif;text-align:left;cursor:pointer;box-shadow:none}
+.admin-filter-trigger:focus-visible{outline:2px solid #e8b95c;outline-offset:2px}
+.admin-filter-trigger>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-filter-trigger svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:#d4ad43;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+.admin-filter-picker.is-open .admin-filter-trigger svg{transform:rotate(180deg)}
+.admin-filter-options{position:fixed;z-index:10050;top:0;left:12px;width:min(200px,calc(100vw - 24px));max-height:min(280px,45vh);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid #465365;border-radius:11px;background:#141b25;box-shadow:0 14px 35px #000b;box-sizing:border-box}
+.admin-filter-options[hidden]{display:none!important}
+.admin-filter-option{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:7px;background:transparent;color:#e8edf4;font:650 14px Inter,system-ui,sans-serif;text-align:left;white-space:nowrap;cursor:pointer}
+.admin-filter-option:hover,.admin-filter-option:focus-visible{background:#252f3c;outline:none}
+.admin-filter-option[aria-selected="true"]{background:#b8873b22;color:#f0c66f}
+.admin-filter-option[aria-selected="true"]::after{content:"✓";font-weight:900;color:#f0c66f}
+@media(max-width:600px){.filters>.admin-filter-picker{flex:0 0 145px;width:145px;max-width:145px}.admin-filter-trigger{height:38px;font-size:12px}}
+
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 <style id="shared-mobile-hamburger-alignment">@media(max-width:700px){.mobile-menu-toggle{display:grid!important;place-items:center!important;box-sizing:border-box!important;position:fixed!important;top:10px!important;right:14px!important;left:auto!important;bottom:auto!important;transform:none!important;align-self:auto!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;padding:0!important;margin:0!important;border:1px solid #39414e!important;border-radius:12px!important;background:#171b23!important;color:#e8b95c!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;}.mobile-menu-toggle svg{display:block!important;width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;}body.mobile-menu-open .mobile-menu-toggle{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}}
@@ -3062,5 +3080,61 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
   }
  })();
 }
+
+/* Tek tip filtre menüleri: yönetim panelindeki arama/filtre select alanları */
+(()=>{
+ const filterIds=new Set(["platform","adminServerFilter","monthlyEventDaySelect","monthlyEventMonthSelect","monthlyEventYearSelect"]);
+ const refs=new Map();
+ const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ function sync(ref){
+  const {select,current,options}=ref;
+  if(!select.isConnected)return;
+  const selected=select.options[select.selectedIndex];
+  current.textContent=selected?.textContent||"Seçim yapın";
+  options.innerHTML=[...select.options].map(option=>'<button type="button" class="admin-filter-option" role="option" data-value="'+escapeHtml(option.value)+'" aria-selected="'+String(option.value===select.value)+'">'+escapeHtml(option.textContent)+'</button>').join("");
+ }
+ function close(ref){ref.picker.classList.remove("is-open");ref.options.setAttribute("hidden","");ref.trigger.setAttribute("aria-expanded","false");}
+ function init(select){
+  if(!filterIds.has(select.id)||select.dataset.adminFilterReady==="1")return;
+  select.dataset.adminFilterReady="1";
+  select.classList.add("admin-filter-native");
+  select.tabIndex=-1;
+  select.setAttribute("aria-hidden","true");
+  const picker=document.createElement("span");
+  picker.className="admin-filter-picker";
+  const trigger=document.createElement("button");
+  trigger.type="button";trigger.className="admin-filter-trigger";trigger.setAttribute("aria-haspopup","listbox");trigger.setAttribute("aria-expanded","false");
+  const current=document.createElement("span");trigger.append(current);
+  trigger.insertAdjacentHTML("beforeend",'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>');
+  const options=document.createElement("span");options.className="admin-filter-options";options.setAttribute("role","listbox");options.setAttribute("aria-label",select.getAttribute("aria-label")||select.closest(".formfield")?.querySelector("label")?.textContent||"Filtre seçenekleri");options.hidden=true;
+  picker.append(trigger,options);select.insertAdjacentElement("afterend",picker);
+  const ref={select,picker,trigger,current,options};refs.set(select,ref);
+  trigger.addEventListener("click",()=>{
+   if(!options.hidden){close(ref);return;}
+   sync(ref);
+   const rect=trigger.getBoundingClientRect(),width=Math.min(200,window.innerWidth-24),left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));
+   options.style.left=left+"px";options.style.top=Math.max(8,Math.min(rect.bottom+7,window.innerHeight-150))+"px";options.style.width=width+"px";
+   options.hidden=false;picker.classList.add("is-open");trigger.setAttribute("aria-expanded","true");
+  });
+  options.addEventListener("click",event=>{
+   const option=event.target.closest(".admin-filter-option");if(!option)return;
+   select.value=option.dataset.value;select.dispatchEvent(new Event("change",{bubbles:true}));sync(ref);close(ref);
+  });
+  select.addEventListener("change",()=>sync(ref));
+  const optionObserver=new MutationObserver(()=>sync(ref));
+  optionObserver.observe(select,{childList:true,subtree:true,characterData:true});
+  ref.optionObserver=optionObserver;
+  sync(ref);
+ }
+ function scan(root=document){
+  if(root.matches?.("select"))init(root);
+  root.querySelectorAll?.("select").forEach(init);
+ }
+ document.addEventListener("click",event=>{for(const ref of refs.values())if(!ref.picker.contains(event.target))close(ref);});
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")for(const ref of refs.values())if(!ref.options.hidden){close(ref);ref.trigger.focus();}});
+ scan();
+ new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)scan(node);}))).observe(document.body,{childList:true,subtree:true});
+})();
+
 </script>
 </body></html>
