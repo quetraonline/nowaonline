@@ -364,10 +364,10 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-features>.launcher-badge-card,.launcher-features>.launcher-android-card{height:90px!important;min-height:90px!important;padding:0 8px!important;align-items:center!important;justify-content:center!important}
 .launcher-features>.launcher-badge-card .launcher-feature-store{display:flex;align-items:center;justify-content:center;width:100%;height:100%;margin:0;padding:0}
 .launcher-features>.launcher-badge-card .launcher-feature-store img{max-height:58px;width:100%;object-fit:contain}
-.launcher-features>.launcher-android-card .launcher-android-link{display:inline-flex;align-items:center;justify-content:center;transition:opacity .18s ease,transform .18s ease}
+.launcher-features>.launcher-android-card .launcher-android-link{display:flex;width:100%;height:100%;align-items:center;justify-content:center;transition:opacity .18s ease,transform .18s ease}
 .launcher-features>.launcher-android-card .launcher-android-link:hover{opacity:.86;transform:translateY(-2px)}
-.launcher-features>.launcher-android-card .launcher-android-link img{max-height:58px;width:100%;object-fit:contain}
-@media(max-width:600px){.launcher-features>.launcher-badge-card,.launcher-features>.launcher-android-card{height:90px!important;min-height:90px!important;padding:0 8px!important}}
+.launcher-features>.launcher-android-card .launcher-android-link img{display:block;width:100%;max-width:210px;max-height:78px;object-fit:contain}
+@media(max-width:600px){.launcher-features>.launcher-badge-card,.launcher-features>.launcher-android-card{height:90px!important;min-height:90px!important;padding:0 8px!important}.launcher-features>.launcher-android-card .launcher-android-link img{width:100%;max-width:230px;max-height:82px}}
 
 .launcher-languages{display:flex;gap:7px;flex-wrap:wrap;margin:17px 0 22px}
 .launcher-languages span{min-width:38px;text-align:center;padding:6px 8px;border:1px solid #ffffff20;border-radius:9px;background:rgba(25,26,32,.88);font-size:11px;font-weight:800;color:#d5d5dc}
@@ -434,7 +434,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 <section class="download-placeholder-panel" aria-label="Nowa Online World oyun başlatıcısı">
  <div class="launcher-showcase">
   <div class="launcher-copy">
-   <div class="launcher-platform">Android · İOS</div>
+   <div class="launcher-platform">Android · İOS · APK</div>
    <div class="launcher-heading-logo"><img src="/img/c12449a6-73d4-4bcd-8234-dd18147dc63c.png" alt="Nowa Online World logosu"></div>
    <p class="launcher-tagline">Güncel İndirme Linkleri</p>
    <div class="launcher-features">
