@@ -352,6 +352,9 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-feature-store-only{min-height:112px;align-items:center;justify-content:center;padding:14px}
 .launcher-feature-store-only .launcher-feature-store{width:100%;margin:0;padding:0;display:flex;align-items:center;justify-content:center}
 .launcher-feature-store-only .launcher-feature-store img{width:100%;max-width:170px;height:auto;max-height:64px;object-fit:contain}
+ .launcher-android-link{align-items:center;justify-content:center;text-decoration:none;cursor:pointer;transition:border-color .18s ease,transform .18s ease,background .18s ease}
+ .launcher-android-link:hover{border-color:#c9a24a;background:rgba(28,29,35,.95);transform:translateY(-2px)}
+ .launcher-android-link img{display:block;width:100%;max-width:170px;max-height:78px;height:auto;object-fit:contain}
 .launcher-feature-store:hover{opacity:.86;transform:translateY(-2px)}
 .launcher-feature-store img{display:block;width:100%;max-width:148px;height:auto;object-fit:contain;object-position:left center}
 .launcher-feature{min-height:150px}
@@ -413,7 +416,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    <div class="launcher-features">
     <div class="launcher-feature launcher-feature-store-only"><a class="launcher-feature-store" href="https://play.google.com/store/apps/details?id=com.NOWAGames.NOWAOnlineWorldA" target="_blank" rel="noopener noreferrer" aria-label="Google Play üzerinden indir"><img src="/img/google-play.webp" alt="Google Play’den indir"></a></div>
     <div class="launcher-feature launcher-feature-store-only"><a class="launcher-feature-store" href="https://apps.apple.com/us/app/nowa-online-world/id6698880492" target="_blank" rel="noopener noreferrer" aria-label="App Store üzerinden indir"><img src="/img/appstore.webp" alt="App Store’dan indir"></a></div>
-    <div class="launcher-feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 7 7M4 12l8-8M3 21h18M14 17l3-8 3 8m-5-2h4"/></svg><b>9 Dil Desteği</b><span>Çoklu dil desteği</span></div>
+    <a class="launcher-feature launcher-feature-store-only launcher-android-link" href="https://www.nowaonlineworld.com/redirect.php?url=direct" target="_blank" rel="noopener noreferrer" aria-label="Android APK indir"><img src="/img/android.png" alt="Download Android APK"></a>
    </div>
    <div class="launcher-languages" aria-label="Desteklenen diller"><span>EN</span><span class="selected">TR</span><span>ES</span></div>
    
