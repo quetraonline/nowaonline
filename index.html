@@ -1146,6 +1146,21 @@ html.admin-route #modal[data-view="login"] #loginForm .actions{
  .monthly-month-options::-webkit-scrollbar-thumb:hover{background:#f3d58d}
 }
 
+
+/* Chromium/Edge masaüstü scrollbar renklerini etkinleştir */
+@media (min-width:701px){
+ @supports selector(::-webkit-scrollbar){
+  .platform-filter-options,.admin-filter-options,.event-day-options,.monthly-month-options{scrollbar-width:auto!important;scrollbar-color:auto!important}
+  .platform-filter-options::-webkit-scrollbar,.admin-filter-options::-webkit-scrollbar,.event-day-options::-webkit-scrollbar,.monthly-month-options::-webkit-scrollbar{width:9px!important;height:9px!important}
+  .platform-filter-options::-webkit-scrollbar-track,.admin-filter-options::-webkit-scrollbar-track,.event-day-options::-webkit-scrollbar-track,.monthly-month-options::-webkit-scrollbar-track{background:#252b34!important;border-radius:999px!important;margin:4px!important}
+  .platform-filter-options::-webkit-scrollbar-thumb,.admin-filter-options::-webkit-scrollbar-thumb,.event-day-options::-webkit-scrollbar-thumb,.monthly-month-options::-webkit-scrollbar-thumb{background:#d9ad54!important;border:2px solid #141b25!important;border-radius:999px!important;min-height:34px!important}
+  .platform-filter-options::-webkit-scrollbar-thumb:hover,.admin-filter-options::-webkit-scrollbar-thumb:hover,.event-day-options::-webkit-scrollbar-thumb:hover,.monthly-month-options::-webkit-scrollbar-thumb:hover{background:#f3d58d!important}
+ }
+ @supports not selector(::-webkit-scrollbar){
+  .platform-filter-options,.admin-filter-options,.event-day-options,.monthly-month-options{scrollbar-width:thin!important;scrollbar-color:#d9ad54 #252b34!important}
+ }
+}
+
 </style>
 </head>
 <body>
