@@ -2016,52 +2016,60 @@ function renderGameEvents(){
   };
   weeklyList.innerHTML=(previous.length?previous.map(card).join(""):'')+(active.length?active.map(card).join(""):'')+(upcoming.length?upcoming.map(card).join(""):'')+(!previous.length&&!active.length&&!upcoming.length?'<div class="game-events-empty">Bugün için planlanmış etkinlik bulunmuyor.</div>':'');
  }
- for(const section of ["special"]){
+ // Özel etkinlikler: Etkinlikler sayfasındaki gün, gece yarısı,
+ // çok günlük etkinlik, durum sıralaması ve geri sayım kurallarını uygula.
+ {
   const list=document.getElementById("specialEventsList");
   const day=document.getElementById("specialEventsDay");
-  if(!list)continue;
-  // Ana sayfada yalnızca bugünün özel etkinlikleri ve gece yarısını aşan
-  // bir önceki gün etkinliği gösterilir. Çok günlük devam görünümü yalnızca
-  // Etkinlikler sayfasındaki gün filtresinde uygulanır.
-  const previousWeekday=(now.weekday+6)%7;
-  const hasPreviousDayEvent=gameEventsCache.some(e=>{
-   if(e.section!==section||e.is_active===false||Number(e.weekday)!==previousWeekday||!e.end_time||e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="")return false;
-   const rawStart=gameEventRawStartSeconds(e),endClock=Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60;
-   const rawEnd=endClock<rawStart?endClock+86400:endClock;
-   return rawEnd>86400&&nowSec+86400<rawEnd;
-  });
-  const displayOffset=hasPreviousDayEvent?-1:0;
-  const displayWeekday=(now.weekday+displayOffset+7)%7;
-  const scheduleNow=nowSec-displayOffset*86400;
-  const events=gameEventsCache.filter(e=>{
-   if(e.section!==section||e.is_active===false||Number(e.weekday)!==displayWeekday)return false;
-   if(displayOffset===-1&&(e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!==""))return false;
-   return true;
-  }).map(e=>{
-   let start=specialEventStartSeconds(e),end=specialEventEndSeconds(e,start);
-   if(displayOffset===-1&&gameEventRawStartSeconds(e)<21600){start=gameEventRawStartSeconds(e)+86400;end=specialEventEndSeconds(e,start);}
-   return {...e,_start:start,_end:end,_current:scheduleNow,_live:scheduleNow>=start&&scheduleNow<end,_done:scheduleNow>=end,_next:scheduleNow<start};
-  });
-  if(day){
-   const date=new Date(Date.now()+displayOffset*86400000);
-   day.textContent=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).format(date);
+  if(list){
+   const previousWeekday=(now.weekday+6)%7;
+   const hasLiveOvernightEvent=gameEventsCache.some(e=>{
+    if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previousWeekday||!e.end_time)return false;
+    const rawStart=gameEventRawStartSeconds(e);
+    const rawEnd=specialEventEndSeconds(e,specialEventStartSeconds(e));
+    return rawEnd>86400&&nowSec<rawEnd-86400;
+   });
+   const displayOffset=hasLiveOvernightEvent?-1:0;
+   const displayWeekday=(now.weekday+displayOffset+7)%7;
+   const scheduleNow=nowSec-displayOffset*86400;
+   const selected=gameEventsCache.filter(e=>e.section==="special"&&e.is_active!==false).map(e=>{
+    const hasExplicitEndDay=e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!=="";
+    const rawStart=gameEventRawStartSeconds(e);
+    const startDayOffset=hasExplicitEndDay?(displayWeekday-Number(e.weekday)+7)%7:0;
+    const endOffset=hasExplicitEndDay?(Number(e.end_weekday)-Number(e.weekday)+7)%7:((e.end_time&&Number(String(e.end_time).slice(0,2))*3600+Number(String(e.end_time).slice(3,5))*60<rawStart)?1:0);
+    if(hasExplicitEndDay&&startDayOffset>endOffset)return null;
+    if(!hasExplicitEndDay&&Number(e.weekday)!==displayWeekday)return null;
+    let start=rawStart-startDayOffset*86400;
+    let end=specialEventEndSeconds(e,specialEventStartSeconds(e))-startDayOffset*86400;
+    const current=scheduleNow;
+    if(rawStart<21600){start+=86400;end+=86400;}
+    return {...e,_start:start,_end:end,_current:current,_startDayOffset:startDayOffset,_dayOffset:displayOffset-startDayOffset,_live:current>=start&&current<end,_done:current>=end,_next:current<start,_remaining:Math.max(0,start-current),_left:Math.max(0,end-current)};
+   }).filter(Boolean).sort((a,b)=>{
+    const priority=e=>e._live?0:e._done?2:1;
+    return priority(a)-priority(b)||(a._live||!a._done?a._start-b._start:b._end-a._end)||Number(a.sort_order||0)-Number(b.sort_order||0);
+   });
+   if(day){
+    const date=new Date(Date.now()+displayOffset*86400000);
+    day.textContent=new Intl.DateTimeFormat("tr-TR",{timeZone:"Etc/GMT-3",day:"numeric",month:"long",weekday:"long"}).format(date);
+   }
+   if(!selected.length){
+    list.innerHTML='<div class="game-events-empty">Planlanmış özel etkinlik bulunmuyor.</div>'+specialDayDownloadMarkup(displayWeekday);
+   }else{
+    list.innerHTML=selected.map(e=>{
+     const remaining=e._live?e._left:e._remaining;
+     const status=e._live?"AKTİF":e._done?"BİTTİ":formatClock(remaining);
+     const cls=e._live?"is-live":e._done?"is-done":"is-next";
+     const eventBackground=gameEventImageFor(e);
+     const eventBgStyle=eventBackground?'--event-bg:url(&quot;'+esc(eventBackground)+'&quot;)':'';
+     const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
+     const progressStyle=e._live?';--special-progress:'+progress+'%':'';
+     const startDayText=e._startDayOffset>0?GAME_EVENT_DAYS[Number(e.weekday)]+' ':'';
+     const endDayText=e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!==''?GAME_EVENT_DAYS[Number(e.end_weekday)]+' ':'';
+     const timeText=startDayText+gameEventClockText(e.start_time)+(e.end_time?' – '+endDayText+gameEventClockText(e.end_time):'')+(e._live?' · Bitişe <span data-special-remaining>'+formatClock(e._left)+'</span>':'');
+     return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" data-special-day-offset="'+e._dayOffset+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(eventBackground)+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+timeText+'</time></div><span class="game-event-status">'+status+'</span>'+(e._live?'<div class="special-event-progress" aria-hidden="true"><i style="width:'+progress+'%"></i></div>':'')+'</article>';
+    }).join("")+specialDayDownloadMarkup(displayWeekday);
+   }
   }
-  if(!events.length){list.innerHTML='<div class="game-events-empty">Planlanmış özel etkinlik bulunmuyor.</div>'+specialDayDownloadMarkup(displayWeekday);continue}
-  const ordered=events.sort((a,b)=>{
-   const priority=e=>e._live?0:e._next?1:2;
-   if(priority(a)!==priority(b))return priority(a)-priority(b);
-   if(a._done&&b._done)return a._start-b._start||Number(a.sort_order||0)-Number(b.sort_order||0);
-   return a._start-b._start||Number(a.sort_order||0)-Number(b.sort_order||0);
-  });
-  list.innerHTML=ordered.map(e=>{
-   const remaining=e._next?e._start-e._current:e._live?e._end-e._current:0;
-   const status=e._live?"AKTİF":e._done?"BİTTİ":formatClock(remaining);
-   const cls=e._live?"is-live":e._next?"is-next":"is-done";
-   const eventBackground=gameEventImageFor(e);const eventBgStyle=eventBackground?'--event-bg:url(&quot;'+esc(eventBackground)+'&quot;)':'';
-   const progress=e._live?Math.max(0,Math.min(100,((e._current-e._start)/Math.max(1,e._end-e._start))*100)):0;
-   const progressStyle=e._live?';--special-progress:'+progress+'%':'';
-   return '<article data-special-event-id="'+esc(e.id||e.event_name)+'" data-special-day-offset="'+displayOffset+'" class="game-event-row '+cls+'" style="'+eventBgStyle+progressStyle+'"><img class="game-event-image" src="'+esc(gameEventImageFor(e))+'" alt="" loading="lazy"><div class="game-event-info"><strong title="'+esc(e.display_name||e.event_title||e.event_name)+'">'+esc(e.display_name||e.event_title||e.event_name)+'</strong><small class="game-event-server">'+esc(e.server||"Ares - Atlas")+'</small><time>'+gameEventClockText(e.start_time)+(e.end_time?' – '+(e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!==''?GAME_EVENT_DAYS[Number(e.end_weekday)]+' '+gameEventClockText(e.end_time):gameEventClockText(e.end_time)):'')+(e._live?' · Bitişe <span data-special-remaining>'+formatClock(remaining)+'</span>':'')+'</time></div><span class="game-event-status">'+status+'</span>'+(e._live?'<div class="special-event-progress" aria-hidden="true"><i style="width:'+progress+'%"></i></div>':'')+'</article>';
-  }).join("")+specialDayDownloadMarkup(displayWeekday);
  }
 }
 function updateTopNextWeeklyEvent(){
