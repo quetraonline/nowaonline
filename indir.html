@@ -419,13 +419,11 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 
 <style id="desktop-logo-menu-click-fix">@media(min-width:701px){#siteMenu>.brand-menu{pointer-events:auto!important;cursor:pointer!important;position:relative!important;z-index:41!important}#siteMenu>.menu-dropdown{z-index:40!important}#siteMenu.open>.menu-dropdown{opacity:1!important;visibility:visible!important;transform:translateY(0)!important;pointer-events:auto!important}}</style>
 
-<style id="desktop-hide-download-menu">@media(min-width:701px){#siteMenu>.menu-dropdown>.mobile-download-menu{display:none!important}}/* APK logosunu görünür ve mağaza rozetleriyle dengeli boyutta göster */
-.launcher-features>.launcher-android-card .launcher-android-link{gap:14px;color:#e8b95c;text-decoration:none}
-.launcher-features>.launcher-android-card .launcher-android-link svg{display:block;width:38px;height:38px;flex:0 0 38px;stroke:currentColor}
-.launcher-android-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px;color:#f5f3f4;line-height:1.1}
-.launcher-android-copy strong{font-size:17px;font-weight:900;letter-spacing:1.2px}
-.launcher-android-copy small{font-size:11px;font-weight:850;letter-spacing:2px;color:#e8b95c}
-@media(max-width:600px){.launcher-features>.launcher-android-card .launcher-android-link{gap:12px}.launcher-features>.launcher-android-card .launcher-android-link svg{width:38px;height:38px;flex-basis:38px}.launcher-android-copy strong{font-size:16px}}
+<style id="desktop-hide-download-menu">@media(min-width:701px){#siteMenu>.menu-dropdown>.mobile-download-menu{display:none!important}}/* Mobilde mevcut Android APK görselini kutu içinde büyüt */
+@media(max-width:600px){
+.launcher-features>.launcher-android-card .launcher-android-link{display:flex;width:100%;height:100%;align-items:center;justify-content:center}
+.launcher-features>.launcher-android-card .launcher-android-link img{display:block;width:100%;max-width:none;height:82px;max-height:82px;object-fit:contain}
+}
 </style>
 </head>
 <body><div class="topline"></div>
@@ -447,7 +445,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    <div class="launcher-features">
     <div class="launcher-feature launcher-feature-store-only launcher-badge-card"><a class="launcher-feature-store" href="https://play.google.com/store/apps/details?id=com.NOWAGames.NOWAOnlineWorldA" target="_blank" rel="noopener noreferrer" aria-label="Google Play üzerinden indir"><img src="/img/google-play.webp" alt="Google Play’den indir"></a></div>
     <div class="launcher-feature launcher-feature-store-only launcher-badge-card"><a class="launcher-feature-store" href="https://apps.apple.com/us/app/nowa-online-world/id6698880492" target="_blank" rel="noopener noreferrer" aria-label="App Store üzerinden indir"><img src="/img/appstore.webp" alt="App Store’dan indir"></a></div>
-    <div class="launcher-feature launcher-feature-store-only launcher-android-card"><a class="launcher-android-link" href="https://www.nowaonlineworld.com/redirect.php?url=direct" target="_blank" rel="noopener noreferrer" aria-label="Android APK indir"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 17 9 9m25 8 5-8M13 20a11 11 0 0 1 22 0v2H13zM11 23h26v13a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3zM7 24v10m34-10v10M17 39v5m14-5v5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="16" r="1.4" fill="currentColor"/><circle cx="29" cy="16" r="1.4" fill="currentColor"/></svg><span class="launcher-android-copy"><strong>ANDROID APK</strong><small>İNDİR</small></span></a></div>
+    <div class="launcher-feature launcher-feature-store-only launcher-android-card"><a class="launcher-android-link" href="https://www.nowaonlineworld.com/redirect.php?url=direct" target="_blank" rel="noopener noreferrer" aria-label="Android APK indir"><img src="/img/android.png" alt="Download Android APK"></a></div>
    </div>
    <div class="launcher-languages" aria-label="Desteklenen diller"><span>EN</span><span class="selected">TR</span><span>DE</span><span>ES</span><span>FR</span><span>JA</span><span>KO</span><span>RU</span><span>ZH</span></div>
    
