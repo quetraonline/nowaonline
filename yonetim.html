@@ -3083,7 +3083,7 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
 
 /* Tek tip filtre menüleri: yönetim panelindeki arama/filtre select alanları */
 (()=>{
- const filterIds=new Set(["platform","adminServerFilter","monthlyEventDaySelect","monthlyEventMonthSelect","monthlyEventYearSelect","monthlyDescriptionYear","monthlyDescriptionMonth"]);
+ // Yönetim panelindeki tüm düzenleme formlarının select alanları kapsanır; editör araç çubuğu seçimleri hariç tutulur.
  const refs=new Map();
  const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
  function sync(ref){
@@ -3095,7 +3095,7 @@ if(document.documentElement.classList.contains("admin-route")&&!window.nowaAdmin
  }
  function close(ref){ref.picker.classList.remove("is-open");ref.options.setAttribute("hidden","");ref.trigger.setAttribute("aria-expanded","false");}
  function init(select){
-  if(!filterIds.has(select.id)||select.dataset.adminFilterReady==="1")return;
+  if(select.dataset.adminFilterReady==="1"||(!select.closest(".formfield")&&!select.closest("form"))||select.closest('[role="toolbar"]'))return;
   select.dataset.adminFilterReady="1";
   select.classList.add("admin-filter-native");
   select.style.setProperty("display","none","important");
