@@ -413,12 +413,23 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 @media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-feature-store{grid-column:1/-1;padding-top:8px}.launcher-feature-store img{max-width:145px}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-store-logos{max-width:100%;gap:10px}.launcher-store-logos img{width:min(148px,41vw)}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
 
 
-.mod-publisher-card.card{position:relative;display:block;padding:8px 11px;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;border-radius:9px;transition:border-color .2s,background .2s;overflow:hidden;min-height:0}
+/* Homepage publisher-card styles mirrored for the two download-page cards */
+.mod-publisher-card.card{position:relative;display:flex;align-items:center;height:64px;padding:8px 11px;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;border-radius:9px;transition:border-color .2s,background .2s;overflow:hidden;min-height:64px;box-shadow:none}
 .mod-publisher-card.card:hover{background:linear-gradient(145deg,#202a37,#121923);border-color:#a77c40}
+.mod-publisher-card.card.youtube-theme{background:linear-gradient(115deg,#310b10 0%,#19151a 48%,#10151e 100%);border:1px solid #d92b36;box-shadow:inset 4px 0 0 #ff303b,0 5px 18px #d7192020}
+.mod-publisher-card.card.youtube-theme:hover{background:linear-gradient(115deg,#4a0d14 0%,#21171d 48%,#121923 100%);border-color:#ff4b55;box-shadow:inset 4px 0 0 #ff303b,0 8px 24px #d7192033}
+.mod-publisher-card.card.youtube-theme .avatar{border-color:#ff454f;box-shadow:0 0 0 2px #ff303b22}
+.mod-publisher-card.card.youtube-theme .name{color:#fff}
+.mod-publisher-card.card.youtube-theme .creator-label{display:inline-block;margin-top:4px;padding:2px 7px;border:1px solid #ff646c;border-radius:5px;color:#ffb8bd;font-size:10px;font-weight:600;letter-spacing:.35px;line-height:1.2}
+.mod-publisher-card.card.youtube-theme .platform-tag.youtube{background:#ff303b;color:#fff;border-color:#ff646c}
 .mod-publisher-card .cardtop{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
 .mod-publisher-card .person{display:flex;align-items:center;gap:12px;min-width:0}
 .mod-publisher-card .avatar{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;border-radius:50%;border:1px solid #a87c3d;background:linear-gradient(145deg,#49341c,#202a36);color:#f3ca79;font-size:16px;font-weight:950;overflow:hidden}
-.mod-publisher-card .avatar img{width:100%;height:100%;object-fit:cover}
+.mod-publisher-card .avatar img{width:100%;height:100%;object-fit:cover;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;user-drag:none}
+.mod-publisher-card .avatar.live-avatar img{border-radius:50%}
+.mod-publisher-card .avatar.live-avatar{position:relative;overflow:visible;border:2px solid #ff3030;box-shadow:0 0 0 2px rgba(255,48,48,.22),0 0 13px rgba(255,48,48,.58)}
+.mod-publisher-card .avatar.live-avatar:after{content:"";position:absolute;inset:-4px;border:2px solid rgba(255,48,48,.9);border-radius:50%;pointer-events:none;z-index:0;animation:live-avatar-wave 1.8s ease-out infinite}
+.mod-publisher-card .avatar.live-avatar img{position:relative;z-index:1}
 .mod-publisher-card .person-info{min-width:0}
 .mod-publisher-card .name{font-weight:900;font-size:15px;line-height:1.2;overflow-wrap:anywhere;color:#f4f5f7}
 .mod-publisher-card .platform-tags{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:5px;margin:0;max-width:55%}
@@ -433,11 +444,9 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .mod-publisher-card .platform-tag.facebook{color:#78aaff}
 .mod-publisher-card .platform-tag.discord{color:#9bafff}
 .mod-publisher-card .platform-tag.whatsapp{color:#42d77d}
-.mod-publisher-live{display:inline-flex;align-items:center;gap:6px;margin-top:5px;padding:2px 6px 2px 10px;border:1px solid #ff6478;border-radius:5px;background:rgba(215,25,53,.22);color:#fff;font-size:9px;font-weight:800;line-height:1}
-.mod-publisher-live:before{content:"";width:4px;height:4px;flex:0 0 4px;border-radius:50%;background:#fff}
-.mod-publisher-empty{color:#9aa5b4;font-size:12px}
-@media(max-width:600px){.mod-publisher-card .avatar{width:46px;height:46px;flex-basis:46px}.mod-publisher-card .name{font-size:15px}.mod-publisher-card .platform-tags{gap:5px;max-width:58%}.mod-publisher-card .platform-tag{width:27px;height:27px;flex-basis:27px}.mod-publisher-card .platform-tag svg{width:16px;height:16px}}
-@media(max-width:600px){.mod-publisher-card{min-height:58px;padding:7px 9px;gap:8px}.mod-publisher-avatar{width:40px;height:40px;flex-basis:40px}.mod-publisher-name{font-size:13px}.mod-publisher-platforms{gap:4px}.mod-publisher-platforms a{width:26px;height:26px}.mod-publisher-platforms svg{width:15px;height:15px}}
+.mod-publisher-card .live-status{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:max-content!important;min-height:22px!important;margin-top:5px!important;padding:2px 6px 2px 10px!important;border:1px solid #ff6478!important;border-radius:5px!important;background:rgba(215,25,53,.22)!important;color:#fff!important;opacity:1!important;text-shadow:0 1px 3px rgba(0,0,0,.65)!important;box-shadow:0 0 10px rgba(255,35,65,.38)!important;font-size:9px!important;font-weight:800!important;line-height:1!important;letter-spacing:.25px!important;box-sizing:border-box!important;vertical-align:middle!important}
+.mod-publisher-card .live-indicator{width:4px;height:4px;flex:0 0 4px;background:#fff!important;opacity:1!important;animation:liveWave 1.8s ease-out infinite!important}
+@media(max-width:600px){.mod-publisher-card.card{height:64px;min-height:64px;padding:8px 11px}.mod-publisher-card .avatar{width:46px;height:46px;flex-basis:46px}.mod-publisher-card .name{font-size:15px}.mod-publisher-card .platform-tags{gap:5px;max-width:58%}.mod-publisher-card .platform-tag{width:27px;height:27px;flex-basis:27px}.mod-publisher-card .platform-tag svg{width:16px;height:16px}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
 <style id="mobile-download-menu-styles">.mobile-download-menu{display:none!important}@media(max-width:700px){.mobile-download-menu{display:block!important;border-bottom:1px solid #ffffff18}.mobile-download-trigger{display:flex;align-items:center;gap:13px;width:100%;min-height:56px;padding:7px 4px;border:0;border-radius:0;background:transparent;color:#e8e9ed;text-align:left;font:inherit;font-size:15px;font-weight:800;line-height:1.25;cursor:pointer}.mobile-download-trigger>svg:first-child{width:20px;height:20px;flex:0 0 20px;fill:none;stroke:#a6a6b3;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.mobile-download-trigger:hover,.mobile-download-trigger:active,.mobile-download-trigger:focus,.mobile-download-menu.open .mobile-download-trigger{background:transparent;color:#e8e9ed;outline:none;box-shadow:none}.mobile-download-trigger:hover>svg:first-child,.mobile-download-trigger:active>svg:first-child,.mobile-download-trigger:focus>svg:first-child,.mobile-download-menu.open .mobile-download-trigger>svg:first-child{stroke:#a6a6b3}.mobile-download-chevron{width:17px;height:17px;margin-left:auto;fill:none;stroke:#a6a6b3;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}.mobile-download-menu.open .mobile-download-chevron{transform:rotate(180deg)}.mobile-download-options{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 8px 16px}.mobile-download-options[hidden]{display:none!important}.mobile-download-options a{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:58px;padding:7px 9px;border:1px solid #ffffff1c;border-radius:10px;background:#171c25}.mobile-download-options a:active{border-color:#c9a24a;background:#202735}.mobile-download-options img{display:block;width:100%;max-width:148px;height:auto;object-fit:contain}}</style><style id="mobile-legal-menu-hide">@media(max-width:700px){#siteMenu>.menu-dropdown>a[href="/gizlilik-politikasi"],#siteMenu>.menu-dropdown>a[href="/kullanim-sartlari"]{display:none!important}}</style><style id="shared-mobile-hamburger-alignment">@media(max-width:700px){.mobile-menu-toggle{display:grid!important;place-items:center!important;box-sizing:border-box!important;position:fixed!important;top:10px!important;right:14px!important;left:auto!important;bottom:auto!important;transform:none!important;align-self:auto!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;padding:0!important;margin:0!important;border:1px solid #39414e!important;border-radius:12px!important;background:#171b23!important;color:#e8b95c!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;}.mobile-menu-toggle svg{display:block!important;width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;}body.mobile-menu-open .mobile-menu-toggle{visibility:hidden!important;opacity:0!important;pointer-events:none!important;}}</style>
@@ -1091,41 +1100,39 @@ document.addEventListener("click",async event=>{
 
 <script id="mod-publisher-cards">
 (()=> {
- const wanted=[
-  {key:"audrianna",name:"AUDRIANNA"},
-  {key:"artun-hoca",name:"Artun Hoca"}
- ];
+ const wanted=[{key:"audrianna",name:"AUDRIANNA"},{key:"artun-hoca",name:"Artun Hoca"}];
  const icons={
-  TikTok:'<path d="M15 3c.4 2.3 1.7 3.7 4 4v3.1a8 8 0 0 1-4-1.2v6.2a5.5 5.5 0 1 1-5.5-5.5c.4 0 .8 0 1.2.1v3.2a2.4 2.4 0 1 0 1.4 2.2V3z"/>',
-  YouTube:'<path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8A31 31 0 0 0 23 7.2zM9.8 15.5v-7l6 3.5z"/>',
-  Twitch:'<path d="M4 2h18v13l-5 5h-4l-3 3H7v-3H3V5zm2 2v14h4v3l3-3h4l3-3V4zm5 3h2v6h-2zm5 0h2v6h-2z"/>',
-  Instagram:'<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="18" cy="6.5" r="1.3"/>',
-  Discord:'<path d="M19.7 5.3A18 18 0 0 0 15.4 4l-.5 1a16 16 0 0 0-5.8 0l-.5-1a18 18 0 0 0-4.3 1.3C1.6 9.3.9 13.2 1.2 17a18 18 0 0 0 5.3 2.7l1.1-1.8-1.7-.8.4-.3c3.3 1.5 6.8 1.5 10 0l.4.3-1.7.8 1.1 1.8a18 18 0 0 0 5.3-2.7c.4-4.4-.8-8.3-3.7-11.7Z"/>'
+ TikTok:'<path d="M15 3c.4 2.3 1.7 3.7 4 4v3.1a8 8 0 0 1-4-1.2v6.2a5.5 5.5 0 1 1-5.5-5.5c.4 0 .8 0 1.2.1v3.2a2.4 2.4 0 1 0 1.4 2.2V3z"/>',
+ YouTube:'<path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.8 15.5v-7l6 3.5z"/>',
+ Twitch:'<path d="M4 2h18v13l-5 5h-4l-3 3H7v-3H3V5zm2 2v14h4v3l3-3h4l3-3V4zm5 3h2v6h-2zm5 0h2v6h-2z"/>',
+ Instagram:'<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="18" cy="6.5" r="1.3"/>',
+ Discord:'<path d="M19.7 5.3A18 18 0 0 0 15.4 4l-.5 1a16 16 0 0 0-5.8 0l-.5-1a18 18 0 0 0-4.3 1.3C1.6 9.3.9 13.2 1.2 17a18 18 0 0 0 5.3 2.7l1.1-1.8-1.7-.8.4-.3c3.3 1.5 6.8 1.5 10 0l.4.3-1.7.8 1.1 1.8a18 18 0 0 0 5.3-2.7c.4-4.4-.8-8.3-3.7-11.7Z"/>'
  };
- const esc=v=>String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const icon=name=>'<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">'+(icons[name]||'<circle cx="12" cy="12" r="8"/>')+'</svg>';
  const draw=(node,p,livePlatforms)=>{
   const links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
-  const platforms=Array.isArray(p.platforms)?p.platforms:Object.keys(links);
-  node.className="mod-publisher-card card";node.innerHTML='<div class="cardtop"><div class="person"><div class="avatar">'+(p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="'+esc(p.name)+'" loading="lazy">':'')+'</div><div class="person-info"><div class="name">'+esc(p.name)+'</div>'+(livePlatforms.length?'<div class="mod-publisher-live">CANLI · '+livePlatforms.join(", ")+'</div>':'')+'</div></div><div class="platform-tags card-platforms">'+platforms.map(platform=>links[platform]?'<a class="platform-tag '+String(platform).toLowerCase()+'" href="'+esc(links[platform])+'" target="_blank" rel="noopener noreferrer" title="'+esc(platform)+'" aria-label="'+esc(platform)+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+(icons[platform]||"")+'</svg></a>':"").join("")+'</div></div>';
+  const platforms=Array.isArray(p.platforms)&&p.platforms.length?p.platforms:(p.platform?[p.platform]:[]);
+  const isLive=livePlatforms.length>0;
+  node.className="mod-publisher-card card"+(p.card_theme==="youtube"?" youtube-theme":"");
+  node.setAttribute("data-publisher-id",p.id);
+  node.setAttribute("tabindex","0");node.setAttribute("role","button");
+  node.setAttribute("aria-label",p.name+(isLive?", şu anda canlı yayında":"")+" detaylarını görüntüle");
+  node.innerHTML='<div class="cardtop"><div class="person"><div class="avatar '+(isLive?'live-avatar':'')+'">'+(p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="'+esc(p.name)+'" loading="lazy" decoding="async" fetchpriority="low" onerror="this.remove()">':esc((p.name||"NW").trim().slice(0,2).toUpperCase()))+'</div><div class="person-info"><div class="name">'+esc(p.name)+'</div>'+(isLive?'<div class="live-status"><span class="live-indicator" aria-hidden="true"></span><span>CANLI</span>'+livePlatforms.sort((a,b)=>["TikTok","Twitch","YouTube","Kick"].indexOf(a)-["TikTok","Twitch","YouTube","Kick"].indexOf(b)).map(platform=>'<span class="live-platform-icon '+platform.toLowerCase()+'" title="'+esc(platform)+'" aria-label="'+esc(platform)+'">'+icon(platform)+'</span>').join("")+'</div>':'')+(p.card_theme==="youtube"&&!isLive?'<small class="creator-label">İÇERİK ÜRETİCİSİ</small>':'')+'</div></div><div class="platform-tags card-platforms">'+platforms.map(platform=>{const url=links[platform];return url?'<a class="platform-tag '+String(platform).toLowerCase()+'" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" title="'+esc(platform)+'" aria-label="'+esc(platform)+' bağlantısını aç">'+icon(platform)+'</a>':'<span class="platform-tag '+String(platform).toLowerCase()+'" title="'+esc(platform)+'" aria-label="'+esc(platform)+'">'+icon(platform)+'</span>'}).join("")+'</div></div>';
  };
  async function load(){
-  const {data,error}=await subpageDb.from("nowa_publishers").select("id,name,avatar_url,platforms,platform_links,is_published").eq("is_published",true).in("name",wanted.map(x=>x.name));
+  const {data,error}=await subpageDb.from("nowa_publishers").select("id,name,avatar_url,platform,platforms,platform_links,card_theme,is_published").eq("is_published",true).in("name",wanted.map(x=>x.name));
   if(error)throw error;
-  const rows=data||[];
-  const ids=rows.map(p=>p.id);
-  let sessions=[];
+  const rows=data||[],ids=rows.map(p=>p.id);let sessions=[];
   if(ids.length){const result=await subpageDb.from("nowa_stream_sessions").select("publisher_id,platform").is("ended_at",null).in("publisher_id",ids);if(!result.error)sessions=result.data||[];}
   for(const item of wanted){
-   const node=document.querySelector('[data-publisher-card="'+item.key+'"]');
-   if(!node)continue;
+   const node=document.querySelector('[data-publisher-card="'+item.key+'"]');if(!node)continue;
    const p=rows.find(row=>String(row.name).toLocaleLowerCase("tr-TR")===item.name.toLocaleLowerCase("tr-TR"));
    if(!p){node.innerHTML='<span class="mod-publisher-empty">Yayıncı kartı yüklenemedi.</span>';continue;}
-   const live=[...new Set(sessions.filter(x=>x.publisher_id===p.id).map(x=>x.platform))];
-   draw(node,p,live);
+   draw(node,p,[...new Set(sessions.filter(x=>x.publisher_id===p.id).map(x=>x.platform))]);
   }
  }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>load().catch(e=>console.warn("Yayıncı kartları yüklenemedi:",e)),{once:true});
- else load().catch(e=>console.warn("Yayıncı kartları yüklenemedi:",e));
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>load().catch(e=>console.warn("Yayıncı kartları yüklenemedi:",e)),{once:true});else load().catch(e=>console.warn("Yayıncı kartları yüklenemedi:",e));
 })();
 </script>
 </body></html>
