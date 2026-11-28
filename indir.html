@@ -464,6 +464,24 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-download-row .launcher-discord-button:active{transform:translateY(0) scale(.98)}
 @media(max-width:600px){.launcher-download-row{gap:10px}.launcher-download-row .launcher-download-button,.launcher-download-row .launcher-discord-button{min-height:56px;padding:0 17px;font-size:14px}}
 </style>
+
+<style id="launcher-cta-typography">
+/* Kayıt ve Discord butonlarının tipografisini sitenin ortak yazı karakteriyle eşitle */
+.launcher-download-row .launcher-download-button,
+.launcher-download-row .launcher-discord-button{
+  font-family:inherit!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  line-height:1.4!important;
+  letter-spacing:0!important;
+}
+@media(max-width:600px){
+  .launcher-download-row .launcher-download-button,
+  .launcher-download-row .launcher-discord-button{
+    font-size:14px!important;
+  }
+}
+</style>
 </head>
 <body><div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
