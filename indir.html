@@ -413,6 +413,11 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 @media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-feature-store{grid-column:1/-1;padding-top:8px}.launcher-feature-store img{max-width:145px}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-store-logos{max-width:100%;gap:10px}.launcher-store-logos img{width:min(148px,41vw)}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
 
 
+/* Keep both download-page publisher cards identical to the standard homepage cards. */
+.mod-publisher-card.card,.mod-publisher-card.card.youtube-theme{background:linear-gradient(145deg,#19212c,#10151d)!important;border:1px solid #303b4b!important;box-shadow:none!important}
+.mod-publisher-card.card:hover,.mod-publisher-card.card.youtube-theme:hover{background:linear-gradient(145deg,#202a37,#121923)!important;border-color:#a77c40!important;box-shadow:none!important}
+.mod-publisher-card .platform-tag{width:29px!important;height:29px!important;flex:0 0 29px!important}
+.mod-publisher-card .platform-tag svg{width:16px!important;height:16px!important}
 .mod-publisher-card.card{position:relative;display:block;padding:8px 11px;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;border-radius:9px;transition:border-color .2s,background .2s;overflow:hidden;min-height:0}
 .mod-publisher-card.card:hover{background:linear-gradient(145deg,#202a37,#121923);border-color:#a77c40}
 .mod-publisher-card .cardtop{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
