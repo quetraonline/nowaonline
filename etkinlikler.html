@@ -798,8 +798,11 @@ special:[
   // yarısını aşarak hâlâ sürüyorsa takvim önceki tarihte kalır.
   const hasLiveOvernightEvent=events.some(e=>{
    if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previous||!e.end_time)return false;
-   const rawStart=startSec(e),rawEnd=endSec(e,rawStart);
-   return rawEnd>86400&&nowSeconds<rawEnd-86400;
+   const rawStart=startSec(e);
+   let start=rawStart,end=endSec(e,rawStart);
+   if(rawStart<21600){start+=86400;end+=86400;}
+   const currentOnPreviousDay=nowSeconds+86400;
+   return currentOnPreviousDay>=start&&currentOnPreviousDay<end;
   });
   return hasLiveOvernightEvent?-1:0;
  }
