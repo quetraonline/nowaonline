@@ -494,6 +494,12 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .mod-description-box li::marker{color:#d5aa56}
 .mod-description-box strong{color:#f5f5f7;font-weight:800}
 .mod-description-box .mod-description-thanks{margin:22px 0 0;color:#efc66f;font-weight:800}
+.mod-description-date{margin:9px 0 0!important;color:#aeb6c2;font-size:13px}
+.mod-description-date strong{color:#efc66f}
+.mod-video-divider{margin:16px 0 20px}
+.mod-description-box h3.mod-video-title{margin:0 0 14px;color:#efc66f}
+.mod-video-player{width:100%;max-width:900px;margin:0 auto;overflow:hidden;border:1px solid #c9a24a66;border-radius:13px;background:#050608;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.mod-video-player video{display:block;width:100%;height:auto;max-height:520px;background:#050608}
 @media(max-width:600px){.mod-description-box{margin:-14px 0 28px;padding:19px 17px;font-size:14px;line-height:1.75}.mod-description-title{font-size:18px}.mod-description-box h3{font-size:16px;margin-top:21px}}
 </style>
 </head>
@@ -561,6 +567,15 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
  <p>Eğer hata alırsanız, istemciyi (client) tamamen kapatıp yeniden deneyin.</p>
 
  <p class="mod-description-thanks">Desteğiniz için teşekkür ederim! Yamayı Geliştirmeye Devam Edeceğim. 😊</p>
+ <p class="mod-description-date"><strong>Güncelleme Tarihi:</strong> 07.09.2025</p>
+ <div class="mod-description-gold-line mod-video-divider"></div>
+ <h3 class="mod-video-title">Yayıncılarımızın Video'lu anlatımları:</h3>
+ <div class="mod-video-player">
+  <video controls preload="metadata" playsinline>
+   <source src="/video/1.mp4" type="video/mp4">
+   Tarayıcınız video oynatmayı desteklemiyor.
+  </video>
+ </div>
 </section>
 
 </main>
