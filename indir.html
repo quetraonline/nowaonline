@@ -456,6 +456,14 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .mod-platform-ios+span{transform:translateX(-2px)}
 .mod-platform{margin-right:5px}
 </style>
+
+<style id="launcher-discord-button-style">
+.launcher-download-row .launcher-discord-button{min-height:56px;padding:0 23px;border:1px solid rgba(255,255,255,.22);border-radius:13px;background:linear-gradient(180deg,#6975ff 0%,#5361e9 100%);box-shadow:0 7px 18px rgba(88,101,242,.3);color:#fff;font-size:15px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}
+.launcher-download-row .launcher-discord-button svg{width:18px;height:18px;flex:0 0 18px;fill:currentColor;stroke:none}
+.launcher-download-row .launcher-discord-button:hover{transform:translateY(-2px);filter:brightness(1.1);box-shadow:0 10px 25px rgba(88,101,242,.48),0 0 22px rgba(88,101,242,.35)}
+.launcher-download-row .launcher-discord-button:active{transform:translateY(0) scale(.98)}
+@media(max-width:600px){.launcher-download-row{gap:10px}.launcher-download-row .launcher-download-button,.launcher-download-row .launcher-discord-button{min-height:56px;padding:0 17px;font-size:14px}}
+</style>
 </head>
 <body><div class="topline"></div>
 <header><img class="site-flag-gif" src="/img/bayrak.gif" alt="" aria-hidden="true"><div class="wrap nav">
@@ -481,6 +489,10 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
    <div class="launcher-languages" aria-label="Desteklenen diller"><span>EN</span><span class="selected">TR</span><span>DE</span><span>ES</span><span>FR</span><span>JA</span><span>KO</span><span>RU</span><span>ZH</span></div>
    <div class="launcher-download-row">
     <a class="launcher-download-button" href="https://www.nowaonlineworld.com/register" aria-label="Hesabın yok mu? Kayıt ol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m-3-3h6"/></svg>Hesabın yok mu? Kayıt ol</a>
+    <a class="launcher-discord-button" href="https://discord.gg/NowaOnlineWorld" target="_blank" rel="noopener noreferrer" aria-label="Topluluğumuza katıl">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 5.6A18.8 18.8 0 0 0 15 4.2l-.6 1.2a17.2 17.2 0 0 0-4.8 0L9 4.2a18.8 18.8 0 0 0-4.5 1.4C1.7 9.8 1 13.9 1.4 17.9a18.3 18.3 0 0 0 5.5 2.8l1.2-2a11.8 11.8 0 0 1-1.9-.9l.5-.4a13.4 13.4 0 0 0 10.6 0l.5.4a11.8 11.8 0 0 1-1.9.9l1.2 2a18.3 18.3 0 0 0 5.5-2.8c.5-4.6-.8-8.7-3.1-12.3ZM8.7 14.8c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+      Topluluğumuza katıl
+    </a>
    </div>
    
   </div>
