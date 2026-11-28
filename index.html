@@ -2022,9 +2022,28 @@ function renderGameEvents(){
   const list=document.getElementById("specialEventsList");
   const day=document.getElementById("specialEventsDay");
   if(list){
-   // Gün değişince liste de yeni güne geçer. Önceki günün çok günlük
-   // etkinliği aktif diye takvimi eski günde sabit tutma.
-   const displayOffset=0;
+   // Cuma->Cumartesi ve Cumartesi->Pazar geçişlerinde:
+   // Çok günlük etkinlik devam etse bile, önceki günün diğer (tek günlük)
+   // etkinlikleri de bittikten sonra yeni güne geç.
+   const previousWeekday=(now.weekday+6)%7;
+   const isSpecialTransitionDay=now.weekday===6||now.weekday===0;
+   const hasActiveMultiDayCarry= isSpecialTransitionDay && gameEventsCache.some(ev=>{
+    if(ev.section!=="special"||ev.is_active===false||Number(ev.weekday)!==previousWeekday||!ev.end_time||ev.end_weekday===null||ev.end_weekday===undefined||ev.end_weekday==="")return false;
+    if(Number(ev.end_weekday)===Number(ev.weekday))return false;
+    const start=specialEventStartSeconds(ev),end=specialEventEndSeconds(ev,start),currentOnPreviousDay=nowSec+86400;
+    return currentOnPreviousDay>=start&&currentOnPreviousDay<end;
+   });
+   const hasOtherPreviousDayEventStillActive=hasActiveMultiDayCarry&&gameEventsCache.some(ev=>{
+    if(ev.section!=="special"||ev.is_active===false||Number(ev.weekday)!==previousWeekday||!ev.end_time)return false;
+    const isMultiDay=ev.end_weekday!==null&&ev.end_weekday!==undefined&&ev.end_weekday!==""&&Number(ev.end_weekday)!==Number(ev.weekday);
+    if(isMultiDay)return false;
+    const rawStart=gameEventRawStartSeconds(ev);
+    let start=rawStart,end=specialEventEndSeconds(ev,specialEventStartSeconds(ev));
+    if(rawStart<21600){start+=86400;end+=86400;}
+    const currentOnPreviousDay=nowSec+86400;
+    return currentOnPreviousDay>=start&&currentOnPreviousDay<end;
+   });
+   const displayOffset=hasOtherPreviousDayEventStillActive?-1:0;
    const displayWeekday=(now.weekday+displayOffset+7)%7;
    const scheduleNow=nowSec-displayOffset*86400;
    const selected=gameEventsCache.filter(e=>e.section==="special"&&e.is_active!==false).map(e=>{
