@@ -413,27 +413,30 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 @media(max-width:600px){.download-placeholder-panel{margin:18px 0 28px;padding:15px;background:linear-gradient(90deg,rgba(7,8,12,.91),rgba(7,8,12,.62)),url("/img/hero.png") 62% center/cover no-repeat}.launcher-heading{font-size:clamp(24px,6.5vw,32px)}.launcher-tagline{margin:8px 0 17px;font-size:14px}.launcher-features{grid-template-columns:1fr;gap:9px}.launcher-feature{min-height:auto;padding:12px;display:grid;grid-template-columns:25px 1fr;column-gap:9px;align-items:center}.launcher-feature svg{grid-row:span 2;margin:0}.launcher-feature span{grid-column:2}.launcher-feature-store{grid-column:1/-1;padding-top:8px}.launcher-feature-store img{max-width:145px}.launcher-download-row{align-items:flex-start;gap:11px}.launcher-store-logos{max-width:100%;gap:10px}.launcher-store-logos img{width:min(148px,41vw)}.launcher-window-body{padding:14px 12px}.launcher-window-top{height:38px}}
 
 
-.mod-publisher-card{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;min-height:64px;padding:8px 11px;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;border-radius:9px;transition:border-color .2s,background .2s}
-.mod-publisher-card:hover{background:linear-gradient(145deg,#202a37,#121923);border-color:#a77c40}
-.mod-publisher-person{display:flex;align-items:center;gap:11px;min-width:0}
-.mod-publisher-avatar{width:46px;height:46px;flex:0 0 46px;border:1px solid #465365;border-radius:50%;overflow:hidden;background:#0b1017}
-.mod-publisher-avatar img{display:block;width:100%;height:100%;object-fit:cover}
-.mod-publisher-name{color:#f4f5f7;font-size:15px;font-weight:850;overflow-wrap:anywhere}
-.mod-publisher-live{display:inline-flex;align-items:center;gap:6px;margin-top:3px;padding:2px 7px;border:1px solid #ff6478;border-radius:5px;background:#d7193538;color:#fff;font-size:9px;font-weight:850}
-.mod-publisher-live:before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 6px #ff6478}
-.mod-publisher-platforms{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap;margin:0}
-.mod-publisher-platforms a{width:29px;height:29px;flex:0 0 29px;display:inline-grid;place-items:center;border:1px solid #ffffff20;background:#0c1119;color:#e9c77f;border-radius:8px;transition:transform .2s,border-color .2s,background .2s}
-.mod-publisher-platforms a:hover{transform:translateY(-2px);border-color:#e8b95c;background:#b8873b22}
-.mod-publisher-platforms svg{width:16px;height:16px;display:block;fill:currentColor}
-.mod-publisher-platforms a.tiktok{color:#f5f5f5}
-.mod-publisher-platforms a.youtube{color:#ff4545}
-.mod-publisher-platforms a.twitch{color:#b99aff}
-.mod-publisher-platforms a.kick{color:#53e38c}
-.mod-publisher-platforms a.instagram{color:#f18ac1}
-.mod-publisher-platforms a.facebook{color:#78aaff}
-.mod-publisher-platforms a.discord{color:#9bafff}
-.mod-publisher-platforms a.whatsapp{color:#42d77d}
+.mod-publisher-card.card{position:relative;display:block;padding:8px 11px;background:linear-gradient(145deg,#19212c,#10151d);border:1px solid #303b4b;border-radius:9px;transition:border-color .2s,background .2s;overflow:hidden;min-height:0}
+.mod-publisher-card.card:hover{background:linear-gradient(145deg,#202a37,#121923);border-color:#a77c40}
+.mod-publisher-card .cardtop{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
+.mod-publisher-card .person{display:flex;align-items:center;gap:12px;min-width:0}
+.mod-publisher-card .avatar{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;border-radius:50%;border:1px solid #a87c3d;background:linear-gradient(145deg,#49341c,#202a36);color:#f3ca79;font-size:16px;font-weight:950;overflow:hidden}
+.mod-publisher-card .avatar img{width:100%;height:100%;object-fit:cover}
+.mod-publisher-card .person-info{min-width:0}
+.mod-publisher-card .name{font-weight:900;font-size:15px;line-height:1.2;overflow-wrap:anywhere;color:#f4f5f7}
+.mod-publisher-card .platform-tags{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:5px;margin:0;max-width:55%}
+.mod-publisher-card .platform-tag{width:30px;height:30px;flex:0 0 30px;display:inline-grid;place-items:center;border:1px solid #ffffff20;background:#0c1119;color:#e9c77f;border-radius:8px;transition:.2s}
+.mod-publisher-card .platform-tag:hover{transform:translateY(-2px);border-color:#e8b95c;background:#b8873b22}
+.mod-publisher-card .platform-tag svg{width:18px;height:18px;display:block;fill:currentColor}
+.mod-publisher-card .platform-tag.tiktok{color:#f5f5f5}
+.mod-publisher-card .platform-tag.youtube{color:#ff4545}
+.mod-publisher-card .platform-tag.twitch{color:#b99aff}
+.mod-publisher-card .platform-tag.kick{color:#53e38c}
+.mod-publisher-card .platform-tag.instagram{color:#f18ac1}
+.mod-publisher-card .platform-tag.facebook{color:#78aaff}
+.mod-publisher-card .platform-tag.discord{color:#9bafff}
+.mod-publisher-card .platform-tag.whatsapp{color:#42d77d}
+.mod-publisher-live{display:inline-flex;align-items:center;gap:6px;margin-top:5px;padding:2px 6px 2px 10px;border:1px solid #ff6478;border-radius:5px;background:rgba(215,25,53,.22);color:#fff;font-size:9px;font-weight:800;line-height:1}
+.mod-publisher-live:before{content:"";width:4px;height:4px;flex:0 0 4px;border-radius:50%;background:#fff}
 .mod-publisher-empty{color:#9aa5b4;font-size:12px}
+@media(max-width:600px){.mod-publisher-card .avatar{width:46px;height:46px;flex-basis:46px}.mod-publisher-card .name{font-size:15px}.mod-publisher-card .platform-tags{gap:5px;max-width:58%}.mod-publisher-card .platform-tag{width:27px;height:27px;flex-basis:27px}.mod-publisher-card .platform-tag svg{width:16px;height:16px}}
 @media(max-width:600px){.mod-publisher-card{min-height:58px;padding:7px 9px;gap:8px}.mod-publisher-avatar{width:40px;height:40px;flex-basis:40px}.mod-publisher-name{font-size:13px}.mod-publisher-platforms{gap:4px}.mod-publisher-platforms a{width:26px;height:26px}.mod-publisher-platforms svg{width:15px;height:15px}}
 </style>
 <script>(function(){try{var v=localStorage.getItem("nowa_flag_visible");if(v==="true")document.documentElement.classList.add("flag-setting-ready");else if(v==="false")document.documentElement.classList.add("flag-setting-ready","flag-setting-hidden");var a=localStorage.getItem("nowa_logo_flag_visible");if(a==="true")document.documentElement.classList.add("ataturk-flag-setting-ready");else if(a==="false")document.documentElement.classList.add("ataturk-flag-setting-ready","ataturk-flag-setting-hidden")}catch(e){}})();</script>
@@ -1103,7 +1106,7 @@ document.addEventListener("click",async event=>{
  const draw=(node,p,livePlatforms)=>{
   const links=p.platform_links&&typeof p.platform_links==="object"?p.platform_links:{};
   const platforms=Array.isArray(p.platforms)?p.platforms:Object.keys(links);
-  node.innerHTML='<div class="mod-publisher-person"><div class="mod-publisher-avatar">'+(p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="'+esc(p.name)+'" loading="lazy">':'')+'</div><div><div class="mod-publisher-name">'+esc(p.name)+'</div>'+(livePlatforms.length?'<div class="mod-publisher-live">CANLI · '+livePlatforms.join(", ")+'</div>':'')+'</div></div><div class="mod-publisher-platforms">'+platforms.map(platform=>links[platform]?'<a class="'+String(platform).toLowerCase()+'" href="'+esc(links[platform])+'" target="_blank" rel="noopener noreferrer" title="'+esc(platform)+'" aria-label="'+esc(platform)+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+(icons[platform]||"")+'</svg></a>':"").join("")+'</div>';
+  node.className="mod-publisher-card card";node.innerHTML='<div class="cardtop"><div class="person"><div class="avatar">'+(p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="'+esc(p.name)+'" loading="lazy">':'')+'</div><div class="person-info"><div class="name">'+esc(p.name)+'</div>'+(livePlatforms.length?'<div class="mod-publisher-live">CANLI · '+livePlatforms.join(", ")+'</div>':'')+'</div></div><div class="platform-tags card-platforms">'+platforms.map(platform=>links[platform]?'<a class="platform-tag '+String(platform).toLowerCase()+'" href="'+esc(links[platform])+'" target="_blank" rel="noopener noreferrer" title="'+esc(platform)+'" aria-label="'+esc(platform)+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+(icons[platform]||"")+'</svg></a>':"").join("")+'</div></div>';
  };
  async function load(){
   const {data,error}=await subpageDb.from("nowa_publishers").select("id,name,avatar_url,platforms,platform_links,is_published").eq("is_published",true).in("name",wanted.map(x=>x.name));
