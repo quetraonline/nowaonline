@@ -369,6 +369,10 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .launcher-features>.launcher-android-card .launcher-android-link img{display:block;width:100%;max-width:210px;max-height:78px;object-fit:contain}
 @media(max-width:600px){.launcher-features>.launcher-badge-card,.launcher-features>.launcher-android-card{height:90px!important;min-height:90px!important;padding:0 8px!important}.launcher-features>.launcher-android-card .launcher-android-link img{width:100%;max-width:230px;max-height:82px}}
 
+.launcher-emulator-warning{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:47px;margin:16px 0 0;padding:9px 14px 9px 18px;border:1px solid #735a32;border-left:3px solid #e8b95c;border-radius:10px;background:linear-gradient(105deg,#171a20,#10151d);color:#e8d3a5;font-size:12px;font-weight:750;line-height:1.45;box-shadow:0 5px 18px rgba(0,0,0,.16)}
+.launcher-warning-bulb{display:block;width:19px;height:19px;flex:0 0 19px;fill:none;stroke:#e8b95c;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(232,185,92,.55));animation:launcherBulbPulse 1.5s ease-in-out infinite}
+@keyframes launcherBulbPulse{0%,100%{opacity:1;filter:drop-shadow(0 0 2px rgba(232,185,92,.35))}50%{opacity:.48;filter:drop-shadow(0 0 8px rgba(232,185,92,.95))}}
+@media(prefers-reduced-motion:reduce){.launcher-warning-bulb{animation:none}}
 .launcher-languages{display:flex;gap:7px;flex-wrap:wrap;margin:17px 0 22px}
 .launcher-languages span{min-width:38px;text-align:center;padding:6px 8px;border:1px solid #ffffff20;border-radius:9px;background:rgba(25,26,32,.88);font-size:11px;font-weight:800;color:#d5d5dc}
 .launcher-languages span.selected{border-color:#ef5148;color:#fff}
@@ -580,6 +584,10 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
     <div class="launcher-feature launcher-feature-store-only launcher-badge-card"><a class="launcher-feature-store" href="https://play.google.com/store/apps/details?id=com.NOWAGames.NOWAOnlineWorldA" target="_blank" rel="noopener noreferrer" aria-label="Google Play üzerinden indir"><img src="/img/google-play.webp" alt="Google Play’den indir"></a></div>
     <div class="launcher-feature launcher-feature-store-only launcher-badge-card"><a class="launcher-feature-store" href="https://apps.apple.com/us/app/nowa-online-world/id6698880492" target="_blank" rel="noopener noreferrer" aria-label="App Store üzerinden indir"><img src="/img/appstore.webp" alt="App Store’dan indir"></a></div>
     <div class="launcher-feature launcher-feature-store-only launcher-android-card"><a class="launcher-android-link" href="https://www.nowaonlineworld.com/redirect.php?url=direct" target="_blank" rel="noopener noreferrer" aria-label="Android APK indir"><img src="/img/android.png" alt="Download Android APK"></a></div>
+   </div>
+   <div class="launcher-emulator-warning" role="note">
+    <svg class="launcher-warning-bulb" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M8.3 14.5a7 7 0 1 1 7.4 0c-.8.6-1.2 1.5-1.2 2.5h-5c0-1-.4-1.9-1.2-2.5Z"/></svg>
+    <span>Emülatör kullanımı kesinlikle yasaktır ve tespit edilmesi halinde süresiz kısıtlama (ban) uygulanır.</span>
    </div>
    <div class="launcher-languages" aria-label="Desteklenen diller"><span>EN</span><span class="selected">TR</span><span>DE</span><span>ES</span><span>FR</span><span>JA</span><span>KO</span><span>RU</span><span>ZH</span></div>
    <div class="launcher-download-row">
