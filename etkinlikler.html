@@ -792,9 +792,27 @@ special:[
 
  function eventImage(e){const preset=(EVENT_PAGE_PRESETS[e.section]||[]).find(x=>x.name===e.event_name);const raw=preset?.image||e.image_url||"";return raw?(raw.startsWith("/")?raw:"/"+raw):""}
  function sectionCarryoverOffset(section,now,nowSeconds){
-  // Çok günlük etkinlikler aktif kalsa bile takvim günü değiştirmeli.
-  // Devam eden etkinlik, yeni günün listesinde kendi bitiş gününe kadar gösterilir.
-  return 0;
+  if(section!=="special"||(now.day!==6&&now.day!==0))return 0;
+  const previous=(now.day+6)%7;
+  const activeMultiDay=events.some(e=>{
+   if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previous||!e.end_time||e.end_weekday===null||e.end_weekday===undefined||e.end_weekday==="")return false;
+   if(Number(e.end_weekday)===Number(e.weekday))return false;
+   const rawStart=startSec(e),start=rawStart<21600?rawStart+86400:rawStart;
+   let end=endSec(e,rawStart);if(rawStart<21600)end+=86400;
+   const currentOnPreviousDay=nowSeconds+86400;
+   return currentOnPreviousDay>=start&&currentOnPreviousDay<end;
+  });
+  if(!activeMultiDay)return 0;
+  const otherStillActive=events.some(e=>{
+   if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previous||!e.end_time)return false;
+   const isMultiDay=e.end_weekday!==null&&e.end_weekday!==undefined&&e.end_weekday!==""&&Number(e.end_weekday)!==Number(e.weekday);
+   if(isMultiDay)return false;
+   const rawStart=startSec(e),start=rawStart<21600?rawStart+86400:rawStart;
+   let end=endSec(e,rawStart);if(rawStart<21600)end+=86400;
+   const currentOnPreviousDay=nowSeconds+86400;
+   return currentOnPreviousDay>=start&&currentOnPreviousDay<end;
+  });
+  return otherStillActive?-1:0;
  }
  function sectionDateText(offset){
   const date=new Date(Date.now()+offset*86400000);
