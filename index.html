@@ -2027,7 +2027,8 @@ function renderGameEvents(){
     if(e.section!=="special"||e.is_active===false||Number(e.weekday)!==previousWeekday||!e.end_time)return false;
     const start=specialEventStartSeconds(e);
     const end=specialEventEndSeconds(e,start);
-    return end>86400&&nowSec<end-86400;
+    const currentOnPreviousDay=nowSec+86400;
+    return currentOnPreviousDay>=start&&currentOnPreviousDay<end;
    });
    const displayOffset=hasLiveOvernightEvent?-1:0;
    const displayWeekday=(now.weekday+displayOffset+7)%7;
