@@ -503,14 +503,15 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
 .mod-video-player,.mod-video-placeholder{width:100%;min-width:0;min-height:180px;overflow:hidden;border:1px solid #c9a24a66;border-radius:13px;background:#050608;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 .mod-video-player video{display:block;width:100%;height:100%;min-height:180px;max-height:520px;object-fit:contain;background:#050608}
 .mod-youtube-player iframe{display:block;width:100%;height:100%;min-height:180px;aspect-ratio:16/9;border:0;background:#050608}
-.mod-video-source-box{display:flex;align-items:stretch;gap:16px;margin:14px 0 0;padding:16px 19px;border:1px solid #303b4b;border-radius:12px;background:linear-gradient(145deg,rgba(18,20,27,.98),rgba(12,14,20,.98))}
-.mod-video-source-label{display:flex;align-items:center;color:#efc66f;font-size:14px;font-weight:850;white-space:nowrap}
-.mod-video-source-divider{width:2px;flex:0 0 2px;align-self:stretch;min-height:42px;border-radius:2px;background:linear-gradient(180deg,#f1d17c,#c99b43);box-shadow:0 0 7px rgba(201,155,67,.25)}
-.mod-video-source-links{display:flex;flex-direction:column;justify-content:center;gap:9px;min-width:0}
-.mod-video-source-links a{display:flex;align-items:center;gap:10px;color:#e4b85d;font-size:13px;font-weight:700;text-decoration:none;overflow-wrap:anywhere}
+.mod-video-source-box{display:flex;align-items:stretch;gap:12px;margin:8px 0 0;padding:9px 13px;border:1px solid #303b4b;border-radius:10px;background:linear-gradient(145deg,rgba(18,20,27,.98),rgba(12,14,20,.98))}
+.mod-video-source-label{display:flex;align-items:center;gap:7px;color:#e8b95c;font-size:13px;font-weight:850;white-space:nowrap}
+.mod-video-source-label svg{display:block;width:17px;height:17px;flex:0 0 17px;fill:currentColor}
+.mod-video-source-divider{width:2px;flex:0 0 2px;align-self:stretch;min-height:29px;border-radius:2px;background:linear-gradient(180deg,#f1d17c,#c99b43);box-shadow:0 0 7px rgba(201,155,67,.25)}
+.mod-video-source-links{display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:0}
+.mod-video-source-links a{display:flex;align-items:center;gap:8px;color:#e4b85d;font-size:12px;font-weight:700;text-decoration:none;overflow-wrap:anywhere}
 .mod-video-source-links a span{color:#d5d9e1;font-weight:800}
 .mod-video-source-links a:hover{color:#ffe09a;text-decoration:underline}
-@media(max-width:600px){.mod-video-source-box{gap:12px;padding:14px}.mod-video-source-links a{font-size:12px;gap:7px}}
+@media(max-width:600px){.mod-video-source-box{gap:9px;padding:8px 10px}.mod-video-source-label{font-size:12px;gap:5px}.mod-video-source-label svg{width:15px;height:15px;flex-basis:15px}.mod-video-source-links a{font-size:11px;gap:6px}}
 
 .mod-video-placeholder{display:flex;align-items:center;justify-content:center;padding:20px;color:#c6cbd4;font-size:15px;font-weight:700}
 @media(max-width:600px){.mod-video-grid{grid-template-columns:1fr;gap:12px}.mod-video-player,.mod-video-placeholder{min-height:160px}.mod-video-player video{min-height:160px}}
@@ -593,7 +594,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
     </video>
    </div>
    <div class="mod-video-source-box">
-    <strong class="mod-video-source-label">Kaynak:</strong>
+    <strong class="mod-video-source-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg>Kaynak:</strong>
     <span class="mod-video-source-divider" aria-hidden="true"></span>
     <div class="mod-video-source-links">
      <a href="https://www.youtube.com/shorts/I5byQvnxddQ" target="_blank" rel="noopener noreferrer">https://www.youtube.com/shorts/I5byQvnxddQ</a>
@@ -605,7 +606,7 @@ body:has(.modalbg.open) .mobile-menu-toggle{opacity:0!important;visibility:hidde
     <iframe src="https://www.youtube.com/embed/Ozkt2Ftj4eI" title="Yayıncılarımızın video anlatımı" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
    </div>
    <div class="mod-video-source-box">
-    <strong class="mod-video-source-label">Kaynak:</strong>
+    <strong class="mod-video-source-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg>Kaynak:</strong>
     <span class="mod-video-source-divider" aria-hidden="true"></span>
     <div class="mod-video-source-links">
      <a href="https://www.youtube.com/watch?v=Ozkt2Ftj4eI" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=Ozkt2Ftj4eI</a>
